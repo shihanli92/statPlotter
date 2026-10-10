@@ -1,0 +1,12 @@
+{
+  "name": "range_05",
+  "input": {"range":[5,5]},
+  "params": {"n":10},
+  "expected": {
+    "breaks": [3, 4, 5, 6]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

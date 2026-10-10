@@ -1,0 +1,12 @@
+{
+  "input": {
+    "x": [0.99999000000000005, 1.0000001000000001, 1.0009999999999999, 1.9990000000000001, 1.9999, 2.0000000999999998, 2.0009999999999999]
+  },
+  "params": {
+    "fn": "lgamma"
+  },
+  "tol": {
+    "rtol": 9.9999999999999995e-08
+  },
+  "note": "R computes lgamma(x) for x < 10 as log(gamma(x)), whose absolute error (~1e-16) is a large relative error next to the zeros at 1 and 2 (e.g. 2e-10 at 1 + 1e-7). Our series keeps relative accuracy; the TS tests also check these points against the Taylor series of lgamma to full precision."
+}

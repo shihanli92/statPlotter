@@ -1,0 +1,701 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Per-series overrides",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Column",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        12.8,
+        12.4,
+        9,
+        9.5,
+        12.1,
+        7.8,
+        9.1,
+        10.9
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        17.2,
+        14.3,
+        14.9,
+        13.2,
+        15.2,
+        14.7,
+        9.8,
+        15.8
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000004",
+     "title": "C",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5.7,
+        10.6,
+        8,
+        7.6,
+        8,
+        7.9,
+        9.4,
+        9.1
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000005": {
+   "kind": "graph",
+   "id": "zid000005",
+   "name": "Scatter, per data set",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "zid000002": {
+     "points": {
+      "show": false
+     }
+    },
+    "zid000003": {
+     "markOrder": [
+      "points",
+      "center",
+      "error"
+     ],
+     "points": {
+      "size": 8,
+      "shape": "square"
+     }
+    },
+    "zid000004": {
+     "center": {
+      "stat": "median"
+     },
+     "error": {
+      "stat": "SEM",
+      "direction": "above"
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Column"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "markOrder": [
+      "error",
+      "points",
+      "center"
+     ]
+    }
+   }
+  },
+  "zid000006": {
+   "kind": "graph",
+   "id": "zid000006",
+   "name": "Boxes, violin, floating",
+   "graphType": "column.box",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "zid000002": {
+     "box": {
+      "kind": "violin"
+     },
+     "violin": {
+      "quartiles": true
+     }
+    },
+    "zid000003": {
+     "box": {
+      "kind": "floating"
+     },
+     "center": {
+      "stat": "mean"
+     }
+    },
+    "zid000004": {
+     "box": {
+      "whiskers": "tukey"
+     },
+     "points": {
+      "show": false
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Column"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "size": 3
+     }
+    }
+   }
+  },
+  "zid000007": {
+   "kind": "table",
+   "id": "zid000007",
+   "name": "Grouped",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "Day 1",
+    "Day 2",
+    "Day 3"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000008",
+     "title": "WT",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        10,
+        11,
+        12
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        11,
+        13,
+        15
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        12,
+        13,
+        14
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000009",
+     "title": "KO",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        14,
+        17,
+        20
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        13,
+        14,
+        15
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        15,
+        17,
+        19
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000010",
+     "title": "Het",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        9,
+        10,
+        11
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        8,
+        10,
+        12
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        10,
+        11,
+        12
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000011": {
+   "kind": "graph",
+   "id": "zid000011",
+   "name": "Grouped dot plot, per data set",
+   "graphType": "grouped.scatter",
+   "seriesSource": {
+    "table": "zid000007",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "zid000008": {
+     "points": {
+      "replicates": "mean"
+     },
+     "markOrder": [
+      "center",
+      "points",
+      "line"
+     ]
+    },
+    "zid000009": {
+     "line": {
+      "show": false
+     },
+     "error": {
+      "stat": "SEM"
+     }
+    },
+    "zid000010": {
+     "center": {
+      "stat": "none"
+     },
+     "points": {
+      "show": false
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 270,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Grouped"
+     }
+    ]
+   },
+   "style": {
+    "arrangement": "aligned",
+    "seriesDefaults": {
+     "line": {
+      "show": true
+     }
+    }
+   }
+  },
+  "zid000012": {
+   "kind": "table",
+   "id": "zid000012",
+   "name": "XY",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 6,
+   "rowTitles": null,
+   "x": {
+    "title": "Time",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000013",
+     "title": "Slow",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1.4,
+        2.4,
+        3.4,
+        4.4,
+        5.4,
+        6.4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.8,
+        1.8,
+        2.8,
+        3.8,
+        4.8,
+        5.8
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000014",
+     "title": "Fast",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.5,
+        2.5,
+        4.5,
+        6.5,
+        8.5,
+        10.5
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000015",
+     "title": "Flat",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5.5,
+        5.5,
+        5.5,
+        5.5,
+        5.5,
+        5.5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4.5,
+        4.5,
+        4.5,
+        4.5,
+        4.5,
+        4.5
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000016": {
+   "kind": "graph",
+   "id": "zid000016",
+   "name": "XY, per data set",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000012",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "zid000013": {
+     "line": {
+      "show": true
+     },
+     "spaghetti": {
+      "show": true,
+      "fade": 0.5
+     }
+    },
+    "zid000014": {
+     "points": {
+      "replicates": "each"
+     },
+     "line": {
+      "show": true,
+      "gaps": true
+     }
+    },
+    "zid000015": {
+     "bar": {
+      "show": true,
+      "width": 0.5
+     },
+     "envelope": {
+      "show": true
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "XY"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "markOrder": [
+      "error",
+      "points"
+     ]
+    }
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000005",
+  "zid000006",
+  "zid000007",
+  "zid000011",
+  "zid000012",
+  "zid000016"
+ ]
+}

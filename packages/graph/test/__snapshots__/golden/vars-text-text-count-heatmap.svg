@@ -1,0 +1,283 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="152.687pt" height="150.48pt" viewBox="0 0 152.687 150.48">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="18.37" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample variables</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/cells">
+<g data-id="series/lv_4c6f77/cell/0">
+<rect x="39.569" y="35.785" width="24.5" height="36.5" fill="#fde725" stroke="none"/>
+</g>
+<g data-id="series/lv_48696768/cell/0">
+<rect x="63.569" y="35.785" width="24.5" height="36.5" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/lv_4d6964/cell/0">
+<rect x="87.569" y="35.785" width="24" height="36.5" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/lv_4c6f77/cell/1">
+<rect x="39.569" y="71.785" width="24.5" height="36" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/lv_48696768/cell/1">
+<rect x="63.569" y="71.785" width="24.5" height="36" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/lv_4d6964/cell/1">
+<rect x="87.569" y="71.785" width="24" height="36" fill="#440154" stroke="none"/>
+</g>
+</g>
+<g data-id="layer/values">
+<g data-id="series/lv_4c6f77/cellLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="49.067" y="56.905" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">3</tspan></text>
+</g>
+<g data-id="series/lv_48696768/cellLabel/0">
+<text fill="#ffffff" xml:space="preserve"><tspan x="73.067" y="56.905" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">2</tspan></text>
+</g>
+<g data-id="series/lv_4d6964/cellLabel/0">
+<text fill="#ffffff" xml:space="preserve"><tspan x="97.067" y="56.905" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">2</tspan></text>
+</g>
+<g data-id="series/lv_4c6f77/cellLabel/1">
+<text fill="#ffffff" xml:space="preserve"><tspan x="49.067" y="92.905" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">2</tspan></text>
+</g>
+<g data-id="series/lv_48696768/cellLabel/1">
+<text fill="#ffffff" xml:space="preserve"><tspan x="73.067" y="92.905" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">2</tspan></text>
+</g>
+<g data-id="series/lv_4d6964/cellLabel/1">
+<text fill="#ffffff" xml:space="preserve"><tspan x="97.067" y="92.905" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">2</tspan></text>
+</g>
+</g>
+</g>
+<g data-id="colorScale">
+<g data-id="colorScale/band/0">
+<rect x="123.569" y="106.16" width="10" height="1.625" fill="#450457" stroke="none"/>
+</g>
+<g data-id="colorScale/band/1">
+<rect x="123.569" y="105.035" width="10" height="1.625" fill="#460a5c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/2">
+<rect x="123.569" y="103.91" width="10" height="1.625" fill="#470f62" stroke="none"/>
+</g>
+<g data-id="colorScale/band/3">
+<rect x="123.569" y="102.785" width="10" height="1.625" fill="#481567" stroke="none"/>
+</g>
+<g data-id="colorScale/band/4">
+<rect x="123.569" y="101.66" width="10" height="1.625" fill="#481b6c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/5">
+<rect x="123.569" y="100.535" width="10" height="1.625" fill="#482070" stroke="none"/>
+</g>
+<g data-id="colorScale/band/6">
+<rect x="123.569" y="99.41" width="10" height="1.625" fill="#472575" stroke="none"/>
+</g>
+<g data-id="colorScale/band/7">
+<rect x="123.569" y="98.285" width="10" height="1.625" fill="#472a79" stroke="none"/>
+</g>
+<g data-id="colorScale/band/8">
+<rect x="123.569" y="97.16" width="10" height="1.625" fill="#462f7c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/9">
+<rect x="123.569" y="96.035" width="10" height="1.625" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="colorScale/band/10">
+<rect x="123.569" y="94.91" width="10" height="1.625" fill="#443982" stroke="none"/>
+</g>
+<g data-id="colorScale/band/11">
+<rect x="123.569" y="93.785" width="10" height="1.625" fill="#433e85" stroke="none"/>
+</g>
+<g data-id="colorScale/band/12">
+<rect x="123.569" y="92.66" width="10" height="1.625" fill="#414287" stroke="none"/>
+</g>
+<g data-id="colorScale/band/13">
+<rect x="123.569" y="91.535" width="10" height="1.625" fill="#3f4788" stroke="none"/>
+</g>
+<g data-id="colorScale/band/14">
+<rect x="123.569" y="90.41" width="10" height="1.625" fill="#3e4b89" stroke="none"/>
+</g>
+<g data-id="colorScale/band/15">
+<rect x="123.569" y="89.285" width="10" height="1.625" fill="#3c508a" stroke="none"/>
+</g>
+<g data-id="colorScale/band/16">
+<rect x="123.569" y="88.16" width="10" height="1.625" fill="#3a548b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/17">
+<rect x="123.569" y="87.035" width="10" height="1.625" fill="#38588c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/18">
+<rect x="123.569" y="85.91" width="10" height="1.625" fill="#365d8c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/19">
+<rect x="123.569" y="84.785" width="10" height="1.625" fill="#34618d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/20">
+<rect x="123.569" y="83.66" width="10" height="1.625" fill="#32658d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/21">
+<rect x="123.569" y="82.535" width="10" height="1.625" fill="#30698d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/22">
+<rect x="123.569" y="81.41" width="10" height="1.625" fill="#2f6c8e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/23">
+<rect x="123.569" y="80.285" width="10" height="1.625" fill="#2d708e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/24">
+<rect x="123.569" y="79.16" width="10" height="1.625" fill="#2b748e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/25">
+<rect x="123.569" y="78.035" width="10" height="1.625" fill="#2a788e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/26">
+<rect x="123.569" y="76.91" width="10" height="1.625" fill="#287c8e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/27">
+<rect x="123.569" y="75.785" width="10" height="1.625" fill="#27808e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/28">
+<rect x="123.569" y="74.66" width="10" height="1.625" fill="#25848e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/29">
+<rect x="123.569" y="73.535" width="10" height="1.625" fill="#24878d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/30">
+<rect x="123.569" y="72.41" width="10" height="1.625" fill="#238b8d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/31">
+<rect x="123.569" y="71.285" width="10" height="1.625" fill="#228e8c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/32">
+<rect x="123.569" y="70.16" width="10" height="1.625" fill="#21928c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/33">
+<rect x="123.569" y="69.035" width="10" height="1.625" fill="#20968b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/34">
+<rect x="123.569" y="67.91" width="10" height="1.625" fill="#20998a" stroke="none"/>
+</g>
+<g data-id="colorScale/band/35">
+<rect x="123.569" y="66.785" width="10" height="1.625" fill="#1f9d89" stroke="none"/>
+</g>
+<g data-id="colorScale/band/36">
+<rect x="123.569" y="65.66" width="10" height="1.625" fill="#20a187" stroke="none"/>
+</g>
+<g data-id="colorScale/band/37">
+<rect x="123.569" y="64.535" width="10" height="1.625" fill="#22a485" stroke="none"/>
+</g>
+<g data-id="colorScale/band/38">
+<rect x="123.569" y="63.41" width="10" height="1.625" fill="#24a884" stroke="none"/>
+</g>
+<g data-id="colorScale/band/39">
+<rect x="123.569" y="62.285" width="10" height="1.625" fill="#26ab82" stroke="none"/>
+</g>
+<g data-id="colorScale/band/40">
+<rect x="123.569" y="61.16" width="10" height="1.625" fill="#2aaf7f" stroke="none"/>
+</g>
+<g data-id="colorScale/band/41">
+<rect x="123.569" y="60.035" width="10" height="1.625" fill="#30b37c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/42">
+<rect x="123.569" y="58.91" width="10" height="1.625" fill="#35b679" stroke="none"/>
+</g>
+<g data-id="colorScale/band/43">
+<rect x="123.569" y="57.785" width="10" height="1.625" fill="#3bba76" stroke="none"/>
+</g>
+<g data-id="colorScale/band/44">
+<rect x="123.569" y="56.66" width="10" height="1.625" fill="#42be72" stroke="none"/>
+</g>
+<g data-id="colorScale/band/45">
+<rect x="123.569" y="55.535" width="10" height="1.625" fill="#4ac16e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/46">
+<rect x="123.569" y="54.41" width="10" height="1.625" fill="#51c469" stroke="none"/>
+</g>
+<g data-id="colorScale/band/47">
+<rect x="123.569" y="53.285" width="10" height="1.625" fill="#59c765" stroke="none"/>
+</g>
+<g data-id="colorScale/band/48">
+<rect x="123.569" y="52.16" width="10" height="1.625" fill="#62c960" stroke="none"/>
+</g>
+<g data-id="colorScale/band/49">
+<rect x="123.569" y="51.035" width="10" height="1.625" fill="#6bcc5b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/50">
+<rect x="123.569" y="49.91" width="10" height="1.625" fill="#74cf55" stroke="none"/>
+</g>
+<g data-id="colorScale/band/51">
+<rect x="123.569" y="48.785" width="10" height="1.625" fill="#7dd250" stroke="none"/>
+</g>
+<g data-id="colorScale/band/52">
+<rect x="123.569" y="47.66" width="10" height="1.625" fill="#87d44a" stroke="none"/>
+</g>
+<g data-id="colorScale/band/53">
+<rect x="123.569" y="46.535" width="10" height="1.625" fill="#91d643" stroke="none"/>
+</g>
+<g data-id="colorScale/band/54">
+<rect x="123.569" y="45.41" width="10" height="1.625" fill="#9bd93c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/55">
+<rect x="123.569" y="44.285" width="10" height="1.625" fill="#a5db35" stroke="none"/>
+</g>
+<g data-id="colorScale/band/56">
+<rect x="123.569" y="43.16" width="10" height="1.625" fill="#afdd2f" stroke="none"/>
+</g>
+<g data-id="colorScale/band/57">
+<rect x="123.569" y="42.035" width="10" height="1.625" fill="#bade29" stroke="none"/>
+</g>
+<g data-id="colorScale/band/58">
+<rect x="123.569" y="40.91" width="10" height="1.625" fill="#c5e023" stroke="none"/>
+</g>
+<g data-id="colorScale/band/59">
+<rect x="123.569" y="39.785" width="10" height="1.625" fill="#d0e11d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/60">
+<rect x="123.569" y="38.66" width="10" height="1.625" fill="#dae31b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/61">
+<rect x="123.569" y="37.535" width="10" height="1.625" fill="#e4e41e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/62">
+<rect x="123.569" y="36.41" width="10" height="1.625" fill="#eee521" stroke="none"/>
+</g>
+<g data-id="colorScale/band/63">
+<rect x="123.569" y="35.785" width="10" height="1.125" fill="#f8e624" stroke="none"/>
+</g>
+<g data-id="colorScale/frame">
+<rect x="123.569" y="35.785" width="10" height="72" fill="none" stroke="#000000" stroke-width="0.5"/>
+</g>
+<g data-id="colorScale/tick/0">
+<line x1="133.569" y1="107.785" x2="136.569" y2="107.785" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/0">
+<text fill="#000000" xml:space="preserve"><tspan x="138.569" y="111.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">2</tspan></text>
+</g>
+<g data-id="colorScale/tick/1">
+<line x1="133.569" y1="35.785" x2="136.569" y2="35.785" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/1">
+<text fill="#000000" xml:space="preserve"><tspan x="138.569" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">3</tspan></text>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="29.85" y="57.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">F</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="93.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">M</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 71.785)" xml:space="preserve"><tspan x="4.027" y="75.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Sex</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="41.48" y="120.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Low</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="64.258" y="120.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">High</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="90.707" y="120.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Mid</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="57.572" y="139.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Group</tspan></text>
+</g>
+</g>
+</g>
+</svg>

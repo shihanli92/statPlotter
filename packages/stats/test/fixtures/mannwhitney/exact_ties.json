@@ -1,0 +1,26 @@
+{
+  "name": "exact_ties",
+  "input": {"a":[1,2,2,3,4,4],"b":[2,3,5,5,6]},
+  "params": {"exact":true},
+  "expected": {
+    "uA": 6.5,
+    "uB": 23.5,
+    "U": 6.5,
+    "sumRanksA": 27.5,
+    "sumRanksB": 38.5,
+    "medianA": 2.5,
+    "medianB": 5,
+    "p": 0.12770562770562768,
+    "method": "exact",
+    "ties": true,
+    "hlEstimate": 1.446733896882173,
+    "hlLo": -0.99995737566714271,
+    "hlHi": 3.9999518219520214
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

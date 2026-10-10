@@ -1,0 +1,7 @@
+{
+  "input": {"n0":4,"n":[3,6,10,2],"df":20,"t":[0.80000000000000004,2,2.7000000000000002,3.3999999999999999,6]},
+  "params": {
+    "twoSided": true
+  },
+  "note": "p and quantiles from the integrate() reference (ref_integrals.R); pMvt is mvtnorm's randomised QMC value, checked within 5x its error estimate."
+}

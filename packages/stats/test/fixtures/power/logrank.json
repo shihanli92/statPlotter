@@ -1,0 +1,13 @@
+{
+  "name": "logrank",
+  "input": [],
+  "params": {"design":"logrank","hr":0.6,"alpha":0.05,"n":100,"target":0.8,"lo":1},
+  "expected": {
+    "power": 0.7238020101131849,
+    "nFor": 120.31540967656748
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

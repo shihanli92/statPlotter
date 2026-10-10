@@ -1,0 +1,10 @@
+{
+  "input": {
+    "x": [1, 2, 3, 4, 5, 6],
+    "y": [3, 3, 3, 3, 3, 3]
+  },
+  "params": {
+    "method": "pearson"
+  },
+  "note": "SD(y) = 0: r and P are NaN."
+}

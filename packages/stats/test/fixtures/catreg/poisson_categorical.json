@@ -1,0 +1,110 @@
+{
+  "name": "poisson_categorical",
+  "input": {"columns":{"Visits":[3,1,1,1,0,0,1,2,5,2,10,0,2,1,3,1,3,2,1,4,0,0,2,3,0,0,0,2,2,1,0,5,4,2,1,3,0,1,0,1,1,1,7,0,0,2,1,2,0,0,1,4,1,1,3,4,1,4,3,1,4,1,0,0,0,5,3,3,2,0,2,1,3,2,3,1,1,2,0,null],"Age":[48,39,65,33,47,46,71,38,58,39,57,66,52,45,33,43,66,64,55,75,57,57,31,68,75,59,44,39,37,61,39,70,66,60,65,53,55,58,57,40,48,71,70,33,35,48,37,39,32,71,34,71,43,41,62,38,64,73,65,51,62,38,60,63,63,67,69,73,69,32,64,51,47,74,72,35,32,61,40,59],"Smoker":["yes","no","yes","no","no","no","no","yes","yes","yes","yes","yes","yes","yes","no","no","no","yes","yes","yes","no","no","yes","no","no","no","no","no","yes","no","no","yes","no","no","no","yes","no","yes","no","no","no","no","yes","no","no","yes","no","no","no","no","yes","no","no","yes","no","no","no","yes","yes","no","yes","yes","no","no","no","yes","no","no","no","no","yes","no","yes","no","no","no","no","no","no","yes"],"Region":["Central","East","West","Central","East","Central","Central","East","West","East","West","East","Central","East","West","West","East","Central","Central","Central","West","East","East","East","Central","West","East","West","West","East","Central","Central","West","East","Central","West","Central","East","West","East","Central","Central","East","East","West","Central","Central","East","Central","Central","East","East","East","West","West","East","West","Central","West","Central","Central","West","West","Central","East","Central","East","Central","Central","East","West","Central","East","West","West","Central","East","East","West","East"]}},
+  "params": {"model":"poisson","y":"Visits","referenceRule":"leastFrequent","interpolate":true,"predictions":[{"Age":55,"Smoker":"yes","Region":"West"}]},
+  "expected": {
+    "n": 79,
+    "coefficients": [
+      {
+        "name": "(Intercept)",
+        "estimate": -0.33982696803821633,
+        "se": 0.43214424669248136,
+        "lower": -1.1868141276816719,
+        "upper": 0.50716019160523929,
+        "stat": -0.78637392638953951,
+        "p": 0.43164845408761271,
+        "ratio": 0.71189349243373434,
+        "ratioLower": 0.30519201970121312,
+        "ratioUpper": 1.6605687955591222
+      },
+      {
+        "name": "Age",
+        "estimate": 0.026780645668922524,
+        "se": 0.0070476418838647031,
+        "lower": 0.012967521400611691,
+        "upper": 0.040593769937233355,
+        "stat": 3.7999441671739524,
+        "p": 0.00014472869175264559,
+        "ratio": 1.0271424699011169,
+        "ratioLower": 1.0130519643165812,
+        "ratioUpper": 1.0414289598523201
+      },
+      {
+        "name": "Smokerno",
+        "estimate": -0.85369212926138305,
+        "se": 0.17113249228834249,
+        "lower": -1.1891056507311129,
+        "upper": -0.51827860779165325,
+        "stat": -4.9884865103407154,
+        "p": 6.0854159881394646e-07,
+        "ratio": 0.42583977041108828,
+        "ratioLower": 0.30449346583538484,
+        "ratioUpper": 0.59554483235382161
+      },
+      {
+        "name": "RegionCentral",
+        "estimate": -0.32378532149227013,
+        "se": 0.21067295681516526,
+        "lower": -0.73669672936655606,
+        "upper": 0.089126086382015801,
+        "stat": -1.5369097504828038,
+        "p": 0.1243154114528371,
+        "ratio": 0.72340552532995139,
+        "ratioLower": 0.47869255781288539,
+        "ratioUpper": 1.0932184876006785
+      },
+      {
+        "name": "RegionEast",
+        "estimate": -0.027799151650022468,
+        "se": 0.20804191952919734,
+        "lower": -0.43555382120182928,
+        "upper": 0.37995551790178439,
+        "stat": -0.13362283770949843,
+        "p": 0.89370082425800756,
+        "ratio": 0.97258368901467185,
+        "ratioLower": 0.64690629742772687,
+        "ratioUpper": 1.4622195453941567
+      }
+    ],
+    "terms": [
+      {
+        "name": "Age",
+        "chiSq": 15.182589609041031,
+        "df": 1,
+        "p": 9.7599146274807789e-05
+      },
+      {
+        "name": "Smoker",
+        "chiSq": 25.058524233584933,
+        "df": 1,
+        "p": 5.5616343757178885e-07
+      },
+      {
+        "name": "Region",
+        "chiSq": 2.8708689175442146,
+        "df": 2,
+        "p": 0.23801193517542746
+      }
+    ],
+    "predictions": [
+      {
+        "value": 3.3616501677820407,
+        "lower": 2.3957417795957925,
+        "upper": 4.7169907653635637
+      },
+      {
+        "value": 3.1052944560409572,
+        "lower": 2.2584904345661871,
+        "upper": 4.2696012837313218
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "car": "3.1.5",
+      "survival": "3.8.3"
+    }
+  },
+  "note": "References by the least-frequent rule; the last row has no count (predicted)."
+}

@@ -1,0 +1,1 @@
+{ "input": { "a": [1, 2], "b": [1.5, 3.1] }, "params": { "test": "paired" }, "note": "n = 2: pairing correlation is +-1 with 0 df, so its P is NaN (cor.test refuses)." }

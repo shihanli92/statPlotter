@@ -1,0 +1,11 @@
+{
+  "input": {
+    "k": 3,
+    "n": 40,
+    "p0": 0.10000000000000001
+  },
+  "params": {
+    "fn": "binomial"
+  },
+  "note": "x = 3 with n <= 50: plain Wilson."
+}

@@ -1,0 +1,140 @@
+{
+  "name": "logistic_categorical",
+  "input": {"columns":{"Response":[1,0,null,0,0,0,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,1,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,0,1,0,0,0,1,0,1,0,1,0,0,0,0],"Age":[53,60,41,77,79,49,43,32,41,32,30,37,77,71,65,76,69,70,27,79,78,43,41,40,68,29,71,74,54,46,39,43,78,28,41,36,44,70,68,72,78,78,44,67,43,50,49,60,28,57,33,55,63,62,41,70,30,66,80,43,37,49,44,32,36,77,79,60,31,28,55,54,69,36,49,53,79,76,27,60,28,78,27,70,70,55,27,40,26,59],"Arm":["Placebo","Drug A","Drug B","Drug A","Drug A","Drug A","Placebo","Drug B","Placebo","Placebo","Drug B","Placebo","Drug B","Drug B","Placebo","Placebo","Drug B","Drug B","Drug A","Drug B","Placebo","Drug B","Drug A","Drug A","Drug B","Drug B","Drug A","Placebo","Drug B","Drug A","Drug B","Drug B","Drug A","Drug A","Placebo","Drug A","Drug B","Drug A","Drug A","Placebo","Drug A","Drug B","Drug A","Drug B","Drug B","Drug B","Drug B","Drug A","Drug A","Placebo","Placebo","Drug A","Placebo","Drug A","Drug A","Placebo","Placebo","Drug A","Placebo","Drug A","Drug A","Placebo","Drug B","Placebo","Placebo","Drug B","Placebo","Drug A","Drug A","Placebo","Placebo","Drug B","Drug A","Drug B","Drug A","Placebo","Drug A","Drug B","Drug A","Placebo","Placebo","Drug B","Drug A","Drug B","Placebo","Drug B","Placebo","Placebo","Drug A","Placebo"],"Sex":["F","F","F","F","M","F","M","F","F","M","M","M","M","M","M","M","F","M","M","F","F","M","F","M","M","F","F","F","F","M","M","M","M","M","F","F","F","M","M","M","M","F","F","M","F","F","F","M","F","M","M","M","M","M","M","F","M","F","F","F","F","M","F","F","M","F","M","M","M","M","F","M","F","M","F","F","M","M","M","M","F","M","M","F","M","F","M","F","M","M"]}},
+  "params": {"model":"logistic","y":"Response","ciMethod":"wald","interactions":[["Age","Arm"]],"referenceLevels":{"Arm":"Placebo"},"interpolate":true,"predictions":[{"Age":40,"Arm":"Drug B","Sex":"F"}]},
+  "expected": {
+    "n": 89,
+    "coefficients": [
+      {
+        "name": "(Intercept)",
+        "estimate": -1.7207628966046467,
+        "se": 1.642250248084798,
+        "lower": -4.9395142364528191,
+        "upper": 1.4979884432435258,
+        "stat": -1.0478079687376578,
+        "p": 0.29472709032483035,
+        "ratio": 0.17892959105125003,
+        "ratioLower": 0.0071580746596570507,
+        "ratioUpper": 4.4726829595964963
+      },
+      {
+        "name": "Age",
+        "estimate": 0.0087723324087297192,
+        "se": 0.028402476897482484,
+        "lower": -0.046895499382066871,
+        "upper": 0.064440164199526306,
+        "stat": 0.30885800701090527,
+        "p": 0.75742954156822728,
+        "ratio": 1.0088109220745956,
+        "ratioLower": 0.95418710552266106,
+        "ratioUpper": 1.0665617577587629
+      },
+      {
+        "name": "ArmDrug A",
+        "estimate": -0.92110964274025564,
+        "se": 2.1280174470656528,
+        "lower": -5.0919471974618045,
+        "upper": 3.2497279119812936,
+        "stat": -0.43284872687974629,
+        "p": 0.66512467125193842,
+        "ratio": 0.3980770725826408,
+        "ratioLower": 0.0061460406732073798,
+        "ratioUpper": 25.783323629270456
+      },
+      {
+        "name": "ArmDrug B",
+        "estimate": -0.024630171523915868,
+        "se": 2.3115814637279399,
+        "lower": -4.5552465877610588,
+        "upper": 4.5059862447132266,
+        "stat": -0.010655117247823155,
+        "p": 0.99149860731739925,
+        "ratio": 0.97567067611311176,
+        "ratioLower": 0.010511907804685694,
+        "ratioUpper": 90.557611987682293
+      },
+      {
+        "name": "SexM",
+        "estimate": -0.64870547217188146,
+        "se": 0.52715721681817274,
+        "lower": -1.6819146313258722,
+        "upper": 0.38450368698210924,
+        "stat": -1.2305730652562292,
+        "p": 0.21848258425082731,
+        "ratio": 0.52272201715815414,
+        "ratioLower": 0.18601747997472806,
+        "ratioUpper": 1.4688851136947516
+      },
+      {
+        "name": "Age:ArmDrug A",
+        "estimate": 0.03514861370953317,
+        "se": 0.03709209904157592,
+        "lower": -0.03755056452294827,
+        "upper": 0.1078477919420146,
+        "stat": 0.94760379212121892,
+        "p": 0.34333119494896314,
+        "ratio": 1.0357736275231466,
+        "ratioLower": 0.96314571548589634,
+        "ratioUpper": 1.1138781912467197
+      },
+      {
+        "name": "Age:ArmDrug B",
+        "estimate": 0.050195442106437352,
+        "se": 0.042673100347280044,
+        "lower": -0.033442297682895181,
+        "upper": 0.13383318189576987,
+        "stat": 1.1762783040824165,
+        "p": 0.23948368262381883,
+        "ratio": 1.05147657909287,
+        "ratioLower": 0.96711071415051197,
+        "ratioUpper": 1.1432020969305265
+      }
+    ],
+    "terms": [
+      {
+        "name": "Age",
+        "chiSq": 0.095695694579063684,
+        "df": 1,
+        "p": 0.75705742463533943
+      },
+      {
+        "name": "Arm",
+        "chiSq": 0.25922280691965227,
+        "df": 2,
+        "p": 0.87843672207494561
+      },
+      {
+        "name": "Sex",
+        "chiSq": 1.5331488801915043,
+        "df": 1,
+        "p": 0.21564046849148646
+      },
+      {
+        "name": "Age:Arm",
+        "chiSq": 1.5469909131487327,
+        "df": 2,
+        "p": 0.46139745154170736
+      }
+    ],
+    "predictions": [
+      {
+        "value": 0.66201477367629813,
+        "lower": 0.37304560154525157,
+        "upper": 0.86573280492364457
+      },
+      {
+        "value": 0.64869729075207705,
+        "lower": 0.35299519091489351,
+        "upper": 0.86206345474812751
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "car": "3.1.5",
+      "survival": "3.8.3"
+    }
+  },
+  "note": "Text levels with a space; Placebo chosen as reference; row 3 has no outcome (predicted probability)."
+}

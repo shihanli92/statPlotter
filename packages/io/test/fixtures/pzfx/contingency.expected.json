@@ -1,0 +1,29 @@
+{
+  "file": "contingency.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "ROWTITLE",
+          "values": ["a", "b"],
+          "excluded": [false, false]
+        },
+        {
+          "name": "A",
+          "values": [10, 20],
+          "excluded": [false, false]
+        },
+        {
+          "name": "B",
+          "values": [30, 40],
+          "excluded": [false, false]
+        }
+      ]
+    }
+  ]
+}

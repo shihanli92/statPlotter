@@ -1,0 +1,34 @@
+{
+  "name": "two_of_45",
+  "input": {"k":2,"n":45,"p0":0.10000000000000001},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 0.31755027708351058,
+      "pLess": 0.15904289168515379,
+      "pGreater": 0.94763221859147384
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 0.044444444444444446,
+        "lower": 0.0078969224599702709,
+        "upper": 0.1482751076943562
+      },
+      "wilson": {
+        "value": 0.044444444444444446,
+        "lower": 0.01227412670671986,
+        "upper": 0.1482751076943562
+      },
+      "clopperPearson": {
+        "value": 0.044444444444444446,
+        "lower": 0.005428488700250947,
+        "upper": 0.15149290024333917
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Wilson/Brown: Poisson lower limit (x = 2)."
+}

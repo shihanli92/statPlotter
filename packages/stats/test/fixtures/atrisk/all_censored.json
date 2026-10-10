@@ -1,0 +1,14 @@
+{
+  "name": "all_censored",
+  "input": {"time":[3,6,9,12],"event":[0,0,0,0],"times":[0,3,4,12,13]},
+  "params": {},
+  "expected": {
+    "nRisk": [4, 4, 3, 1, 0]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3"
+    }
+  }
+}

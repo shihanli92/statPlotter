@@ -1,0 +1,1 @@
+{ "input": { "a": [1, 2, 3, 4.05], "b": [2, 4, 3, 5, 6, 1, 4.5, 3.5, 2.5] }, "note": "F slightly above 1 with unequal df: the smaller of the two tails is the CDF." }

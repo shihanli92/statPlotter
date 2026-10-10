@@ -1,0 +1,41 @@
+{
+  "name": "t3x2_chisq_holm_sidak",
+  "input": {"table":[[12,18],[20,10],[28,4]]},
+  "params": {"test":"chiSquare","method":"holm-sidak"},
+  "expected": {
+    "cramersV": 0.40969161844272844,
+    "pairwise": [
+      {
+        "rowA": 0,
+        "rowB": 1,
+        "chiSq": 4.2857142857142856,
+        "df": 1,
+        "columns": 2,
+        "p": 0.038433930236781808,
+        "adjusted": 0.075390693480117801
+      },
+      {
+        "rowA": 0,
+        "rowB": 2,
+        "chiSq": 15.26045454545455,
+        "df": 1,
+        "columns": 2,
+        "p": 9.365690843031559e-05,
+        "adjusted": 0.00028094441126297906
+      },
+      {
+        "rowA": 1,
+        "rowB": 2,
+        "chiSq": 3.8442460317460316,
+        "df": 1,
+        "columns": 2,
+        "p": 0.049916959811453478,
+        "adjusted": 0.075390693480117801
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

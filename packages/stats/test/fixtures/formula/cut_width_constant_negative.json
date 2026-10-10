@@ -1,0 +1,14 @@
+{
+  "name": "cut_width_constant_negative",
+  "input": {"x":[-2.5,-2.5,-2.5],"n":[2]},
+  "params": {"kind":"cutwidth","right":true},
+  "expected": {
+    "code": [1, 1, 1],
+    "labels": ["[-2.502, -2.5]", "(-2.5, -2.498]"]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "constant negative data"
+}

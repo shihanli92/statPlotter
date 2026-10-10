@@ -1,0 +1,324 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Curves from two analyses",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Growth",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": {
+    "title": "Hours",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2,
+        3.5,
+        5,
+        6.5,
+        8,
+        9.5,
+        11,
+        12.5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2.4,
+        3.8,
+        5.2,
+        6.6,
+        8,
+        9.4,
+        10.8,
+        12.2
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        1.8,
+        2.6,
+        3.4,
+        4.2,
+        5,
+        5.8,
+        6.6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1.3,
+        2.2,
+        3.1,
+        4,
+        4.9,
+        5.8,
+        6.7,
+        7.6
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Growth",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000006",
+     "ref": {
+      "node": "zid000005",
+      "key": "line:zid000002"
+     },
+     "colorOf": "zid000002",
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#cc3311"
+        },
+        "width": 2,
+        "dash": "solid"
+       }
+      },
+      "band": {
+       "show": false
+      }
+     }
+    },
+    {
+     "id": "zid000007",
+     "ref": {
+      "node": "zid000005",
+      "key": "line:zid000003"
+     },
+     "colorOf": "zid000003",
+     "style": {
+      "color": {
+       "rgb": "#0077bb"
+      },
+      "points": {
+       "show": true,
+       "size": 3
+      }
+     }
+    },
+    {
+     "id": "zid000009",
+     "ref": {
+      "node": "zid000008",
+      "key": "curve:zid000002"
+     },
+     "colorOf": "zid000002"
+    },
+    {
+     "id": "zid000010",
+     "ref": {
+      "node": "zid000008",
+      "key": "curve:zid000003"
+     },
+     "colorOf": "zid000003"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Hours"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Growth"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SEM",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000005": {
+   "kind": "analysis",
+   "id": "zid000005",
+   "name": "Linear regression",
+   "analysisId": "linearRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "throughOrigin": false,
+    "throughPoint": false,
+    "pointX": 0,
+    "pointY": 0,
+    "replicates": "each",
+    "band": "none",
+    "compare": true,
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000008": {
+   "kind": "analysis",
+   "id": "zid000008",
+   "name": "Exponential growth",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "equation": "exponential-growth",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "confidence",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000008"
+ ]
+}

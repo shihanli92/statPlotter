@@ -1,0 +1,24 @@
+{
+  "input": {
+    "x": [
+      1.5,
+      -0.5,
+      0,
+      2,
+      3.5,
+      0,
+      -1,
+      2,
+      4,
+      2.5,
+      0,
+      1
+    ],
+    "mu": 0
+  },
+  "params": {
+    "exact": false,
+    "zeroMethod": "pratt"
+  },
+  "note": "One-sample, Pratt ranks with zeros and ties, normal approximation with the continuity correction."
+}

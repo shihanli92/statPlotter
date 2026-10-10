@@ -1,0 +1,151 @@
+{
+  "name": "ks_bh",
+  "input": {"rows":[{"a":[14,10,7,11,11],"b":[10,9,12,12,12]},{"a":[12,11,9,7,6],"b":[12,11,11,15,16]},{"a":[10,11,14,10,12],"b":[13,10,10,11,5]},{"a":[12,9,8,14,11],"b":[6,11,11,11,10]},{"a":[11,8,9,9,7],"b":[8,9,10,13,9]},{"a":[14,9,10,11,11],"b":[15,8,14,12,14]},{"a":[12,9,13,11,12],"b":[10,12,13,7,9]},{"a":[12,10,13,7,10],"b":[15,10,9,11,11]},{"a":[7,7,12,10,9],"b":[9,11,11,9,13]},{"a":[11,9,14,8,9],"b":[14,15,12,12,14]}]},
+  "params": {"method":"kolmogorovSmirnov","family":"bh","q":0.05},
+  "expected": {
+    "rows": [
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 12,
+        "diff": 1,
+        "se": "NaN",
+        "stat": 0.40000000000000002,
+        "df": "NaN",
+        "p": 0.80952380952380953,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 12,
+        "diff": 3,
+        "se": "NaN",
+        "stat": 0.60000000000000009,
+        "df": "NaN",
+        "p": 0.19047619047619047,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 10,
+        "diff": -1,
+        "se": "NaN",
+        "stat": 0.20000000000000001,
+        "df": "NaN",
+        "p": 1,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 11,
+        "diff": 0,
+        "se": "NaN",
+        "stat": 0.40000000000000002,
+        "df": "NaN",
+        "p": 0.80952380952380953,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 9,
+        "diff": 0,
+        "se": "NaN",
+        "stat": 0.20000000000000007,
+        "df": "NaN",
+        "p": 1,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 14,
+        "diff": 3,
+        "se": "NaN",
+        "stat": 0.60000000000000009,
+        "df": "NaN",
+        "p": 0.2857142857142857,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 12,
+        "centerB": 10,
+        "diff": -2,
+        "se": "NaN",
+        "stat": 0.40000000000000002,
+        "df": "NaN",
+        "p": 0.7142857142857143,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 10,
+        "centerB": 11,
+        "diff": 1,
+        "se": "NaN",
+        "stat": 0.20000000000000001,
+        "df": "NaN",
+        "p": 1,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 11,
+        "diff": 2,
+        "se": "NaN",
+        "stat": 0.40000000000000008,
+        "df": "NaN",
+        "p": 0.80952380952380953,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 14,
+        "diff": 5,
+        "se": "NaN",
+        "stat": 0.80000000000000004,
+        "df": "NaN",
+        "p": 0.079365079365079361,
+        "exact": true
+      }
+    ],
+    "family": {
+      "m": 10,
+      "adjusted": [1, 0.95238095238095233, 1, 1, 1, 0.95238095238095233, 1, 1, 1, 0.79365079365079361],
+      "flagged": [false, false, false, false, false, false, false, false, false, false]
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "emmeans": "2.0.2"
+    }
+  }
+}

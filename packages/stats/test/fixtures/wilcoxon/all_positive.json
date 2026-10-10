@@ -1,0 +1,26 @@
+{
+  "name": "all_positive",
+  "input": {"a":[1,2,3,4,5,6],"b":[1.5,2.6000000000000001,3.7000000000000002,4.7999999999999998,5.9000000000000004,7]},
+  "params": {"exact":true},
+  "expected": {
+    "wPlus": 21,
+    "wMinus": 0,
+    "W": 21,
+    "n": 6,
+    "nNonZero": 6,
+    "nZero": 0,
+    "p": 0.03125,
+    "method": "exact",
+    "ties": false,
+    "medianDiff": 0.75,
+    "hlEstimate": 0.75,
+    "hlLo": 0.5,
+    "hlHi": 1
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

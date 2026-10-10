@@ -1,0 +1,15 @@
+{
+  "name": "small",
+  "input": {"time":[1,2,2,3,5,8],"event":[1,0,1,1,0,1],"times":[0,1,2,2.5,3,6,8,10]},
+  "params": {},
+  "expected": {
+    "nRisk": [6, 6, 5, 3, 3, 1, 1, 0]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3"
+    }
+  },
+  "note": "Times at events, censorings, between them and past the last one."
+}

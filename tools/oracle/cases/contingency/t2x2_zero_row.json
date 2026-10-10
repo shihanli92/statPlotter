@@ -1,0 +1,9 @@
+{
+  "input": {
+    "table": [
+      [0, 0],
+      [3, 4]
+    ]
+  },
+  "note": "Empty first row: its proportions and the RR, difference and OR are NaN."
+}

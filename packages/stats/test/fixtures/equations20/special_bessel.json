@@ -1,0 +1,13 @@
+{
+  "name": "special_bessel",
+  "input": {"calls":[{"fn":"besselj","args":[0,1]},{"fn":"besselj","args":[1,10]},{"fn":"besselj","args":[5,1]},{"fn":"besselj","args":[30,10]},{"fn":"besselj","args":[2,57.299999999999997]},{"fn":"besselj","args":[-3,4.0999999999999996]},{"fn":"bessely","args":[0,1]},{"fn":"bessely","args":[1,0.10000000000000001]},{"fn":"bessely","args":[3,50.700000000000003]},{"fn":"bessely","args":[7,2.2000000000000002]},{"fn":"besseli","args":[0,0.5]},{"fn":"besseli","args":[2,3]},{"fn":"besseli","args":[10,40]},{"fn":"besselk","args":[0,0.5]},{"fn":"besselk","args":[3,2]},{"fn":"besselk","args":[1,30]},{"fn":"besselk","args":[6,0.29999999999999999]}]},
+  "params": {"task":"special"},
+  "expected": {
+    "values": [0.76519768655796661, 0.043472746168861424, 0.00024975773021123439, 1.5510960782574658e-12, -0.10543538268339915, -0.43331470256169269, 0.088256964215676942, -6.4589510947020266, 0.10824911621091809, -144.51734280454886, 1.0634833707413236, 2.2452124409299512, 4228469210516758.5, 0.92441907122766587, 0.64738539094863434, 2.1677320018915492e-14, 5243852.5086971344]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Arguments away from the zeros of J and Y, where only absolute accuracy is meaningful."
+}

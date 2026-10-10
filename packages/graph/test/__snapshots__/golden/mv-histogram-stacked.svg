@@ -1,0 +1,293 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="354.495pt" height="244.48pt" viewBox="0 0 354.495 244.48">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="111.739" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Synthetic cells</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/bars">
+<g data-id="series/lv_53315f6374726c/bar/0">
+<rect x="52.759" y="193.157" width="19.44" height="4.629" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53315f6374726c/bar/1">
+<rect x="72.199" y="172.791" width="19.44" height="24.994" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53315f6374726c/bar/2">
+<rect x="91.639" y="174.642" width="19.44" height="23.143" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53315f6374726c/bar/3">
+<rect x="111.079" y="188.528" width="19.44" height="9.257" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53315f6374726c/bar/4">
+<rect x="130.519" y="195.934" width="19.44" height="1.851" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53315f6374726c/bar/9">
+<rect x="227.719" y="196.859" width="19.44" height="0.926" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/0">
+<rect x="52.759" y="188.528" width="19.44" height="4.629" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/1">
+<rect x="72.199" y="148.722" width="19.44" height="24.069" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/2">
+<rect x="91.639" y="158.905" width="19.44" height="15.737" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/3">
+<rect x="111.079" y="177.419" width="19.44" height="11.109" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/4">
+<rect x="130.519" y="194.082" width="19.44" height="1.851" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/5">
+<rect x="149.959" y="195.934" width="19.44" height="1.851" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/6">
+<rect x="169.399" y="195.934" width="19.44" height="1.851" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53325f6374726c/bar/9">
+<rect x="227.719" y="195.934" width="19.44" height="0.926" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53335f6374726c/bar/0">
+<rect x="52.759" y="183.899" width="19.44" height="4.629" fill="#009e73" stroke="#009e73" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53335f6374726c/bar/1">
+<rect x="72.199" y="120.025" width="19.44" height="28.697" fill="#009e73" stroke="#009e73" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53335f6374726c/bar/2">
+<rect x="91.639" y="143.168" width="19.44" height="15.737" fill="#009e73" stroke="#009e73" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53335f6374726c/bar/3">
+<rect x="111.079" y="166.311" width="19.44" height="11.109" fill="#009e73" stroke="#009e73" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53335f6374726c/bar/4">
+<rect x="130.519" y="191.305" width="19.44" height="2.777" fill="#009e73" stroke="#009e73" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53345f7374696d/bar/0">
+<rect x="52.759" y="175.568" width="19.44" height="8.331" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53345f7374696d/bar/1">
+<rect x="72.199" y="95.031" width="19.44" height="24.994" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53345f7374696d/bar/2">
+<rect x="91.639" y="132.059" width="19.44" height="11.109" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53345f7374696d/bar/3">
+<rect x="111.079" y="161.682" width="19.44" height="4.629" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53345f7374696d/bar/4">
+<rect x="130.519" y="189.454" width="19.44" height="1.851" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53345f7374696d/bar/5">
+<rect x="149.959" y="195.008" width="19.44" height="0.926" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53345f7374696d/bar/6">
+<rect x="169.399" y="195.008" width="19.44" height="0.926" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/0">
+<rect x="52.759" y="173.717" width="19.44" height="1.851" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/1">
+<rect x="72.199" y="76.517" width="19.44" height="18.514" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/2">
+<rect x="91.639" y="113.545" width="19.44" height="18.514" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/3">
+<rect x="111.079" y="154.277" width="19.44" height="7.406" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/4">
+<rect x="130.519" y="186.677" width="19.44" height="2.777" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/5">
+<rect x="149.959" y="193.157" width="19.44" height="1.851" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/6">
+<rect x="169.399" y="194.082" width="19.44" height="0.926" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/7">
+<rect x="188.839" y="195.934" width="19.44" height="1.851" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53355f7374696d/bar/8">
+<rect x="208.279" y="196.859" width="19.44" height="0.926" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/0">
+<rect x="52.759" y="171.865" width="19.44" height="1.851" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/1">
+<rect x="72.199" y="43.191" width="19.44" height="33.326" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/2">
+<rect x="91.639" y="95.957" width="19.44" height="17.589" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/3">
+<rect x="111.079" y="145.945" width="19.44" height="8.331" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/4">
+<rect x="130.519" y="181.122" width="19.44" height="5.554" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/5">
+<rect x="149.959" y="189.454" width="19.44" height="3.703" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/6">
+<rect x="169.399" y="193.157" width="19.44" height="0.926" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/7">
+<rect x="188.839" y="195.008" width="19.44" height="0.926" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="series/lv_53365f7374696d/bar/8">
+<rect x="208.279" y="195.934" width="19.44" height="0.926" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="52.759" y1="197.785" x2="52.759" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="52.759" y1="197.785" x2="48.759" y2="197.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="39.642" y="201.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="52.759" y1="174.642" x2="48.759" y2="174.642" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="178.456" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="52.759" y1="151.499" x2="48.759" y2="151.499" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="155.313" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">50</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="52.759" y1="128.357" x2="48.759" y2="128.357" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="132.17" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">75</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="52.759" y1="105.214" x2="48.759" y2="105.214" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="109.027" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">100</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="52.759" y1="82.071" x2="48.759" y2="82.071" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="85.884" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">125</tspan></text>
+</g>
+<g data-id="axis/y/tick/6">
+<line x1="52.759" y1="58.928" x2="48.759" y2="58.928" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="62.741" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">150</tspan></text>
+</g>
+<g data-id="axis/y/tick/7">
+<line x1="52.759" y1="35.785" x2="48.759" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">175</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 116.785)" xml:space="preserve"><tspan x="-35.644" y="120.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Number of values</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="52.759" y1="197.785" x2="268.759" y2="197.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="52.759" y1="197.785" x2="52.759" y2="201.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="49.7" y="214.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="95.959" y1="197.785" x2="95.959" y2="201.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="83.724" y="214.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">2000</tspan></text>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="139.159" y1="197.785" x2="139.159" y2="201.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="126.924" y="214.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">4000</tspan></text>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="182.359" y1="197.785" x2="182.359" y2="201.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="170.124" y="214.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">6000</tspan></text>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="225.559" y1="197.785" x2="225.559" y2="201.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="213.324" y="214.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">8000</tspan></text>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="268.759" y1="197.785" x2="268.759" y2="201.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="253.465" y="214.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10000</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="123.432" y="233.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">nCount_RNA</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/lv_53315f6374726c">
+<g data-id="legend/lv_53315f6374726c/swatch">
+<rect x="284.759" y="38.785" width="14" height="10" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_53315f6374726c/label">
+<text fill="#000000" xml:space="preserve"><tspan x="306.759" y="47.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">S1_ctrl</tspan></text>
+</g>
+</g>
+<g data-id="legend/lv_53325f6374726c">
+<g data-id="legend/lv_53325f6374726c/swatch">
+<rect x="284.759" y="54.785" width="14" height="10" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_53325f6374726c/label">
+<text fill="#000000" xml:space="preserve"><tspan x="306.759" y="63.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">S2_ctrl</tspan></text>
+</g>
+</g>
+<g data-id="legend/lv_53335f6374726c">
+<g data-id="legend/lv_53335f6374726c/swatch">
+<rect x="284.759" y="70.785" width="14" height="10" fill="#009e73" stroke="#009e73" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_53335f6374726c/label">
+<text fill="#000000" xml:space="preserve"><tspan x="306.759" y="79.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">S3_ctrl</tspan></text>
+</g>
+</g>
+<g data-id="legend/lv_53345f7374696d">
+<g data-id="legend/lv_53345f7374696d/swatch">
+<rect x="284.759" y="86.785" width="14" height="10" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_53345f7374696d/label">
+<text fill="#000000" xml:space="preserve"><tspan x="306.759" y="95.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">S4_stim</tspan></text>
+</g>
+</g>
+<g data-id="legend/lv_53355f7374696d">
+<g data-id="legend/lv_53355f7374696d/swatch">
+<rect x="284.759" y="102.785" width="14" height="10" fill="#e69f00" stroke="#e69f00" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_53355f7374696d/label">
+<text fill="#000000" xml:space="preserve"><tspan x="306.759" y="111.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">S5_stim</tspan></text>
+</g>
+</g>
+<g data-id="legend/lv_53365f7374696d">
+<g data-id="legend/lv_53365f7374696d/swatch">
+<rect x="284.759" y="118.785" width="14" height="10" fill="#56b4e9" stroke="#56b4e9" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_53365f7374696d/label">
+<text fill="#000000" xml:space="preserve"><tspan x="306.759" y="127.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">S6_stim</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

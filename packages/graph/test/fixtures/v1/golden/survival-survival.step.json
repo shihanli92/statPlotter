@@ -1,0 +1,163 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Untitled",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "t1": {
+   "kind": "table",
+   "id": "t1",
+   "name": "Sample survival",
+   "tableKind": "survival",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": {
+    "title": "Days elapsed",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "a",
+     "title": "Placebo",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        0,
+        1,
+        1,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b",
+     "title": "Drug",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        1,
+        0,
+        1,
+        1
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "g1": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample survival",
+   "graphType": "survival.step",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Days elapsed"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Percent survival"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": {
+      "interval": 25,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample survival"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "t1",
+  "g1"
+ ]
+}

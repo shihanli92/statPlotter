@@ -1,0 +1,19 @@
+// Decision 131 (audit 2, S11): numeric code fills typed arrays in loops. A typed array's
+// `from(source, map)` runs several times slower than a loop in V8. Scoped to @ps/stats in
+// biome.json.
+language js
+
+`$array.from($source, $map)` where {
+  $array <: or {
+    `Float64Array`,
+    `Float32Array`,
+    `Int8Array`,
+    `Uint8Array`,
+    `Uint8ClampedArray`,
+    `Int16Array`,
+    `Uint16Array`,
+    `Int32Array`,
+    `Uint32Array`
+  },
+  register_diagnostic(span=$map, severity="error", message="A typed array's from() with a map function runs several times slower than a loop in V8 (decision 131): fill the array in a for loop.")
+}

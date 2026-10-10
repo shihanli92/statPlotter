@@ -1,0 +1,104 @@
+statPlotter
+Copyright (C) 2026 Shihan Li
+
+This program is free software: you can redistribute it and/or modify it under the terms of the
+GNU General Public License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version (SPDX: GPL-3.0-or-later). It is distributed in the
+hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See LICENSE for the full text.
+
+It includes, or is derived from, the third-party works below, under their own licences.
+
+
+Code translated from R and R packages (packages/stats/src/gpl/)
+-----------------------------------------------------------------
+
+Each file cites the source it was translated from in its header. All of these licences allow the
+translation to be distributed under GPL-3.0-or-later.
+
+R (https://www.r-project.org), R 4.4.3 sources. Copyright (C) The R Core Team, Ross Ihaka and the
+original authors of the files cited. GNU General Public License, version 2 or later.
+  packages/stats/src/gpl/hclust.ts          src/library/stats/src/hclust.f (F. Murtagh), R/hclust.R
+  packages/stats/src/gpl/lowess.ts          src/library/stats/src/lowess.c, R/lowess.R
+  packages/stats/src/gpl/noncentralT.ts     src/nmath/pnt.c (AS 243, R. V. Lenth)
+  packages/stats/src/gpl/pretty.ts          src/appl/pretty.c, base R pretty.default
+  packages/stats/src/gpl/rngLecuyer.ts      src/main/RNG.c, src/nmath/snorm.c
+  packages/stats/src/gpl/rowDistance.ts     src/library/stats/src/distance.c, cov.c
+  packages/stats/src/gpl/wilcoxConfInt.ts   R/wilcox.test.R, src/nmath/wilcox.c, signrank.c,
+                                            choose.c
+  packages/stats/src/gpl/zeroin.ts          src/library/stats/src/zeroin.c, optimize.c, R/nlm.R
+
+MASS 7.3-64 (W. N. Venables and B. D. Ripley). Copyright (C) W. N. Venables and B. D. Ripley.
+GNU General Public License, version 2 or 3.
+  packages/stats/src/gpl/covTrob.ts         R/cov.trob.R
+
+nortest 1.0-4 (Juergen Gross and Uwe Ligges). Copyright (C) Juergen Gross and Uwe Ligges.
+GNU General Public License, version 2 or later.
+  packages/stats/src/gpl/lilliefors.ts      R/lillie.test.R
+
+survival 3.8-3 (Terry M. Therneau). Copyright (C) Terry M Therneau and contributors.
+GNU Lesser General Public License, version 2 or later.
+  packages/stats/src/gpl/survfitQuantile.ts R/quantile.survfit.R (findq)
+
+
+Other code
+----------
+
+The logicle transform (packages/stats/src/cytometry/transforms.ts) follows the steps of the
+reference implementation by W. A. Moore and D. R. Parks, distributed in the Bioconductor package
+flowCore under the Artistic License 2.0. The app's icons are Lucide (https://lucide.dev), ISC
+License. The JavaScript and Rust libraries the apps are built with are under their own licences,
+as their packages state (package.json, pnpm-lock.yaml, apps/desktop/src-tauri/Cargo.lock).
+
+
+Fonts (packages/graph/assets/fonts/)
+------------------------------------
+
+The fonts are bundled unmodified and are separate works aggregated with the program; each keeps
+its own licence, whose full text is in the same folder.
+
+Liberation Sans, Serif and Mono 2.x. Digitized data copyright (c) 2010 Google Corporation with
+Reserved Font Arimo, Tinos and Cousine; copyright (c) 2012 Red Hat, Inc. with Reserved Font Name
+Liberation. SIL Open Font License, version 1.1 (LICENSE-Liberation.txt).
+
+Liberation Sans Narrow 1.07.6. Copyright (c) Red Hat, Inc. GNU General Public License, version 2,
+with the font exception (a document embedding the font is not by that alone covered by the GPL)
+(LICENSE-LiberationSansNarrow.txt, which also says where its source is).
+
+
+Published source data in the examples
+-------------------------------------
+
+Six built-in examples embed parts of published papers' source data, each under the Creative
+Commons Attribution 4.0 International licence (https://creativecommons.org/licenses/by/4.0/).
+Only the columns the rebuilt figures need are kept, some drawn-only values rounded; each data
+file names what was kept. Copyright of each dataset remains with its authors.
+
+- Stucchi et al., Nature Immunology (2026), https://doi.org/10.1038/s41590-026-02643-y
+  (packages/ui/src/paperExample.ts)
+- Johnston et al., Nature Immunology 27, 1874–1886 (2026),
+  https://doi.org/10.1038/s41590-026-02613-4 (packages/ui/src/johnstonData.ts)
+- Hoffmann et al., Nature Chemistry (2026), https://doi.org/10.1038/s41557-026-02240-4
+  (packages/ui/src/examples/published/hoffmannData.ts)
+- Tawk et al., Nature Microbiology (2026), https://doi.org/10.1038/s41564-026-02500-6
+  (packages/ui/src/examples/published/tawkData.ts)
+- Chen et al., Nature Immunology 27, 1643–1652 (2026), https://doi.org/10.1038/s41590-026-02547-x
+  (packages/ui/src/examples/published/chenData.ts)
+- Swaminathan et al., Nature Immunology 27, 1619–1632 (2026),
+  https://doi.org/10.1038/s41590-026-02568-6 (packages/ui/src/examples/published/swamData.ts)
+
+Other published papers rebuilt in development builds read their source data from a local folder
+at run time; none of their data is part of this repository.
+
+
+Test fixtures
+-------------
+
+The Prism files (.pzfx) in packages/io/test/fixtures/pzfx/ other than synthetic_*.pzfx, and
+apps/e2e/fixtures/xy-with-exclusions.pzfx, are example files from the R package pzfx 0.3.1 by
+Yue Jiang (https://github.com/Yue-Jiang/pzfx). Copyright (c) 2018 Yue Jiang. MIT License (full
+text in packages/io/test/fixtures/pzfx/README.md).
+
+The NIST StRD reference datasets and certified values (packages/stats/test/fixtures/nist/,
+fetched by tools/nist/fetch.mjs) are works of the U.S. Government (National Institute of
+Standards and Technology).

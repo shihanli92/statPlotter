@@ -1,0 +1,151 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Grouped bars with mean points",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Grouped",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 2,
+   "rowTitles": [
+    "A",
+    "B"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "X",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        3,
+        6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4,
+        7
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        25,
+        5
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Y",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2,
+        4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2.5,
+        3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        3,
+        5
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Bars with mean symbols",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Grouped"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean",
+      "size": 12
+     }
+    }
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004"
+ ]
+}

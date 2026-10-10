@@ -1,0 +1,11 @@
+{
+  "input": {
+    "k": 7,
+    "n": 100,
+    "p0": 0.20000000000000001
+  },
+  "params": {
+    "fn": "binomial"
+  },
+  "note": "Prism's guide: two-tailed P = 0.00061307."
+}

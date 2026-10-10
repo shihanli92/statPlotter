@@ -1,0 +1,14 @@
+{
+  "name": "gof_two",
+  "input": {"observed":[7,93],"expected":[20,80]},
+  "params": {"fn":"gof"},
+  "expected": {
+    "chiSq": 10.5625,
+    "df": 1,
+    "p": 0.0011540500847815338
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

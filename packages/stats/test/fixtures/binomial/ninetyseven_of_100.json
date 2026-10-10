@@ -1,0 +1,34 @@
+{
+  "name": "ninetyseven_of_100",
+  "input": {"k":97,"n":100,"p0":0.90000000000000002},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 0.017843766383309444,
+      "pLess": 0.99805511534811997,
+      "pGreater": 0.0078364871211843989
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 0.96999999999999997,
+        "lower": 0.91548063570947236,
+        "upper": 0.99182308552836052
+      },
+      "wilson": {
+        "value": 0.96999999999999997,
+        "lower": 0.91548063570947236,
+        "upper": 0.98974547597596108
+      },
+      "clopperPearson": {
+        "value": 0.96999999999999997,
+        "lower": 0.91482394702572001,
+        "upper": 0.9937700284616936
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "n - x = 3 with n > 50: Poisson upper limit."
+}

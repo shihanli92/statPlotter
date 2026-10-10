@@ -1,0 +1,34 @@
+{
+  "name": "one_of_1",
+  "input": {"k":1,"n":1,"p0":0.5},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 1,
+      "pLess": 1,
+      "pGreater": 0.5
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 1,
+        "lower": 0.20654931437723745,
+        "upper": 1
+      },
+      "wilson": {
+        "value": 1,
+        "lower": 0.20654931437723745,
+        "upper": 1
+      },
+      "clopperPearson": {
+        "value": 1,
+        "lower": 0.025000000000000022,
+        "upper": 1
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "x = n = 1: upper 1, lower by Wilson (x = n takes precedence)."
+}

@@ -1,0 +1,9 @@
+# Cloudflare Pages response headers for every file of the web app (code audit 2, decision 653).
+# The same Content-Security-Policy as the desktop app's (apps/desktop/src-tauri/tauri.conf.json,
+# which adds Tauri's IPC to connect-src). 'unsafe-inline' in style-src only: React and the graph
+# SVGs set style attributes. data: and blob: for the images, fonts and workers the app makes
+# itself (exports, layout images, inlined fonts). Vite copies this file into dist/ unchanged.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer

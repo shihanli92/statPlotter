@@ -1,0 +1,41 @@
+{
+  "name": "t4x3_control",
+  "input": {"table":[[15,10,5],[9,12,9],[5,10,15],[12,12,6]]},
+  "params": {"compare":"control","control":0,"method":"holm-sidak"},
+  "expected": {
+    "cramersV": 0.22956441471774008,
+    "pairwise": [
+      {
+        "rowA": 0,
+        "rowB": 1,
+        "chiSq": 2.824675324675324,
+        "df": 2,
+        "columns": 3,
+        "p": 0.27674011309849422,
+        "adjusted": 0.47689513599922106
+      },
+      {
+        "rowA": 0,
+        "rowB": 2,
+        "chiSq": 10,
+        "df": 2,
+        "columns": 3,
+        "p": 0.0083663950757523788,
+        "adjusted": 0.024889781146496235
+      },
+      {
+        "rowA": 0,
+        "rowB": 3,
+        "chiSq": 0.60606060606060597,
+        "df": 2,
+        "columns": 3,
+        "p": 0.78810869265654537,
+        "adjusted": 0.78810869265654537
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "input": {
+    "a": [
+      0,
+      0.3,
+      0,
+      0.1,
+      0.2,
+      0.1,
+      0.1,
+      0,
+      0.1,
+      0,
+      0.2
+    ],
+    "b": [
+      1.4,
+      1.5
+    ]
+  },
+  "note": "Heavy ties in a, b above everything: D = 1, P = 1/78 (only the split with b = the two largest values). ks.test(exact = TRUE) gives 0 here (R 4.4.3); the oracle uses the brute-force enumeration."
+}

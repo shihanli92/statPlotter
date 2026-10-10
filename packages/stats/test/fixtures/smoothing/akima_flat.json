@@ -1,0 +1,13 @@
+{
+  "name": "akima_flat",
+  "input": {"x":[0,1,2,3,4,5],"y":[0,0,0,1,1,1],"at":[0.5,1.5,2.5,3.5,4.5]},
+  "params": {"method":"akima"},
+  "expected": {
+    "y": [0, 0, 0.5, 1, 1]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Flat stretches: both weights 0 at some points."
+}

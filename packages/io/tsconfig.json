@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "test"],
+  "compilerOptions": {
+    // Node types for the test harness (fixture loading). They also declare TextDecoder, which
+    // src/ uses as the web-standard global (browser, worker, and Node alike); src/ must otherwise
+    // stay platform-free, and tools/check-deps.mjs rejects node: imports there.
+    "types": ["node"]
+  }
+}

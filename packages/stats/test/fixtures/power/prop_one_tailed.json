@@ -1,0 +1,13 @@
+{
+  "name": "prop_one_tailed",
+  "input": [],
+  "params": {"design":"prop","p1":0.1,"p2":0.2,"alpha":0.05,"tails":1,"n":150,"target":0.8,"lo":2},
+  "expected": {
+    "power": 0.78473031469528509,
+    "nFor": 156.60544771942952
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

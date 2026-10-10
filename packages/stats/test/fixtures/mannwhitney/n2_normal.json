@@ -1,0 +1,26 @@
+{
+  "name": "n2_normal",
+  "input": {"a":[1,2],"b":[3,4]},
+  "params": {"exact":false},
+  "expected": {
+    "uA": 0,
+    "uB": 4,
+    "U": 0,
+    "sumRanksA": 3,
+    "sumRanksB": 7,
+    "medianA": 1.5,
+    "medianB": 3.5,
+    "p": 0.24527811680677283,
+    "method": "normal",
+    "ties": false,
+    "hlEstimate": 2,
+    "hlLo": 1,
+    "hlHi": 3
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

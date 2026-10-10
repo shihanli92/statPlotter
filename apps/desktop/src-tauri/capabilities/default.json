@@ -1,0 +1,40 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permissions for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:menu:default",
+    "core:webview:allow-print",
+    "core:window:allow-set-theme",
+    "updater:default",
+    "process:allow-restart",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "dialog:allow-ask",
+    "fs:allow-read-file",
+    "fs:allow-write-file",
+    "fs:allow-read-dir",
+    "fs:allow-mkdir",
+    "fs:allow-remove",
+    "fs:allow-rename",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        { "path": "$APPDATA/recovery" },
+        { "path": "$APPDATA/recovery/**" },
+        { "path": "$APPDATA/templates" },
+        { "path": "$APPDATA/templates/**" },
+        { "path": "$APPDATA/methods" },
+        { "path": "$APPDATA/methods/**" },
+        { "path": "$APPDATA/presets" },
+        { "path": "$APPDATA/presets/**" },
+        { "path": "$APPDATA/styles" },
+        { "path": "$APPDATA/styles/**" },
+        { "path": "$APPDATA/settings" },
+        { "path": "$APPDATA/settings/**" }
+      ]
+    }
+  ]
+}

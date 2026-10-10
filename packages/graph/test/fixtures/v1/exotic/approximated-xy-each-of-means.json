@@ -1,0 +1,147 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Every replicate of entered means",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Means",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "summary",
+    "preset": "meanSdN"
+   },
+   "rowCount": 3,
+   "rowTitles": null,
+   "x": {
+    "title": "X",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       1,
+       2,
+       3
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5,
+        7,
+        6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4,
+        9,
+        1
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        3,
+        3,
+        3
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000003": {
+   "kind": "graph",
+   "id": "zid000003",
+   "name": "Each replicate of means",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "X"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Means"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "replicates": "each"
+     }
+    }
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000003"
+ ]
+}

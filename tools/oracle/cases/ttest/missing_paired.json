@@ -1,0 +1,28 @@
+{
+  "input": {
+    "a": [
+      12.1,
+      14.3,
+      null,
+      11.8,
+      13.0,
+      15.2,
+      12.7,
+      13.3
+    ],
+    "b": [
+      13.4,
+      15.1,
+      12.2,
+      null,
+      14.8,
+      15.9,
+      13.1,
+      null
+    ]
+  },
+  "params": {
+    "test": "paired"
+  },
+  "note": "Pairs with an empty cell (null) left out (audit 3, S8)."
+}

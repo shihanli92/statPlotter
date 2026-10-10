@@ -1,0 +1,10 @@
+{
+  "input": {"n0":10,"n":[10,10,10,10],"df":36,"t":[7,10,15]},
+  "params": {
+    "twoSided": true
+  },
+  "tol": {
+    "rtol": 1.0000000000000001e-09
+  },
+  "note": "P down to ~1e-15; direct upper-tail integration. mvtnorm cannot resolve these (its absolute error is ~1e-9)."
+}

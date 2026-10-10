@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "test"],
+  "compilerOptions": {
+    // Node types for the test harness (the formula tests load the R oracle fixtures of
+    // packages/stats and time growth guards, roadmap 38). src/ must stay platform-free;
+    // tools/check-deps.mjs rejects node: imports there.
+    "types": ["node"]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "input": {
+    "calls": [
+      {
+        "fn": "zdist",
+        "args": [1.96]
+      },
+      {
+        "fn": "zdist",
+        "args": [-3.2000000000000002]
+      },
+      {
+        "fn": "zdist",
+        "args": [1.96],
+        "tail": "two"
+      },
+      {
+        "fn": "zdist",
+        "args": [0.5],
+        "tail": "right"
+      },
+      {
+        "fn": "zinv",
+        "args": [0.97499999999999998]
+      },
+      {
+        "fn": "zinv",
+        "args": [1e-10]
+      },
+      {
+        "fn": "zinv",
+        "args": [0.050000000000000003],
+        "tail": "two"
+      },
+      {
+        "fn": "zinv",
+        "args": [0.01],
+        "tail": "right"
+      },
+      {
+        "fn": "zpdf",
+        "args": [0.69999999999999996]
+      },
+      {
+        "fn": "normdist",
+        "args": [12, 10, 2]
+      },
+      {
+        "fn": "normdist",
+        "args": [12, 10, 2],
+        "tail": "right"
+      },
+      {
+        "fn": "norminv",
+        "args": [0.29999999999999999, 10, 2]
+      },
+      {
+        "fn": "normpdf",
+        "args": [9, 10, 2]
+      }
+    ]
+  },
+  "params": {"task":"special"}
+}

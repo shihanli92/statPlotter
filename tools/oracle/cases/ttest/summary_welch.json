@@ -1,0 +1,1 @@
+{ "input": { "A": { "mean": 10.2, "sd": 2.1, "n": 12 }, "B": { "mean": 12.9, "sd": 3.4, "n": 9 } }, "params": { "test": "summary", "equalVariance": false } }

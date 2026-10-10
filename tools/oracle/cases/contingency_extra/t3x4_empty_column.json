@@ -1,0 +1,13 @@
+{
+  "input": {
+    "table": [
+      [6, 0, 4, 5],
+      [3, 0, 7, 2],
+      [4, 5, 1, 6]
+    ]
+  },
+  "params": {
+    "test": "chiSquare"
+  },
+  "note": "Column 2 is empty in rows 1 and 2: dropped from that pair's table (2 x 3)."
+}

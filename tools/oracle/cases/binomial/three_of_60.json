@@ -1,0 +1,11 @@
+{
+  "input": {
+    "k": 3,
+    "n": 60,
+    "p0": 0.050000000000000003
+  },
+  "params": {
+    "fn": "binomial"
+  },
+  "note": "x = 3 with n > 50: Poisson lower limit."
+}

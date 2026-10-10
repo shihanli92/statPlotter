@@ -1,0 +1,7 @@
+{
+  "input": {
+    "controls": [2, 2, 2],
+    "patients": [2, 2]
+  },
+  "note": "One distinct value: area 0.5, P 1, no rows."
+}

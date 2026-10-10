@@ -1,0 +1,13 @@
+{
+  "file": "empty.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": []
+    }
+  ]
+}

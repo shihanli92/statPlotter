@@ -1,0 +1,19 @@
+{
+  "name": "df_inf_k5",
+  "input": {"n0":6,"n":[6,6,6,6,6],"df":"Inf","t":[1,2,2.6000000000000001,3.5]},
+  "params": {"twoSided":true},
+  "expected": {
+    "p": [0.77403233098764057, 0.16824061402242552, 0.039403898278916313, 0.0021956642806559303],
+    "pMvt": [0.77403233096987267, 0.16824061393488954, 0.039403898287049488, 0.0021956642819566108],
+    "pMvtErr": [1e-10, 1e-10, 1e-10, 1e-10],
+    "q95": 2.5114630534712576,
+    "q99": 3.0603288073146087
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "mvtnorm": "1.4.2"
+    }
+  },
+  "note": "p and quantiles from the integrate() reference (ref_integrals.R); pMvt is mvtnorm's randomised QMC value, checked within 5x its error estimate."
+}

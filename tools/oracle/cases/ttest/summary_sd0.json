@@ -1,0 +1,1 @@
+{ "input": { "A": { "mean": 3, "sd": 0, "n": 4 }, "B": { "mean": 4, "sd": 0, "n": 5 } }, "params": { "test": "summary" }, "note": "SD = 0 in both groups: t = Inf, P = 0." }

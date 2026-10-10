@@ -1,0 +1,13 @@
+{
+  "input": {
+    "table": [
+      [12, 18],
+      [20, 10],
+      [28, 4]
+    ]
+  },
+  "params": {
+    "test": "chiSquare",
+    "method": "holm-sidak"
+  }
+}

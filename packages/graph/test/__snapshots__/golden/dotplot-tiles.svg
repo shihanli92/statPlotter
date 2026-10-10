@@ -1,0 +1,855 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="453.41pt" height="340.93pt" viewBox="0 0 453.41 340.93">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="126.159" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Synthetic cells</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/tiles">
+<g data-id="series/v11/cell/lv_4330">
+<rect x="31.179" y="29.641" width="48" height="20.571" fill="#9191e1" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4331">
+<rect x="31.179" y="50.212" width="48" height="20.571" fill="#9999df" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4332">
+<rect x="31.179" y="70.783" width="48" height="20.571" fill="#9191e1" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4333">
+<rect x="31.179" y="91.355" width="48" height="20.571" fill="#0000ff" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4334">
+<rect x="31.179" y="111.926" width="48" height="20.571" fill="#adaddb" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4335">
+<rect x="31.179" y="132.498" width="48" height="20.571" fill="#a3a3dd" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4336">
+<rect x="31.179" y="153.069" width="48" height="20.571" fill="#9999df" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4337">
+<rect x="31.179" y="173.641" width="48" height="20.571" fill="#9999df" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4338">
+<rect x="31.179" y="194.212" width="48" height="20.571" fill="#7c7ce5" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_4339">
+<rect x="31.179" y="214.783" width="48" height="20.571" fill="#9797df" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_433130">
+<rect x="31.179" y="235.355" width="48" height="20.571" fill="#8181e4" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_433131">
+<rect x="31.179" y="255.926" width="48" height="20.571" fill="#9b9bdf" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_433132">
+<rect x="31.179" y="276.498" width="48" height="20.571" fill="#9b9bdf" stroke="none"/>
+</g>
+<g data-id="series/v11/cell/lv_433133">
+<rect x="31.179" y="297.069" width="48" height="20.571" fill="#b5b5d9" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4330">
+<rect x="79.179" y="29.641" width="48" height="20.571" fill="#aaaadc" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4331">
+<rect x="79.179" y="50.212" width="48" height="20.571" fill="#8e8ee1" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4332">
+<rect x="79.179" y="70.783" width="48" height="20.571" fill="#b2b2da" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4333">
+<rect x="79.179" y="91.355" width="48" height="20.571" fill="#1818fa" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4334">
+<rect x="79.179" y="111.926" width="48" height="20.571" fill="#9d9dde" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4335">
+<rect x="79.179" y="132.498" width="48" height="20.571" fill="#1212fb" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4336">
+<rect x="79.179" y="153.069" width="48" height="20.571" fill="#a3a3dd" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4337">
+<rect x="79.179" y="173.641" width="48" height="20.571" fill="#c4c4d6" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4338">
+<rect x="79.179" y="194.212" width="48" height="20.571" fill="#b0b0da" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_4339">
+<rect x="79.179" y="214.783" width="48" height="20.571" fill="#6767e9" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_433130">
+<rect x="79.179" y="235.355" width="48" height="20.571" fill="#bbbbd8" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_433131">
+<rect x="79.179" y="255.926" width="48" height="20.571" fill="#8686e3" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_433132">
+<rect x="79.179" y="276.498" width="48" height="20.571" fill="#8181e4" stroke="none"/>
+</g>
+<g data-id="series/v12/cell/lv_433133">
+<rect x="79.179" y="297.069" width="48" height="20.571" fill="#9e9ede" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4330">
+<rect x="127.179" y="29.641" width="48" height="20.571" fill="#b4b4d9" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4331">
+<rect x="127.179" y="50.212" width="48" height="20.571" fill="#9191e1" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4332">
+<rect x="127.179" y="70.783" width="48" height="20.571" fill="#3030f5" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4333">
+<rect x="127.179" y="91.355" width="48" height="20.571" fill="#1010fc" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4334">
+<rect x="127.179" y="111.926" width="48" height="20.571" fill="#9c9cde" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4335">
+<rect x="127.179" y="132.498" width="48" height="20.571" fill="#b9b9d8" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4336">
+<rect x="127.179" y="153.069" width="48" height="20.571" fill="#b8b8d9" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4337">
+<rect x="127.179" y="173.641" width="48" height="20.571" fill="#c8c8d5" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4338">
+<rect x="127.179" y="194.212" width="48" height="20.571" fill="#8282e4" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_4339">
+<rect x="127.179" y="214.783" width="48" height="20.571" fill="#4a4af0" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_433130">
+<rect x="127.179" y="235.355" width="48" height="20.571" fill="#acacdb" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_433131">
+<rect x="127.179" y="255.926" width="48" height="20.571" fill="#8787e3" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_433132">
+<rect x="127.179" y="276.498" width="48" height="20.571" fill="#8b8be2" stroke="none"/>
+</g>
+<g data-id="series/v13/cell/lv_433133">
+<rect x="127.179" y="297.069" width="48" height="20.571" fill="#ababdb" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4330">
+<rect x="175.179" y="29.641" width="48" height="20.571" fill="#c5c5d6" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4331">
+<rect x="175.179" y="50.212" width="48" height="20.571" fill="#d2d2d3" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4332">
+<rect x="175.179" y="70.783" width="48" height="20.571" fill="#cdcdd4" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4333">
+<rect x="175.179" y="91.355" width="48" height="20.571" fill="#4747f0" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4334">
+<rect x="175.179" y="111.926" width="48" height="20.571" fill="#4949f0" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4335">
+<rect x="175.179" y="132.498" width="48" height="20.571" fill="#6b6be9" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4336">
+<rect x="175.179" y="153.069" width="48" height="20.571" fill="#acacdb" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4337">
+<rect x="175.179" y="173.641" width="48" height="20.571" fill="#7c7ce5" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4338">
+<rect x="175.179" y="194.212" width="48" height="20.571" fill="#7777e6" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_4339">
+<rect x="175.179" y="214.783" width="48" height="20.571" fill="#3434f4" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_433130">
+<rect x="175.179" y="235.355" width="48" height="20.571" fill="#c5c5d6" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_433131">
+<rect x="175.179" y="255.926" width="48" height="20.571" fill="#b3b3da" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_433132">
+<rect x="175.179" y="276.498" width="48" height="20.571" fill="#8c8ce2" stroke="none"/>
+</g>
+<g data-id="series/v14/cell/lv_433133">
+<rect x="175.179" y="297.069" width="48" height="20.571" fill="#5858ed" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4330">
+<rect x="223.179" y="29.641" width="48" height="20.571" fill="#8d8de2" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4331">
+<rect x="223.179" y="50.212" width="48" height="20.571" fill="#c0c0d7" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4332">
+<rect x="223.179" y="70.783" width="48" height="20.571" fill="#7f7fe4" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4333">
+<rect x="223.179" y="91.355" width="48" height="20.571" fill="#9090e1" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4334">
+<rect x="223.179" y="111.926" width="48" height="20.571" fill="#b7b7d9" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4335">
+<rect x="223.179" y="132.498" width="48" height="20.571" fill="#bfbfd7" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4336">
+<rect x="223.179" y="153.069" width="48" height="20.571" fill="#bdbdd8" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4337">
+<rect x="223.179" y="173.641" width="48" height="20.571" fill="#9e9ede" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4338">
+<rect x="223.179" y="194.212" width="48" height="20.571" fill="#9393e0" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_4339">
+<rect x="223.179" y="214.783" width="48" height="20.571" fill="#a9a9dc" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_433130">
+<rect x="223.179" y="235.355" width="48" height="20.571" fill="#0c0cfd" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_433131">
+<rect x="223.179" y="255.926" width="48" height="20.571" fill="#8585e3" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_433132">
+<rect x="223.179" y="276.498" width="48" height="20.571" fill="#2121f8" stroke="none"/>
+</g>
+<g data-id="series/v15/cell/lv_433133">
+<rect x="223.179" y="297.069" width="48" height="20.571" fill="#7272e7" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4330">
+<rect x="271.179" y="29.641" width="48" height="20.571" fill="#b1b1da" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4331">
+<rect x="271.179" y="50.212" width="48" height="20.571" fill="#6767ea" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4332">
+<rect x="271.179" y="70.783" width="48" height="20.571" fill="#c0c0d7" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4333">
+<rect x="271.179" y="91.355" width="48" height="20.571" fill="#6f6fe8" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4334">
+<rect x="271.179" y="111.926" width="48" height="20.571" fill="#c3c3d6" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4335">
+<rect x="271.179" y="132.498" width="48" height="20.571" fill="#7272e7" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4336">
+<rect x="271.179" y="153.069" width="48" height="20.571" fill="#3939f3" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4337">
+<rect x="271.179" y="173.641" width="48" height="20.571" fill="#a5a5dd" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4338">
+<rect x="271.179" y="194.212" width="48" height="20.571" fill="#d0d0d4" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_4339">
+<rect x="271.179" y="214.783" width="48" height="20.571" fill="#d3d3d3" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_433130">
+<rect x="271.179" y="235.355" width="48" height="20.571" fill="#9393e0" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_433131">
+<rect x="271.179" y="255.926" width="48" height="20.571" fill="#4d4def" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_433132">
+<rect x="271.179" y="276.498" width="48" height="20.571" fill="#8181e4" stroke="none"/>
+</g>
+<g data-id="series/v16/cell/lv_433133">
+<rect x="271.179" y="297.069" width="48" height="20.571" fill="#3030f5" stroke="none"/>
+</g>
+</g>
+<g data-id="layer/dots">
+<g data-id="series/v11/dot/lv_4330">
+<path d="M50.443,39.926a4.736,4.736 0 1,0 9.472,0a4.736,4.736 0 1,0 -9.472,0Z" fill="#9191e1" stroke="#9191e1" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4331">
+<path d="M50.991,60.498a4.188,4.188 0 1,0 8.376,0a4.188,4.188 0 1,0 -8.376,0Z" fill="#9999df" stroke="#9999df" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4332">
+<path d="M47.245,81.069a7.935,7.935 0 1,0 15.869,0a7.935,7.935 0 1,0 -15.869,0Z" fill="#9191e1" stroke="#9191e1" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4333">
+<path d="M48.302,101.641a6.877,6.877 0 1,0 13.753,0a6.877,6.877 0 1,0 -13.753,0Z" fill="#0000ff" stroke="#0000ff" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4334">
+<path d="M53.972,122.212a1.207,1.207 0 1,0 2.415,0a1.207,1.207 0 1,0 -2.415,0Z" fill="#adaddb" stroke="#adaddb" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4335">
+<path d="M47.575,142.783a7.604,7.604 0 1,0 15.208,0a7.604,7.604 0 1,0 -15.208,0Z" fill="#a3a3dd" stroke="#a3a3dd" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4336">
+<path d="M48.77,163.355a6.409,6.409 0 1,0 12.818,0a6.409,6.409 0 1,0 -12.818,0Z" fill="#9999df" stroke="#9999df" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4337">
+<path d="M49.162,183.926a6.017,6.017 0 1,0 12.034,0a6.017,6.017 0 1,0 -12.034,0Z" fill="#9999df" stroke="#9999df" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4338">
+<path d="M48.236,204.498a6.943,6.943 0 1,0 13.886,0a6.943,6.943 0 1,0 -13.886,0Z" fill="#7c7ce5" stroke="#7c7ce5" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_4339">
+<path d="M49.008,225.069a6.171,6.171 0 1,0 12.343,0a6.171,6.171 0 1,0 -12.343,0Z" fill="#9797df" stroke="#9797df" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_433130">
+<path d="M49.393,245.641a5.786,5.786 0 1,0 11.571,0a5.786,5.786 0 1,0 -11.571,0Z" fill="#8181e4" stroke="#8181e4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_433131">
+<path d="M50.036,266.212a5.143,5.143 0 1,0 10.286,0a5.143,5.143 0 1,0 -10.286,0Z" fill="#9b9bdf" stroke="#9b9bdf" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_433132">
+<path d="M47.851,286.783a7.329,7.329 0 1,0 14.657,0a7.329,7.329 0 1,0 -14.657,0Z" fill="#9b9bdf" stroke="#9b9bdf" stroke-width="0.75"/>
+</g>
+<g data-id="series/v11/dot/lv_433133">
+<path d="M53.001,307.355a2.178,2.178 0 1,0 4.356,0a2.178,2.178 0 1,0 -4.356,0Z" fill="#b5b5d9" stroke="#b5b5d9" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4330">
+<path d="M96.936,39.926a6.243,6.243 0 1,0 12.486,0a6.243,6.243 0 1,0 -12.486,0Z" fill="#aaaadc" stroke="#aaaadc" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4331">
+<path d="M98.11,60.498a5.069,5.069 0 1,0 10.139,0a5.069,5.069 0 1,0 -10.139,0Z" fill="#8e8ee1" stroke="#8e8ee1" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4332">
+<path d="M99.476,81.069a3.703,3.703 0 1,0 7.406,0a3.703,3.703 0 1,0 -7.406,0Z" fill="#b2b2da" stroke="#b2b2da" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4333">
+<path d="M94.187,101.641a8.993,8.993 0 1,0 17.985,0a8.993,8.993 0 1,0 -17.985,0Z" fill="#1818fa" stroke="#1818fa" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4334">
+<path d="M97.544,122.212a5.635,5.635 0 1,0 11.27,0a5.635,5.635 0 1,0 -11.27,0Z" fill="#9d9dde" stroke="#9d9dde" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4335">
+<path d="M99.212,142.783a3.967,3.967 0 1,0 7.935,0a3.967,3.967 0 1,0 -7.935,0Z" fill="#1212fb" stroke="#1212fb" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4336">
+<path d="M98.195,163.355a4.985,4.985 0 1,0 9.969,0a4.985,4.985 0 1,0 -9.969,0Z" fill="#a3a3dd" stroke="#a3a3dd" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4337">
+<path d="M101.328,183.926a1.851,1.851 0 1,0 3.703,0a1.851,1.851 0 1,0 -3.703,0Z" fill="#c4c4d6" stroke="#c4c4d6" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4338">
+<path d="M97.162,204.498a6.017,6.017 0 1,0 12.034,0a6.017,6.017 0 1,0 -12.034,0Z" fill="#b0b0da" stroke="#b0b0da" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_4339">
+<path d="M100.711,225.069a2.469,2.469 0 1,0 4.937,0a2.469,2.469 0 1,0 -4.937,0Z" fill="#6767e9" stroke="#6767e9" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_433130">
+<path d="M100.865,245.641a2.314,2.314 0 1,0 4.629,0a2.314,2.314 0 1,0 -4.629,0Z" fill="#bbbbd8" stroke="#bbbbd8" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_433131">
+<path d="M97.522,266.212a5.657,5.657 0 1,0 11.314,0a5.657,5.657 0 1,0 -11.314,0Z" fill="#8686e3" stroke="#8686e3" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_433132">
+<path d="M100.865,286.783a2.314,2.314 0 1,0 4.629,0a2.314,2.314 0 1,0 -4.629,0Z" fill="#8181e4" stroke="#8181e4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v12/dot/lv_433133">
+<path d="M98.823,307.355a4.356,4.356 0 1,0 8.713,0a4.356,4.356 0 1,0 -8.713,0Z" fill="#9e9ede" stroke="#9e9ede" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4330">
+<path d="M147.412,39.926a3.767,3.767 0 1,0 7.535,0a3.767,3.767 0 1,0 -7.535,0Z" fill="#b4b4d9" stroke="#b4b4d9" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4331">
+<path d="M144.787,60.498a6.392,6.392 0 1,0 12.784,0a6.392,6.392 0 1,0 -12.784,0Z" fill="#9191e1" stroke="#9191e1" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4332">
+<path d="M143.509,81.069a7.67,7.67 0 1,0 15.34,0a7.67,7.67 0 1,0 -15.34,0Z" fill="#3030f5" stroke="#3030f5" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4333">
+<path d="M144.038,101.641a7.141,7.141 0 1,0 14.282,0a7.141,7.141 0 1,0 -14.282,0Z" fill="#1010fc" stroke="#1010fc" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4334">
+<path d="M149.569,122.212a1.61,1.61 0 1,0 3.22,0a1.61,1.61 0 1,0 -3.22,0Z" fill="#9c9cde" stroke="#9c9cde" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4335">
+<path d="M149.526,142.783a1.653,1.653 0 1,0 3.306,0a1.653,1.653 0 1,0 -3.306,0Z" fill="#b9b9d8" stroke="#b9b9d8" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4336">
+<path d="M144.77,163.355a6.409,6.409 0 1,0 12.818,0a6.409,6.409 0 1,0 -12.818,0Z" fill="#b8b8d9" stroke="#b8b8d9" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4337">
+<path d="M150.253,183.926a0.926,0.926 0 1,0 1.851,0a0.926,0.926 0 1,0 -1.851,0Z" fill="#c8c8d5" stroke="#c8c8d5" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4338">
+<path d="M146.088,204.498a5.091,5.091 0 1,0 10.183,0a5.091,5.091 0 1,0 -10.183,0Z" fill="#8282e4" stroke="#8282e4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_4339">
+<path d="M144.391,225.069a6.789,6.789 0 1,0 13.577,0a6.789,6.789 0 1,0 -13.577,0Z" fill="#4a4af0" stroke="#4a4af0" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_433130">
+<path d="M145.779,245.641a5.4,5.4 0 1,0 10.8,0a5.4,5.4 0 1,0 -10.8,0Z" fill="#acacdb" stroke="#acacdb" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_433131">
+<path d="M145.522,266.212a5.657,5.657 0 1,0 11.314,0a5.657,5.657 0 1,0 -11.314,0Z" fill="#8787e3" stroke="#8787e3" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_433132">
+<path d="M148.093,286.783a3.086,3.086 0 1,0 6.171,0a3.086,3.086 0 1,0 -6.171,0Z" fill="#8b8be2" stroke="#8b8be2" stroke-width="0.75"/>
+</g>
+<g data-id="series/v13/dot/lv_433133">
+<path d="M146.823,307.355a4.356,4.356 0 1,0 8.713,0a4.356,4.356 0 1,0 -8.713,0Z" fill="#ababdb" stroke="#ababdb" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4330">
+<path d="M197.888,39.926a1.292,1.292 0 1,0 2.583,0a1.292,1.292 0 1,0 -2.583,0Z" fill="#c5c5d6" stroke="#c5c5d6" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4331">
+<path d="M198.298,60.498a0.882,0.882 0 1,0 1.763,0a0.882,0.882 0 1,0 -1.763,0Z" fill="#d2d2d3" stroke="#d2d2d3" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4332">
+<path d="M197.592,81.069a1.587,1.587 0 1,0 3.174,0a1.587,1.587 0 1,0 -3.174,0Z" fill="#cdcdd4" stroke="#cdcdd4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4333">
+<path d="M191.245,101.641a7.935,7.935 0 1,0 15.869,0a7.935,7.935 0 1,0 -15.869,0Z" fill="#4747f0" stroke="#4747f0" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4334">
+<path d="M191.934,122.212a7.245,7.245 0 1,0 14.489,0a7.245,7.245 0 1,0 -14.489,0Z" fill="#4949f0" stroke="#4949f0" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4335">
+<path d="M190.583,142.783a8.596,8.596 0 1,0 17.192,0a8.596,8.596 0 1,0 -17.192,0Z" fill="#6b6be9" stroke="#6b6be9" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4336">
+<path d="M194.907,163.355a4.273,4.273 0 1,0 8.545,0a4.273,4.273 0 1,0 -8.545,0Z" fill="#acacdb" stroke="#acacdb" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4337">
+<path d="M194.088,183.926a5.091,5.091 0 1,0 10.183,0a5.091,5.091 0 1,0 -10.183,0Z" fill="#7c7ce5" stroke="#7c7ce5" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4338">
+<path d="M195.939,204.498a3.24,3.24 0 1,0 6.48,0a3.24,3.24 0 1,0 -6.48,0Z" fill="#7777e6" stroke="#7777e6" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_4339">
+<path d="M191.156,225.069a8.023,8.023 0 1,0 16.046,0a8.023,8.023 0 1,0 -16.046,0Z" fill="#3434f4" stroke="#3434f4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_433130">
+<path d="M196.093,245.641a3.086,3.086 0 1,0 6.171,0a3.086,3.086 0 1,0 -6.171,0Z" fill="#c5c5d6" stroke="#c5c5d6" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_433131">
+<path d="M197.122,266.212a2.057,2.057 0 1,0 4.114,0a2.057,2.057 0 1,0 -4.114,0Z" fill="#b3b3da" stroke="#b3b3da" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_433132">
+<path d="M194.551,286.783a4.629,4.629 0 1,0 9.257,0a4.629,4.629 0 1,0 -9.257,0Z" fill="#8c8ce2" stroke="#8c8ce2" stroke-width="0.75"/>
+</g>
+<g data-id="series/v14/dot/lv_433133">
+<path d="M192.1,307.355a7.079,7.079 0 1,0 14.158,0a7.079,7.079 0 1,0 -14.158,0Z" fill="#5858ed" stroke="#5858ed" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4330">
+<path d="M240.075,39.926a7.104,7.104 0 1,0 14.209,0a7.104,7.104 0 1,0 -14.209,0Z" fill="#8d8de2" stroke="#8d8de2" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4331">
+<path d="M245.416,60.498a1.763,1.763 0 1,0 3.527,0a1.763,1.763 0 1,0 -3.527,0Z" fill="#c0c0d7" stroke="#c0c0d7" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4332">
+<path d="M239.509,81.069a7.67,7.67 0 1,0 15.34,0a7.67,7.67 0 1,0 -15.34,0Z" fill="#7f7fe4" stroke="#7f7fe4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4333">
+<path d="M243.476,101.641a3.703,3.703 0 1,0 7.406,0a3.703,3.703 0 1,0 -7.406,0Z" fill="#9090e1" stroke="#9090e1" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4334">
+<path d="M244.764,122.212a2.415,2.415 0 1,0 4.83,0a2.415,2.415 0 1,0 -4.83,0Z" fill="#b7b7d9" stroke="#b7b7d9" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4335">
+<path d="M245.196,142.783a1.984,1.984 0 1,0 3.967,0a1.984,1.984 0 1,0 -3.967,0Z" fill="#bfbfd7" stroke="#bfbfd7" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4336">
+<path d="M246.467,163.355a0.712,0.712 0 1,0 1.424,0a0.712,0.712 0 1,0 -1.424,0Z" fill="#bdbdd8" stroke="#bdbdd8" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4337">
+<path d="M240.699,183.926a6.48,6.48 0 1,0 12.96,0a6.48,6.48 0 1,0 -12.96,0Z" fill="#9e9ede" stroke="#9e9ede" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4338">
+<path d="M241.162,204.498a6.017,6.017 0 1,0 12.034,0a6.017,6.017 0 1,0 -12.034,0Z" fill="#9393e0" stroke="#9393e0" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_4339">
+<path d="M242.242,225.069a4.937,4.937 0 1,0 9.874,0a4.937,4.937 0 1,0 -9.874,0Z" fill="#a9a9dc" stroke="#a9a9dc" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_433130">
+<path d="M242.165,245.641a5.014,5.014 0 1,0 10.029,0a5.014,5.014 0 1,0 -10.029,0Z" fill="#0c0cfd" stroke="#0c0cfd" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_433131">
+<path d="M240.493,266.212a6.686,6.686 0 1,0 13.371,0a6.686,6.686 0 1,0 -13.371,0Z" fill="#8585e3" stroke="#8585e3" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_433132">
+<path d="M242.165,286.783a5.014,5.014 0 1,0 10.029,0a5.014,5.014 0 1,0 -10.029,0Z" fill="#2121f8" stroke="#2121f8" stroke-width="0.75"/>
+</g>
+<g data-id="series/v15/dot/lv_433133">
+<path d="M239.011,307.355a8.168,8.168 0 1,0 16.336,0a8.168,8.168 0 1,0 -16.336,0Z" fill="#7272e7" stroke="#7272e7" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4330">
+<path d="M290.443,39.926a4.736,4.736 0 1,0 9.472,0a4.736,4.736 0 1,0 -9.472,0Z" fill="#b1b1da" stroke="#b1b1da" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4331">
+<path d="M288.787,60.498a6.392,6.392 0 1,0 12.784,0a6.392,6.392 0 1,0 -12.784,0Z" fill="#6767ea" stroke="#6767ea" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4332">
+<path d="M288.831,81.069a6.348,6.348 0 1,0 12.696,0a6.348,6.348 0 1,0 -12.696,0Z" fill="#c0c0d7" stroke="#c0c0d7" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4333">
+<path d="M289.36,101.641a5.819,5.819 0 1,0 11.638,0a5.819,5.819 0 1,0 -11.638,0Z" fill="#6f6fe8" stroke="#6f6fe8" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4334">
+<path d="M292.764,122.212a2.415,2.415 0 1,0 4.83,0a2.415,2.415 0 1,0 -4.83,0Z" fill="#c3c3d6" stroke="#c3c3d6" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4335">
+<path d="M290.551,142.783a4.629,4.629 0 1,0 9.257,0a4.629,4.629 0 1,0 -9.257,0Z" fill="#7272e7" stroke="#7272e7" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4336">
+<path d="M288.058,163.355a7.121,7.121 0 1,0 14.242,0a7.121,7.121 0 1,0 -14.242,0Z" fill="#3939f3" stroke="#3939f3" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4337">
+<path d="M289.625,183.926a5.554,5.554 0 1,0 11.109,0a5.554,5.554 0 1,0 -11.109,0Z" fill="#a5a5dd" stroke="#a5a5dd" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4338">
+<path d="M292.865,204.498a2.314,2.314 0 1,0 4.629,0a2.314,2.314 0 1,0 -4.629,0Z" fill="#d0d0d4" stroke="#d0d0d4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_4339">
+<path d="M293.945,225.069a1.234,1.234 0 1,0 2.469,0a1.234,1.234 0 1,0 -2.469,0Z" fill="#d3d3d3" stroke="#d3d3d3" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_433130">
+<path d="M287.465,245.641a7.714,7.714 0 1,0 15.429,0a7.714,7.714 0 1,0 -15.429,0Z" fill="#9393e0" stroke="#9393e0" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_433131">
+<path d="M287.465,266.212a7.714,7.714 0 1,0 15.429,0a7.714,7.714 0 1,0 -15.429,0Z" fill="#4d4def" stroke="#4d4def" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_433132">
+<path d="M286.308,286.783a8.871,8.871 0 1,0 17.743,0a8.871,8.871 0 1,0 -17.743,0Z" fill="#8181e4" stroke="#8181e4" stroke-width="0.75"/>
+</g>
+<g data-id="series/v16/dot/lv_433133">
+<path d="M287.011,307.355a8.168,8.168 0 1,0 16.336,0a8.168,8.168 0 1,0 -16.336,0Z" fill="#3030f5" stroke="#3030f5" stroke-width="0.75"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="31.179" y1="317.641" x2="31.179" y2="29.641" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="43.74" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C0</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="64.311" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C1</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="84.883" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C2</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="105.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C3</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="126.026" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C4</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="146.597" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C5</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="167.168" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C6</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="187.74" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C7</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/8">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="208.311" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C8</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/9">
+<text fill="#000000" xml:space="preserve"><tspan x="14.118" y="228.883" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C9</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/10">
+<text fill="#000000" xml:space="preserve"><tspan x="8" y="249.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C10</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/11">
+<text fill="#000000" xml:space="preserve"><tspan x="8.816" y="270.026" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C11</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/12">
+<text fill="#000000" xml:space="preserve"><tspan x="8" y="290.597" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C12</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/13">
+<text fill="#000000" xml:space="preserve"><tspan x="8" y="311.168" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C13</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="31.179" y1="317.641" x2="319.179" y2="317.641" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="36.533" y="330.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">GENE1</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="84.533" y="330.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">GENE2</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="132.533" y="330.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">GENE3</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="180.533" y="330.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">GENE4</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="228.533" y="330.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">GENE5</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="276.533" y="330.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">GENE6</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/dotplot/size">
+<g data-id="legend/dotplot/size/label">
+<text fill="#000000" xml:space="preserve"><tspan x="353.693" y="41.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Percent expressed</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/0">
+<g data-id="legend/dotplot/size/0/symbol">
+<path d="M331.179,56.898a9.257,9.257 0 1,0 18.514,0a9.257,9.257 0 1,0 -18.514,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/0/label">
+<text fill="#000000" xml:space="preserve"><tspan x="353.693" y="60.711" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">100%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/1">
+<g data-id="legend/dotplot/size/1/symbol">
+<path d="M333.493,77.098a6.943,6.943 0 1,0 13.886,0a6.943,6.943 0 1,0 -13.886,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/1/label">
+<text fill="#000000" xml:space="preserve"><tspan x="353.693" y="80.911" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">75%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/2">
+<g data-id="legend/dotplot/size/2/symbol">
+<path d="M335.808,94.041a4.629,4.629 0 1,0 9.257,0a4.629,4.629 0 1,0 -9.257,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/2/label">
+<text fill="#000000" xml:space="preserve"><tspan x="353.693" y="97.854" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">50%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/3">
+<g data-id="legend/dotplot/size/3/symbol">
+<path d="M338.122,110.041a2.314,2.314 0 1,0 4.629,0a2.314,2.314 0 1,0 -4.629,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/3/label">
+<text fill="#000000" xml:space="preserve"><tspan x="353.693" y="113.854" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/color">
+<g data-id="legend/dotplot/color/label">
+<text fill="#000000" xml:space="preserve"><tspan x="353.693" y="129.854" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Average (scaled)</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/color/bar">
+<g data-id="legend/dotplot/color/bar/band/0">
+<rect x="331.179" y="232.041" width="10" height="2" fill="#d1d1d3" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/1">
+<rect x="331.179" y="230.541" width="10" height="2" fill="#ceced4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/2">
+<rect x="331.179" y="229.041" width="10" height="2" fill="#cbcbd5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/3">
+<rect x="331.179" y="227.541" width="10" height="2" fill="#c7c7d5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/4">
+<rect x="331.179" y="226.041" width="10" height="2" fill="#c4c4d6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/5">
+<rect x="331.179" y="224.541" width="10" height="2" fill="#c1c1d7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/6">
+<rect x="331.179" y="223.041" width="10" height="2" fill="#bebed7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/7">
+<rect x="331.179" y="221.541" width="10" height="2" fill="#babad8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/8">
+<rect x="331.179" y="220.041" width="10" height="2" fill="#b7b7d9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/9">
+<rect x="331.179" y="218.541" width="10" height="2" fill="#b4b4da" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/10">
+<rect x="331.179" y="217.041" width="10" height="2" fill="#b0b0da" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/11">
+<rect x="331.179" y="215.541" width="10" height="2" fill="#adaddb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/12">
+<rect x="331.179" y="214.041" width="10" height="2" fill="#aaaadc" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/13">
+<rect x="331.179" y="212.541" width="10" height="2" fill="#a6a6dc" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/14">
+<rect x="331.179" y="211.041" width="10" height="2" fill="#a3a3dd" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/15">
+<rect x="331.179" y="209.541" width="10" height="2" fill="#a0a0de" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/16">
+<rect x="331.179" y="208.041" width="10" height="2" fill="#9d9dde" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/17">
+<rect x="331.179" y="206.541" width="10" height="2" fill="#9999df" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/18">
+<rect x="331.179" y="205.041" width="10" height="2" fill="#9696e0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/19">
+<rect x="331.179" y="203.541" width="10" height="2" fill="#9393e0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/20">
+<rect x="331.179" y="202.041" width="10" height="2" fill="#8f8fe1" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/21">
+<rect x="331.179" y="200.541" width="10" height="2" fill="#8c8ce2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/22">
+<rect x="331.179" y="199.041" width="10" height="2" fill="#8989e2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/23">
+<rect x="331.179" y="197.541" width="10" height="2" fill="#8686e3" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/24">
+<rect x="331.179" y="196.041" width="10" height="2" fill="#8282e4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/25">
+<rect x="331.179" y="194.541" width="10" height="2" fill="#7f7fe5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/26">
+<rect x="331.179" y="193.041" width="10" height="2" fill="#7c7ce5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/27">
+<rect x="331.179" y="191.541" width="10" height="2" fill="#7878e6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/28">
+<rect x="331.179" y="190.041" width="10" height="2" fill="#7575e7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/29">
+<rect x="331.179" y="188.541" width="10" height="2" fill="#7272e7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/30">
+<rect x="331.179" y="187.041" width="10" height="2" fill="#6e6ee8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/31">
+<rect x="331.179" y="185.541" width="10" height="2" fill="#6b6be9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/32">
+<rect x="331.179" y="184.041" width="10" height="2" fill="#6868e9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/33">
+<rect x="331.179" y="182.541" width="10" height="2" fill="#6565ea" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/34">
+<rect x="331.179" y="181.041" width="10" height="2" fill="#6161eb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/35">
+<rect x="331.179" y="179.541" width="10" height="2" fill="#5e5eeb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/36">
+<rect x="331.179" y="178.041" width="10" height="2" fill="#5b5bec" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/37">
+<rect x="331.179" y="176.541" width="10" height="2" fill="#5757ed" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/38">
+<rect x="331.179" y="175.041" width="10" height="2" fill="#5454ed" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/39">
+<rect x="331.179" y="173.541" width="10" height="2" fill="#5151ee" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/40">
+<rect x="331.179" y="172.041" width="10" height="2" fill="#4d4def" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/41">
+<rect x="331.179" y="170.541" width="10" height="2" fill="#4a4af0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/42">
+<rect x="331.179" y="169.041" width="10" height="2" fill="#4747f0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/43">
+<rect x="331.179" y="167.541" width="10" height="2" fill="#4444f1" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/44">
+<rect x="331.179" y="166.041" width="10" height="2" fill="#4040f2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/45">
+<rect x="331.179" y="164.541" width="10" height="2" fill="#3d3df2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/46">
+<rect x="331.179" y="163.041" width="10" height="2" fill="#3a3af3" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/47">
+<rect x="331.179" y="161.541" width="10" height="2" fill="#3636f4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/48">
+<rect x="331.179" y="160.041" width="10" height="2" fill="#3333f4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/49">
+<rect x="331.179" y="158.541" width="10" height="2" fill="#3030f5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/50">
+<rect x="331.179" y="157.041" width="10" height="2" fill="#2d2df6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/51">
+<rect x="331.179" y="155.541" width="10" height="2" fill="#2929f6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/52">
+<rect x="331.179" y="154.041" width="10" height="2" fill="#2626f7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/53">
+<rect x="331.179" y="152.541" width="10" height="2" fill="#2323f8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/54">
+<rect x="331.179" y="151.041" width="10" height="2" fill="#1f1ff8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/55">
+<rect x="331.179" y="149.541" width="10" height="2" fill="#1c1cf9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/56">
+<rect x="331.179" y="148.041" width="10" height="2" fill="#1919fa" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/57">
+<rect x="331.179" y="146.541" width="10" height="2" fill="#1515fb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/58">
+<rect x="331.179" y="145.041" width="10" height="2" fill="#1212fb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/59">
+<rect x="331.179" y="143.541" width="10" height="2" fill="#0f0ffc" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/60">
+<rect x="331.179" y="142.041" width="10" height="2" fill="#0c0cfd" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/61">
+<rect x="331.179" y="140.541" width="10" height="2" fill="#0808fd" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/62">
+<rect x="331.179" y="139.041" width="10" height="2" fill="#0505fe" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/63">
+<rect x="331.179" y="138.041" width="10" height="1.5" fill="#0202ff" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/frame">
+<rect x="331.179" y="138.041" width="10" height="96" fill="none" stroke="#000000" stroke-width="0.5"/>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/0">
+<line x1="341.179" y1="226.057" x2="344.179" y2="226.057" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/0">
+<text fill="#000000" xml:space="preserve"><tspan x="346.179" y="229.87" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−1</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/1">
+<line x1="341.179" y1="200.909" x2="344.179" y2="200.909" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/1">
+<text fill="#000000" xml:space="preserve"><tspan x="346.179" y="204.723" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/2">
+<line x1="341.179" y1="175.762" x2="344.179" y2="175.762" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/2">
+<text fill="#000000" xml:space="preserve"><tspan x="346.179" y="179.575" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">1</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/3">
+<line x1="341.179" y1="150.614" x2="344.179" y2="150.614" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/3">
+<text fill="#000000" xml:space="preserve"><tspan x="346.179" y="154.428" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">2</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/label">
+<text fill="#000000" xml:space="preserve"></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

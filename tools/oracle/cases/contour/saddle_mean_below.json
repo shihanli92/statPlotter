@@ -1,0 +1,22 @@
+{
+  "input": {
+    "x": [
+      0,
+      1
+    ],
+    "y": [
+      0,
+      2
+    ],
+    "z": [
+      1,
+      0,
+      0.1,
+      0.9
+    ],
+    "levels": [
+      0.55
+    ]
+  },
+  "note": "the same cell, the mean of its corners (0.5) below the level"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "square_edges",
+  "input": {"x":[0,1,1,0,0.5,1,0.5,0,0.5],"y":[0,0,1,1,0,0.5,1,0.5,0.5]},
+  "params": {},
+  "expected": {
+    "hull": [2, 1, 4, 3]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "points along edges are not corners"
+}

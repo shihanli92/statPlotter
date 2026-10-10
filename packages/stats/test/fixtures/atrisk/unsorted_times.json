@@ -1,0 +1,15 @@
+{
+  "name": "unsorted_times",
+  "input": {"time":[4,4,4,7,9,9,12,15,15,20],"event":[1,0,1,1,0,0,1,1,0,1],"times":[10,0,5,20,2,15]},
+  "params": {},
+  "expected": {
+    "nRisk": [4, 10, 7, 1, 10, 3]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3"
+    }
+  },
+  "note": "Times asked out of order; ties of events and censorings at one time."
+}

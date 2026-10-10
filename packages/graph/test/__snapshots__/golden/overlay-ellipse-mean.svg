@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="344.045pt" height="262.48pt" viewBox="0 0 344.045 262.48">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="103.56" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample variables</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/ellipse">
+<g data-id="series/d/ellipse/0/0">
+<polyline points="151.025,155.61 150.865,149.153 150.386,142.519 149.591,135.757 148.486,128.919 147.08,122.057 145.384,115.223 143.411,108.47 141.174,101.849 138.693,95.41 135.985,89.202 133.07,83.273 129.972,77.667 126.714,72.427 123.32,67.593 119.817,63.202 116.231,59.288 112.589,55.879 108.919,53.003 105.249,50.681 101.608,48.93 98.021,47.764 94.518,47.192 91.124,47.217 87.866,47.841 84.768,49.059 81.854,50.86 79.146,53.231 76.664,56.154 74.428,59.608 72.454,63.565 70.758,67.995 69.352,72.866 68.248,78.139 67.453,83.775 66.973,89.73 66.813,95.96 66.973,102.417 67.453,109.052 68.248,115.814 69.352,122.652 70.758,129.513 72.454,136.347 74.428,143.1 76.664,149.721 79.146,156.16 81.854,162.368 84.768,168.298 87.866,173.904 91.124,179.143 94.518,183.977 98.021,188.368 101.608,192.282 105.249,195.691 108.919,198.567 112.589,200.89 116.231,202.641 119.817,203.807 123.32,204.379 126.714,204.353 129.972,203.729 133.07,202.512 135.985,200.711 138.693,198.339 141.174,195.416 143.411,191.963 145.384,188.006 147.08,183.575 148.486,178.705 149.591,173.431 150.386,167.796 150.865,161.84 151.025,155.61" fill="none" stroke="#0072b2" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+<g data-id="series/d/ellipse/0/1">
+<polyline points="241.906,191.474 241.68,189.329 241.002,186.888 239.877,184.171 238.315,181.198 236.327,177.992 233.929,174.577 231.137,170.979 227.975,167.225 224.465,163.344 220.635,159.366 216.514,155.32 212.133,151.238 207.525,147.151 202.726,143.089 197.771,139.084 192.7,135.166 187.549,131.366 182.359,127.711 177.169,124.23 172.019,120.949 166.947,117.893 161.993,115.085 157.194,112.548 152.586,110.299 148.204,108.357 144.083,106.736 140.253,105.448 136.744,104.503 133.581,103.909 130.79,103.669 128.391,103.786 126.403,104.259 124.841,105.084 123.717,106.255 123.039,107.763 122.812,109.597 123.039,111.742 123.717,114.182 124.841,116.899 126.403,119.872 128.391,123.078 130.79,126.493 133.581,130.092 136.744,133.846 140.253,137.726 144.083,141.705 148.204,145.75 152.586,149.832 157.194,153.92 161.993,157.981 166.947,161.986 172.019,165.904 177.169,169.705 182.359,173.36 187.549,176.841 192.7,180.122 197.771,183.177 202.726,185.985 207.525,188.522 212.133,190.771 216.514,192.713 220.635,194.334 224.465,195.622 227.975,196.567 231.137,197.162 233.929,197.401 236.327,197.284 238.315,196.811 239.877,195.986 241.002,194.815 241.68,193.307 241.906,191.474" fill="none" stroke="#d55e00" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+<g data-id="series/d/ellipse/0/2">
+<polyline points="165.79,143.329 165.688,139.235 165.385,135.045 164.882,130.791 164.184,126.506 163.294,122.223 162.222,117.973 160.974,113.79 159.559,109.705 157.99,105.749 156.277,101.953 154.434,98.345 152.474,94.952 150.414,91.801 148.267,88.915 146.052,86.317 143.784,84.026 141.48,82.06 139.159,80.434 136.838,79.159 134.535,78.246 132.267,77.702 130.051,77.53 127.905,77.733 125.844,78.308 123.885,79.252 122.042,80.556 120.329,82.211 118.759,84.205 117.345,86.522 116.097,89.145 115.024,92.054 114.135,95.226 113.436,98.638 112.934,102.263 112.63,106.073 112.529,110.041 112.63,114.136 112.934,118.326 113.436,122.579 114.135,126.864 115.024,131.147 116.097,135.397 117.345,139.58 118.759,143.665 120.329,147.621 122.042,151.417 123.885,155.026 125.844,158.418 127.905,161.569 130.051,164.455 132.267,167.053 134.535,169.344 136.838,171.31 139.159,172.937 141.48,174.211 143.784,175.124 146.052,175.669 148.267,175.84 150.414,175.637 152.474,175.062 154.434,174.119 156.277,172.814 157.99,171.159 159.559,169.165 160.974,166.848 162.222,164.225 163.294,161.316 164.184,158.144 164.882,154.733 165.385,151.108 165.688,147.297 165.79,143.329" fill="none" stroke="#009e73" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+</g>
+<g data-id="layer/bubbles">
+<g data-id="series/d/point/0">
+<path d="M108.239,154.585a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#0072b2" fill-opacity="0.55" stroke="#0072b2" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/1">
+<path d="M160.079,134.785a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#d55e00" fill-opacity="0.55" stroke="#d55e00" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/2">
+<path d="M134.159,122.185a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#009e73" fill-opacity="0.55" stroke="#009e73" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/3">
+<path d="M90.959,105.985a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#0072b2" fill-opacity="0.55" stroke="#0072b2" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/4">
+<path d="M185.999,163.585a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#d55e00" fill-opacity="0.55" stroke="#d55e00" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/5">
+<path d="M125.519,131.185a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#009e73" fill-opacity="0.55" stroke="#009e73" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/6">
+<path d="M116.879,116.785a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#0072b2" fill-opacity="0.55" stroke="#0072b2" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/7">
+<path d="M168.719,147.385a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#d55e00" fill-opacity="0.55" stroke="#d55e00" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/8">
+<path d="M142.799,141.985a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#009e73" fill-opacity="0.55" stroke="#009e73" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/9">
+<path d="M99.599,125.785a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#0072b2" fill-opacity="0.55" stroke="#0072b2" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/10">
+<path d="M194.639,156.385a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#d55e00" fill-opacity="0.55" stroke="#d55e00" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/11">
+<path d="M134.159,111.385a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#009e73" fill-opacity="0.55" stroke="#009e73" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/12">
+<path d="M263.759,136.585a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#b4b4b4" fill-opacity="0.55" stroke="#b4b4b4" stroke-width="0.75"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="52.759" y1="215.785" x2="52.759" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="52.759" y1="215.785" x2="48.759" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="39.642" y="219.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="52.759" y1="179.785" x2="48.759" y2="179.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="183.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="52.759" y1="143.785" x2="48.759" y2="143.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="147.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">40</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="52.759" y1="107.785" x2="48.759" y2="107.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="111.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">60</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="52.759" y1="71.785" x2="48.759" y2="71.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="75.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">80</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="52.759" y1="35.785" x2="48.759" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">100</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 125.785)" xml:space="preserve"><tspan x="3.368" y="129.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Age</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="52.759" y1="215.785" x2="268.759" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="52.759" y1="215.785" x2="52.759" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="49.7" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5</tspan></text>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="95.959" y1="215.785" x2="95.959" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="89.842" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="139.159" y1="215.785" x2="139.159" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="133.042" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="182.359" y1="215.785" x2="182.359" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="176.242" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="225.559" y1="215.785" x2="225.559" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="219.442" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25</tspan></text>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="268.759" y1="215.785" x2="268.759" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="262.642" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="144.083" y="251.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Score</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/bubble/color">
+<g data-id="legend/bubble/color/label">
+<text fill="#000000" xml:space="preserve"><tspan x="298.759" y="47.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Group</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/0">
+<g data-id="legend/bubble/color/0/swatch">
+<rect x="280.759" y="54.785" width="14" height="10" fill="#0072b2" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/0/label">
+<text fill="#000000" xml:space="preserve"><tspan x="298.759" y="63.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Low</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/1">
+<g data-id="legend/bubble/color/1/swatch">
+<rect x="280.759" y="70.785" width="14" height="10" fill="#d55e00" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/1/label">
+<text fill="#000000" xml:space="preserve"><tspan x="298.759" y="79.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">High</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/2">
+<g data-id="legend/bubble/color/2/swatch">
+<rect x="280.759" y="86.785" width="14" height="10" fill="#009e73" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/2/label">
+<text fill="#000000" xml:space="preserve"><tspan x="298.759" y="95.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Mid</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/missing">
+<g data-id="legend/bubble/color/missing/swatch">
+<rect x="280.759" y="102.785" width="14" height="10" fill="#b4b4b4" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/missing/label">
+<text fill="#000000" xml:space="preserve"><tspan x="298.759" y="111.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Missing</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

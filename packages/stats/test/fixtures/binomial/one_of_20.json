@@ -1,0 +1,34 @@
+{
+  "name": "one_of_20",
+  "input": {"k":1,"n":20,"p0":0.29999999999999999},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 0.012775421309321397,
+      "pLess": 0.0076372597742000005,
+      "pGreater": 0.99920207733702382
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 0.050000000000000003,
+        "lower": 0.0025646647193775288,
+        "upper": 0.23613119344674199
+      },
+      "wilson": {
+        "value": 0.050000000000000003,
+        "lower": 0.0088814488007953746,
+        "upper": 0.23613119344674199
+      },
+      "clopperPearson": {
+        "value": 0.050000000000000003,
+        "lower": 0.0012650894979498051,
+        "upper": 0.24873276277202772
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Wilson/Brown: Poisson lower limit (x = 1)."
+}

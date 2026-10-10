@@ -1,0 +1,20 @@
+{
+  "input": {
+    "x": [
+      5,
+      5,
+      null,
+      5,
+      5,
+      5
+    ],
+    "n": [
+      3
+    ]
+  },
+  "params": {
+    "kind": "cutwidth",
+    "right": true
+  },
+  "note": "constant data: R widens the range by |x|/1000 each side (cut.default), and the labels take more digits until they differ"
+}

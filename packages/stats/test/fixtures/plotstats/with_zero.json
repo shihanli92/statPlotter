@@ -1,0 +1,26 @@
+{
+  "name": "with_zero",
+  "input": {"values":[0,1.5,2,3.5,8]},
+  "params": {},
+  "expected": {
+    "n": 5,
+    "geoMean": "NaN",
+    "geoSdFactor": "NaN",
+    "geoSdLo": "NaN",
+    "geoSdHi": "NaN",
+    "geoCiLo": "NaN",
+    "geoCiHi": "NaN",
+    "probs": [0.01, 0.025000000000000001, 0.050000000000000003, 0.10000000000000001, 0.90000000000000002, 0.94999999999999996, 0.97499999999999998, 0.98999999999999999],
+    "quantiles": [0, 0, 0, 0, 8, 8, 8, 8],
+    "q1": 0.75,
+    "q3": 5.75,
+    "tukeyLo": 0,
+    "tukeyHi": 8,
+    "outliers": []
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "A value of 0: geometric statistics are undefined (NaN)"
+}

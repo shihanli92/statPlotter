@@ -1,0 +1,26 @@
+{
+  "name": "one_sample_zero_pratt",
+  "input": {"x":[2.1000000000000001,3,1.8999999999999999,5.5,4.2000000000000002,3,3.2999999999999998,4.9000000000000004,1.2],"mu":3},
+  "params": {"exact":true,"zeroMethod":"pratt"},
+  "expected": {
+    "wPlus": 26,
+    "wMinus": 16,
+    "W": 10,
+    "n": 9,
+    "nNonZero": 7,
+    "nZero": 2,
+    "p": 0.609375,
+    "method": "exact",
+    "ties": false,
+    "medianDiff": 0,
+    "hlEstimate": 3.3084841540447449,
+    "hlLo": 1.5500459284254062,
+    "hlHi": 5.1999632725111375
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

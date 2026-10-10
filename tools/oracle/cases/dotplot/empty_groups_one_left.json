@@ -1,0 +1,33 @@
+{
+  "input": {
+    "values": [
+      [
+        3.5877,
+        1.9751,
+        0,
+        0,
+        1.3344,
+        1.3994
+      ]
+    ],
+    "group": [
+      "b",
+      "b",
+      "b",
+      "b",
+      "b",
+      "b"
+    ],
+    "levels": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "params": {
+    "average": "mean",
+    "scale": true,
+    "threshold": 0
+  },
+  "note": "one level with cells among empty ones: nothing to scale against (unscaled)"
+}

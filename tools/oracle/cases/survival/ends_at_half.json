@@ -1,0 +1,13 @@
+{
+  "input": {
+    "time": [
+      [1, 2, 3, 4],
+      [1, 5, 7]
+    ],
+    "event": [
+      [1, 1, 0, 0],
+      [1, 1, 1]
+    ]
+  },
+  "note": "Group 1 ends flat at exactly 1/2: median = midpoint of the time it reaches 1/2 and the last time (R's findq)."
+}

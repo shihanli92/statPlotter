@@ -1,0 +1,36 @@
+{
+  "name": "n4",
+  "input": {"x":[10.199999999999999,11.9,9.4000000000000004,15.300000000000001]},
+  "params": {},
+  "expected": {
+    "dagostino": {
+      "stat": "NaN",
+      "p": "NaN",
+      "skewness": "NaN",
+      "kurtosis": "NaN",
+      "zSkewness": "NaN",
+      "zKurtosis": "NaN"
+    },
+    "shapiroWilk": {
+      "stat": 0.91601968297057157,
+      "p": 0.5148689220348619
+    },
+    "andersonDarling": {
+      "stat": "NaN",
+      "p": "NaN",
+      "a2": "NaN"
+    },
+    "ks": {
+      "stat": "NaN",
+      "p": "NaN",
+      "pAbove010": false
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "nortest": "1.0.4",
+      "moments": "0.14.1"
+    }
+  }
+}

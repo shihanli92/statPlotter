@@ -1,0 +1,291 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Horizontal",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Fold change",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 3,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.2,
+        1.5,
+        1.4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.7,
+        0.8,
+        0.6
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Horizontal bars from 1",
+   "graphType": "column.bar",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 108,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fold change"
+     }
+    ]
+   },
+   "style": {
+    "orientation": "horizontal",
+    "seriesDefaults": {
+     "bar": {
+      "baseline": 1
+     },
+     "label": {
+      "show": true,
+      "position": "inside"
+     }
+    }
+   }
+  },
+  "zid000005": {
+   "kind": "table",
+   "id": "zid000005",
+   "name": "Grouped",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 2,
+   "rowTitles": [
+    "R1",
+    "R2"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000006",
+     "title": "X",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        3,
+        6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4,
+        7
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000007",
+     "title": "Y",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2,
+        4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2.5,
+        3
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000008": {
+   "kind": "graph",
+   "id": "zid000008",
+   "name": "Horizontal stacks",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "zid000005",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Grouped"
+     }
+    ]
+   },
+   "style": {
+    "orientation": "horizontal",
+    "arrangement": "stacked"
+   }
+  },
+  "zid000009": {
+   "kind": "graph",
+   "id": "zid000009",
+   "name": "Horizontal dot plot",
+   "graphType": "grouped.scatter",
+   "seriesSource": {
+    "table": "zid000005",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Grouped"
+     }
+    ]
+   },
+   "style": {
+    "orientation": "horizontal",
+    "categoryGap": 0.4
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000008",
+  "zid000009"
+ ]
+}

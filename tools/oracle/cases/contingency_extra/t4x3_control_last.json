@@ -1,0 +1,16 @@
+{
+  "input": {
+    "table": [
+      [15, 10, 5],
+      [9, 12, 9],
+      [5, 10, 15],
+      [12, 12, 6]
+    ]
+  },
+  "params": {
+    "compare": "control",
+    "control": 3,
+    "test": "chiSquare",
+    "method": "none"
+  }
+}

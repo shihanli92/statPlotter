@@ -1,0 +1,25 @@
+{
+  "name": "t2x2",
+  "input": {"table":[[76,399],[129,332]]},
+  "params": {},
+  "expected": {
+    "cramersV": 0.14484863036031992,
+    "phi": 0.14484863036031995,
+    "pairwise": [
+      {
+        "rowA": 0,
+        "rowB": 1,
+        "chiSq": 19.638333671355912,
+        "df": 1,
+        "columns": 2,
+        "p": 9.2396610105020386e-06,
+        "adjusted": 9.2396610105020386e-06
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Prism's relative-risk example; phi only."
+}

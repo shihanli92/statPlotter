@@ -1,0 +1,25 @@
+{
+  "name": "identical_groups",
+  "input": {"controls":[2,2,2],"patients":[2,2]},
+  "params": {},
+  "expected": {
+    "points": [],
+    "auc": 0.5,
+    "se": 0.28867513459481287,
+    "lower": 0,
+    "upper": 1,
+    "p": 1,
+    "se0": 0.28867513459481287,
+    "z": 0,
+    "direction": "higher",
+    "nControls": 3,
+    "nPatients": 2
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pROC": "1.19.1"
+    }
+  },
+  "note": "One distinct value: area 0.5, P 1, no rows."
+}

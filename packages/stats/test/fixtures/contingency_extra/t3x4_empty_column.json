@@ -1,0 +1,42 @@
+{
+  "name": "t3x4_empty_column",
+  "input": {"table":[[6,0,4,5],[3,0,7,2],[4,5,1,6]]},
+  "params": {"test":"chiSquare"},
+  "expected": {
+    "cramersV": 0.44329947335511588,
+    "pairwise": [
+      {
+        "rowA": 0,
+        "rowB": 1,
+        "chiSq": 2.8051948051948048,
+        "df": 2,
+        "columns": 3,
+        "p": 0.24595728346045828,
+        "adjusted": 0.73787185038137482
+      },
+      {
+        "rowA": 0,
+        "rowB": 2,
+        "chiSq": 7.2662121212121207,
+        "df": 3,
+        "columns": 4,
+        "p": 0.0638797493589085,
+        "adjusted": 0.1916392480767255
+      },
+      {
+        "rowA": 1,
+        "rowB": 2,
+        "chiSq": 11.302083333333334,
+        "df": 3,
+        "columns": 4,
+        "p": 0.01019967357063634,
+        "adjusted": 0.030599020711909019
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Column 2 is empty in rows 1 and 2: dropped from that pair's table (2 x 3)."
+}

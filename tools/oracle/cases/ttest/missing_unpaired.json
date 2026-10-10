@@ -1,0 +1,23 @@
+{
+  "input": {
+    "a": [
+      3.2,
+      null,
+      4.1,
+      5.0,
+      2.8,
+      3.9,
+      null
+    ],
+    "b": [
+      5.1,
+      6.3,
+      null,
+      4.8,
+      7.2,
+      5.9,
+      6.0
+    ]
+  },
+  "note": "Empty cells (null) left out of their group (audit 3, S8)."
+}

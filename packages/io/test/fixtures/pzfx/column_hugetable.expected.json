@@ -1,0 +1,279 @@
+{
+  "file": "column_hugetable.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "Y_1",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_2",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_3",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_4",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_5",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_6",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_7",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_8",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_9",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_10",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_11",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_12",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_13",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_14",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_15",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_16",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_17",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_18",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_19",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_20",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_21",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_22",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_23",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_24",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_25",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_26",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_27",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_28",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_29",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_30",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_31",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_32",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_33",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_34",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_35",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_36",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_37",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_38",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_39",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_40",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_41",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_42",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_43",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_44",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_45",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_46",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_47",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_48",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_49",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_50",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_51",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_52",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Y_53",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

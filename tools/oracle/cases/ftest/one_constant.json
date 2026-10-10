@@ -1,0 +1,1 @@
+{ "input": { "a": [3, 3, 3], "b": [1, 2, 4] }, "note": "One variance zero: F = Inf, P = 0." }

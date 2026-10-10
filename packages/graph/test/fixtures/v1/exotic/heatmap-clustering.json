@@ -1,0 +1,346 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Heat maps",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Expression",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 5,
+   "rowTitles": [
+    "g1",
+    "g2",
+    "g3",
+    "g4",
+    "g5"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "S1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        3.8,
+        3.1,
+        3.7,
+        4.5,
+        4.9
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        3.8,
+        4.6,
+        5.6,
+        5.8,
+        4.3
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "S2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5.9,
+        6.6,
+        6.4,
+        9.6,
+        4.1
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        3.8,
+        5.2,
+        5.7,
+        5.5,
+        3.9
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000004",
+     "title": "S3",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        6.2,
+        8,
+        3.8,
+        8.4,
+        4.3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5.8,
+        5.2,
+        4.2,
+        6.4,
+        2.4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000005",
+     "title": "S4",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        4.3,
+        8.1,
+        7.5,
+        5,
+        5.9
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5,
+        4.2,
+        5.4,
+        4.6,
+        3.7
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000006": {
+   "kind": "graph",
+   "id": "zid000006",
+   "name": "Clustered heat map",
+   "graphType": "heatmap.cells",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 96,
+    "plotHeight": 120
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    },
+    "y": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Expression"
+     }
+    ]
+   },
+   "style": {
+    "heatmap": {
+     "colors": "blueRed",
+     "standardize": "row",
+     "clusterRows": true,
+     "clusterColumns": true,
+     "linkage": "average",
+     "distance": "pearson",
+     "dendrogram": 24,
+     "labels": {
+      "show": true,
+      "format": {
+       "mode": "fixed",
+       "digits": 1
+      }
+     },
+     "colorBar": {
+      "show": true,
+      "position": "bottom",
+      "title": "z"
+     },
+     "border": {
+      "color": {
+       "rgb": "#ffffff"
+      },
+      "width": 0.5,
+      "dash": "solid"
+     }
+    }
+   }
+  },
+  "zid000007": {
+   "kind": "table",
+   "id": "zid000007",
+   "name": "Variables",
+   "tableKind": "multipleVariables",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 5,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000008",
+     "title": "Height",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        160,
+        172,
+        181,
+        168,
+        175
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000009",
+     "title": "Weight",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        55,
+        70,
+        85,
+        62,
+        74
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000010",
+     "title": "Age",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        30,
+        45,
+        52,
+        28,
+        61
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000011": {
+   "kind": "graph",
+   "id": "zid000011",
+   "name": "Variables heat map",
+   "graphType": "heatmap.cells",
+   "seriesSource": {
+    "table": "zid000007",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 72,
+    "plotHeight": 120
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    },
+    "y": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Variables"
+     }
+    ]
+   },
+   "style": {
+    "heatmap": {
+     "colors": "magma",
+     "reverse": true,
+     "min": 0
+    }
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000006",
+  "zid000007",
+  "zid000011"
+ ]
+}

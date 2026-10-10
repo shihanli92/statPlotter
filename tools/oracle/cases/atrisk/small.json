@@ -1,0 +1,31 @@
+{
+  "input": {
+    "time": [
+      1,
+      2,
+      2,
+      3,
+      5,
+      8
+    ],
+    "event": [
+      1,
+      0,
+      1,
+      1,
+      0,
+      1
+    ],
+    "times": [
+      0,
+      1,
+      2,
+      2.5,
+      3,
+      6,
+      8,
+      10
+    ]
+  },
+  "note": "Times at events, censorings, between them and past the last one."
+}

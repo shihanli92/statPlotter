@@ -1,0 +1,13 @@
+{
+  "name": "t_unpaired_one_tailed",
+  "input": [],
+  "params": {"design":"ttest","type":"two.sample","delta":1,"sd":1.5,"alpha":0.01,"tails":1,"n":12,"target":0.9,"lo":2},
+  "expected": {
+    "power": 0.21406277978451316,
+    "nFor": 59.950195909814617
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

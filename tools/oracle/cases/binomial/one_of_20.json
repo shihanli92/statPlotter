@@ -1,0 +1,11 @@
+{
+  "input": {
+    "k": 1,
+    "n": 20,
+    "p0": 0.29999999999999999
+  },
+  "params": {
+    "fn": "binomial"
+  },
+  "note": "Wilson/Brown: Poisson lower limit (x = 1)."
+}

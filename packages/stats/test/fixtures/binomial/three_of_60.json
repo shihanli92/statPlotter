@@ -1,0 +1,34 @@
+{
+  "name": "three_of_60",
+  "input": {"k":3,"n":60,"p0":0.050000000000000003},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 1,
+      "pLess": 0.64728101160133988,
+      "pGreater": 0.58256423133983337
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 0.050000000000000003,
+        "lower": 0.013628190786065893,
+        "upper": 0.13700516476348518
+      },
+      "wilson": {
+        "value": 0.050000000000000003,
+        "lower": 0.017149502164395668,
+        "upper": 0.13700516476348518
+      },
+      "clopperPearson": {
+        "value": 0.050000000000000003,
+        "lower": 0.010432329644348228,
+        "upper": 0.1392432467210728
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "x = 3 with n > 50: Poisson lower limit."
+}

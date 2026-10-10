@@ -1,0 +1,32 @@
+{
+  "name": "plotting-software",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @ps/web dev",
+    "desktop": "pnpm --filter @ps/desktop tauri dev",
+    "tauri": "pnpm --filter @ps/desktop tauri",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "pnpm --filter @ps/e2e exec playwright test",
+    "e2e:affected": "node tools/e2e-affected.mjs",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "check:deps": "node tools/check-deps.mjs && node tools/e2e-affected.mjs --check",
+    "check": "pnpm check:deps && pnpm lint && pnpm typecheck && pnpm test",
+    "oracle": "cd tools/oracle && Rscript run.R",
+    "nist": "node tools/nist/fetch.mjs"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  }
+}

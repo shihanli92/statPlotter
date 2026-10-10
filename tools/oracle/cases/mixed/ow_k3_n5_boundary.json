@@ -1,0 +1,25 @@
+{
+  "input": {
+    "rows": [[4.0631561478913714, 2.6116813541721067, 4.2527927097439324],
+[null, 3.0037325498340817, 6.8825884947649403],
+[1.3928331047278648, 4.9642276873482203, 6.5658916961301887],
+[3.2864512319389045,  4.938852249114043, 5.2231891154802002],
+[2.1827211042033685, 4.6063791942190662, 7.5931872867363213]]
+  },
+  "params": {
+    "design": "oneway",
+    "sphericity": "assumed",
+    "comparisons": [
+      {
+        "method": "tukey"
+      },
+      {
+        "method": "sidak"
+      },
+      {
+        "method": "fisher"
+      }
+    ]
+  },
+  "note": "No subject effect: the REML subject variance sits on the boundary 0 (checked in the oracle); results differ from RM ANOVA, as Prism warns."
+}

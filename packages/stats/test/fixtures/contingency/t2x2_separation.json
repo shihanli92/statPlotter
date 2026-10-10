@@ -1,0 +1,96 @@
+{
+  "name": "t2x2_separation",
+  "input": {"table":[[10,0],[0,10]]},
+  "params": {},
+  "expected": {
+    "chiSquare": {
+      "chiSq": 20,
+      "df": 1,
+      "p": 7.7442164310440858e-06,
+      "expected": [
+        [5, 5],
+        [5, 5]
+      ]
+    },
+    "fisher": {
+      "p": 1.0825088224469028e-05,
+      "pLess": 1,
+      "pGreater": 5.4125441122345148e-06
+    },
+    "chiSquareYates": {
+      "chiSq": 16.199999999999999,
+      "df": 1,
+      "p": 5.6994116233318465e-05,
+      "expected": [
+        [5, 5],
+        [5, 5]
+      ]
+    },
+    "trend": {
+      "chiSq": 20,
+      "df": 1,
+      "p": 7.7442164310440858e-06
+    },
+    "twoByTwo": {
+      "relativeRisk": {
+        "value": "Inf",
+        "lower": 3.6031777162700585,
+        "upper": "Inf"
+      },
+      "riskDifference": {
+        "value": 1,
+        "lower": 0.51275079312805039,
+        "upper": 1
+      },
+      "riskDifferenceNoCC": {
+        "value": 1,
+        "lower": 0.60750935043052423,
+        "upper": 1
+      },
+      "nnt": {
+        "value": 1,
+        "lower": 1,
+        "upper": 1.9502651451779769
+      },
+      "oddsRatio": {
+        "value": "Inf",
+        "lower": 14.491376383905038,
+        "upper": "Inf"
+      },
+      "sensitivity": {
+        "value": 1,
+        "lower": 0.72246720013711074,
+        "upper": 1
+      },
+      "specificity": {
+        "value": 1,
+        "lower": 0.72246720013711074,
+        "upper": 1
+      },
+      "ppv": {
+        "value": 1,
+        "lower": 0.72246720013711074,
+        "upper": 1
+      },
+      "npv": {
+        "value": 1,
+        "lower": 0.72246720013711074,
+        "upper": 1
+      },
+      "likelihoodRatio": "Inf"
+    },
+    "mcNemar": {
+      "chiSq": "NaN",
+      "p": "NaN",
+      "pExact": 1
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "PropCIs": "0.3.0",
+      "exact2x2": "1.7.0",
+      "contingencytables": "3.1.0"
+    }
+  }
+}

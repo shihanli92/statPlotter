@@ -1,0 +1,24 @@
+{
+  "name": "spearman_n3",
+  "input": {"x":[1,2,4],"y":[2.2000000000000002,1.8999999999999999,5.0999999999999996]},
+  "params": {"method":"spearman"},
+  "expected": {
+    "r": 0.5,
+    "lower": "NaN",
+    "upper": "NaN",
+    "r2": 0.25,
+    "p": 1,
+    "n": 3,
+    "t": 0.57735026918962584,
+    "df": 1,
+    "exact": true,
+    "ciValid": false
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pspearman": "0.3.1"
+    }
+  },
+  "note": "n = 3: no CI (NaN)."
+}

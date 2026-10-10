@@ -1,0 +1,59 @@
+name: Desktop
+
+# macOS and Windows runners use private-repository Actions minutes ten and two times as fast, so
+# this only runs when the desktop shell changes (or by hand). Windows too since roadmap 41: its
+# own code (single instance, files opened by arguments) is compiled only there. The Rust
+# dependencies' security advisories are checked on Linux, on those changes and every week (new
+# advisories appear without any change here).
+on:
+  push:
+    branches: [main]
+    paths: ['apps/desktop/**', 'packages/graph/assets/fonts/**']
+  pull_request:
+    paths: ['apps/desktop/**', 'packages/graph/assets/fonts/**']
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+# Read-only token (code audit 2, decision 651).
+permissions:
+  contents: read
+
+jobs:
+  desktop:
+    # Not on the weekly schedule: that is for the advisories only.
+    if: github.event_name != 'schedule'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # master
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: apps/desktop/src-tauri
+      - run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml
+
+  # Known vulnerabilities in the locked Rust dependencies (code audit 2, decision 655): the
+  # RustSec advisory database against Cargo.lock, every platform's dependencies. Fails on a
+  # vulnerability; advisories that are only warnings (unmaintained, unsound or yanked crates,
+  # many of them Linux-only ones in Tauri's tree) are listed without failing.
+  audit:
+    # Only in the project's own repository (audit 3, T11): a copy elsewhere has no secrets.
+    if: github.repository == 'shihanli92/plottingTool'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      # A prebuilt cargo-audit at a fixed version, checksum-verified by the action.
+      - uses: taiki-e/install-action@f7e5d7c961414b23f5b25b2da9294395d08513ad # v2.87.26
+        with:
+          tool: cargo-audit@0.22.2
+      - run: cargo audit --file apps/desktop/src-tauri/Cargo.lock

@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="284.214pt" height="262.48pt" viewBox="0 0 284.214 262.48">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="79.442" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample variables</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/bars">
+<g data-id="series/lv_46/bar/0">
+<rect x="55.042" y="125.785" width="19.2" height="90" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_46/bar/1">
+<rect x="115.042" y="60.985" width="19.2" height="154.8" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_46/bar/2">
+<rect x="175.042" y="104.185" width="19.2" height="111.6" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_4d/bar/0">
+<rect x="79.042" y="140.185" width="19.2" height="75.6" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_4d/bar/1">
+<rect x="139.042" y="82.585" width="19.2" height="133.2" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_4d/bar/2">
+<rect x="199.042" y="111.385" width="19.2" height="104.4" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+</g>
+<g data-id="layer/points">
+<g data-id="series/lv_46/point/0/0">
+<path d="M67.816,129.385a5.226,5.226 0 1,0 10.452,0a5.226,5.226 0 1,0 -10.452,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_46/point/0/1">
+<path d="M57.995,122.185a6.647,6.647 0 1,0 13.294,0a6.647,6.647 0 1,0 -13.294,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_46/point/1/0">
+<path d="M126.574,64.585a4.826,4.826 0 1,0 9.653,0a4.826,4.826 0 1,0 -9.653,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_46/point/1/1">
+<path d="M119.493,57.385a5.149,5.149 0 1,0 10.297,0a5.149,5.149 0 1,0 -10.297,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_46/point/2/0">
+<path d="M186.579,107.785a6.463,6.463 0 1,0 12.926,0a6.463,6.463 0 1,0 -12.926,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_46/point/2/1">
+<path d="M178.903,100.585a5.739,5.739 0 1,0 11.478,0a5.739,5.739 0 1,0 -11.478,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d/point/0/0">
+<path d="M90.84,137.583h12.404v12.404h-12.404Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d/point/0/1">
+<path d="M83.027,130.97h11.23v11.23h-11.23Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d/point/1/0">
+<path d="M151.715,80.858h10.654v10.654h-10.654Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d/point/1/1">
+<path d="M143.747,74.09h9.79v9.79h-9.79Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d/point/2/0">
+<path d="M211.598,109.541h10.888v10.888h-10.888Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d/point/2/1">
+<path d="M202.594,101.738h12.095v12.095h-12.095Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+</g>
+</g>
+<g data-id="layer/error">
+<g data-id="series/lv_46/error/0/0">
+<line x1="64.642" y1="120.694" x2="64.642" y2="130.876" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/0/1">
+<line x1="62.142" y1="120.694" x2="67.142" y2="120.694" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/0/2">
+<line x1="62.142" y1="130.876" x2="67.142" y2="130.876" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/1/0">
+<line x1="124.642" y1="55.894" x2="124.642" y2="66.076" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/1/1">
+<line x1="122.142" y1="55.894" x2="127.142" y2="55.894" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/1/2">
+<line x1="122.142" y1="66.076" x2="127.142" y2="66.076" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/2/0">
+<line x1="184.642" y1="99.094" x2="184.642" y2="109.276" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/2/1">
+<line x1="182.142" y1="99.094" x2="187.142" y2="99.094" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_46/error/2/2">
+<line x1="182.142" y1="109.276" x2="187.142" y2="109.276" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/0/0">
+<line x1="88.642" y1="135.094" x2="88.642" y2="145.276" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/0/1">
+<line x1="86.142" y1="135.094" x2="91.142" y2="135.094" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/0/2">
+<line x1="86.142" y1="145.276" x2="91.142" y2="145.276" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/1/0">
+<line x1="148.642" y1="77.494" x2="148.642" y2="87.676" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/1/1">
+<line x1="146.142" y1="77.494" x2="151.142" y2="77.494" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/1/2">
+<line x1="146.142" y1="87.676" x2="151.142" y2="87.676" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/2/0">
+<line x1="208.642" y1="106.294" x2="208.642" y2="116.476" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/2/1">
+<line x1="206.142" y1="106.294" x2="211.142" y2="106.294" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d/error/2/2">
+<line x1="206.142" y1="116.476" x2="211.142" y2="116.476" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="46.642" y1="215.785" x2="46.642" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="46.642" y1="215.785" x2="42.642" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="219.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="46.642" y1="179.785" x2="42.642" y2="179.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="183.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="46.642" y1="143.785" x2="42.642" y2="143.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="147.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="46.642" y1="107.785" x2="42.642" y2="107.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="111.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="46.642" y1="71.785" x2="42.642" y2="71.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="75.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="46.642" y1="35.785" x2="42.642" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 125.785)" xml:space="preserve"><tspan x="-1.973" y="129.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Score</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="46.642" y1="215.785" x2="226.642" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="76.642" y1="215.785" x2="76.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="66.552" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Low</tspan></text>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="136.642" y1="215.785" x2="136.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="125.33" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">High</tspan></text>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="196.642" y1="215.785" x2="196.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="187.779" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Mid</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="118.645" y="251.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Group</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/aes/groups">
+<g data-id="legend/aes/groups/label">
+<text fill="#000000" xml:space="preserve"><tspan x="256.642" y="47.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Sex</tspan></text>
+</g>
+</g>
+<g data-id="legend/lv_46">
+<g data-id="legend/lv_46/swatch">
+<rect x="238.642" y="54.785" width="14" height="10" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_46/level/symbol">
+<path d="M243.642,59.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
+</g>
+<g data-id="legend/lv_46/label">
+<text fill="#000000" xml:space="preserve"><tspan x="256.642" y="63.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">F</tspan></text>
+</g>
+</g>
+<g data-id="legend/lv_4d">
+<g data-id="legend/lv_4d/swatch">
+<rect x="238.642" y="70.785" width="14" height="10" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="legend/lv_4d/level/symbol">
+<path d="M243.87,74.013h3.544v3.544h-3.544Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
+</g>
+<g data-id="legend/lv_4d/label">
+<text fill="#000000" xml:space="preserve"><tspan x="256.642" y="79.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">M</tspan></text>
+</g>
+</g>
+<g data-id="legend/aes/size">
+<g data-id="legend/aes/size/label">
+<text fill="#000000" xml:space="preserve"><tspan x="256.642" y="95.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Age</tspan></text>
+</g>
+</g>
+<g data-id="legend/aes/size/0">
+<g data-id="legend/aes/size/0/symbol">
+<path d="M238.699,108.728a6.942,6.942 0 1,0 13.885,0a6.942,6.942 0 1,0 -13.885,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/aes/size/0/label">
+<text fill="#000000" xml:space="preserve"><tspan x="256.642" y="112.541" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">60</tspan></text>
+</g>
+</g>
+<g data-id="legend/aes/size/1">
+<g data-id="legend/aes/size/1/symbol">
+<path d="M239.304,126.007a6.338,6.338 0 1,0 12.675,0a6.338,6.338 0 1,0 -12.675,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/aes/size/1/label">
+<text fill="#000000" xml:space="preserve"><tspan x="256.642" y="129.821" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">50</tspan></text>
+</g>
+</g>
+<g data-id="legend/aes/size/2">
+<g data-id="legend/aes/size/2/symbol">
+<path d="M240.733,142.345a4.909,4.909 0 1,0 9.818,0a4.909,4.909 0 1,0 -9.818,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/aes/size/2/label">
+<text fill="#000000" xml:space="preserve"><tspan x="256.642" y="146.158" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

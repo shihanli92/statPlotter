@@ -1,0 +1,15 @@
+{
+  "input": {
+    "columns": {
+      "Days": [41, 26, 52, 200, 13, 12, 18, 76, 67, 135, 43, 23, 71, 159, 99, 68, 133, 103, 46, 177, 158, 5, 56, 94, 18, 52, 155, 19, 130, 77, 154, 123, 83, 2, 1, 273, 74, 59, 65, 80, 52, 66, 38, 81, 115, 18, 74, 218, 76, 16, 86, 66, 210, 61, 93, 114, 283, 64, 80, 176, 282, 54, 58, 74, 179, 236, 93, 123, 46, 49, 139, 128, 10, 228, 75, 110, 118, 30, 60, 93, 37, 34, 47, 70, 86, 229, 52, 59, 9, 81, 59, 51, 34, 26, 78, 272, 56, 68, 85, 33],
+      "Died": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+      "Age": [62, 70, 40, 47, 49, 74, 70, 80, 64, 47, 67, 63, 50, 59, 57, 72, 72, 41, 74, 57, 47, 49, 52, 76, 67, 56, 56, 43, 62, 68, 41, 45, 64, 54, 66, 54, 65, 62, 68, 67, 77, 71, 69, 50, 46, 64, 60, 42, 62, 66, 46, 59, 44, 50, 52, 50, 51, 51, 49, 48, 65, 78, 42, 54, 51, 69, 69, 50, 41, 73, 49, 71, 72, 46, 59, 59, 52, 64, 65, 65, 65, 76, 78, 68, 63, 47, 47, 40, 77, 77, 78, 50, 43, 72, 76, 55, 68, 77, 55, 51],
+      "Arm": ["Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control", "Low", "High", "Control"],
+      "Sex": ["M", "M", "F", "F", "F", "M", "F", "M", "M", "M", "M", "M", "F", "M", "F", "F", "F", "F", "M", "F", "F", "M", "M", "M", "F", "F", "F", "F", "M", "F", "F", "F", "F", "F", "F", "F", "M", "F", "F", "M", "M", "F", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "F", "M", "M", "M", "F", "F", "F", "F", "M", "M", "F", "F", "M", "M", "F", "M", "M", "F", "F", "M", "M", "M", "F", "M", "F", "F", "F", "M", "M", "M", "F", "M", "M", "F", "F", "F", "M", "M", "M", "M", "F", "F", "M", "F", "M", "F"]
+    }
+  },
+  "params": {"model": "cox", "time": "Days", "event": "Died", "ciMethod": "wald",
+      "interactions": [["Arm", "Sex"]],
+      "survivalCurves": [{"Age": 60, "Arm": "High", "Sex": "F"}, {"Arm": "Low"}]},
+  "note": "Cox with a categorical interaction; estimated survival curves at categorical values (missing numeric = 0, missing categorical = reference)."
+}

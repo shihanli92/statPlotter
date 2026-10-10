@@ -1,0 +1,9 @@
+{
+  "input": {
+    "table": [
+      [0, 5],
+      [0, 7]
+    ]
+  },
+  "note": "No outcomes: chi-square NaN, RR NaN with CI [0, Inf], OR CI [0, Inf]."
+}

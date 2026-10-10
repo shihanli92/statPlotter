@@ -1,0 +1,17 @@
+{
+  "name": "identical",
+  "input": {"a":[1,2,3,4],"b":[1,2,3,4]},
+  "params": {},
+  "expected": {
+    "d": 0,
+    "p": 1,
+    "exact": true,
+    "nA": 4,
+    "nB": 4
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "D = 0: P = 1."
+}

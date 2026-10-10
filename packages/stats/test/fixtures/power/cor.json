@@ -1,0 +1,13 @@
+{
+  "name": "cor",
+  "input": [],
+  "params": {"design":"cor","r":0.3,"alpha":0.05,"n":50,"target":0.8,"lo":4},
+  "expected": {
+    "power": 0.56436763896354036,
+    "nFor": 84.927610442036112
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

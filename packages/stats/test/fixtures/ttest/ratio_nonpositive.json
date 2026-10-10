@@ -1,0 +1,27 @@
+{
+  "name": "ratio_nonpositive",
+  "input": {"a":[10,0,8],"b":[15,20,11]},
+  "params": {"test":"ratio"},
+  "expected": {
+    "t": "NaN",
+    "df": 2,
+    "p": "NaN",
+    "mean": "NaN",
+    "sd": "NaN",
+    "se": "NaN",
+    "ciLo": "NaN",
+    "ciHi": "NaN",
+    "n": 3,
+    "rSquared": "NaN",
+    "ratio": "NaN",
+    "ratioCiLo": "NaN",
+    "ratioCiHi": "NaN"
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "BSDA": "1.2.2"
+    }
+  },
+  "note": "A value <= 0: the ratio test is undefined, all results NaN."
+}

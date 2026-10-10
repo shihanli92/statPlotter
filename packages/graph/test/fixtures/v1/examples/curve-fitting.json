@@ -1,0 +1,4445 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Curve fitting and standard curves",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Dose-response",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 11,
+   "rowTitles": null,
+   "x": {
+    "title": "log[Agonist], M",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       -10,
+       -9.5,
+       -9,
+       -8.5,
+       -8,
+       -7.5,
+       -7,
+       -6.5,
+       -6,
+       -5.5,
+       -5
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Agonist A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        8,
+        2.3,
+        1.6,
+        18.4,
+        58.5,
+        86.4,
+        93.6,
+        101.6,
+        110.7,
+        95.6,
+        98.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        -0.4,
+        2,
+        12.3,
+        24,
+        51.4,
+        96,
+        106.5,
+        90.4,
+        95.7,
+        90.6,
+        90.4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1.6,
+        -1.6,
+        8.1,
+        29.9,
+        61.2,
+        82.1,
+        99.9,
+        103.8,
+        98.6,
+        111,
+        101
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Agonist B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        4.2,
+        9.3,
+        12.1,
+        10.6,
+        -7.9,
+        19.3,
+        40.5,
+        77.3,
+        97.3,
+        107.7,
+        95.7
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        9.6,
+        5.8,
+        0.1,
+        -8.6,
+        -7.9,
+        16,
+        44.1,
+        79.6,
+        96.1,
+        90.7,
+        101.3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5.7,
+        10.8,
+        3.2,
+        4.8,
+        6.4,
+        16.3,
+        41.7,
+        72.1,
+        93.7,
+        92.1,
+        104.3
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Response (% of maximum) to two agonists, triplicates at 11 concentrations. Simulated with a Hill slope of 1.4. A global fit shares the Hill slope between the two curves; a second fit compares the variable-slope model with a slope fixed at 1 (extra sum-of-squares F test and AICc)."
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Dose-response",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000006",
+     "ref": {
+      "node": "zid000005",
+      "key": "curve:zid000002"
+     },
+     "colorOf": "zid000002"
+    },
+    {
+     "id": "zid000007",
+     "ref": {
+      "node": "zid000005",
+      "key": "curve:zid000003"
+     },
+     "colorOf": "zid000003"
+    }
+   ],
+   "size": {
+    "plotWidth": 240,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "log[Agonist], M"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Response (%)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Dose-response"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000005": {
+   "kind": "analysis",
+   "id": "zid000005",
+   "name": "Global fit (shared Hill slope)",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "equation": "agonist-response-variable-slope",
+    "userEquation": "",
+    "constraints": {
+     "HillSlope": {
+      "kind": "shared"
+     }
+    },
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "confidence",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000008": {
+   "kind": "analysis",
+   "id": "zid000008",
+   "name": "Compare: variable vs. standard slope",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "equation": "agonist-response-variable-slope",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "agonist-response",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000009": {
+   "kind": "analysis",
+   "id": "zid000009",
+   "name": "Does LogEC50 differ between the agonists?",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "equation": "agonist-response-variable-slope",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [
+     "LogEC50"
+    ],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000010": {
+   "kind": "table",
+   "id": "zid000010",
+   "name": "ELISA standard curve",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 13,
+   "rowTitles": [
+    "Standard 1000 pg/mL",
+    "Standard 500 pg/mL",
+    "Standard 250 pg/mL",
+    "Standard 125 pg/mL",
+    "Standard 62.5 pg/mL",
+    "Standard 31.25 pg/mL",
+    "Standard 15.63 pg/mL",
+    "Standard 7.81 pg/mL",
+    "Sample 1",
+    "Sample 2",
+    "Sample 3",
+    "Sample 4",
+    "Sample 5"
+   ],
+   "x": {
+    "title": "log[IL-6], pg/mL",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       3,
+       2.699,
+       2.398,
+       2.097,
+       1.796,
+       1.495,
+       1.194,
+       0.893,
+       null,
+       null,
+       null,
+       null,
+       null
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000011",
+     "title": "OD450",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2.54,
+        2.229,
+        1.716,
+        1.228,
+        0.736,
+        0.421,
+        0.234,
+        0.141,
+        0.332,
+        0.581,
+        1.062,
+        1.744,
+        2.375
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2.557,
+        2.24,
+        1.713,
+        1.13,
+        0.738,
+        0.411,
+        0.241,
+        0.16,
+        0.313,
+        0.623,
+        1.128,
+        1.76,
+        2.193
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Optical density of IL-6 standards (duplicates; X is log10 of the concentration) and, below them, five samples with an OD but no X. The four-parameter fit interpolates each sample replicate (with a CI) into a result table; a Transform of that table turns log concentrations back into pg/mL. Simulated: the samples' true concentrations are 22, 48, 110, 260, 480 pg/mL."
+  },
+  "zid000012": {
+   "kind": "graph",
+   "id": "zid000012",
+   "name": "ELISA standard curve",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000010",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000014",
+     "ref": {
+      "node": "zid000013",
+      "key": "curve:zid000011"
+     },
+     "colorOf": "zid000011"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "log[IL-6], pg/mL"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "OD"
+       },
+       {
+        "text": "450",
+        "sub": true
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "ELISA standard curve"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "each"
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   }
+  },
+  "zid000013": {
+   "kind": "analysis",
+   "id": "zid000013",
+   "name": "Standard curve fit (4PL) with interpolation",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000010",
+    "dataSets": [
+     "zid000011"
+    ]
+   },
+   "params": {
+    "equation": "agonist-response-variable-slope",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": true,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000015": {
+   "kind": "graph",
+   "id": "zid000015",
+   "name": "Interpolated unknowns",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000013",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000016",
+     "ref": {
+      "node": "zid000013",
+      "key": "curve:zid000011"
+     },
+     "colorOf": "zid000011",
+     "style": {
+      "color": {
+       "rgb": "#0072b2"
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "log[IL-6], pg/mL"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "OD"
+       },
+       {
+        "text": "450",
+        "sub": true
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Samples on the standard curve"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "shape": "diamond",
+      "size": 7,
+      "replicates": "each"
+     },
+     "color": {
+      "rgb": "#d55e00"
+     }
+    }
+   },
+   "pointOverrides": {
+    "zid000011": {
+     "r0s0": {
+      "label": "S1"
+     },
+     "r2s0": {
+      "label": "S2"
+     },
+     "r4s0": {
+      "label": "S3"
+     },
+     "r6s0": {
+      "label": "S4"
+     },
+     "r8s0": {
+      "label": "S5"
+     }
+    }
+   }
+  },
+  "zid000017": {
+   "kind": "analysis",
+   "id": "zid000017",
+   "name": "Interpolated concentrations (pg/mL)",
+   "analysisId": "transform",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000013",
+    "dataSets": [
+     "zid000011"
+    ]
+   },
+   "params": {
+    "y": "none",
+    "k": 1,
+    "kByDataSet": {},
+    "x": "pow10",
+    "kx": 1
+   }
+  },
+  "zid000018": {
+   "kind": "table",
+   "id": "zid000018",
+   "name": "BCA protein assay",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 11,
+   "rowTitles": null,
+   "x": {
+    "title": "BSA (µg/mL)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       125,
+       250,
+       500,
+       750,
+       1000,
+       1500,
+       2000,
+       null,
+       null,
+       null
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000019",
+     "title": "A562",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.073,
+        0.216,
+        0.32,
+        0.578,
+        0.836,
+        1.061,
+        1.549,
+        2.085,
+        0.267,
+        0.689,
+        1.299
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.12,
+        0.211,
+        0.347,
+        0.609,
+        0.834,
+        1.068,
+        1.565,
+        2.031,
+        0.28,
+        0.708,
+        1.306
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Absorbance of BSA standards (duplicates) and three lysates below them (Y, no X), read off a straight line. Simulated: the lysates contain 180, 620, 1240 µg/mL."
+  },
+  "zid000020": {
+   "kind": "graph",
+   "id": "zid000020",
+   "name": "BCA protein assay",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000022",
+     "ref": {
+      "node": "zid000021",
+      "key": "line:zid000019"
+     },
+     "colorOf": "zid000019"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "BSA (µg/mL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "A"
+       },
+       {
+        "text": "562",
+        "sub": true
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "BCA protein assay"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "each"
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   }
+  },
+  "zid000021": {
+   "kind": "analysis",
+   "id": "zid000021",
+   "name": "Linear standard curve",
+   "analysisId": "linearRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000019"
+    ]
+   },
+   "params": {
+    "throughOrigin": false,
+    "throughPoint": false,
+    "pointX": 0,
+    "pointY": 0,
+    "replicates": "each",
+    "band": "confidence",
+    "compare": true,
+    "interpolate": true,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000023": {
+   "kind": "table",
+   "id": "zid000023",
+   "name": "Enzyme inhibition",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 7,
+   "rowTitles": null,
+   "x": {
+    "title": "[Substrate], µM",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       1,
+       2,
+       4,
+       8,
+       16,
+       32,
+       64
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000024",
+     "title": "0",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        17.7,
+        28.9,
+        46.8,
+        65.1,
+        87,
+        103.9,
+        105.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        17.9,
+        29.8,
+        47.7,
+        70.8,
+        89,
+        98.1,
+        113.3
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000025",
+     "title": "2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        10.4,
+        20.7,
+        33.1,
+        53.4,
+        72.7,
+        89.3,
+        104.1
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        11.5,
+        19.5,
+        35.5,
+        50.2,
+        71.6,
+        95.2,
+        106.5
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000026",
+     "title": "5",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        6.7,
+        13.8,
+        24.4,
+        39,
+        57.5,
+        77.2,
+        97.3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        7.2,
+        13,
+        23.1,
+        40.8,
+        62.1,
+        79.7,
+        97.4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000027",
+     "title": "10",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        4.5,
+        9.2,
+        15.5,
+        29.4,
+        46.6,
+        64.3,
+        82.5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4.4,
+        9.1,
+        17.2,
+        28.6,
+        45.3,
+        66,
+        83.3
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Initial velocity at seven substrate concentrations with 0, 2, 5 or 10 µM inhibitor. Each data set’s title is its inhibitor concentration: the competitive inhibition model reads it as the data set constant I and fits Vmax, Km and Ki globally. Simulated with Vmax = 120, Km = 6 µM, Ki = 3 µM."
+  },
+  "zid000028": {
+   "kind": "graph",
+   "id": "zid000028",
+   "name": "Enzyme inhibition",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000023",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000031",
+     "ref": {
+      "node": "zid000030",
+      "key": "curve:zid000024"
+     },
+     "colorOf": "zid000024"
+    },
+    {
+     "id": "zid000032",
+     "ref": {
+      "node": "zid000030",
+      "key": "curve:zid000025"
+     },
+     "colorOf": "zid000025"
+    },
+    {
+     "id": "zid000033",
+     "ref": {
+      "node": "zid000030",
+      "key": "curve:zid000026"
+     },
+     "colorOf": "zid000026"
+    },
+    {
+     "id": "zid000034",
+     "ref": {
+      "node": "zid000030",
+      "key": "curve:zid000027"
+     },
+     "colorOf": "zid000027"
+    }
+   ],
+   "size": {
+    "plotWidth": 240,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "[Substrate], µM"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Velocity (nmol/min/mg)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "text",
+     "id": "zid000029",
+     "anchor": {
+      "space": "plot",
+      "x": 1.04,
+      "y": -0.04
+     },
+     "content": {
+      "content": [
+       {
+        "text": "[Inhibitor], µM"
+       }
+      ],
+      "style": {
+       "size": 10,
+       "bold": true
+      }
+     }
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Enzyme inhibition"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000030": {
+   "kind": "analysis",
+   "id": "zid000030",
+   "name": "Competitive inhibition (global)",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000023",
+    "dataSets": [
+     "zid000024",
+     "zid000025",
+     "zid000026",
+     "zid000027"
+    ]
+   },
+   "params": {
+    "equation": "competitive-inhibition",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000035": {
+   "kind": "table",
+   "id": "zid000035",
+   "name": "Photobleaching",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 16,
+   "rowTitles": null,
+   "x": {
+    "title": "Time (min)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       4,
+       8,
+       12,
+       16,
+       20,
+       24,
+       28,
+       32,
+       36,
+       40,
+       44,
+       48,
+       52,
+       56,
+       60
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000036",
+     "title": "Fluorescence",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1015,
+        710,
+        506,
+        413,
+        326,
+        297,
+        294,
+        293,
+        266,
+        267,
+        257,
+        240,
+        250,
+        283,
+        309,
+        306
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        996,
+        734,
+        505,
+        408,
+        345,
+        310,
+        296,
+        293,
+        258,
+        280,
+        280,
+        321,
+        274,
+        258,
+        294,
+        280
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Fluorescence decaying to a plateau while the baseline drifts upwards. Fit with a user-defined equation, Y = Plateau + Span*exp(-K*X) + Drift*X, from initial values. Simulated with Plateau = 200, Span = 800, K = 0.12, Drift = 1.5."
+  },
+  "zid000037": {
+   "kind": "graph",
+   "id": "zid000037",
+   "name": "Photobleaching",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000035",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000039",
+     "ref": {
+      "node": "zid000038",
+      "key": "curve:zid000036"
+     },
+     "colorOf": "zid000036"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time (min)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Fluorescence (AU)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Photobleaching"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "each"
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   }
+  },
+  "zid000038": {
+   "kind": "analysis",
+   "id": "zid000038",
+   "name": "User-defined equation",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000035",
+    "dataSets": [
+     "zid000036"
+    ]
+   },
+   "params": {
+    "equation": "user",
+    "userEquation": "Y = Plateau + Span*exp(-K*X) + Drift*X",
+    "constraints": {},
+    "initialValues": {
+     "Plateau": 150,
+     "Span": 700,
+     "K": 0.1,
+     "Drift": 1
+    },
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000040": {
+   "kind": "table",
+   "id": "zid000040",
+   "name": "Binding with an outlier",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 10,
+   "rowTitles": null,
+   "x": {
+    "title": "[Ligand], nM",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0.5,
+       1,
+       2,
+       4,
+       6,
+       8,
+       12,
+       16,
+       24,
+       32
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000041",
+     "title": "Specific binding",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        217,
+        337,
+        656,
+        931,
+        1119,
+        1253,
+        1439,
+        1494,
+        1578,
+        1615
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        236,
+        345,
+        647,
+        924,
+        1085,
+        1144,
+        778,
+        1381,
+        1605,
+        1601
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        190,
+        339,
+        652,
+        909,
+        1122,
+        1201,
+        1297,
+        1340,
+        1591,
+        1610
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Specific binding (cpm) of a radioligand, triplicates. One replicate at 12 nM was planted as an outlier (45% low). The fit uses ROUT (Q = 1%) to find and remove it, and shows a residual plot, the runs test and a normality test of the residuals. Simulated with Bmax = 1800, Kd = 4 nM."
+  },
+  "zid000042": {
+   "kind": "graph",
+   "id": "zid000042",
+   "name": "Binding with an outlier",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000040",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000044",
+     "ref": {
+      "node": "zid000043",
+      "key": "curve:zid000041"
+     },
+     "colorOf": "zid000041"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "[Ligand], nM"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Specific binding (cpm)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Binding with an outlier"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "each"
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   },
+   "pointOverrides": {
+    "zid000041": {
+     "r6s1": {
+      "color": {
+       "rgb": "#d55e00"
+      },
+      "fill": {
+       "type": "none"
+      },
+      "label": "Outlier"
+     }
+    }
+   }
+  },
+  "zid000043": {
+   "kind": "analysis",
+   "id": "zid000043",
+   "name": "One site binding with ROUT",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000040",
+    "dataSets": [
+     "zid000041"
+    ]
+   },
+   "params": {
+    "equation": "one-site-specific",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "eliminate",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": true,
+     "runsTest": true,
+     "replicatesTest": false,
+     "normality": true
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000045": {
+   "kind": "graph",
+   "id": "zid000045",
+   "name": "Residuals",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000040",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000046",
+     "ref": {
+      "node": "zid000043",
+      "key": "residuals:zid000041"
+     },
+     "colorOf": "zid000041",
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "[Ligand], nM"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Residual"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "line",
+     "id": "zid000047",
+     "space": "data",
+     "from": {
+      "x": 0,
+      "y": 0
+     },
+     "to": {
+      "x": 32,
+      "y": 0
+     },
+     "stroke": {
+      "color": {
+       "rgb": "#888888"
+      },
+      "width": 1,
+      "dash": "dash"
+     },
+     "arrow": "none",
+     "behind": true
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Residuals"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000048": {
+   "kind": "table",
+   "id": "zid000048",
+   "name": "Drug clearance",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 13,
+   "rowTitles": null,
+   "x": {
+    "title": "Minutes",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       2,
+       4,
+       6,
+       8,
+       12,
+       16,
+       20,
+       25,
+       30,
+       40,
+       50,
+       60
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000049",
+     "title": "Plasma",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        102.69,
+        96.18,
+        74.82,
+        60.55,
+        56.13,
+        38.44,
+        30.19,
+        24.01,
+        18.99,
+        11.97,
+        8.44,
+        5.56,
+        5.24
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        117.07,
+        76.03,
+        79.57,
+        57.87,
+        60.8,
+        42.32,
+        32.29,
+        22.62,
+        18.03,
+        13.7,
+        8.25,
+        6.83,
+        5.73
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        97.23,
+        87.22,
+        67.91,
+        57.58,
+        56.57,
+        43.67,
+        32.16,
+        27.46,
+        16.58,
+        12.95,
+        10.43,
+        6.25,
+        4.83
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Plasma concentration after a bolus, triplicates. Simulated with a constant 8% CV, so the scatter grows with Y: a one-phase decay weighted by 1/Y², with the test for appropriate weighting (a large P value: the weighting suits the data) and Hougaard’s skewness of the weighted fit."
+  },
+  "zid000050": {
+   "kind": "graph",
+   "id": "zid000050",
+   "name": "Drug clearance",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000048",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000052",
+     "ref": {
+      "node": "zid000051",
+      "key": "curve:zid000049"
+     },
+     "colorOf": "zid000049"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Minutes"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Concentration (ng/mL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Drug clearance"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000051": {
+   "kind": "analysis",
+   "id": "zid000051",
+   "name": "One-phase decay (weighted 1/Y²)",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000048",
+    "dataSets": [
+     "zid000049"
+    ]
+   },
+   "params": {
+    "equation": "one-phase-decay",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "relative",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": true,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": true,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000053": {
+   "kind": "table",
+   "id": "zid000053",
+   "name": "Treatment switch",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 13,
+   "rowTitles": null,
+   "x": {
+    "title": "Day",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000054",
+     "title": "Rising",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        -19.3,
+        -16.7,
+        -11.5,
+        -2.9,
+        3.3,
+        6,
+        14.8,
+        19.2,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000055",
+     "title": "Falling",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        28.6,
+        22.5,
+        20.1,
+        16,
+        14.2,
+        10.5,
+        6.8,
+        3.8
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "A tumour volume index rising until about day 7 and falling after a treatment switch, the two phases overlapping on days 5–7. Simulated lines crossing at day 7, volume 20. “Two intersecting lines” fits one line per data set sharing the crossing point (Xcross, Ycross)."
+  },
+  "zid000056": {
+   "kind": "graph",
+   "id": "zid000056",
+   "name": "Treatment switch",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000053",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000058",
+     "ref": {
+      "node": "zid000057",
+      "key": "curve:zid000054"
+     },
+     "colorOf": "zid000054"
+    },
+    {
+     "id": "zid000059",
+     "ref": {
+      "node": "zid000057",
+      "key": "curve:zid000055"
+     },
+     "colorOf": "zid000055"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Day"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Volume index"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Treatment switch"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000057": {
+   "kind": "analysis",
+   "id": "zid000057",
+   "name": "Two lines: crossing point and slopes",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000053",
+    "dataSets": [
+     "zid000054",
+     "zid000055"
+    ]
+   },
+   "params": {
+    "equation": "two-lines-crossing",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000060": {
+   "kind": "table",
+   "id": "zid000060",
+   "name": "Uptake and background",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": {
+    "title": "Substrate, µM",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0.5,
+       1,
+       2,
+       4,
+       8,
+       16,
+       32,
+       64
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000061",
+     "title": "Uptake",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        6.2,
+        18.9,
+        29.6,
+        42.1,
+        66.5,
+        87,
+        97.1,
+        102.6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        14.3,
+        16.8,
+        27.5,
+        48.7,
+        70.3,
+        86.7,
+        91,
+        105.8
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000062",
+     "title": "Background",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5.2,
+        2.8,
+        4.2,
+        7.5,
+        6.6,
+        10.2,
+        16.4,
+        27.4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1.8,
+        4.7,
+        1.5,
+        4.8,
+        5,
+        9.9,
+        16.1,
+        29.4
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Transport of a substrate (saturable, Michaelis-Menten) and nonspecific background (linear), duplicates. Simulated. One analysis fits a different equation to each data set."
+  },
+  "zid000063": {
+   "kind": "graph",
+   "id": "zid000063",
+   "name": "Uptake and background",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000060",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000065",
+     "ref": {
+      "node": "zid000064",
+      "key": "curve:zid000061"
+     },
+     "colorOf": "zid000061"
+    },
+    {
+     "id": "zid000066",
+     "ref": {
+      "node": "zid000064",
+      "key": "curve:zid000062"
+     },
+     "colorOf": "zid000062"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Substrate, µM"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Rate (pmol/min)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Uptake and background"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000064": {
+   "kind": "analysis",
+   "id": "zid000064",
+   "name": "Michaelis-Menten and straight line",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000060",
+    "dataSets": [
+     "zid000061",
+     "zid000062"
+    ]
+   },
+   "params": {
+    "equation": "michaelis-menten",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {
+     "zid000062": {
+      "equation": "straight-line",
+      "userEquation": ""
+     }
+    },
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000067": {
+   "kind": "table",
+   "id": "zid000067",
+   "name": "Two assays",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 25,
+   "rowTitles": null,
+   "x": {
+    "title": "Assay A (mg/dL)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       115.1,
+       87.1,
+       72.2,
+       111.5,
+       123.6,
+       200.9,
+       192.7,
+       86.8,
+       33.1,
+       35.1,
+       181.1,
+       74.6,
+       189.1,
+       72.3,
+       33.1,
+       74.7,
+       174,
+       152,
+       22.7,
+       89,
+       168.8,
+       125.6,
+       121.1,
+       114.5,
+       186.5
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000068",
+     "title": "Assay B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        116.4,
+        100.8,
+        57.3,
+        121.1,
+        119.1,
+        202.6,
+        191.3,
+        86,
+        43.3,
+        21.7,
+        176.1,
+        63.4,
+        197.4,
+        75.9,
+        35,
+        67,
+        177.1,
+        154.3,
+        20.3,
+        96.3,
+        161,
+        137.9,
+        127.1,
+        122.7,
+        208.7
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "The same 25 samples measured by two assays with similar imprecision. Simulated with a 5% proportional difference. Deming regression (X and Y equally uncertain) rather than ordinary regression, which assumes X is exact."
+  },
+  "zid000069": {
+   "kind": "graph",
+   "id": "zid000069",
+   "name": "Two assays",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000067",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000071",
+     "ref": {
+      "node": "zid000070",
+      "key": "line:zid000068"
+     },
+     "colorOf": "zid000068"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Assay A (mg/dL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Assay B (mg/dL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Two assays"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000070": {
+   "kind": "analysis",
+   "id": "zid000070",
+   "name": "Deming regression",
+   "analysisId": "deming",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000067",
+    "dataSets": [
+     "zid000068"
+    ]
+   },
+   "params": {
+    "errors": "equal",
+    "sdX": 1,
+    "sdY": 1,
+    "xForY": 0,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000072": {
+   "kind": "table",
+   "id": "zid000072",
+   "name": "Lethality",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 48,
+   "rowTitles": null,
+   "x": {
+    "title": "Dose (mg/kg)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0.5,
+       0.75,
+       1,
+       1.25,
+       1.5,
+       1.75,
+       2,
+       2.25,
+       2.5,
+       2.75,
+       3,
+       3.25,
+       3.5,
+       3.75,
+       4,
+       4.25,
+       0.5,
+       0.75,
+       1,
+       1.25,
+       1.5,
+       1.75,
+       2,
+       2.25,
+       2.5,
+       2.75,
+       3,
+       3.25,
+       3.5,
+       3.75,
+       4,
+       4.25,
+       0.5,
+       0.75,
+       1,
+       1.25,
+       1.5,
+       1.75,
+       2,
+       2.25,
+       2.5,
+       2.75,
+       3,
+       3.25,
+       3.5,
+       3.75,
+       4,
+       4.25
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000073",
+     "title": "Died?",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "48 animals, 16 doses (three animals each); Y is 1 when the animal died. Simulated with an LD50 of 2.3 mg/kg. Simple logistic regression gives X at 50% (the LD50) and the fitted probability curve."
+  },
+  "zid000074": {
+   "kind": "graph",
+   "id": "zid000074",
+   "name": "Lethality",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000072",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000076",
+     "ref": {
+      "node": "zid000075",
+      "key": "curve:zid000073"
+     },
+     "colorOf": "zid000073"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Dose (mg/kg)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Died (1) or survived (0)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Lethality"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000075": {
+   "kind": "analysis",
+   "id": "zid000075",
+   "name": "Simple logistic regression",
+   "analysisId": "simpleLogistic",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000072",
+    "dataSets": [
+     "zid000073"
+    ]
+   },
+   "params": {
+    "ciMethod": "profile",
+    "roc": true,
+    "rowPrediction": true,
+    "range": "data",
+    "rangeMin": 0,
+    "rangeMax": 1,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000077": {
+   "kind": "graph",
+   "id": "zid000077",
+   "name": "ROC curve",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000072",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000078",
+     "ref": {
+      "node": "zid000075",
+      "key": "roc:zid000073"
+     },
+     "colorOf": "zid000073"
+    }
+   ],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "1 − Specificity"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 1
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Sensitivity"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 1
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "ROC curve"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000079": {
+   "kind": "table",
+   "id": "zid000079",
+   "name": "Glucose trace",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 48,
+   "rowTitles": null,
+   "x": {
+    "title": "Hours",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       0.5,
+       1,
+       1.5,
+       2,
+       2.5,
+       3,
+       3.5,
+       4,
+       4.5,
+       5,
+       5.5,
+       6,
+       6.5,
+       7,
+       7.5,
+       8,
+       8.5,
+       9,
+       9.5,
+       10,
+       10.5,
+       11,
+       11.5,
+       12,
+       12.5,
+       13,
+       13.5,
+       14,
+       14.5,
+       15,
+       15.5,
+       16,
+       16.5,
+       17,
+       17.5,
+       18,
+       18.5,
+       19,
+       19.5,
+       20,
+       20.5,
+       21,
+       21.5,
+       22,
+       22.5,
+       23,
+       23.5
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000080",
+     "title": "Glucose",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        98.3,
+        89.1,
+        93.2,
+        92.6,
+        101.7,
+        89.1,
+        86.2,
+        104.6,
+        105.1,
+        119.1,
+        132.1,
+        130.8,
+        129.7,
+        120,
+        112.2,
+        107.7,
+        111.4,
+        84.6,
+        92.7,
+        94,
+        100.8,
+        108.7,
+        97.1,
+        111.4,
+        99.7,
+        120.4,
+        122.1,
+        107.1,
+        110.4,
+        101.1,
+        87.8,
+        100.7,
+        97.2,
+        91.4,
+        89.4,
+        91.5,
+        102.2,
+        98.4,
+        108.8,
+        92.1,
+        88.2,
+        97,
+        104.4,
+        103.9,
+        95.9,
+        89.4,
+        101.3,
+        88.6
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "A continuous glucose monitor reading every 30 minutes. Simulated with two meal peaks. A medium LOWESS curve shows the trend without a model."
+  },
+  "zid000081": {
+   "kind": "graph",
+   "id": "zid000081",
+   "name": "Glucose trace",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000079",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000083",
+     "ref": {
+      "node": "zid000082",
+      "key": "curve:zid000080"
+     },
+     "colorOf": "zid000080"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Hours"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Glucose (mg/dL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Glucose trace"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000082": {
+   "kind": "analysis",
+   "id": "zid000082",
+   "name": "LOWESS",
+   "analysisId": "fitSpline",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000079",
+    "dataSets": [
+     "zid000080"
+    ]
+   },
+   "params": {
+    "method": "lowess",
+    "lowess": "medium",
+    "knots": 5,
+    "segments": 200,
+    "table": false
+   }
+  },
+  "zid000084": {
+   "kind": "analysis",
+   "id": "zid000084",
+   "name": "Akima spline through the means",
+   "analysisId": "fitSpline",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000048",
+    "dataSets": [
+     "zid000049"
+    ]
+   },
+   "params": {
+    "method": "akima",
+    "lowess": "medium",
+    "knots": 5,
+    "segments": 200,
+    "table": false
+   }
+  },
+  "zid000085": {
+   "kind": "table",
+   "id": "zid000085",
+   "name": "Tracer first pass",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 30,
+   "rowTitles": null,
+   "x": {
+    "title": "Seconds",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       1.5,
+       3,
+       4.5,
+       6,
+       7.5,
+       9,
+       10.5,
+       12,
+       13.5,
+       15,
+       16.5,
+       18,
+       19.5,
+       21,
+       22.5,
+       24,
+       25.5,
+       27,
+       28.5,
+       30,
+       31.5,
+       33,
+       34.5,
+       36,
+       37.5,
+       39,
+       40.5,
+       42,
+       43.5,
+       45
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000086",
+     "title": "Signal",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        8.73,
+        29.78,
+        50.01,
+        61.03,
+        64.69,
+        62.56,
+        55.66,
+        46.96,
+        38.51,
+        30.23,
+        23.05,
+        17.34,
+        13.2,
+        10,
+        7.74,
+        4.74,
+        4.52,
+        1.28,
+        1.92,
+        0.06,
+        1.19,
+        1.2,
+        0.43,
+        1.07,
+        0.29,
+        0.72,
+        0.64,
+        0.31,
+        0.67,
+        -0.03
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Indicator concentration after a bolus, every 1.5 s. The gamma-variate model is a user-defined equation using Prism’s gamma() function: Y = A·X^(B−1)·exp(−X/C)/(gamma(B)·C^B), with A the area under the curve. Simulated with A = 800, B = 3.5, C = 3 s."
+  },
+  "zid000087": {
+   "kind": "graph",
+   "id": "zid000087",
+   "name": "Tracer first pass",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000085",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000089",
+     "ref": {
+      "node": "zid000088",
+      "key": "curve:zid000086"
+     },
+     "colorOf": "zid000086"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Seconds"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Signal"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Tracer first pass"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000088": {
+   "kind": "analysis",
+   "id": "zid000088",
+   "name": "Gamma variate (user equation with gamma())",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000085",
+    "dataSets": [
+     "zid000086"
+    ]
+   },
+   "params": {
+    "equation": "user",
+    "userEquation": "Y = A*X^(B - 1)*exp(-X/C)/(gamma(B)*C^B)",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {
+     "A": {
+      "value": 30,
+      "rule": "ymax"
+     },
+     "B": {
+      "value": 3,
+      "rule": "value"
+     },
+     "C": {
+      "value": 0.3,
+      "rule": "xatymid"
+     }
+    },
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000090": {
+   "kind": "table",
+   "id": "zid000090",
+   "name": "Substrate depletion",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 16,
+   "rowTitles": null,
+   "x": {
+    "title": "Minutes",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       4,
+       8,
+       12,
+       16,
+       20,
+       24,
+       28,
+       32,
+       36,
+       40,
+       44,
+       48,
+       52,
+       56,
+       60
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000091",
+     "title": "Substrate",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        98.52,
+        89.95,
+        79.12,
+        70.8,
+        61.96,
+        52.99,
+        43.12,
+        36.39,
+        26.9,
+        21.57,
+        16.99,
+        11.48,
+        9.66,
+        5.35,
+        2.67,
+        2.31
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        100.99,
+        91.33,
+        81.27,
+        71.08,
+        60.09,
+        52.03,
+        44.04,
+        36.09,
+        28.76,
+        19.86,
+        14.81,
+        11.81,
+        9.23,
+        5.48,
+        2.1,
+        2.18
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Substrate remaining (µM) while an enzyme consumes it, duplicates every 4 minutes. The Michaelis-Menten rate law is fit as a differential equation, Y′ = −Vmax·Y/(Km + Y), starting from the parameter Y[0] at X = 0. Simulated with S0 = 100 µM, Vmax = 3 µM/min, Km = 20 µM."
+  },
+  "zid000092": {
+   "kind": "graph",
+   "id": "zid000092",
+   "name": "Substrate depletion",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000090",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000094",
+     "ref": {
+      "node": "zid000093",
+      "key": "curve:zid000091"
+     },
+     "colorOf": "zid000091"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Minutes"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Substrate (µM)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Substrate depletion"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000093": {
+   "kind": "analysis",
+   "id": "zid000093",
+   "name": "Differential equation fit",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000090",
+    "dataSets": [
+     "zid000091"
+    ]
+   },
+   "params": {
+    "equation": "user",
+    "userEquation": "Y' = -Vmax*Y/(Km + Y)",
+    "constraints": {},
+    "initialValues": {
+     "Vmax": 1,
+     "Km": 10
+    },
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "confidence",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000095": {
+   "kind": "table",
+   "id": "zid000095",
+   "name": "Antagonist shifts",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 15,
+   "rowTitles": null,
+   "x": {
+    "title": "[Agonist], M",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       1e-11,
+       3.1622776601683794e-11,
+       9.999999999999999e-11,
+       3.162277660168379e-10,
+       9.999999999999999e-10,
+       3.1622776601683795e-9,
+       1e-8,
+       3.162277660168379e-8,
+       1e-7,
+       3.162277660168379e-7,
+       0.000001,
+       0.0000031622776601683788,
+       0.000009999999999999999,
+       0.000031622776601683795,
+       0.00009999999999999999
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000096",
+     "title": "0",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.8,
+        -6,
+        1.6,
+        8.5,
+        9.2,
+        25.8,
+        49.4,
+        71.1,
+        86.9,
+        98.3,
+        105,
+        104.4,
+        94.6,
+        97.1,
+        100.8
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000097",
+     "title": "1e-8",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.5,
+        -2.6,
+        3.1,
+        3.1,
+        7,
+        14.9,
+        34.3,
+        67,
+        84.6,
+        91.5,
+        97.9,
+        93.7,
+        102,
+        99.2,
+        101.7
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000098",
+     "title": "1e-7",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        -2.5,
+        -4.1,
+        5.8,
+        -3.1,
+        -2.5,
+        -1.3,
+        10.4,
+        23.3,
+        50.5,
+        73.7,
+        94.5,
+        96.2,
+        101.2,
+        96.4,
+        102.9
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000099",
+     "title": "1e-6",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        -4.7,
+        -0.6,
+        1.1,
+        3.6,
+        -2.3,
+        3.1,
+        1.1,
+        3.2,
+        11.2,
+        24.4,
+        47,
+        75.7,
+        90.4,
+        98.6,
+        98.6
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Agonist concentration-response curves (X is the molar concentration, not its log) with a competitive antagonist at 0, 10 nM, 100 nM and 1 µM: the column titles are the antagonist concentrations. “Gaddum/Schild EC50 shift, X is concentration” fits all four curves at once, B taken from the titles (a data set constant), to find pA2 and the Schild slope. Simulated with EC50 = 10 nM and pA2 = 8."
+  },
+  "zid000100": {
+   "kind": "graph",
+   "id": "zid000100",
+   "name": "Antagonist shifts",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000095",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000102",
+     "ref": {
+      "node": "zid000101",
+      "key": "curve:zid000096"
+     },
+     "colorOf": "zid000096"
+    },
+    {
+     "id": "zid000103",
+     "ref": {
+      "node": "zid000101",
+      "key": "curve:zid000097"
+     },
+     "colorOf": "zid000097"
+    },
+    {
+     "id": "zid000104",
+     "ref": {
+      "node": "zid000101",
+      "key": "curve:zid000098"
+     },
+     "colorOf": "zid000098"
+    },
+    {
+     "id": "zid000105",
+     "ref": {
+      "node": "zid000101",
+      "key": "curve:zid000099"
+     },
+     "colorOf": "zid000099"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "[Agonist], M"
+       }
+      ]
+     },
+     "scale": "log10",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Response (%)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Antagonist shifts"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000101": {
+   "kind": "analysis",
+   "id": "zid000101",
+   "name": "Gaddum/Schild (X is concentration)",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000095",
+    "dataSets": [
+     "zid000096",
+     "zid000097",
+     "zid000098",
+     "zid000099"
+    ]
+   },
+   "params": {
+    "equation": "gaddum-schild-conc",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000106": {
+   "kind": "analysis",
+   "id": "zid000106",
+   "name": "[Agonist] vs. response, each curve on its own",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000095",
+    "dataSets": [
+     "zid000096",
+     "zid000097",
+     "zid000098",
+     "zid000099"
+    ]
+   },
+   "params": {
+    "equation": "agonist-conc-response-variable-slope",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000107": {
+   "kind": "analysis",
+   "id": "zid000107",
+   "name": "Simulate XY data",
+   "analysisId": "simulateXY",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": []
+   },
+   "params": {
+    "xMode": "arithmetic",
+    "xStart": -10,
+    "xStep": 0.5,
+    "xEnd": -5,
+    "yFrom": "equation",
+    "equation": "agonist-response-variable-slope",
+    "userEquation": "",
+    "dataSets": [
+     {
+      "title": "Simulated",
+      "values": {
+       "Bottom": 0,
+       "Top": 100,
+       "LogEC50": -7.5,
+       "HillSlope": 1
+      }
+     }
+    ],
+    "replicates": 3,
+    "error": "gaussian",
+    "sd": 8,
+    "percent": 10,
+    "doublePercent": 50,
+    "sd2": 5,
+    "df": 4,
+    "outliers": 0,
+    "outlierLow": 10,
+    "outlierHigh": 20,
+    "seed": 20
+   }
+  },
+  "zid000108": {
+   "kind": "graph",
+   "id": "zid000108",
+   "name": "Simulated dose-response",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000107",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "X"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Response"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Simulate XY data"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000109": {
+   "kind": "analysis",
+   "id": "zid000109",
+   "name": "Monte Carlo: power of an unpaired t test",
+   "analysisId": "monteCarlo",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": []
+   },
+   "params": {
+    "simulation": {
+     "analysisId": "simulateColumn",
+     "params": {
+      "columns": [
+       {
+        "title": "Control",
+        "n": 8,
+        "mean": 100
+       },
+       {
+        "title": "Treated",
+        "n": 8,
+        "mean": 115
+       }
+      ],
+      "error": "gaussian",
+      "sd": 15
+     }
+    },
+    "analysis": {
+     "analysisId": "ttest",
+     "params": {},
+     "dataSets": []
+    },
+    "simulations": 500,
+    "seed": 11,
+    "tabulate": [
+     "p",
+     "diff"
+    ],
+    "hits": {
+     "combine": "both",
+     "conditions": [
+      {
+       "value": "p",
+       "op": "<",
+       "than": 0.05
+      }
+     ]
+    },
+    "hitDenominator": "all",
+    "alpha": 0.05,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000113": {
+   "kind": "layout",
+   "id": "zid000113",
+   "name": "Figure (equations and simulation)",
+   "page": {
+    "width": 612,
+    "height": 792
+   },
+   "items": [
+    {
+     "type": "graph",
+     "id": "zid000110",
+     "graph": "zid000087",
+     "x": 36,
+     "y": 36,
+     "scale": 0.7378244635696687
+    },
+    {
+     "type": "graph",
+     "id": "zid000111",
+     "graph": "zid000092",
+     "x": 309.0239100577668,
+     "y": 36,
+     "scale": 0.7378244635696687
+    },
+    {
+     "type": "graph",
+     "id": "zid000112",
+     "graph": "zid000100",
+     "x": 36,
+     "y": 234.3836707087299,
+     "scale": 0.7378244635696687
+    }
+   ],
+   "panelLabels": {
+    "show": true,
+    "style": "A",
+    "size": 14
+   }
+  },
+  "zid000120": {
+   "kind": "layout",
+   "id": "zid000120",
+   "name": "Figure (more curve fitting)",
+   "page": {
+    "width": 612,
+    "height": 792
+   },
+   "items": [
+    {
+     "type": "graph",
+     "id": "zid000114",
+     "graph": "zid000050",
+     "x": 36,
+     "y": 36,
+     "scale": 0.7161635473761919
+    },
+    {
+     "type": "graph",
+     "id": "zid000115",
+     "graph": "zid000056",
+     "x": 321.4622570095274,
+     "y": 36,
+     "scale": 0.7161635473761919
+    },
+    {
+     "type": "graph",
+     "id": "zid000116",
+     "graph": "zid000063",
+     "x": 36,
+     "y": 229.08799976419422,
+     "scale": 0.7161635473761919
+    },
+    {
+     "type": "graph",
+     "id": "zid000117",
+     "graph": "zid000069",
+     "x": 321.6815121580649,
+     "y": 229.08799976419422,
+     "scale": 0.7161635473761919
+    },
+    {
+     "type": "graph",
+     "id": "zid000118",
+     "graph": "zid000074",
+     "x": 38.192551485375354,
+     "y": 422.17599952838845,
+     "scale": 0.7161635473761919
+    },
+    {
+     "type": "graph",
+     "id": "zid000119",
+     "graph": "zid000081",
+     "x": 321.6815121580649,
+     "y": 422.17599952838845,
+     "scale": 0.7161635473761919
+    }
+   ],
+   "panelLabels": {
+    "show": true,
+    "style": "A",
+    "size": 14
+   }
+  },
+  "zid000125": {
+   "kind": "layout",
+   "id": "zid000125",
+   "name": "Figure (curve fitting)",
+   "page": {
+    "width": 612,
+    "height": 792
+   },
+   "items": [
+    {
+     "type": "graph",
+     "id": "zid000121",
+     "graph": "zid000004",
+     "x": 36,
+     "y": 36,
+     "scale": 0.7714234687342715
+    },
+    {
+     "type": "graph",
+     "id": "zid000122",
+     "graph": "zid000012",
+     "x": 358.07239547633264,
+     "y": 36,
+     "scale": 0.7714234687342715
+    },
+    {
+     "type": "graph",
+     "id": "zid000123",
+     "graph": "zid000028",
+     "x": 36.23617310297675,
+     "y": 242.59797124090565,
+     "scale": 0.7714234687342715
+    },
+    {
+     "type": "graph",
+     "id": "zid000124",
+     "graph": "zid000042",
+     "x": 351.88396710256904,
+     "y": 242.8567597076826,
+     "scale": 0.7714234687342715
+    }
+   ],
+   "panelLabels": {
+    "show": true,
+    "style": "A",
+    "size": 14
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000008",
+  "zid000009",
+  "zid000010",
+  "zid000012",
+  "zid000013",
+  "zid000015",
+  "zid000017",
+  "zid000018",
+  "zid000020",
+  "zid000021",
+  "zid000023",
+  "zid000028",
+  "zid000030",
+  "zid000035",
+  "zid000037",
+  "zid000038",
+  "zid000040",
+  "zid000042",
+  "zid000043",
+  "zid000045",
+  "zid000048",
+  "zid000050",
+  "zid000051",
+  "zid000053",
+  "zid000056",
+  "zid000057",
+  "zid000060",
+  "zid000063",
+  "zid000064",
+  "zid000067",
+  "zid000069",
+  "zid000070",
+  "zid000072",
+  "zid000074",
+  "zid000075",
+  "zid000077",
+  "zid000079",
+  "zid000081",
+  "zid000082",
+  "zid000084",
+  "zid000085",
+  "zid000087",
+  "zid000088",
+  "zid000090",
+  "zid000092",
+  "zid000093",
+  "zid000095",
+  "zid000100",
+  "zid000101",
+  "zid000106",
+  "zid000107",
+  "zid000108",
+  "zid000109",
+  "zid000113",
+  "zid000120",
+  "zid000125"
+ ]
+}

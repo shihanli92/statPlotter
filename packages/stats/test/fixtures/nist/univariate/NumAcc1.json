@@ -1,0 +1,21 @@
+{
+  "name": "NumAcc1",
+  "input": {
+    "values": [
+      10000001,
+      10000003,
+      10000002
+    ]
+  },
+  "params": {},
+  "expected": {
+    "n": 3,
+    "mean": 10000002,
+    "sd": 1,
+    "autocorrelation": -0.5
+  },
+  "source": {
+    "nist": "https://www.itl.nist.gov/div898/strd/univ/data/NumAcc1.dat",
+    "difficulty": "lower"
+  }
+}

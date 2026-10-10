@@ -1,0 +1,41 @@
+{
+  "name": "t4x3_control_last",
+  "input": {"table":[[15,10,5],[9,12,9],[5,10,15],[12,12,6]]},
+  "params": {"compare":"control","control":3,"test":"chiSquare","method":"none"},
+  "expected": {
+    "cramersV": 0.22956441471774008,
+    "pairwise": [
+      {
+        "rowA": 3,
+        "rowB": 0,
+        "chiSq": 0.60606060606060597,
+        "df": 2,
+        "columns": 3,
+        "p": 0.73857671491879806,
+        "adjusted": 0.73857671491879806
+      },
+      {
+        "rowA": 3,
+        "rowB": 1,
+        "chiSq": 1.0285714285714285,
+        "df": 2,
+        "columns": 3,
+        "p": 0.5979275332171694,
+        "adjusted": 0.5979275332171694
+      },
+      {
+        "rowA": 3,
+        "rowB": 2,
+        "chiSq": 6.9213139801375094,
+        "df": 2,
+        "columns": 3,
+        "p": 0.03140911975848068,
+        "adjusted": 0.03140911975848068
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

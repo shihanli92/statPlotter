@@ -1,0 +1,49 @@
+{
+  "name": "no_events",
+  "input": {"time":[1,2,2,3,4,5,5,6],"event":[0,0,0,0,0,0,0,0],"X":[[1],[0],[1],[0],[1],[1],[0],[0]],"names":["X"]},
+  "params": {},
+  "expected": {
+    "coefficients": [
+      {
+        "name": "X",
+        "estimate": "NaN",
+        "se": "NaN",
+        "lower": "NaN",
+        "upper": "NaN",
+        "stat": "NaN",
+        "p": "NaN",
+        "hazardRatio": "NaN",
+        "hrLower": "NaN",
+        "hrUpper": "NaN"
+      }
+    ],
+    "n": 8,
+    "nEvents": 0,
+    "logLik": 0,
+    "nullLogLik": 0,
+    "lrTest": {
+      "chiSq": "NaN",
+      "df": "NaN",
+      "p": "NaN"
+    },
+    "waldTest": {
+      "chiSq": "NaN",
+      "df": "NaN",
+      "p": "NaN"
+    },
+    "scoreTest": {
+      "chiSq": "NaN",
+      "df": "NaN",
+      "p": "NaN"
+    },
+    "concordance": null,
+    "status": "singular"
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3"
+    }
+  },
+  "note": "No events: nothing to estimate."
+}

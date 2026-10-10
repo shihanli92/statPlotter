@@ -1,0 +1,27 @@
+{
+  "name": "separated",
+  "input": {"a":[1,2,3,4,5,6,7,8],"b":[9,10,11,12,13,14,15,16]},
+  "params": {"exact":true},
+  "expected": {
+    "uA": 0,
+    "uB": 64,
+    "U": 0,
+    "sumRanksA": 36,
+    "sumRanksB": 100,
+    "medianA": 4.5,
+    "medianB": 12.5,
+    "p": 0.0001554001554001554,
+    "method": "exact",
+    "ties": false,
+    "hlEstimate": 8,
+    "hlLo": 5,
+    "hlHi": 11
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  },
+  "note": "Complete separation: P = 2 / choose(16, 8)."
+}

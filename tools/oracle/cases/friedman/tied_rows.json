@@ -1,0 +1,11 @@
+{
+  "input": {
+    "rows": [
+      [1, 1, 1],
+      [2, 3, 1],
+      [5, 5, 5],
+      [4, 6, 5]
+    ]
+  },
+  "note": "Two rows tied throughout: they carry no information (tie term 2(3^3 - 3))."
+}

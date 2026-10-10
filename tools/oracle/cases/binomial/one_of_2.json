@@ -1,0 +1,11 @@
+{
+  "input": {
+    "k": 1,
+    "n": 2,
+    "p0": 0.5
+  },
+  "params": {
+    "fn": "binomial"
+  },
+  "note": "x = 1 and n - x = 1: both limits from the Poisson rule."
+}

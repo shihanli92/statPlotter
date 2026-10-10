@@ -1,0 +1,9 @@
+{
+  "input": {
+    "table": [
+      [56, 14],
+      [48, 32]
+    ]
+  },
+  "note": "Newcombe (1998) example 56/70 vs 48/80: hybrid score 0.0524-0.3339, with CC 0.0428-0.3422."
+}

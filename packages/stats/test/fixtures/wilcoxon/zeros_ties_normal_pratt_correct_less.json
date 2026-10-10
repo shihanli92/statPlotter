@@ -1,0 +1,27 @@
+{
+  "name": "zeros_ties_normal_pratt_correct_less",
+  "input": {"a":[5,7,6,9,4,8,7,6,5,10,3],"b":[5,9,8,9,7,7,10,8,4,13,6]},
+  "params": {"exact":false,"zeroMethod":"pratt","alternative":"less"},
+  "expected": {
+    "wPlus": 56,
+    "wMinus": 7,
+    "W": 49,
+    "n": 11,
+    "nNonZero": 9,
+    "nZero": 2,
+    "p": 0.98779917521897631,
+    "method": "normal",
+    "ties": true,
+    "medianDiff": 2,
+    "hlEstimate": 2.0000463718559782,
+    "hlLo": "-Inf",
+    "hlHi": 2.5000245033894317
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  },
+  "note": "Pratt ranks, normal approximation with the continuity correction (the default): hand-coded reference."
+}

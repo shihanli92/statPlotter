@@ -1,0 +1,1 @@
+{ "input": { "a": [2.5, 4.0], "b": [5.5, 7.0] }, "params": { "test": "ratio", "confLevel": 0.99 } }

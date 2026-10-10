@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300pt" height="200pt" viewBox="0 0 300 200">
+<g data-id="page">
+<g data-id="item/a">
+<g data-id="item/a/box">
+<rect x="16" y="16" width="118" height="49.004" fill="#fff6cc" stroke="#000000" stroke-width="1"/>
+</g>
+<g data-id="item/a/text">
+<text fill="#000000" xml:space="preserve"><tspan x="25.646" y="30.863" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12">Cells were imaged</tspan><tspan x="23.455" y="44.662" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12">at </tspan><tspan x="36.797" y="44.662" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">40×</tspan><tspan x="57.152" y="44.662" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12"> and counted</tspan><tspan x="60.656" y="58.461" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12">blind.</tspan></text>
+</g>
+</g>
+<g data-id="item/b">
+<text fill="#000000" xml:space="preserve"><tspan x="170" y="30.863" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12">Plain text</tspan></text>
+</g>
+</g>
+</svg>

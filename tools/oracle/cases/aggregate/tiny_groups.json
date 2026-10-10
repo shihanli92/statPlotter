@@ -1,0 +1,28 @@
+{
+    "input": {
+        "groups": {
+            "g": [
+                "a",
+                "b",
+                "b",
+                "c",
+                "c",
+                "c"
+            ]
+        },
+        "values": {
+            "v": [
+                1,
+                2,
+                null,
+                null,
+                null,
+                5
+            ]
+        }
+    },
+    "params": {
+        "threshold": 0
+    }
+}
+

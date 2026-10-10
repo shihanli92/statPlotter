@@ -1,0 +1,22 @@
+{
+  "name": "pearson_perfect_neg",
+  "input": {"x":[1,2,3,4,5,6],"y":[-1,-4,-7,-10,-13,-16]},
+  "params": {"method":"pearson"},
+  "expected": {
+    "r": -1,
+    "lower": -1,
+    "upper": -1,
+    "r2": 1,
+    "p": 0,
+    "n": 6,
+    "t": "-Inf",
+    "df": 4
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pspearman": "0.3.1"
+    }
+  },
+  "note": "r = -1."
+}

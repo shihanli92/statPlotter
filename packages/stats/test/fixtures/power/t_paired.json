@@ -1,0 +1,13 @@
+{
+  "name": "t_paired",
+  "input": [],
+  "params": {"design":"ttest","type":"paired","delta":2.5,"sd":4,"alpha":0.05,"n":15,"target":0.9,"lo":2},
+  "expected": {
+    "power": 0.61514201585839978,
+    "nFor": 28.888445370796667
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

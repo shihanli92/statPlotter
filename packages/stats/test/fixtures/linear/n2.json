@@ -1,0 +1,41 @@
+{
+  "name": "n2",
+  "input": {"x":[1,3],"y":[2,5],"bandX":[0,2]},
+  "params": {},
+  "expected": {
+    "n": 2,
+    "df": 0,
+    "slope": 1.5000000000000004,
+    "intercept": 0.49999999999999828,
+    "slopeSE": "NaN",
+    "interceptSE": "NaN",
+    "slopeLo": "NaN",
+    "slopeHi": "NaN",
+    "interceptLo": "NaN",
+    "interceptHi": "NaN",
+    "xIntercept": -0.33333333333333209,
+    "xInterceptLo": "NaN",
+    "xInterceptHi": "NaN",
+    "inverseSlope": 0.66666666666666652,
+    "r2": 1,
+    "syx": "NaN",
+    "ssResidual": 0,
+    "F": "NaN",
+    "dfn": 1,
+    "dfd": 0,
+    "p": "NaN",
+    "cov": ["NaN", "NaN", "NaN"],
+    "band": {
+      "y": [0.49999999999999828, 3.4999999999999991],
+      "confLo": ["NaN", "NaN"],
+      "confHi": ["NaN", "NaN"],
+      "predLo": ["NaN", "NaN"],
+      "predHi": ["NaN", "NaN"]
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Two points: the line through them, no residual degrees of freedom (audit 3, S8)."
+}

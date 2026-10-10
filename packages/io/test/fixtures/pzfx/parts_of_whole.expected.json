@@ -1,0 +1,24 @@
+{
+  "file": "parts_of_whole.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 2",
+      "columns": [
+        {
+          "name": "ROWTITLE",
+          "values": ["Round and yellow", "Round and green", "Angular and yellow", "Angular and green"],
+          "excluded": [false, false, false, false]
+        },
+        {
+          "name": "# of seeds",
+          "values": [315, 108, 101, 32],
+          "excluded": [false, false, false, false]
+        }
+      ]
+    }
+  ]
+}

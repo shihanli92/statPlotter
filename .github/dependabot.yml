@@ -1,0 +1,24 @@
+# The workflows' actions are pinned to commit SHAs (code audit 2, decision 650); Dependabot
+# proposes the updates, each a pull request moving the SHA and its version comment together.
+# Roadmap 48: the npm packages (the pnpm workspace) too, weekly, grouped into one pull request.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: 'CI'
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      npm:
+        patterns: ['*']
+    commit-message:
+      prefix: 'Dependencies'

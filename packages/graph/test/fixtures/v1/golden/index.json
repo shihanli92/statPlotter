@@ -1,0 +1,282 @@
+[
+ [
+  "golden SVGs: every graph type of every table kind",
+  "column-column.scatter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "column-column.bar"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "column-column.box"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "column-column.beforeAfter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "column-column.estimation"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "xy-xy.scatter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "grouped-grouped.bar"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "grouped-grouped.scatter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "grouped-grouped.box"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "grouped-heatmap.cells"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "contingency-grouped.bar"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "survival-survival.step"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "partsOfWhole-whole.pie"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "partsOfWhole-whole.donut"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "partsOfWhole-whole.bar"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "multipleVariables-column.scatter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "multipleVariables-column.bar"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "multipleVariables-column.box"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "multipleVariables-column.beforeAfter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "multipleVariables-column.estimation"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "multipleVariables-bubble.scatter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "multipleVariables-heatmap.cells"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "nested-column.scatter"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "nested-column.bar"
+ ],
+ [
+  "golden SVGs: every graph type of every table kind",
+  "nested-column.box"
+ ],
+ [
+  "golden SVGs: options",
+  "reversed-y"
+ ],
+ [
+  "golden SVGs: options",
+  "log-y"
+ ],
+ [
+  "golden SVGs: options",
+  "axis-breaks"
+ ],
+ [
+  "golden SVGs: options",
+  "right-y-axis"
+ ],
+ [
+  "golden SVGs: options",
+  "row-slice-grouped"
+ ],
+ [
+  "golden SVGs: options",
+  "row-slice-before-after"
+ ],
+ [
+  "golden SVGs: options",
+  "error-bars-sd-sem-ci"
+ ],
+ [
+  "golden SVGs: options",
+  "error-bars-range-iqr-mad"
+ ],
+ [
+  "golden SVGs: options",
+  "error-bars-madn-none-xy"
+ ],
+ [
+  "golden SVGs: options",
+  "error-bars-grouped-no-caps"
+ ],
+ [
+  "golden SVGs: options",
+  "brackets"
+ ],
+ [
+  "golden SVGs: options",
+  "brackets-grouped"
+ ],
+ [
+  "golden SVGs: options",
+  "legend-inside"
+ ],
+ [
+  "golden SVGs: options",
+  "legend-right"
+ ],
+ [
+  "golden SVGs: options",
+  "legend-top"
+ ],
+ [
+  "golden SVGs: options",
+  "point-labels"
+ ],
+ [
+  "golden SVGs: options",
+  "moved-titles"
+ ],
+ [
+  "golden SVGs: options",
+  "whole-bar-log-y"
+ ],
+ [
+  "golden SVGs: options",
+  "scaled-150-xy"
+ ],
+ [
+  "golden SVGs: options",
+  "scaled-70-brackets"
+ ],
+ [
+  "golden SVGs: rich text (roadmap 28)",
+  "rich-legend-sup-sub"
+ ],
+ [
+  "golden SVGs: rich text (roadmap 28)",
+  "rich-categories"
+ ],
+ [
+  "golden SVGs: rich text (roadmap 28)",
+  "rich-row-titles"
+ ],
+ [
+  "golden SVGs: rich text (roadmap 28)",
+  "multiline-titles"
+ ],
+ [
+  "golden SVGs: rich text (roadmap 28)",
+  "underline-text-box"
+ ],
+ [
+  "golden SVGs: fonts, sizes and colours in runs (roadmap 28b)",
+  "run-sizes-colours-title"
+ ],
+ [
+  "golden SVGs: fonts, sizes and colours in runs (roadmap 28b)",
+  "run-fonts-mono-narrow"
+ ],
+ [
+  "golden SVGs: fonts, sizes and colours in runs (roadmap 28b)",
+  "run-colour-legend"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "horizontal-bars"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "horizontal-scatter"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "horizontal-box"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "horizontal-violin"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "horizontal-forest"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "horizontal-estimation"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "horizontal-grouped"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "stacked-bars"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "stacked-percent-gaps-horizontal"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "bar-baseline"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "xy-spaghetti"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "xy-envelope-gaps-x-errors"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "xy-area-dashed"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "xy-boxes"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "geometric-grand-mean"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "heatmap-clustered"
+ ],
+ [
+  "golden SVGs: more graph types (roadmap 30)",
+  "heatmap-fixed-bottom-scale"
+ ]
+]

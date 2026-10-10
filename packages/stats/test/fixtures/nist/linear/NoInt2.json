@@ -1,0 +1,45 @@
+{
+  "name": "NoInt2",
+  "input": {
+    "y": [
+      3,
+      4,
+      4
+    ],
+    "x": [
+      4,
+      5,
+      6
+    ]
+  },
+  "params": {
+    "model": "y = B1*x + e",
+    "intercept": false,
+    "degree": 1,
+    "predictors": [
+      "x"
+    ]
+  },
+  "expected": {
+    "n": 3,
+    "coef": [
+      0.727272727272727
+    ],
+    "se": [
+      0.0420827318078432
+    ],
+    "residualSD": 0.369274472937998,
+    "r2": 0.993348115299335,
+    "dfRegression": 1,
+    "ssRegression": 40.7272727272727,
+    "msRegression": 40.7272727272727,
+    "F": 298.6666666666667,
+    "dfResidual": 2,
+    "ssResidual": 0.272727272727273,
+    "msResidual": 0.136363636363636
+  },
+  "source": {
+    "nist": "https://www.itl.nist.gov/div898/strd/lls/data/LINKS/DATA/NoInt2.dat",
+    "difficulty": "average"
+  }
+}

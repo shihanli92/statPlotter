@@ -1,0 +1,13 @@
+{
+  "input": {
+    "time": [
+      [0, 0, 1, 2, 3, 5],
+      [0, 2, 4, 4, 6]
+    ],
+    "event": [
+      [1, 0, 1, 1, 0, 1],
+      [1, 1, 1, 0, 1]
+    ]
+  },
+  "note": "Events at time 0: the prepended time-0 row (S = 1) is followed by a second time-0 row."
+}

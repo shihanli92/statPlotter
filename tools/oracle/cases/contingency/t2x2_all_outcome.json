@@ -1,0 +1,9 @@
+{
+  "input": {
+    "table": [
+      [5, 0],
+      [7, 0]
+    ]
+  },
+  "note": "Every subject has the outcome: RR = 1 with the Koopman limits n1/(n1+z^2), (n2+z^2)/n2."
+}

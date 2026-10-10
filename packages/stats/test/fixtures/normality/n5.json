@@ -1,0 +1,37 @@
+{
+  "name": "n5",
+  "input": {"x":[10.647643031880778,10.310446212197618,11.346758854220003,9.9363793367749036,11.151875117377145]},
+  "params": {},
+  "expected": {
+    "dagostino": {
+      "stat": "NaN",
+      "p": "NaN",
+      "skewness": "NaN",
+      "kurtosis": "NaN",
+      "zSkewness": "NaN",
+      "zKurtosis": "NaN"
+    },
+    "shapiroWilk": {
+      "stat": 0.95793529071058581,
+      "p": 0.79353748155409587
+    },
+    "andersonDarling": {
+      "stat": "NaN",
+      "p": "NaN",
+      "a2": "NaN"
+    },
+    "ks": {
+      "stat": 0.19168405789853649,
+      "p": 0.78922027483389456,
+      "pAbove010": true
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "nortest": "1.0.4",
+      "moments": "0.14.1"
+    }
+  },
+  "note": "Shapiro-Wilk and KS only."
+}

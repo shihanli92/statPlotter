@@ -1,0 +1,153 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Untitled",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "t1": {
+   "kind": "table",
+   "id": "t1",
+   "name": "Sample column",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 6,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "a",
+     "title": "Control",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        12,
+        15,
+        11,
+        14,
+        13,
+        16
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b",
+     "title": "Drug A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        18,
+        21,
+        17,
+        22,
+        20,
+        19
+       ]
+      }
+     ]
+    },
+    {
+     "id": "c",
+     "title": "Drug B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        9,
+        11,
+        10,
+        8,
+        12,
+        null
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "g1": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample column",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "a": {
+     "error": {
+      "stat": "range"
+     }
+    },
+    "b": {
+     "error": {
+      "stat": "IQR"
+     }
+    },
+    "c": {
+     "error": {
+      "stat": "MAD"
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample column"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "t1",
+  "g1"
+ ]
+}

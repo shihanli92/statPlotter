@@ -1,0 +1,1076 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Getting started: column data",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Enzyme activity",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 10,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Control",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        42.3,
+        37.3,
+        39.9,
+        49.8,
+        45.8,
+        43.6,
+        46.2,
+        47.3,
+        40.1,
+        42.5
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Treated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        51,
+        51.2,
+        50.8,
+        50.3,
+        36.6,
+        66.1,
+        64.5,
+        56.2,
+        63.8,
+        62.3
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Enzyme activity (U/mg protein) in 10 control and 10 treated cultures. Simulated data. Compare the unpaired t test, Welch’s t test (no equal-SD assumption) and the Mann-Whitney test. The estimation plot shows the same comparison as an effect size: the difference between the means with its 95% CI on a floating right axis whose zero is the control mean."
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Enzyme activity (scatter)",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 108,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Activity (U/mg)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000010",
+     "a": "zid000002",
+     "b": "zid000003",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000006",
+      "comparison": "zid000002|zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Enzyme activity"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000005": {
+   "kind": "graph",
+   "id": "zid000005",
+   "name": "Enzyme activity (estimation plot)",
+   "graphType": "column.estimation",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 150,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Activity (U/mg)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y2": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Difference between means"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Enzyme activity"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   }
+  },
+  "zid000006": {
+   "kind": "analysis",
+   "id": "zid000006",
+   "name": "Unpaired t test",
+   "analysisId": "ttest",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "design": "unpaired",
+    "unpaired": {
+     "assumeEqualSD": true
+    },
+    "paired": {
+     "measure": "difference"
+    },
+    "tails": "two",
+    "confidenceLevel": 0.95,
+    "reportFTestVariances": true
+   }
+  },
+  "zid000007": {
+   "kind": "analysis",
+   "id": "zid000007",
+   "name": "Welch’s t test",
+   "analysisId": "ttest",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "design": "unpaired",
+    "unpaired": {
+     "assumeEqualSD": false
+    },
+    "paired": {
+     "measure": "difference"
+    },
+    "tails": "two",
+    "confidenceLevel": 0.95,
+    "reportFTestVariances": true
+   }
+  },
+  "zid000008": {
+   "kind": "analysis",
+   "id": "zid000008",
+   "name": "Mann-Whitney test",
+   "analysisId": "mannWhitney",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "tails": "two",
+    "pMethod": "exactWhenPossible",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000009": {
+   "kind": "analysis",
+   "id": "zid000009",
+   "name": "Descriptive statistics",
+   "analysisId": "descriptive",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "quartiles": true,
+    "ci": true,
+    "cv": true,
+    "geometric": false,
+    "moments": false,
+    "sum": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000011": {
+   "kind": "table",
+   "id": "zid000011",
+   "name": "Dose response (3 groups)",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000012",
+     "title": "Vehicle",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        22.1,
+        12,
+        20.2,
+        20.1,
+        17.6,
+        25,
+        17.8,
+        12.1
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000013",
+     "title": "1 mg/kg",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        24.8,
+        25.4,
+        20.1,
+        27.2,
+        25.1,
+        23.4,
+        21.4,
+        25.7
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000014",
+     "title": "10 mg/kg",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        35.3,
+        27.9,
+        31,
+        29.3,
+        33.7,
+        32.7,
+        26.5,
+        26.4
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Plasma marker (ng/mL) in three dose groups of 8 animals. Simulated data. One-way ANOVA with Tukey’s multiple comparisons; the brackets on the graph are live. Each bar is labelled with its mean (Format graph › Appearance › Bar labels)."
+  },
+  "zid000015": {
+   "kind": "graph",
+   "id": "zid000015",
+   "name": "Dose response (bars)",
+   "graphType": "column.bar",
+   "seriesSource": {
+    "table": "zid000011",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Marker (ng/mL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000018",
+     "a": "zid000012",
+     "b": "zid000013",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000016",
+      "comparison": "zid000012|zid000013",
+      "show": "stars"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000019",
+     "a": "zid000012",
+     "b": "zid000014",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000016",
+      "comparison": "zid000012|zid000014",
+      "show": "stars"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000020",
+     "a": "zid000013",
+     "b": "zid000014",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000016",
+      "comparison": "zid000013|zid000014",
+      "show": "stars"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Dose response (3 groups)"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     },
+     "label": {
+      "show": true,
+      "stat": "mean",
+      "position": "above",
+      "format": {
+       "mode": "fixed",
+       "digits": 1
+      }
+     }
+    }
+   }
+  },
+  "zid000016": {
+   "kind": "analysis",
+   "id": "zid000016",
+   "name": "One-way ANOVA (Tukey)",
+   "analysisId": "oneWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000011",
+    "dataSets": [
+     "zid000012",
+     "zid000013",
+     "zid000014"
+    ]
+   },
+   "params": {
+    "matched": false,
+    "sphericity": "gg",
+    "gaussian": true,
+    "equalSD": "yes",
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "welchMethod": "dunnett-t3",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000017": {
+   "kind": "analysis",
+   "id": "zid000017",
+   "name": "Normality tests",
+   "analysisId": "normality",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000011",
+    "dataSets": [
+     "zid000012",
+     "zid000013",
+     "zid000014"
+    ]
+   },
+   "params": {
+    "distribution": "normal",
+    "dagostino": true,
+    "andersonDarling": true,
+    "shapiroWilk": true,
+    "kolmogorovSmirnov": true,
+    "qqPlot": false
+   }
+  },
+  "zid000021": {
+   "kind": "table",
+   "id": "zid000021",
+   "name": "Cell area",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 60,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000022",
+     "title": "WT",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        160,
+        214,
+        259,
+        107,
+        196,
+        281,
+        165,
+        117,
+        197,
+        201,
+        212,
+        140,
+        161,
+        247,
+        168,
+        135,
+        124,
+        174,
+        247,
+        203,
+        267,
+        187,
+        176,
+        165,
+        231,
+        218,
+        200,
+        281,
+        137,
+        138,
+        251,
+        140,
+        171,
+        191,
+        133,
+        187,
+        164,
+        170,
+        162,
+        260,
+        150,
+        163,
+        117,
+        220,
+        122,
+        119,
+        255,
+        114,
+        185,
+        172,
+        96,
+        226,
+        244,
+        244,
+        126,
+        164,
+        148,
+        312,
+        134,
+        251
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000023",
+     "title": "KO 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        315,
+        171,
+        262,
+        185,
+        140,
+        182,
+        168,
+        169,
+        193,
+        331,
+        169,
+        183,
+        115,
+        301,
+        163,
+        190,
+        247,
+        159,
+        229,
+        165,
+        235,
+        182,
+        205,
+        280,
+        167,
+        213,
+        176,
+        190,
+        177,
+        277,
+        389,
+        248,
+        321,
+        204,
+        166,
+        157,
+        236,
+        258,
+        266,
+        174,
+        300,
+        270,
+        267,
+        182,
+        132,
+        165,
+        307,
+        201,
+        156,
+        243,
+        280,
+        222,
+        104,
+        176,
+        234,
+        193,
+        200,
+        152,
+        283,
+        265
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000024",
+     "title": "KO 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        175,
+        188,
+        239,
+        203,
+        138,
+        149,
+        267,
+        270,
+        183,
+        206,
+        165,
+        137,
+        184,
+        229,
+        210,
+        194,
+        236,
+        287,
+        107,
+        239,
+        198,
+        106,
+        203,
+        174,
+        272,
+        111,
+        240,
+        248,
+        339,
+        239,
+        181,
+        168,
+        299,
+        119,
+        214,
+        237,
+        173,
+        166,
+        135,
+        215,
+        149,
+        181,
+        216,
+        197,
+        227,
+        152,
+        235,
+        286,
+        253,
+        242,
+        182,
+        153,
+        147,
+        207,
+        192,
+        260,
+        264,
+        163,
+        279,
+        181
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Area of 60 cells (µm²) per cell line, from microscopy. Simulated, right-skewed data. A swarm of every point with the median, and the Kruskal-Wallis test with Dunn’s comparisons. The violin plot shows the same data as smoothed distributions (kernel density), with lines at the median and quartiles."
+  },
+  "zid000025": {
+   "kind": "graph",
+   "id": "zid000025",
+   "name": "Cell area (swarm)",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000021",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Cell area (µm"
+       },
+       {
+        "text": "2",
+        "sup": true
+       },
+       {
+        "text": ")"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000028",
+     "a": "zid000022",
+     "b": "zid000023",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000027",
+      "comparison": "zid000022|zid000023",
+      "show": "stars"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Cell area"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto",
+      "size": 4,
+      "fill": {
+       "type": "none"
+      }
+     },
+     "center": {
+      "stat": "median",
+      "width": 0.5,
+      "line": {
+       "color": {
+        "rgb": "#000000"
+       },
+       "width": 2,
+       "dash": "solid"
+      }
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   }
+  },
+  "zid000026": {
+   "kind": "graph",
+   "id": "zid000026",
+   "name": "Cell area (violin)",
+   "graphType": "column.box",
+   "seriesSource": {
+    "table": "zid000021",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Cell area (µm"
+       },
+       {
+        "text": "2",
+        "sup": true
+       },
+       {
+        "text": ")"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Cell area"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto",
+      "size": 2.5
+     },
+     "center": {
+      "stat": "median"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "box": {
+      "kind": "violin"
+     },
+     "bar": {
+      "width": 0.8
+     }
+    }
+   }
+  },
+  "zid000027": {
+   "kind": "analysis",
+   "id": "zid000027",
+   "name": "Kruskal-Wallis test (Dunn)",
+   "analysisId": "oneWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000021",
+    "dataSets": [
+     "zid000022",
+     "zid000023",
+     "zid000024"
+    ]
+   },
+   "params": {
+    "matched": false,
+    "sphericity": "gg",
+    "gaussian": false,
+    "equalSD": "yes",
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "welchMethod": "dunnett-t3",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000032": {
+   "kind": "layout",
+   "id": "zid000032",
+   "name": "Figure 1",
+   "page": {
+    "width": 792,
+    "height": 612
+   },
+   "items": [
+    {
+     "type": "graph",
+     "id": "zid000029",
+     "graph": "zid000004",
+     "x": 60.652470703125005,
+     "y": 55.66763392857143,
+     "scale": 1
+    },
+    {
+     "type": "graph",
+     "id": "zid000030",
+     "graph": "zid000015",
+     "x": 245.294072265625,
+     "y": 36,
+     "scale": 1
+    },
+    {
+     "type": "graph",
+     "id": "zid000031",
+     "graph": "zid000025",
+     "x": 485.287236328125,
+     "y": 51.58906249999998,
+     "scale": 1
+    }
+   ],
+   "panelLabels": {
+    "show": true,
+    "style": "A",
+    "size": 14
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000006",
+  "zid000007",
+  "zid000008",
+  "zid000009",
+  "zid000011",
+  "zid000015",
+  "zid000016",
+  "zid000017",
+  "zid000021",
+  "zid000025",
+  "zid000026",
+  "zid000027",
+  "zid000032"
+ ]
+}

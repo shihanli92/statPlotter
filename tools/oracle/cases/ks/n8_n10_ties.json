@@ -1,0 +1,7 @@
+{
+  "input": {
+    "a": [5, 6, 5, 4, 6, 7, 2, 5],
+    "b": [8, 5, 10, 9, 4, 6, 8, 4, 6, 7]
+  },
+  "note": "Exact with ties (conditional on the tie pattern, as psmirnov(z =) in R >= 4.3)."
+}

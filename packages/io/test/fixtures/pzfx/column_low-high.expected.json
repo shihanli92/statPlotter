@@ -1,0 +1,44 @@
+{
+  "file": "column_low-high.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "A_MEAN",
+          "values": [100, 110, 120],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "A_PLUSERROR",
+          "values": [10, 20, 30],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "A_MINUSERROR",
+          "values": [30, 20, 10],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B_MEAN",
+          "values": [10, 20, 30],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B_PLUSERROR",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B_MINUSERROR",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

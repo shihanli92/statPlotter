@@ -1,0 +1,39 @@
+{
+  "file": "x_y_no_rep.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "ROWTITLE",
+          "values": ["A", "B", "C"],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "XX",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Ya",
+          "values": [100, 90, 80],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Yb",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Yc",
+          "values": [5, 5, 5],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

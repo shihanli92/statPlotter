@@ -1,0 +1,319 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="339.464pt" height="283.785pt" viewBox="0 0 339.464 283.785">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="112.045" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Synthetic cells</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/bubbles">
+<g data-id="series/v5/point">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" x="66" y="56" width="186" height="152" viewBox="0 0 186 152" preserveAspectRatio="none" overflow="hidden"><image width="186" height="152" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/></svg>
+</g>
+</g>
+<g data-id="layer/names">
+<g data-id="series/v5/centroid/0/box">
+<rect x="127.953" y="56.376" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/0">
+<text fill="#000000" xml:space="preserve"><tspan x="129.953" y="67.429" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C2</tspan></text>
+</g>
+<g data-id="series/v5/centroid/1/box">
+<rect x="83.829" y="121.174" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/1">
+<text fill="#000000" xml:space="preserve"><tspan x="85.829" y="132.227" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C1</tspan></text>
+</g>
+<g data-id="series/v5/centroid/2/box">
+<rect x="162.808" y="190.433" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/2">
+<text fill="#000000" xml:space="preserve"><tspan x="164.808" y="201.486" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C0</tspan></text>
+</g>
+<g data-id="series/v5/centroid/3/box">
+<rect x="206.464" y="127.179" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/3">
+<text fill="#000000" xml:space="preserve"><tspan x="208.464" y="138.232" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C3</tspan></text>
+</g>
+<g data-id="series/v5/centroid/4/box">
+<rect x="182.017" y="113.53" width="22.345" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/4">
+<text fill="#000000" xml:space="preserve"><tspan x="184.017" y="124.583" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C12</tspan></text>
+</g>
+<g data-id="series/v5/centroid/5/box">
+<rect x="149.525" y="78.043" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/5">
+<text fill="#000000" xml:space="preserve"><tspan x="151.525" y="89.096" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C6</tspan></text>
+</g>
+<g data-id="series/v5/centroid/6/box">
+<rect x="107.388" y="111.731" width="21.793" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/6">
+<text fill="#000000" xml:space="preserve"><tspan x="109.388" y="122.784" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C11</tspan></text>
+</g>
+<g data-id="series/v5/centroid/7/box">
+<rect x="67.765" y="155.159" width="22.345" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/7">
+<text fill="#000000" xml:space="preserve"><tspan x="69.765" y="166.212" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C10</tspan></text>
+</g>
+<g data-id="series/v5/centroid/8/box">
+<rect x="113.776" y="131.943" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/8">
+<text fill="#000000" xml:space="preserve"><tspan x="115.776" y="142.996" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C8</tspan></text>
+</g>
+<g data-id="series/v5/centroid/9/box">
+<rect x="160.034" y="137.459" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/9">
+<text fill="#000000" xml:space="preserve"><tspan x="162.034" y="148.512" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C9</tspan></text>
+</g>
+<g data-id="series/v5/centroid/10/box">
+<rect x="228.783" y="114.682" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/10">
+<text fill="#000000" xml:space="preserve"><tspan x="230.783" y="125.734" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C4</tspan></text>
+</g>
+<g data-id="series/v5/centroid/11/box">
+<rect x="121.506" y="157.604" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/11">
+<text fill="#000000" xml:space="preserve"><tspan x="123.506" y="168.656" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C7</tspan></text>
+</g>
+<g data-id="series/v5/centroid/12/box">
+<rect x="127.599" y="176.229" width="16.783" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/12">
+<text fill="#000000" xml:space="preserve"><tspan x="129.599" y="187.282" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C5</tspan></text>
+</g>
+<g data-id="series/v5/centroid/13/box">
+<rect x="78.623" y="99.781" width="22.345" height="15.172" rx="2" fill="#ffffff" fill-opacity="0.85" stroke="#7f7f7f" stroke-width="0.5"/>
+</g>
+<g data-id="series/v5/centroid/13">
+<text fill="#000000" xml:space="preserve"><tspan x="80.623" y="110.833" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">C13</tspan></text>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="53.065" y1="215.785" x2="53.065" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="53.065" y1="215.785" x2="49.065" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="219.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−15</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="53.065" y1="190.071" x2="49.065" y2="190.071" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="193.884" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−10</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="53.065" y1="164.357" x2="49.065" y2="164.357" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="168.17" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−5</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="53.065" y1="138.642" x2="49.065" y2="138.642" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="39.948" y="142.456" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="53.065" y1="112.928" x2="49.065" y2="112.928" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="39.948" y="116.741" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="53.065" y1="87.214" x2="49.065" y2="87.214" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="33.83" y="91.027" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/y/tick/6">
+<line x1="53.065" y1="61.499" x2="49.065" y2="61.499" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="33.83" y="65.313" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/y/tick/7">
+<line x1="53.065" y1="35.785" x2="49.065" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="33.83" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 125.785)" xml:space="preserve"><tspan x="-7.858" y="129.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">UMAP 2</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="53.065" y1="215.785" x2="269.065" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="53.065" y1="215.785" x2="53.065" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="43.736" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−10</tspan></text>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="96.265" y1="215.785" x2="96.265" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="89.995" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−5</tspan></text>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="139.465" y1="215.785" x2="139.465" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="136.407" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="182.665" y1="215.785" x2="182.665" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="179.607" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5</tspan></text>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="225.865" y1="215.785" x2="225.865" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="219.748" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="269.065" y1="215.785" x2="269.065" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="262.948" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="138.504" y="251.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">UMAP 1</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/bubble/color">
+<g data-id="legend/bubble/color/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="47.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">cluster</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/0">
+<g data-id="legend/bubble/color/0/swatch">
+<rect x="281.065" y="54.785" width="14" height="10" fill="#0072b2" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/0/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="63.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C2</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/1">
+<g data-id="legend/bubble/color/1/swatch">
+<rect x="281.065" y="70.785" width="14" height="10" fill="#d55e00" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/1/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="79.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C1</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/2">
+<g data-id="legend/bubble/color/2/swatch">
+<rect x="281.065" y="86.785" width="14" height="10" fill="#009e73" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/2/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="95.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C0</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/3">
+<g data-id="legend/bubble/color/3/swatch">
+<rect x="281.065" y="102.785" width="14" height="10" fill="#cc79a7" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/3/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="111.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C3</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/4">
+<g data-id="legend/bubble/color/4/swatch">
+<rect x="281.065" y="118.785" width="14" height="10" fill="#e69f00" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/4/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="127.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C12</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/5">
+<g data-id="legend/bubble/color/5/swatch">
+<rect x="281.065" y="134.785" width="14" height="10" fill="#56b4e9" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/5/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="143.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C6</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/6">
+<g data-id="legend/bubble/color/6/swatch">
+<rect x="281.065" y="150.785" width="14" height="10" fill="#f0e442" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/6/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="159.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C11</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/7">
+<g data-id="legend/bubble/color/7/swatch">
+<rect x="281.065" y="166.785" width="14" height="10" fill="#000000" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/7/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="175.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C10</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/8">
+<g data-id="legend/bubble/color/8/swatch">
+<rect x="281.065" y="182.785" width="14" height="10" fill="#882255" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/8/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="191.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C8</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/9">
+<g data-id="legend/bubble/color/9/swatch">
+<rect x="281.065" y="198.785" width="14" height="10" fill="#882d17" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/9/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="207.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C9</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/10">
+<g data-id="legend/bubble/color/10/swatch">
+<rect x="281.065" y="214.785" width="14" height="10" fill="#ffaabb" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/10/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="223.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C4</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/11">
+<g data-id="legend/bubble/color/11/swatch">
+<rect x="281.065" y="230.785" width="14" height="10" fill="#332288" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/11/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="239.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C7</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/12">
+<g data-id="legend/bubble/color/12/swatch">
+<rect x="281.065" y="246.785" width="14" height="10" fill="#99ddff" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/12/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="255.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C5</tspan></text>
+</g>
+</g>
+<g data-id="legend/bubble/color/13">
+<g data-id="legend/bubble/color/13/swatch">
+<rect x="281.065" y="262.785" width="14" height="10" fill="#c2b280" stroke="none"/>
+</g>
+<g data-id="legend/bubble/color/13/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="271.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">C13</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

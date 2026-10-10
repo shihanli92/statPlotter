@@ -1,0 +1,60 @@
+// Decision 131 (audit 2, S11): no closures in hot loops. Inside a loop this flags a function made
+// there (an arrow function or function expression), a callback handed to an array method
+// (some, every, map…), a call of a closure the enclosing function declared
+// (`const at = (k) => …`) and a call of a function-typed parameter (`f: (i: number) => number`).
+// The loop's work goes inline, or into a module-level function. Scoped in biome.json to the
+// modules whose loops run per point or per grid cell.
+language js
+
+or {
+  `($p) => $b` as $hit,
+  `($p): $r => $b` as $hit,
+  `function ($p) { $b }` as $hit,
+  `$array.$method($callback)` as $hit where {
+    $method <: or {
+      `some`,
+      `every`,
+      `forEach`,
+      `map`,
+      `filter`,
+      `reduce`,
+      `find`,
+      `findIndex`,
+      `flatMap`
+    }
+  },
+  `$f($args)` as $hit where {
+    $hit <: within or {
+      `function $name($params) { $body }`,
+      `function $name($params): $ret { $body }`
+    } where {
+      $body <: contains or {
+        `const $f = ($q) => $c`,
+        `const $f = ($q): $s => $c`,
+        `let $f = ($q) => $c`,
+        `const $f = function ($q) { $c }`
+      }
+    }
+  },
+  `$f($args)` as $hit where {
+    $hit <: within or {
+      `function $name($params) { $body }`,
+      `function $name($params): $ret { $body }`,
+      `($params) => { $body }`,
+      `($params): $ret => { $body }`
+    } where { $params <: contains $f }
+  }
+} where {
+  $hit <: within or {
+    `for ($init; $test; $update) $loop`,
+    `for ($init; $test; $update) { $loop }`,
+    `for (const $item of $items) $loop`,
+    `for (const $item of $items) { $loop }`,
+    `for (let $item of $items) $loop`,
+    `for (let $item of $items) { $loop }`,
+    `while ($cond) $loop`,
+    `while ($cond) { $loop }`,
+    `do { $loop } while ($cond)`
+  } ,
+  register_diagnostic(span=$hit, severity="error", message="A closure in a hot loop (decision 131): inline the work or call a module-level function.")
+}

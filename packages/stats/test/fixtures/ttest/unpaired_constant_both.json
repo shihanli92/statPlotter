@@ -1,0 +1,28 @@
+{
+  "name": "unpaired_constant_both",
+  "input": {"a":[5,5,5],"b":[7,7,7,7]},
+  "params": {},
+  "expected": {
+    "t": "Inf",
+    "df": 5,
+    "p": 0,
+    "meanA": 5,
+    "meanB": 7,
+    "sdA": 0,
+    "sdB": 0,
+    "nA": 3,
+    "nB": 4,
+    "diff": 2,
+    "seDiff": 0,
+    "ciLo": 2,
+    "ciHi": 2,
+    "rSquared": 1
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "BSDA": "1.2.2"
+    }
+  },
+  "note": "SD = 0 in both groups: t = Inf, P = 0, CI = [diff, diff]; t.test() refuses these data."
+}

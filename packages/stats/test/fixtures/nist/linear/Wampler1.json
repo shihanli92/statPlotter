@@ -1,0 +1,91 @@
+{
+  "name": "Wampler1",
+  "input": {
+    "y": [
+      1,
+      6,
+      63,
+      364,
+      1365,
+      3906,
+      9331,
+      19608,
+      37449,
+      66430,
+      111111,
+      177156,
+      271453,
+      402234,
+      579195,
+      813616,
+      1118481,
+      1508598,
+      2000719,
+      2613660,
+      3368421
+    ],
+    "x": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ]
+  },
+  "params": {
+    "model": "y = B0 + B1*x + B2*(x**2) + B3*(x**3)+ B4*(x**4) + B5*(x**5)",
+    "intercept": true,
+    "degree": 5,
+    "predictors": [
+      "x"
+    ]
+  },
+  "expected": {
+    "n": 21,
+    "coef": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "se": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "residualSD": 0,
+    "r2": 1,
+    "dfRegression": 5,
+    "ssRegression": 18814317208116.7,
+    "msRegression": 3762863441623.33,
+    "F": "Inf",
+    "dfResidual": 15,
+    "ssResidual": 0,
+    "msResidual": 0
+  },
+  "source": {
+    "nist": "https://www.itl.nist.gov/div898/strd/lls/data/LINKS/DATA/Wampler1.dat",
+    "difficulty": "higher"
+  }
+}

@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`example documents > chen 1`] = `"1acae2ebf925c3d9d94b0d73b8010d9cd200324f899dd6a7413264505bf4fd95"`;
+
+exports[`example documents > clinical 1`] = `"73283d974a4bfb909bb9087d049d52cf71c23af86c8713ca74cca20959cf65fe"`;
+
+exports[`example documents > curve-fitting 1`] = `"7369afe2bf7230ae4ee2e544d92ab3a307ec1c66e72adb0c2c7bf7985cd58770"`;
+
+exports[`example documents > data-processing 1`] = `"86e6b29565c42485b4316c6cd41cf7d35d03296ddb22c801afb737c8391f0007"`;
+
+exports[`example documents > formatting 1`] = `"c7d1c2bd5b185714eb6803e33050f7708bd046726007d972870287a2634afffd"`;
+
+exports[`example documents > getting-started 1`] = `"78618e8ae660af36c3b250a1af06b1f5ab7c981c6662f8136abb48c5297ca229"`;
+
+exports[`example documents > grouped 1`] = `"6bd060f2aa09d0b97f61addaa588bb5bbc5272f8a28553f5ba74bcbdd2ad1cba"`;
+
+exports[`example documents > hoffmann 1`] = `"7fcd3abd8511eaffc0514d5a22e13c3576038e3a48c64338c04e79424b9bdcf7"`;
+
+exports[`example documents > johnston 1`] = `"509aa102c5cf598bdf539226a57ffcbdcb5649735f59bf32e5d76c776b29355a"`;
+
+exports[`example documents > more-graphs 1`] = `"e307dfb40cbab2d2d95d7b4d666143b47ea2966a0a7d12f37e3211a519614299"`;
+
+exports[`example documents > multiple-variables 1`] = `"c24b48ff101dc938852217b4eab538017d443c37a1107baaf973da8cc1b8165c"`;
+
+exports[`example documents > parts-of-whole 1`] = `"db2ab76c457074f57c6ba49cb6ff77698709c62b8e0022a80a6cb3a2201f5644"`;
+
+exports[`example documents > single-cell 1`] = `"bedd03df42467a6585fd3c4f75a981d54cceaf86fe34339fab56928f1a0f1b25"`;
+
+exports[`example documents > stucchi 1`] = `"3debaaaaa9f0b4da6fdef24844b693efb623d670493a0e1867c3787781543894"`;
+
+exports[`example documents > swaminathan 1`] = `"7aaeddbba68b9ddcab73bfa240476ec7af35378c79abfe8973e1ff2922ec2cc2"`;
+
+exports[`example documents > tawk 1`] = `"e75a8cb846c4bab45ba64e729fc96ec24d8a1d962fe8efa67194e96f9727e436"`;
+
+exports[`sample tables > column 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[34.1,38.5,29.8,41.2,35.6,32.3,36.9,30.4]}],"title":"Control"},{"id":"id2","subcolumns":[{"type":"number","values":[45.2,52.8,48.1,39.7,50.3,47.6,44.9,51.5]}],"title":"Treated"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":8,"rowTitles":null,"tableKind":"column","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
+
+exports[`sample tables > contingency 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[15,30]}],"title":"Progressed"},{"id":"id2","subcolumns":[{"type":"number","values":[85,70]}],"title":"No progression"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":2,"rowTitles":["Treated","Placebo"],"tableKind":"contingency","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
+
+exports[`sample tables > grouped 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[37,43.5,41.1]},{"type":"number","values":[37.5,47.6,42.1]},{"type":"number","values":[42.2,43.7,42.7]},{"type":"number","values":[39.8,41.2,45.1]}],"title":"Vehicle"},{"id":"id2","subcolumns":[{"type":"number","values":[43.4,66.8,55.9]},{"type":"number","values":[50.3,66.8,50.8]},{"type":"number","values":[44.2,70.4,55.9]},{"type":"number","values":[47.5,67.8,52.3]}],"title":"Drug"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":3,"rowTitles":["Wild type","Knockout","Heterozygous"],"tableKind":"grouped","x":null,"yFormat":{"count":4,"type":"replicates"}}"`;
+
+exports[`sample tables > multipleVariables 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[40,43,73,46,59,60,73,64,64,75,63,52,64,64,71,64,68,59,45,74,64,42,58,56,54,68,68,61,50,64,55,62,41,73,62,59,73,58,75,53]}],"title":"Age"},{"id":"id2","subcolumns":[{"type":"number","values":[20.4,29.2,21.7,32.3,26,21.9,28.2,29,27.9,27,33.7,30.4,27.7,29.6,25.5,34.8,28.9,25.4,26.8,23.2,33.4,27.9,22.4,30.1,27.6,26.1,23.5,25.1,27.1,29.8,20.3,26,26,29.5,32.1,21.6,28.7,24,26.9,21.1]}],"title":"BMI"},{"id":"id3","subcolumns":[{"type":"number","values":[0,10,20,40,0,10,20,40,0,10,20,40,0,10,20,40,0,10,20,40,0,10,20,40,0,10,20,40,0,10,20,40,0,10,20,40,0,10,20,40]}],"title":"Dose"},{"id":"id4","subcolumns":[{"type":"number","values":[116.5,129.8,138.6,125,136,136.3,142.5,133.1,139.5,141.6,140.5,123.5,147,135.4,142.6,137.2,144.8,137.1,127.3,134.3,147.5,127.6,122.5,133.7,134.7,141,135.8,124.3,135.7,145,119.3,131.5,127.5,152.7,144.6,126.8,150.7,125.2,139.9,117.6]}],"title":"SBP"},{"id":"id5","subcolumns":[{"type":"number","values":[0,0,1,1,1,0,1,1,1,1,0,1,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,1,1,0,0,1,0,1,1,1,1]}],"title":"Responder"},{"id":"id6","subcolumns":[{"type":"number","values":[133,365,45,365,26,10,350,365,7,268,306,85,3,295,157,27,65,31,365,180,17,365,365,365,365,61,365,365,365,73,365,8,365,264,344,116,217,365,13,365]}],"title":"Days"},{"id":"id7","subcolumns":[{"type":"number","values":[0,0,1,0,0,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1,1,0,0,0,0,1,0,0,0,1,0,1,0,1,1,1,1,0,1,0]}],"title":"Died"}],"id":"id8","kind":"table","name":"Data 1","notes":"","rowCount":40,"rowTitles":null,"tableKind":"multipleVariables","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
+
+exports[`sample tables > nested 1`] = `"{"dataSets":[{"id":"id1","subcolumnTitles":["Mouse 1","Mouse 2","Mouse 3"],"subcolumns":[{"type":"number","values":[15.7,16.8,16.2,17]},{"type":"number","values":[21.6,20.4,20.4,23.2]},{"type":"number","values":[21.1,23.1,21,22.8]}],"title":"Control"},{"id":"id2","subcolumnTitles":["Mouse 4","Mouse 5","Mouse 6"],"subcolumns":[{"type":"number","values":[26.4,24.7,26.7,24.2]},{"type":"number","values":[28,27.9,29.7,27.8]},{"type":"number","values":[26.1,24.3,26.2,25.7]}],"title":"Treated"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":4,"rowTitles":null,"tableKind":"nested","x":null,"yFormat":{"count":3,"type":"replicates"}}"`;
+
+exports[`sample tables > partsOfWhole 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[412,128,64,236,60]}],"title":"Blood"},{"id":"id2","subcolumns":[{"type":"number","values":[355,402,41,88,114]}],"title":"Spleen"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":5,"rowTitles":["T cells","B cells","NK cells","Monocytes","Other"],"tableKind":"partsOfWhole","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
+
+exports[`sample tables > survival 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[1,1,1,0,1,1,1,0,1,1,0,0,null,null,null,null,null,null,null,null,null,null,null,null]}],"title":"Control"},{"id":"id2","subcolumns":[{"type":"number","values":[null,null,null,null,null,null,null,null,null,null,null,null,1,0,1,1,0,1,1,0,0,0,0,0]}],"title":"Treated"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":24,"rowTitles":null,"tableKind":"survival","x":{"subcolumns":[{"type":"number","values":[12,19,25,31,38,38,44,52,60,67,75,90,21,35,48,55,62,70,78,84,90,90,90,90]}],"title":"Days elapsed","xFormat":"numbers"},"yFormat":{"count":1,"type":"replicates"}}"`;
+
+exports[`sample tables > xy 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[1,10.8,13.5,32.3,65.7,86.3,94.2,100.7,101.7,100.2,101.4]},{"type":"number","values":[6.1,10,13.1,33.6,65.6,87.6,92,100.2,99.4,103.3,102.4]},{"type":"number","values":[2,7.5,18.6,36.1,65.1,86.7,98.9,102,98.6,98.6,102.7]}],"title":"Agonist alone"},{"id":"id2","subcolumns":[{"type":"number","values":[2.7,1.4,3.1,6,11,32.3,56.8,82.1,94.6,91.9,94.7]},{"type":"number","values":[4.5,4.3,4.1,4.2,15.9,25.2,55.3,79.1,92.9,98.8,96.7]},{"type":"number","values":[1.4,3.5,3,5.5,12,27.4,56.6,81.2,89.5,98.7,96.2]}],"title":"+ Antagonist"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":11,"rowTitles":null,"tableKind":"xy","x":{"subcolumns":[{"type":"number","values":[-9,-8.5,-8,-7.5,-7,-6.5,-6,-5.5,-5,-4.5,-4]}],"title":"log[Agonist], M","xFormat":"numbers"},"yFormat":{"count":3,"type":"replicates"}}"`;

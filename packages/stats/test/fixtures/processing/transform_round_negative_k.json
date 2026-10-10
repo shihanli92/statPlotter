@@ -1,0 +1,17 @@
+{
+  "name": "transform_round_negative_k",
+  "input": {"rows":[[1234.5],[-1250],[17.489999999999998],[0.10000000000000001]]},
+  "params": {"kind":"transform","y":"round","k":-2},
+  "expected": {
+    "rows": [
+      [1200],
+      [-1300],
+      [0],
+      [0]
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

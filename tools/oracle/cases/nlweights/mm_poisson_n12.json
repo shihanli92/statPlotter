@@ -1,0 +1,12 @@
+{
+  "input": {
+    "data": [
+      {
+        "x": [0.25, 0.5, 1, 2, 3, 5, 8, 12, 20, 30, 50, 80],
+        "y": [23, 39, 73, 93, 130, 173, 193, 232, 251, 264, 292, 299]
+      }
+    ]
+  },
+  "params": {"equation":"michaelis-menten","constraints":[{"kind":"fit"},{"kind":"fit"}],"weighting":"poisson","start":[[300,4]]},
+  "note": "n = 12: the weighting test's Spearman P is exact."
+}

@@ -1,0 +1,29 @@
+{
+  "file": "column_empty.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "A",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B",
+          "values": [null, null, null],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "C",
+          "values": [3, 2, 1],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

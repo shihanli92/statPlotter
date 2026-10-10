@@ -1,0 +1,1 @@
+{ "input": { "a": [4.0], "b": [5.1, 6.2, 5.8] }, "note": "Pooled test with a group of one: only B contributes to the variance (as R)." }

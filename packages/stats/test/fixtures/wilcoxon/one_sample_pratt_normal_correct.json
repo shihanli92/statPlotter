@@ -1,0 +1,27 @@
+{
+  "name": "one_sample_pratt_normal_correct",
+  "input": {"x":[1.5,-0.5,0,2,3.5,0,-1,2,4,2.5,0,1],"mu":0},
+  "params": {"exact":false,"zeroMethod":"pratt"},
+  "expected": {
+    "wPlus": 62.5,
+    "wMinus": 9.5,
+    "W": 53,
+    "n": 12,
+    "nNonZero": 9,
+    "nZero": 3,
+    "p": 0.039059732992065589,
+    "method": "normal",
+    "ties": true,
+    "medianDiff": 1.25,
+    "hlEstimate": 1.7499918692278364,
+    "hlLo": 0.25001912661891845,
+    "hlHi": 3.0000395780543161
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  },
+  "note": "One-sample, Pratt ranks with zeros and ties, normal approximation with the continuity correction."
+}

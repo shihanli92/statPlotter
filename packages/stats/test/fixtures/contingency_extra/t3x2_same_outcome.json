@@ -1,0 +1,41 @@
+{
+  "name": "t3x2_same_outcome",
+  "input": {"table":[[8,0],[5,0],[3,4]]},
+  "params": {},
+  "expected": {
+    "cramersV": 0.68138514386924687,
+    "pairwise": [
+      {
+        "rowA": 0,
+        "rowB": 1,
+        "chiSq": 0,
+        "df": 0,
+        "p": 1,
+        "adjusted": 1
+      },
+      {
+        "rowA": 0,
+        "rowB": 2,
+        "chiSq": 6.2337662337662341,
+        "df": 1,
+        "columns": 2,
+        "p": 0.025641025641025651,
+        "adjusted": 0.076923076923076955
+      },
+      {
+        "rowA": 1,
+        "rowB": 2,
+        "chiSq": 4.2857142857142847,
+        "df": 1,
+        "columns": 2,
+        "p": 0.080808080808080746,
+        "adjusted": 0.24242424242424224
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Rows 1 and 2 put everyone in the first outcome: P = 1 for that pair."
+}

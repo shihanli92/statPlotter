@@ -1,0 +1,14 @@
+{
+  "name": "gof_uneven",
+  "input": {"observed":[0,3,9,30],"expected":[1,2,3,4]},
+  "params": {"fn":"gof"},
+  "expected": {
+    "chiSq": 19.071428571428569,
+    "df": 3,
+    "p": 0.00026425703152510946
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

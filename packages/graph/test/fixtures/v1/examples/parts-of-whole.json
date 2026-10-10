@@ -1,0 +1,406 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Parts of whole",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Immune cells by tissue",
+   "tableKind": "partsOfWhole",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 5,
+   "rowTitles": [
+    "T cells",
+    "B cells",
+    "NK cells",
+    "Monocytes",
+    "Other"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Blood",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        905,
+        272,
+        150,
+        549,
+        124
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Spleen",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        593,
+        902,
+        94,
+        156,
+        255
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000004",
+     "title": "Lymph node",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1243,
+        600,
+        38,
+        30,
+        89
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Leukocytes of 2,000 cells per tissue classified by flow cytometry. Simulated counts. Each column is a whole and each row a part: the pies show each tissue’s composition, the 100% stacked bars compare the tissues side by side, the donut pulls out the B cells of the spleen (click a slice twice to format it alone)."
+  },
+  "zid000005": {
+   "kind": "graph",
+   "id": "zid000005",
+   "name": "Immune cells (pies)",
+   "graphType": "whole.pie",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 480,
+    "plotHeight": 160
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "show": false
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "show": false
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Composition by tissue"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000006": {
+   "kind": "graph",
+   "id": "zid000006",
+   "name": "Immune cells (100% stacked bars)",
+   "graphType": "whole.bar",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Percent of total"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 100
+     },
+     "ticks": {
+      "interval": 25,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Composition by tissue"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000007": {
+   "kind": "graph",
+   "id": "zid000007",
+   "name": "Spleen (donut)",
+   "graphType": "whole.donut",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": [
+     "zid000003"
+    ]
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 170,
+    "plotHeight": 170
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "show": false
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "show": false
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Spleen"
+     }
+    ]
+   },
+   "style": {
+    "pie": {
+     "hole": 0.55,
+     "labels": "categoryPercent",
+     "labelPosition": "outside"
+    }
+   },
+   "pointOverrides": {
+    "zid000003": {
+     "r1": {
+      "explode": 0.12
+     }
+    }
+   }
+  },
+  "zid000008": {
+   "kind": "table",
+   "id": "zid000008",
+   "name": "Survey: preferred assay",
+   "tableKind": "partsOfWhole",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 4,
+   "rowTitles": [
+    "ELISA",
+    "Western blot",
+    "Flow cytometry",
+    "Mass spectrometry"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000009",
+     "title": "Respondents",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        34,
+        21,
+        27,
+        9
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Number of respondents choosing each assay (one answer each). Simulated. A pie with the counts and percentages on the slices."
+  },
+  "zid000010": {
+   "kind": "graph",
+   "id": "zid000010",
+   "name": "Survey (pie)",
+   "graphType": "whole.pie",
+   "seriesSource": {
+    "table": "zid000008",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 160,
+    "plotHeight": 160
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "show": false
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "show": false
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Preferred assay (n = 91)"
+     }
+    ]
+   },
+   "style": {
+    "pie": {
+     "labels": "valuePercent",
+     "digits": 0
+    }
+   }
+  },
+  "zid000014": {
+   "kind": "layout",
+   "id": "zid000014",
+   "name": "Figure (parts of whole)",
+   "page": {
+    "width": 612,
+    "height": 792
+   },
+   "items": [
+    {
+     "type": "graph",
+     "id": "zid000011",
+     "graph": "zid000005",
+     "x": 61.79911664003441,
+     "y": 39.37591588161832,
+     "scale": 0.5494179692907115
+    },
+    {
+     "type": "graph",
+     "id": "zid000012",
+     "graph": "zid000006",
+     "x": 398.0164780810625,
+     "y": 36,
+     "scale": 0.5494179692907115
+    },
+    {
+     "type": "graph",
+     "id": "zid000013",
+     "graph": "zid000007",
+     "x": 36,
+     "y": 208.93396428616933,
+     "scale": 0.5494179692907115
+    }
+   ],
+   "panelLabels": {
+    "show": true,
+    "style": "A",
+    "size": 14
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000005",
+  "zid000006",
+  "zid000007",
+  "zid000008",
+  "zid000010",
+  "zid000014"
+ ]
+}

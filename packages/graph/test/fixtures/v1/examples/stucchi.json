@@ -1,0 +1,1870 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Paper example (Stucchi et al. 2026)",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Fig. 1a C. albicans (6 h)",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 6
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "WT",
+    "MyD88 KO",
+    "IL-1R1 KO"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "PBS",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        769.118,
+        204.1508,
+        9232.975
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1545.215,
+        2118.897,
+        4024.519
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1788.612,
+        1093.129,
+        2953.457
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5715.489,
+        null,
+        4803.052
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2934.883,
+        null,
+        null
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4292.984,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "C. albicans",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        22642.61,
+        802.0159,
+        10310.36
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        28009.42,
+        2755.608,
+        15289.71
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        28963.91,
+        855.6857,
+        7972.588
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        24844.71,
+        null,
+        2147.004
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        26084.04,
+        null,
+        5424.456
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        19572.59,
+        null,
+        1705.929
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000005": {
+   "kind": "analysis",
+   "id": "zid000005",
+   "name": "Two-way ANOVA of Fig. 1a C. albicans (6 h)",
+   "analysisId": "twoWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "allCells",
+    "kind": "allPairs",
+    "family": "perBlock",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Fig. 1a C. albicans (6 h)",
+   "graphType": "grouped.box",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Neutrophils (×10"
+       },
+       {
+        "text": "4",
+        "sup": true
+       },
+       {
+        "text": ") per ear"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "labelPower": 4
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000006",
+     "a": "zid000002",
+     "b": "zid000003",
+     "rowA": 0,
+     "rowB": 0,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000005",
+      "comparison": "cell0:zid000002|0:zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000012",
+     "a": "zid000003",
+     "b": "zid000003",
+     "rowA": 0,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000005",
+      "comparison": "cell0:zid000003|1:zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000014",
+     "a": "zid000003",
+     "b": "zid000003",
+     "rowA": 0,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000005",
+      "comparison": "cell0:zid000003|2:zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000015",
+     "a": "zid000002",
+     "b": "zid000003",
+     "rowA": 1,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000005",
+      "comparison": "cell1:zid000002|1:zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000019",
+     "a": "zid000003",
+     "b": "zid000003",
+     "rowA": 1,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000005",
+      "comparison": "cell1:zid000003|2:zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000020",
+     "a": "zid000002",
+     "b": "zid000003",
+     "rowA": 2,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000005",
+      "comparison": "cell2:zid000002|2:zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fig. 1a C. albicans (6 h)"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "box": {
+      "kind": "floating"
+     }
+    }
+   }
+  },
+  "zid000021": {
+   "kind": "table",
+   "id": "zid000021",
+   "name": "Fig. 1a S. aureus (6 h)",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 6
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "WT",
+    "MyD88 KO",
+    "IL-1R1 KO"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000022",
+     "title": "PBS",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1446.378,
+        1801.533,
+        3671.989
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        573.403,
+        745.0291,
+        1473.368
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        351.6899,
+        1024.415,
+        8694.098
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5920.055,
+        null,
+        3220.355
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5518.35,
+        null,
+        3787.459
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        3135.152,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000023",
+     "title": "S. aureus",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        111765.8,
+        27930.77,
+        38760.36
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        104328.6,
+        26556.46,
+        18037.7
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        114292.3,
+        13660.62,
+        8774.352
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        97863.17,
+        null,
+        3852.224
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        68980.01,
+        null,
+        40473.21
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000025": {
+   "kind": "analysis",
+   "id": "zid000025",
+   "name": "Two-way ANOVA of Fig. 1a S. aureus (6 h)",
+   "analysisId": "twoWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000021",
+    "dataSets": [
+     "zid000022",
+     "zid000023"
+    ]
+   },
+   "params": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "allCells",
+    "kind": "allPairs",
+    "family": "perBlock",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000024": {
+   "kind": "graph",
+   "id": "zid000024",
+   "name": "Fig. 1a S. aureus (6 h)",
+   "graphType": "grouped.box",
+   "seriesSource": {
+    "table": "zid000021",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Neutrophils (×10"
+       },
+       {
+        "text": "4",
+        "sup": true
+       },
+       {
+        "text": ") per ear"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "labelPower": 4
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000026",
+     "a": "zid000022",
+     "b": "zid000023",
+     "rowA": 0,
+     "rowB": 0,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000025",
+      "comparison": "cell0:zid000022|0:zid000023",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000032",
+     "a": "zid000023",
+     "b": "zid000023",
+     "rowA": 0,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000025",
+      "comparison": "cell0:zid000023|1:zid000023",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000034",
+     "a": "zid000023",
+     "b": "zid000023",
+     "rowA": 0,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000025",
+      "comparison": "cell0:zid000023|2:zid000023",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000035",
+     "a": "zid000022",
+     "b": "zid000023",
+     "rowA": 1,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000025",
+      "comparison": "cell1:zid000022|1:zid000023",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000039",
+     "a": "zid000023",
+     "b": "zid000023",
+     "rowA": 1,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000025",
+      "comparison": "cell1:zid000023|2:zid000023",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000040",
+     "a": "zid000022",
+     "b": "zid000023",
+     "rowA": 2,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000025",
+      "comparison": "cell2:zid000022|2:zid000023",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fig. 1a S. aureus (6 h)"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "box": {
+      "kind": "floating"
+     }
+    }
+   }
+  },
+  "zid000041": {
+   "kind": "table",
+   "id": "zid000041",
+   "name": "Fig. 1a P. aeruginosa (6 h)",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 8
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "WT",
+    "MyD88 KO",
+    "IL-1R1 KO"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000042",
+     "title": "PBS",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2290.115,
+        1247.737,
+        17027.93
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1107.722,
+        834.305,
+        3122.074
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        7590,
+        503.1454,
+        4119.545
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2597.436,
+        434.0373,
+        2790
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        3767.029,
+        65.3088,
+        15300
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1182.444,
+        null,
+        null
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        3932.099,
+        null,
+        null
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        576.616,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000043",
+     "title": "P. aeruginosa",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        102224.2,
+        46506,
+        72625.57
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        109601.1,
+        15863.03,
+        50670
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        110787.1,
+        15237.91,
+        67800
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        106860,
+        34199.26,
+        35100
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        92910,
+        26525.87,
+        67470
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        39464.16,
+        null
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000045": {
+   "kind": "analysis",
+   "id": "zid000045",
+   "name": "Two-way ANOVA of Fig. 1a P. aeruginosa (6 h)",
+   "analysisId": "twoWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000041",
+    "dataSets": [
+     "zid000042",
+     "zid000043"
+    ]
+   },
+   "params": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "allCells",
+    "kind": "allPairs",
+    "family": "perBlock",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000044": {
+   "kind": "graph",
+   "id": "zid000044",
+   "name": "Fig. 1a P. aeruginosa (6 h)",
+   "graphType": "grouped.box",
+   "seriesSource": {
+    "table": "zid000041",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Neutrophils (×10"
+       },
+       {
+        "text": "4",
+        "sup": true
+       },
+       {
+        "text": ") per ear"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "labelPower": 4
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000046",
+     "a": "zid000042",
+     "b": "zid000043",
+     "rowA": 0,
+     "rowB": 0,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000045",
+      "comparison": "cell0:zid000042|0:zid000043",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000052",
+     "a": "zid000043",
+     "b": "zid000043",
+     "rowA": 0,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000045",
+      "comparison": "cell0:zid000043|1:zid000043",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000054",
+     "a": "zid000043",
+     "b": "zid000043",
+     "rowA": 0,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000045",
+      "comparison": "cell0:zid000043|2:zid000043",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000055",
+     "a": "zid000042",
+     "b": "zid000043",
+     "rowA": 1,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000045",
+      "comparison": "cell1:zid000042|1:zid000043",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000059",
+     "a": "zid000043",
+     "b": "zid000043",
+     "rowA": 1,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000045",
+      "comparison": "cell1:zid000043|2:zid000043",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000060",
+     "a": "zid000042",
+     "b": "zid000043",
+     "rowA": 2,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000045",
+      "comparison": "cell2:zid000042|2:zid000043",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fig. 1a P. aeruginosa (6 h)"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "box": {
+      "kind": "floating"
+     }
+    }
+   }
+  },
+  "zid000061": {
+   "kind": "table",
+   "id": "zid000061",
+   "name": "Fig. 1c Anti-IL-1α",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 5
+   },
+   "rowCount": 2,
+   "rowTitles": [
+    "Isotype",
+    "Anti-IL-1α"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000062",
+     "title": "PBS",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1481.982,
+        2157.565
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4202.685,
+        1545.849
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        861.6881,
+        4017.474
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        null
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000063",
+     "title": "C. albicans",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        33750.53,
+        16045.34
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        40959.69,
+        12481.54
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        26669.18,
+        21992.32
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        31276.86,
+        13864.99
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        56927.77,
+        11550.45
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000065": {
+   "kind": "analysis",
+   "id": "zid000065",
+   "name": "Two-way ANOVA of Fig. 1c Anti-IL-1α",
+   "analysisId": "twoWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000061",
+    "dataSets": [
+     "zid000062",
+     "zid000063"
+    ]
+   },
+   "params": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "withinColumns",
+    "kind": "allPairs",
+    "family": "all",
+    "allPairsMethod": "sidak",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000064": {
+   "kind": "graph",
+   "id": "zid000064",
+   "name": "Fig. 1c Anti-IL-1α",
+   "graphType": "grouped.box",
+   "seriesSource": {
+    "table": "zid000061",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Neutrophils (×10"
+       },
+       {
+        "text": "4",
+        "sup": true
+       },
+       {
+        "text": ") per ear"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "labelPower": 4
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000067",
+     "a": "zid000063",
+     "b": "zid000063",
+     "rowA": 0,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000065",
+      "comparison": "colzid000063:0|1",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fig. 1c Anti-IL-1α"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "box": {
+      "kind": "floating"
+     }
+    }
+   }
+  },
+  "zid000068": {
+   "kind": "table",
+   "id": "zid000068",
+   "name": "Fig. 1c Anti-IL-1β",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 4
+   },
+   "rowCount": 2,
+   "rowTitles": [
+    "Isotype",
+    "Anti-IL-1β"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000069",
+     "title": "PBS",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        71.89904,
+        1388.856
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        813.0946,
+        970.9203
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        1499.781,
+        658.3762
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        218.7975
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000070",
+     "title": "C. albicans",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        44014.74,
+        76462.23
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        44086.27,
+        63749.57
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        65342.37,
+        53264.05
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        null,
+        null
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000072": {
+   "kind": "analysis",
+   "id": "zid000072",
+   "name": "Two-way ANOVA of Fig. 1c Anti-IL-1β",
+   "analysisId": "twoWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000068",
+    "dataSets": [
+     "zid000069",
+     "zid000070"
+    ]
+   },
+   "params": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "withinColumns",
+    "kind": "allPairs",
+    "family": "all",
+    "allPairsMethod": "sidak",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000071": {
+   "kind": "graph",
+   "id": "zid000071",
+   "name": "Fig. 1c Anti-IL-1β",
+   "graphType": "grouped.box",
+   "seriesSource": {
+    "table": "zid000068",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Neutrophils (×10"
+       },
+       {
+        "text": "4",
+        "sup": true
+       },
+       {
+        "text": ") per ear"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "labelPower": 4
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000074",
+     "a": "zid000070",
+     "b": "zid000070",
+     "rowA": 0,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000072",
+      "comparison": "colzid000070:0|1",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fig. 1c Anti-IL-1β"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "box": {
+      "kind": "floating"
+     }
+    }
+   }
+  },
+  "zid000075": {
+   "kind": "table",
+   "id": "zid000075",
+   "name": "Fig. 2a S. aureus (Cxcl1)",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 6,
+   "rowTitles": [
+    "2",
+    "4",
+    "6",
+    "8",
+    "10",
+    "24"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000076",
+     "title": "WT + PBS",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.001808,
+        0.00123,
+        0.002304,
+        0.028492,
+        0.000975,
+        0.000942
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.004119,
+        0.001284,
+        0.002685,
+        0.005097,
+        0.000739,
+        0.002213
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.005917,
+        0.001017,
+        0.001795,
+        0.050464,
+        0.006734,
+        0.001563
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000077",
+     "title": "WT + S. aureus",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.03093,
+        0.077045,
+        0.146798,
+        0.323705,
+        0.271778,
+        0.069051
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.062066,
+        0.198409,
+        0.268501,
+        0.364755,
+        0.078159,
+        0.096468
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.07756,
+        0.189813,
+        0.181803,
+        0.443329,
+        0.115836,
+        0.105719
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000078",
+     "title": "IL-1R1 KO + PBS",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.002572,
+        0.000903,
+        0.000776,
+        0.005312,
+        0.005956,
+        0.000514
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.001,
+        0.000848,
+        0.000621,
+        0.003769,
+        0.007538,
+        0.000528
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.00063,
+        0.001049,
+        0.000429,
+        null,
+        0.012361,
+        0.000357
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000079",
+     "title": "IL-1R1 KO + S. aureus",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.014707,
+        0.100995,
+        0.085582,
+        0.127428,
+        0.080741,
+        0.063066
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.026515,
+        0.064384,
+        0.065625,
+        0.104937,
+        0.054291,
+        0.04898
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        0.014282,
+        0.048931,
+        0.068275,
+        0.126127,
+        0.036864,
+        0.06115
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000081": {
+   "kind": "analysis",
+   "id": "zid000081",
+   "name": "Two-way ANOVA of Fig. 2a S. aureus (Cxcl1)",
+   "analysisId": "twoWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000075",
+    "dataSets": [
+     "zid000076",
+     "zid000077",
+     "zid000078",
+     "zid000079"
+    ]
+   },
+   "params": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "withinRows",
+    "kind": "allPairs",
+    "family": "perBlock",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000080": {
+   "kind": "graph",
+   "id": "zid000080",
+   "name": "Fig. 2a S. aureus (Cxcl1)",
+   "graphType": "grouped.scatter",
+   "seriesSource": {
+    "table": "zid000075",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 432,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Relative "
+       },
+       {
+        "text": "Cxcl1",
+        "italic": true
+       },
+       {
+        "text": " level"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000092",
+     "a": "zid000077",
+     "b": "zid000079",
+     "rowA": 1,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000081",
+      "comparison": "row1:zid000077|zid000079",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000098",
+     "a": "zid000077",
+     "b": "zid000079",
+     "rowA": 2,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000081",
+      "comparison": "row2:zid000077|zid000079",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000104",
+     "a": "zid000077",
+     "b": "zid000079",
+     "rowA": 3,
+     "rowB": 3,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000081",
+      "comparison": "row3:zid000077|zid000079",
+      "show": "number"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000110",
+     "a": "zid000077",
+     "b": "zid000079",
+     "rowA": 4,
+     "rowB": 4,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000081",
+      "comparison": "row4:zid000077|zid000079",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fig. 2a S. aureus (Cxcl1)"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     },
+     "line": {
+      "show": true
+     }
+    },
+    "arrangement": "aligned"
+   }
+  },
+  "zid000123": {
+   "kind": "layout",
+   "id": "zid000123",
+   "name": "Figure 1 (reproduced)",
+   "page": {
+    "width": 792,
+    "height": 612
+   },
+   "items": [
+    {
+     "type": "graph",
+     "id": "zid000118",
+     "graph": "zid000004",
+     "x": 36,
+     "y": 36,
+     "scale": 0.7063488242316466
+    },
+    {
+     "type": "graph",
+     "id": "zid000119",
+     "graph": "zid000024",
+     "x": 276.4426185435873,
+     "y": 42.500208959735275,
+     "scale": 0.7063488242316466
+    },
+    {
+     "type": "graph",
+     "id": "zid000120",
+     "graph": "zid000044",
+     "x": 521.206450182291,
+     "y": 41.37023590435659,
+     "scale": 0.7063488242316466
+    },
+    {
+     "type": "graph",
+     "id": "zid000121",
+     "graph": "zid000064",
+     "x": 42.47992270979696,
+     "y": 261.5002309896553,
+     "scale": 0.7063488242316466
+    },
+    {
+     "type": "graph",
+     "id": "zid000122",
+     "graph": "zid000071",
+     "x": 287.2437543485006,
+     "y": 260.6125571246272,
+     "scale": 0.7063488242316466
+    }
+   ],
+   "panelLabels": {
+    "show": true,
+    "style": "a",
+    "size": 14
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000005",
+  "zid000004",
+  "zid000021",
+  "zid000025",
+  "zid000024",
+  "zid000041",
+  "zid000045",
+  "zid000044",
+  "zid000061",
+  "zid000065",
+  "zid000064",
+  "zid000068",
+  "zid000072",
+  "zid000071",
+  "zid000075",
+  "zid000081",
+  "zid000080",
+  "zid000123"
+ ]
+}

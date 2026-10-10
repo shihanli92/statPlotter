@@ -1,0 +1,11 @@
+{
+  "input": {
+    "groups": [
+      [3, 7],
+      [4, 10],
+      [1, 3],
+      [8, 12]
+    ]
+  },
+  "note": "n = 2 per group: |x - median| is the same for both values of a group, so the Brown-Forsythe (Levene-median) F is Inf (within-group SS of the deviations = 0)."
+}

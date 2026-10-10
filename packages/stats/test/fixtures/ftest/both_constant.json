@@ -1,0 +1,18 @@
+{
+  "name": "both_constant",
+  "input": {"a":[3,3,3],"b":[2,2]},
+  "params": {},
+  "expected": {
+    "F": "NaN",
+    "dfn": 2,
+    "dfd": 1,
+    "p": "NaN",
+    "varA": 0,
+    "varB": 0
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Both variances zero: F = 0/0 = NaN."
+}

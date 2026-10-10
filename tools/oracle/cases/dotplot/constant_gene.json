@@ -1,0 +1,16 @@
+{
+  "input": {
+    "values": [
+      [2, 2, 2, 2, 2, 2],
+      [0.5, 0.5, 2, 2, 0, 1]
+    ],
+    "group": ["a", "a", "b", "b", "c", "c"],
+    "levels": ["a", "b", "c"]
+  },
+  "params": {
+    "average": "mean",
+    "scale": true,
+    "threshold": 0
+  },
+  "note": "a gene with the same average in every group: its scaled averages are NaN"
+}

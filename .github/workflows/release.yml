@@ -1,0 +1,222 @@
+name: Release
+
+# Desktop installers (roadmap 41; docs/RELEASING.md): a universal macOS .dmg (Apple Silicon and
+# Intel) and Windows .msi and .exe (NSIS) installers, built for every version tag (`v*`) and
+# attached to a GitHub Release for it, with `latest.json` for the app's updater when the update
+# key is set up. Run by hand (Actions › Release › Run workflow) for a dry run: the installers are
+# built and kept as the run's artifacts, and no release is made.
+#
+# Unsigned until the signing secrets exist: signing runs only when its secrets are set (see
+# docs/RELEASING.md, "Signing").
+#
+# Hardening (code audit 2, decision 652): the signing secrets live in the `release` environment,
+# which only tag runs enter, and reach only the steps that use them, in those steps' own `env:`
+# (never $GITHUB_ENV, which every later step would see). A dry run is never signed. A tag
+# releases only when it is on main.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # A draft release for the tag, published once every installer is attached.
+  create-release:
+    # Only in the project's own repository (audit 3, T11): a copy elsewhere has no secrets.
+    if: github.repository == 'shihanli92/plottingTool' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      release_id: ${{ steps.release.outputs.result }}
+    steps:
+      # The whole history and every branch, to check the tag is on main.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      # Only commits on main are released: a tag pushed on another branch (or none) fails here,
+      # before anything is built or signed.
+      - name: The tag is on main
+        run: |
+          commit=$(git rev-parse "${GITHUB_REF}^{commit}")
+          if ! git merge-base --is-ancestor "$commit" refs/remotes/origin/main; then
+            echo "::error::${GITHUB_REF_NAME} (${commit}) isn't on main: only commits on main are released."
+            exit 1
+          fi
+      # The tag must be the app's version (APP_VERSION, packages/model/src/factory.ts).
+      - run: node tools/release-config.mjs "$RUNNER_TEMP/check.json" --tag "$GITHUB_REF_NAME"
+      - id: notes
+        name: Release notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # An audit's row is in bold (| **0.2.0** | **Code audit 2** …).
+          row=$(grep -E "^\| (\*\*)?${version//./\\.}(\*\*)? \|" docs/ROADMAP.md || true)
+          base="https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_REF_NAME}"
+          {
+            echo 'body<<NOTES_END'
+            echo "statPlotter ${version}."
+            echo
+            if [ -n "$row" ]; then echo "$row" | awk -F'|' '{gsub(/\*\*/, "", $3); gsub(/^ +| +$/, "", $3); if ($3 ~ /^Code audit/) print "What it brings: " $3 "."; else print "What it brings: roadmap " $3 "."}'; echo; fi
+            echo "What's new: the roadmap and its version table, ${base}/docs/ROADMAP.md#versions"
+            echo
+            echo "Installers: macOS (Apple Silicon and Intel) .dmg; Windows .msi or .exe."
+            echo "They aren't signed yet: the first time, on macOS right-click the app › Open › Open;"
+            echo "on Windows choose More info › Run anyway (${base}/docs/RELEASING.md#installing-an-unsigned-build)."
+            echo 'NOTES_END'
+          } >> "$GITHUB_OUTPUT"
+      - id: release
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          BODY: ${{ steps.notes.outputs.body }}
+        with:
+          result-encoding: string
+          script: |
+            const tag = context.ref.replace('refs/tags/', '')
+            const { data } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: `statPlotter ${tag.replace(/^v/, '')}`,
+              body: process.env.BODY,
+              draft: true,
+              prerelease: false,
+            })
+            return String(data.id)
+
+  build:
+    needs: [create-release]
+    # The dry run (workflow_dispatch) skips create-release and builds all the same, unsigned.
+    if: always() && github.repository == 'shihanli92/plottingTool' && (needs.create-release.result == 'success' || needs.create-release.result == 'skipped')
+    # Tag runs only: the environment holding the signing secrets (docs/RELEASING.md, "The release
+    # environment"). A dry run, from any branch, gets none of them.
+    environment: ${{ github.event_name == 'push' && 'release' || '' }}
+    permissions:
+      # tauri-action attaches the installers to the draft release.
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            args: --target universal-apple-darwin
+            bundles: apps/desktop/src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+          - platform: windows-latest
+            args: ''
+            bundles: |
+              apps/desktop/src-tauri/target/release/bundle/msi/*.msi
+              apps/desktop/src-tauri/target/release/bundle/nsis/*.exe
+    runs-on: ${{ matrix.platform }}
+    env:
+      # Signing is for tag runs only (and then only what has its secrets set up).
+      SIGN: ${{ github.event_name == 'push' }}
+      HAS_UPDATER_KEY: ${{ github.event_name == 'push' && secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+      HAS_WINDOWS_CERT: ${{ github.event_name == 'push' && secrets.WINDOWS_CERTIFICATE != '' }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # master
+        with:
+          toolchain: stable
+          # A universal macOS app is both architectures, joined.
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: apps/desktop/src-tauri
+      - run: pnpm install --frozen-lockfile
+
+      # --- Windows signing certificate (tag runs, when its secrets are set) --------------------
+      # The code-signing certificate (a base64 .pfx) into the user's store; its thumbprint
+      # (variable WINDOWS_CERTIFICATE_THUMBPRINT) goes into the configuration below.
+      - name: Windows signing certificate
+        if: matrix.platform == 'windows-latest' && env.HAS_WINDOWS_CERT == 'true'
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'certificate.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
+          $password = ConvertTo-SecureString -String $env:WINDOWS_CERTIFICATE_PASSWORD -Force -AsPlainText
+          Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $password | Out-Null
+          Remove-Item $pfx
+
+      # --- Build ------------------------------------------------------------------------------
+      # The release's own configuration: the updater with its public key and endpoint, Windows
+      # signing; empty when nothing is set up (tools/release-config.mjs). It is told whether the
+      # update key exists, never the key itself.
+      - name: Release configuration
+        shell: bash
+        env:
+          TAURI_UPDATER_PUBKEY: ${{ vars.TAURI_UPDATER_PUBKEY || secrets.TAURI_UPDATER_PUBKEY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ env.HAS_UPDATER_KEY == 'true' && 'set' || '' }}
+          TAURI_UPDATER_ENDPOINT: ${{ vars.TAURI_UPDATER_ENDPOINT }}
+          WINDOWS_CERTIFICATE_THUMBPRINT: ${{ matrix.platform == 'windows-latest' && env.HAS_WINDOWS_CERT == 'true' && vars.WINDOWS_CERTIFICATE_THUMBPRINT || '' }}
+        run: node tools/release-config.mjs apps/desktop/src-tauri/release.conf.json
+      # The signing secrets reach this step only, empty when not set up or in a dry run; the
+      # release's Tauri command (apps/desktop/tauri-release.mjs) drops the empty ones. macOS: Tauri
+      # signs with the Developer ID certificate (APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD,
+      # APPLE_SIGNING_IDENTITY) and notarizes with APPLE_ID, APPLE_PASSWORD (an app-specific
+      # password) and APPLE_TEAM_ID. The update bundles are signed with the updater's key.
+      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_CERTIFICATE: ${{ env.SIGN == 'true' && matrix.platform == 'macos-latest' && secrets.APPLE_CERTIFICATE || '' }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ env.SIGN == 'true' && matrix.platform == 'macos-latest' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
+          APPLE_SIGNING_IDENTITY: ${{ env.SIGN == 'true' && matrix.platform == 'macos-latest' && secrets.APPLE_SIGNING_IDENTITY || '' }}
+          APPLE_ID: ${{ env.SIGN == 'true' && matrix.platform == 'macos-latest' && secrets.APPLE_ID || '' }}
+          APPLE_PASSWORD: ${{ env.SIGN == 'true' && matrix.platform == 'macos-latest' && secrets.APPLE_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ env.SIGN == 'true' && matrix.platform == 'macos-latest' && secrets.APPLE_TEAM_ID || '' }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ env.SIGN == 'true' && secrets.TAURI_SIGNING_PRIVATE_KEY || '' }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ env.SIGN == 'true' && secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD || '' }}
+        with:
+          projectPath: apps/desktop
+          tauriScript: node tauri-release.mjs
+          args: ${{ matrix.args }} --config src-tauri/release.conf.json
+          # Tag pushes: attach the installers (and latest.json, when updates are on) to the draft.
+          releaseId: ${{ needs.create-release.outputs.release_id }}
+          includeUpdaterJson: true
+          updaterJsonPreferNsis: true
+      # The dry run keeps the installers as the run's artifacts.
+      - if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: installers-${{ matrix.platform }}
+          path: ${{ matrix.bundles }}
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-release:
+    needs: [create-release, build]
+    if: github.repository == 'shihanli92/plottingTool' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          RELEASE_ID: ${{ needs.create-release.outputs.release_id }}
+        with:
+          script: |
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: Number(process.env.RELEASE_ID),
+              draft: false,
+            })

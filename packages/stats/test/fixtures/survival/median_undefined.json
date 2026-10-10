@@ -1,0 +1,247 @@
+{
+  "name": "median_undefined",
+  "input": {"time":[[5,8,12,15,20,22,25,30,30,30],[2,3,6,9,11,14,18,21]],"event":[[1,0,1,0,0,0,0,0,0,0],[1,1,1,0,1,1,0,1]]},
+  "params": {},
+  "expected": {
+    "km": [
+      {
+        "n": 10,
+        "events": 2,
+        "censored": 8,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 10,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 5,
+            "atRisk": 10,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.90000000000000002,
+            "se": 0.094868329805051374,
+            "lower": 0.47300927136205051,
+            "upper": 0.98528139336734311
+          },
+          {
+            "time": 8,
+            "atRisk": 9,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.90000000000000002,
+            "se": 0.094868329805051374,
+            "lower": 0.47300927136205051,
+            "upper": 0.98528139336734311
+          },
+          {
+            "time": 12,
+            "atRisk": 8,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.78749999999999998,
+            "se": 0.13403299500496135,
+            "lower": 0.38088152320549651,
+            "upper": 0.9425909522237037
+          },
+          {
+            "time": 15,
+            "atRisk": 7,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.78749999999999998,
+            "se": 0.13403299500496135,
+            "lower": 0.38088152320549651,
+            "upper": 0.9425909522237037
+          },
+          {
+            "time": 20,
+            "atRisk": 6,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.78749999999999998,
+            "se": 0.13403299500496135,
+            "lower": 0.38088152320549651,
+            "upper": 0.9425909522237037
+          },
+          {
+            "time": 22,
+            "atRisk": 5,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.78749999999999998,
+            "se": 0.13403299500496135,
+            "lower": 0.38088152320549651,
+            "upper": 0.9425909522237037
+          },
+          {
+            "time": 25,
+            "atRisk": 4,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.78749999999999998,
+            "se": 0.13403299500496135,
+            "lower": 0.38088152320549651,
+            "upper": 0.9425909522237037
+          },
+          {
+            "time": 30,
+            "atRisk": 3,
+            "events": 0,
+            "censored": 3,
+            "survival": 0.78749999999999998,
+            "se": 0.13403299500496135,
+            "lower": 0.38088152320549651,
+            "upper": 0.9425909522237037
+          }
+        ],
+        "median": {
+          "value": "NaN",
+          "lower": 5,
+          "upper": "Inf"
+        }
+      },
+      {
+        "n": 8,
+        "events": 6,
+        "censored": 2,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 8,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 2,
+            "atRisk": 8,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.875,
+            "se": 0.11692679333668568,
+            "lower": 0.38700001403202522,
+            "upper": 0.98139296587896596
+          },
+          {
+            "time": 3,
+            "atRisk": 7,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.75,
+            "se": 0.15309310892394862,
+            "lower": 0.31480711370551911,
+            "upper": 0.93089831709062754
+          },
+          {
+            "time": 6,
+            "atRisk": 6,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.625,
+            "se": 0.17116329922036438,
+            "lower": 0.22933332242913168,
+            "upper": 0.86069827691353873
+          },
+          {
+            "time": 9,
+            "atRisk": 5,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.625,
+            "se": 0.17116329922036438,
+            "lower": 0.22933332242913168,
+            "upper": 0.86069827691353873
+          },
+          {
+            "time": 11,
+            "atRisk": 4,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.46875,
+            "se": 0.18652088103614567,
+            "lower": 0.11992862224090715,
+            "upper": 0.76285566787176007
+          },
+          {
+            "time": 14,
+            "atRisk": 3,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.3125,
+            "se": 0.17815241017174027,
+            "lower": 0.04784947473944149,
+            "upper": 0.64077042051507049
+          },
+          {
+            "time": 18,
+            "atRisk": 2,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.3125,
+            "se": 0.17815241017174027,
+            "lower": 0.04784947473944149,
+            "upper": 0.64077042051507049
+          },
+          {
+            "time": 21,
+            "atRisk": 1,
+            "events": 1,
+            "censored": 0,
+            "survival": 0,
+            "se": 0,
+            "lower": 0,
+            "upper": 0
+          }
+        ],
+        "median": {
+          "value": 11,
+          "lower": 2,
+          "upper": "Inf"
+        }
+      }
+    ],
+    "logRank": {
+      "chiSq": 6.2690580018959388,
+      "df": 1,
+      "p": 0.012286444585317354
+    },
+    "gehanBreslowWilcoxon": {
+      "chiSq": 4.6242774566473983,
+      "df": 1,
+      "p": 0.03152253547850143
+    },
+    "logRankTrend": null,
+    "hazardRatio": {
+      "mantelHaenszel": {
+        "value": 6.6991679844375644,
+        "lower": 1.5115325169030955,
+        "upper": 29.690960122818478
+      },
+      "logRank": {
+        "value": 5.8759483379022024,
+        "lower": 1.3578910747981907,
+        "upper": 25.426758825134048
+      }
+    },
+    "medianRatio": null,
+    "observed": [2, 6],
+    "expected": [5.2960635769459294, 2.7039364230540697]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3",
+      "coin": "1.4.5"
+    }
+  },
+  "note": "Group 1 stays above 50%: median undefined, so no median ratio."
+}

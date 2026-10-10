@@ -1,0 +1,9 @@
+{
+  "input": {
+    "table": [
+      [5, 3],
+      [3, 6]
+    ]
+  },
+  "note": "b = c: McNemar chi-square 0 (no correction), as R's mcnemar.test."
+}

@@ -1,0 +1,245 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Functions",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Kinetics",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 5,
+   "rowTitles": null,
+   "x": {
+    "title": "S",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0.5,
+       1,
+       2,
+       4,
+       8
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "V",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        20,
+        33,
+        50,
+        66,
+        80
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000003": {
+   "kind": "graph",
+   "id": "zid000003",
+   "name": "Data with functions",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "S"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Kinetics"
+     }
+    ]
+   },
+   "style": {},
+   "functions": [
+    {
+     "id": "zid000004",
+     "equation": "michaelis-menten",
+     "params": {
+      "Vmax": 100,
+      "Km": 2
+     },
+     "from": 0,
+     "to": 10,
+     "title": "Theory",
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#555555"
+        },
+        "width": 1.25,
+        "dash": "dash"
+       }
+      }
+     }
+    },
+    {
+     "id": "zid000005",
+     "equation": "michaelis-menten",
+     "params": {
+      "Vmax": 90,
+      "Km": 3
+     },
+     "from": 0,
+     "to": 10,
+     "style": {
+      "color": {
+       "rgb": "#ee7733"
+      },
+      "points": {
+       "show": true
+      }
+     }
+    }
+   ]
+  },
+  "zid000006": {
+   "kind": "graph",
+   "id": "zid000006",
+   "name": "Functions only",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "S"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Kinetics"
+     }
+    ]
+   },
+   "style": {},
+   "functions": [
+    {
+     "id": "zid000008",
+     "equation": "exponential-growth",
+     "params": {
+      "Y0": 0,
+      "K": 1
+     },
+     "from": 0,
+     "to": 5
+    }
+   ]
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000003",
+  "zid000006"
+ ]
+}

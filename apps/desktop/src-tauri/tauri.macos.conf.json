@@ -1,0 +1,96 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "fileAssociations": [
+      {
+        "ext": [
+          "psproj"
+        ],
+        "name": "statPlotter Project",
+        "description": "statPlotter project",
+        "role": "Editor",
+        "rank": "Owner",
+        "mimeType": "application/x-plotting-software-project",
+        "exportedType": {
+          "identifier": "dev.statplotter.project",
+          "conformsTo": [
+            "public.data"
+          ]
+        }
+      },
+      {
+        "ext": [
+          "pspreset"
+        ],
+        "name": "statPlotter Graph Preset",
+        "description": "statPlotter graph preset",
+        "role": "Editor",
+        "rank": "Owner",
+        "mimeType": "application/x-plotting-software-preset",
+        "exportedType": {
+          "identifier": "dev.statplotter.preset",
+          "conformsTo": [
+            "public.json"
+          ]
+        }
+      },
+      {
+        "ext": [
+          "psstyle"
+        ],
+        "name": "statPlotter Style",
+        "description": "statPlotter figure style",
+        "role": "Editor",
+        "rank": "Owner",
+        "mimeType": "application/x-plotting-software-style",
+        "exportedType": {
+          "identifier": "dev.statplotter.style",
+          "conformsTo": [
+            "public.json"
+          ]
+        }
+      },
+      {
+        "ext": [
+          "pzfx"
+        ],
+        "name": "Prism Project",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "csv"
+        ],
+        "name": "CSV Data",
+        "role": "Viewer",
+        "rank": "Alternate",
+        "contentTypes": [
+          "public.comma-separated-values-text"
+        ]
+      },
+      {
+        "ext": [
+          "tsv"
+        ],
+        "name": "Tab-Separated Data",
+        "role": "Viewer",
+        "rank": "Alternate",
+        "contentTypes": [
+          "public.tab-separated-values-text"
+        ]
+      },
+      {
+        "ext": [
+          "xlsx"
+        ],
+        "name": "Excel Workbook",
+        "role": "Viewer",
+        "rank": "Alternate",
+        "contentTypes": [
+          "org.openxmlformats.spreadsheetml.sheet"
+        ]
+      }
+    ]
+  }
+}

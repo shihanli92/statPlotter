@@ -1,0 +1,66 @@
+{
+  "name": "hanley_mcneil_ratings",
+  "input": {"controls":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,5,5],"patients":[1,1,1,2,2,3,3,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]},
+  "params": {},
+  "expected": {
+    "points": [
+      {
+        "threshold": 1.5,
+        "sensitivity": 0.94117647058823528,
+        "sensLower": 0.83757778192794952,
+        "sensUpper": 0.98770091174475994,
+        "specificity": 0.56896551724137934,
+        "specLower": 0.43226981668089781,
+        "specUpper": 0.69837545770779963,
+        "likelihoodRatio": 2.1835294117647059
+      },
+      {
+        "threshold": 2.5,
+        "sensitivity": 0.90196078431372551,
+        "sensLower": 0.78585501745431907,
+        "sensUpper": 0.96739351044810906,
+        "specificity": 0.67241379310344829,
+        "specLower": 0.53659378132683333,
+        "specUpper": 0.78994615136953639,
+        "likelihoodRatio": 2.7533539731682146
+      },
+      {
+        "threshold": 3.5,
+        "sensitivity": 0.86274509803921573,
+        "sensLower": 0.73744845669545389,
+        "sensUpper": 0.94298818653663119,
+        "specificity": 0.77586206896551724,
+        "specLower": 0.64727610123124968,
+        "specUpper": 0.87491081085743083,
+        "likelihoodRatio": 3.8491704374057316
+      },
+      {
+        "threshold": 4.5,
+        "sensitivity": 0.6470588235294118,
+        "sensLower": 0.50068197911674683,
+        "sensUpper": 0.77569379666430283,
+        "specificity": 0.96551724137931039,
+        "specLower": 0.88092268911960792,
+        "specUpper": 0.99579635276013234,
+        "likelihoodRatio": 18.764705882352963
+      }
+    ],
+    "auc": 0.89317106152805947,
+    "se": 0.031990408194309379,
+    "lower": 0.83047101361647813,
+    "upper": 0.95587110943964082,
+    "p": 1.632186870026918e-12,
+    "se0": 0.055668130251658121,
+    "z": 7.0627675072012774,
+    "direction": "higher",
+    "nControls": 58,
+    "nPatients": 51
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pROC": "1.19.1"
+    }
+  },
+  "note": "Hanley & McNeil (1982) Table 1 CT ratings (58 normal, 51 abnormal); the paper reports area 0.893 and SE 0.032. Heavy ties."
+}

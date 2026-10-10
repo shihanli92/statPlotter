@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300pt" height="200pt" viewBox="0 0 300 200">
+<g data-id="page">
+<g data-id="item/a">
+<g data-id="item/a/cell/0/1">
+<text fill="#000000" xml:space="preserve"><tspan x="54.663" y="29.947" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9" font-weight="bold">Control</tspan></text>
+</g>
+<g data-id="item/a/cell/0/2">
+<text fill="#000000" xml:space="preserve"><tspan x="94.755" y="29.947" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9" font-weight="bold">Treated</tspan></text>
+</g>
+<g data-id="item/a/cell/1/0">
+<text fill="#000000" xml:space="preserve"><tspan x="24.05" y="43.602" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Mean</tspan></text>
+</g>
+<g data-id="item/a/cell/1/1">
+<text fill="#000000" xml:space="preserve"><tspan x="64.133" y="43.602" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">43.48</tspan></text>
+</g>
+<g data-id="item/a/cell/1/2">
+<text fill="#000000" xml:space="preserve"><tspan x="104.248" y="43.602" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">56.28</tspan></text>
+</g>
+<g data-id="item/a/cell/2/0">
+<text fill="#000000" xml:space="preserve"><tspan x="24.05" y="57.257" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">SD</tspan></text>
+</g>
+<g data-id="item/a/cell/2/1">
+<text fill="#000000" xml:space="preserve"><tspan x="64.133" y="57.257" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">3.831</tspan></text>
+</g>
+<g data-id="item/a/cell/2/2">
+<text fill="#000000" xml:space="preserve"><tspan x="104.248" y="57.257" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">9.150</tspan></text>
+</g>
+<g data-id="item/a/cell/3/0">
+<text fill="#000000" xml:space="preserve"><tspan x="24.05" y="70.912" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">N</tspan></text>
+</g>
+<g data-id="item/a/cell/3/1">
+<text fill="#000000" xml:space="preserve"><tspan x="76.645" y="70.912" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">10</tspan></text>
+</g>
+<g data-id="item/a/cell/3/2">
+<text fill="#000000" xml:space="preserve"><tspan x="116.759" y="70.912" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">10</tspan></text>
+</g>
+<g data-id="item/a/grid/0">
+<line x1="20" y1="20" x2="130.82" y2="20" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/1">
+<line x1="20" y1="33.655" x2="130.82" y2="33.655" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/2">
+<line x1="20" y1="47.309" x2="130.82" y2="47.309" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/3">
+<line x1="20" y1="60.964" x2="130.82" y2="60.964" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/4">
+<line x1="20" y1="74.619" x2="130.82" y2="74.619" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/5">
+<line x1="20" y1="20" x2="20" y2="74.619" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/6">
+<line x1="50.613" y1="20" x2="50.613" y2="74.619" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/7">
+<line x1="90.705" y1="20" x2="90.705" y2="74.619" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/8">
+<line x1="130.82" y1="20" x2="130.82" y2="74.619" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="item/b">
+<g data-id="item/b/cell/0/1">
+<text fill="#000000" xml:space="preserve"><tspan x="199.015" y="28.729" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8" font-weight="bold">Control</tspan></text>
+</g>
+<g data-id="item/b/cell/0/2">
+<text fill="#000000" xml:space="preserve"><tspan x="232.734" y="28.729" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8" font-weight="bold">Treated</tspan></text>
+</g>
+<g data-id="item/b/cell/1/0">
+<text fill="#000000" xml:space="preserve"><tspan x="173.6" y="40.788" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8">Mean</tspan></text>
+</g>
+<g data-id="item/b/cell/1/1">
+<text fill="#000000" xml:space="preserve"><tspan x="207.534" y="40.788" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8">43.48</tspan></text>
+</g>
+<g data-id="item/b/cell/1/2">
+<text fill="#000000" xml:space="preserve"><tspan x="241.098" y="40.788" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8">56.28</tspan></text>
+</g>
+<g data-id="item/b/cell/2/0">
+<text fill="#000000" xml:space="preserve"><tspan x="173.6" y="52.848" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8">SD</tspan></text>
+</g>
+<g data-id="item/b/cell/2/1">
+<text fill="#000000" xml:space="preserve"><tspan x="207.534" y="52.848" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8">3.831</tspan></text>
+</g>
+<g data-id="item/b/cell/2/2">
+<text fill="#000000" xml:space="preserve"><tspan x="241.098" y="52.848" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="8">9.150</tspan></text>
+</g>
+<g data-id="item/b/grid/0">
+<line x1="170" y1="20" x2="262.698" y2="20" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/b/grid/1">
+<line x1="170" y1="32.059" x2="262.698" y2="32.059" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/b/grid/2">
+<line x1="170" y1="44.119" x2="262.698" y2="44.119" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/b/grid/3">
+<line x1="170" y1="56.178" x2="262.698" y2="56.178" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+</svg>

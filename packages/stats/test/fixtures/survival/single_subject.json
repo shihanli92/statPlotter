@@ -1,0 +1,131 @@
+{
+  "name": "single_subject",
+  "input": {"time":[[4],[1,3,6]],"event":[[1],[1,0,1]]},
+  "params": {},
+  "expected": {
+    "km": [
+      {
+        "n": 1,
+        "events": 1,
+        "censored": 0,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 1,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 4,
+            "atRisk": 1,
+            "events": 1,
+            "censored": 0,
+            "survival": 0,
+            "se": 0,
+            "lower": 0,
+            "upper": 0
+          }
+        ],
+        "median": {
+          "value": 4,
+          "lower": "NaN",
+          "upper": "Inf"
+        }
+      },
+      {
+        "n": 3,
+        "events": 2,
+        "censored": 1,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 3,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 1,
+            "atRisk": 3,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.66666666666666663,
+            "se": 0.27216552697590868,
+            "lower": 0.054073426786516755,
+            "upper": 0.94520638727204698
+          },
+          {
+            "time": 3,
+            "atRisk": 2,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.66666666666666663,
+            "se": 0.27216552697590868,
+            "lower": 0.054073426786516755,
+            "upper": 0.94520638727204698
+          },
+          {
+            "time": 6,
+            "atRisk": 1,
+            "events": 1,
+            "censored": 0,
+            "survival": 0,
+            "se": 0,
+            "lower": 0,
+            "upper": 0
+          }
+        ],
+        "median": {
+          "value": 6,
+          "lower": 1,
+          "upper": "Inf"
+        }
+      }
+    ],
+    "logRank": {
+      "chiSq": 0.14285714285714285,
+      "df": 1,
+      "p": 0.7054569861112735
+    },
+    "gehanBreslowWilcoxon": {
+      "chiSq": 0,
+      "df": 1,
+      "p": 1
+    },
+    "logRankTrend": null,
+    "hazardRatio": {
+      "mantelHaenszel": {
+        "value": 0.56471812200775928,
+        "lower": 0.029169968074588624,
+        "upper": 10.932701623413339
+      },
+      "logRank": {
+        "value": 0.66666666666666663,
+        "lower": 0.048862237464194568,
+        "upper": 9.095867637459822
+      }
+    },
+    "medianRatio": {
+      "value": 1.5,
+      "lower": 0.13601491500981572,
+      "upper": 16.542303466039922
+    },
+    "observed": [1, 2],
+    "expected": [0.75, 2.25]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3",
+      "coin": "1.4.5"
+    }
+  },
+  "note": "A group of one subject."
+}

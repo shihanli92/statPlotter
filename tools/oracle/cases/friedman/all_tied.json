@@ -1,0 +1,10 @@
+{
+  "input": {
+    "rows": [
+      [1, 1, 1],
+      [2, 2, 2],
+      [3, 3, 3]
+    ]
+  },
+  "note": "Every row tied: statistic 0/0 = NaN (R), exact P = 1."
+}

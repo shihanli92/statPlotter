@@ -1,0 +1,28 @@
+{
+  "name": "paired_constant_diff",
+  "input": {"a":[1,2,3,4],"b":[2,3,4,5]},
+  "params": {"test":"paired"},
+  "expected": {
+    "t": "Inf",
+    "df": 3,
+    "p": 0,
+    "mean": 1,
+    "sd": 0,
+    "se": 0,
+    "ciLo": 1,
+    "ciHi": 1,
+    "n": 4,
+    "rSquared": 1,
+    "meanA": 2.5,
+    "meanB": 3.5,
+    "pairingR": 1,
+    "pairingP": 0
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "BSDA": "1.2.2"
+    }
+  },
+  "note": "All differences equal: SD = 0, t = Inf, P = 0; pairing r = 1 exactly."
+}

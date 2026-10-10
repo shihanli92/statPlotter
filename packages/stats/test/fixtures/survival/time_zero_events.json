@@ -1,0 +1,181 @@
+{
+  "name": "time_zero_events",
+  "input": {"time":[[0,0,1,2,3,5],[0,2,4,4,6]],"event":[[1,0,1,1,0,1],[1,1,1,0,1]]},
+  "params": {},
+  "expected": {
+    "km": [
+      {
+        "n": 6,
+        "events": 4,
+        "censored": 2,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 6,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 0,
+            "atRisk": 6,
+            "events": 1,
+            "censored": 1,
+            "survival": 0.83333333333333337,
+            "se": 0.15214515486254615,
+            "lower": 0.273122849928356,
+            "upper": 0.97471242669089353
+          },
+          {
+            "time": 1,
+            "atRisk": 4,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.625,
+            "se": 0.21347814095749162,
+            "lower": 0.14185338993165508,
+            "upper": 0.89305060449857776
+          },
+          {
+            "time": 2,
+            "atRisk": 3,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.41666666666666663,
+            "se": 0.22178776975932377,
+            "lower": 0.05599186485205291,
+            "upper": 0.76652221955057998
+          },
+          {
+            "time": 3,
+            "atRisk": 2,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.41666666666666663,
+            "se": 0.22178776975932377,
+            "lower": 0.05599186485205291,
+            "upper": 0.76652221955057998
+          },
+          {
+            "time": 5,
+            "atRisk": 1,
+            "events": 1,
+            "censored": 0,
+            "survival": 0,
+            "se": 0,
+            "lower": 0,
+            "upper": 0
+          }
+        ],
+        "median": {
+          "value": 2,
+          "lower": 0,
+          "upper": "Inf"
+        }
+      },
+      {
+        "n": 5,
+        "events": 4,
+        "censored": 1,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 5,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 0,
+            "atRisk": 5,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.80000000000000004,
+            "se": 0.17888543819998318,
+            "lower": 0.20380926326763926,
+            "upper": 0.96917978886674261
+          },
+          {
+            "time": 2,
+            "atRisk": 4,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.60000000000000009,
+            "se": 0.21908902300206645,
+            "lower": 0.12573018299443137,
+            "upper": 0.88175640739353234
+          },
+          {
+            "time": 4,
+            "atRisk": 3,
+            "events": 1,
+            "censored": 1,
+            "survival": 0.40000000000000002,
+            "se": 0.21908902300206645,
+            "lower": 0.051975750377467558,
+            "upper": 0.7528157913587552
+          },
+          {
+            "time": 6,
+            "atRisk": 1,
+            "events": 1,
+            "censored": 0,
+            "survival": 0,
+            "se": 0,
+            "lower": 0,
+            "upper": 0
+          }
+        ],
+        "median": {
+          "value": 4,
+          "lower": 0,
+          "upper": "Inf"
+        }
+      }
+    ],
+    "logRank": {
+      "chiSq": 0.41708425910100827,
+      "df": 1,
+      "p": 0.51839553950738648
+    },
+    "gehanBreslowWilcoxon": {
+      "chiSq": 0.17021276595744675,
+      "df": 1,
+      "p": 0.67992278505215231
+    },
+    "logRankTrend": null,
+    "hazardRatio": {
+      "mantelHaenszel": {
+        "value": 0.59446771307912094,
+        "lower": 0.12264309425036034,
+        "upper": 2.8814656385961324
+      },
+      "logRank": {
+        "value": 0.66599053414469223,
+        "lower": 0.16184669797208895,
+        "upper": 2.7405155442023488
+      }
+    },
+    "medianRatio": {
+      "value": 2,
+      "lower": 0.50019530651981292,
+      "upper": 7.9968763158347596
+    },
+    "observed": [4, 4],
+    "expected": [3.198051948051948, 4.8019480519480524]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3",
+      "coin": "1.4.5"
+    }
+  },
+  "note": "Events at time 0: the prepended time-0 row (S = 1) is followed by a second time-0 row."
+}

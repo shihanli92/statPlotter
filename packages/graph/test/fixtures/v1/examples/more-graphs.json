@@ -1,0 +1,1316 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "More graph types",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Expression (fold change)",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 6,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Vehicle",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.07,
+        0.97,
+        1.06,
+        1.01,
+        1.05,
+        1.07
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Drug A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.87,
+        1.66,
+        1.64,
+        1.63,
+        1.7,
+        1.48
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000004",
+     "title": "Drug B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.52,
+        0.56,
+        0.67,
+        0.51,
+        0.52,
+        0.57
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000005",
+     "title": "Drug C",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.22,
+        0.98,
+        0.98,
+        1.08,
+        1.52,
+        1.07
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Fold change of a transcript over untreated cells, six wells per treatment. Simulated data. The bars start at 1 (no change) and go up or down from it, drawn horizontally (Format graph › Graph settings › Orientation; Appearance › Bars start at a baseline other than 0). The second graph shows each mean with its 95% CI, forest-style, with the ANOVA’s brackets standing beside the data."
+  },
+  "zid000006": {
+   "kind": "graph",
+   "id": "zid000006",
+   "name": "Fold change (horizontal bars)",
+   "graphType": "column.bar",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Fold change"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Fold change from 1"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": false
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "above"
+     },
+     "bar": {
+      "baseline": 1
+     }
+    },
+    "orientation": "horizontal"
+   }
+  },
+  "zid000007": {
+   "kind": "graph",
+   "id": "zid000007",
+   "name": "Fold change (forest plot)",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 200,
+    "plotHeight": 150
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Fold change"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000009",
+     "a": "zid000002",
+     "b": "zid000003",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000008",
+      "comparison": "zid000002|zid000003",
+      "show": "stars"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000010",
+     "a": "zid000002",
+     "b": "zid000004",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000008",
+      "comparison": "zid000002|zid000004",
+      "show": "stars"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Mean with 95% CI"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": false
+     },
+     "center": {
+      "stat": "mean",
+      "width": 0.25
+     },
+     "error": {
+      "stat": "CI",
+      "direction": "both"
+     }
+    },
+    "orientation": "horizontal"
+   }
+  },
+  "zid000008": {
+   "kind": "analysis",
+   "id": "zid000008",
+   "name": "One-way ANOVA of fold changes",
+   "analysisId": "oneWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003",
+     "zid000004",
+     "zid000005"
+    ]
+   },
+   "params": {
+    "matched": false,
+    "sphericity": "gg",
+    "gaussian": true,
+    "equalSD": "yes",
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "welchMethod": "dunnett-t3",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000014": {
+   "kind": "table",
+   "id": "zid000014",
+   "name": "T cell subsets",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "Day 0",
+    "Day 7",
+    "Day 28"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000015",
+     "title": "Naive",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        45.3,
+        24.5,
+        24.4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        48.2,
+        29.5,
+        20.6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        46.4,
+        32.8,
+        19.3
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000016",
+     "title": "Effector",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        25.9,
+        43,
+        33.9
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        21,
+        42.4,
+        29.7
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        22.4,
+        38.3,
+        28.6
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000017",
+     "title": "Memory",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        21.7,
+        17.8,
+        33.3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        17.8,
+        23.7,
+        42.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        20,
+        19.8,
+        40.4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000018",
+     "title": "Regulatory",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        7.9,
+        10.3,
+        9
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        10.7,
+        10.6,
+        8.5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        11.3,
+        10.7,
+        11.9
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Percent of CD3⁺ cells in each subset after vaccination, three donors per day. Simulated data. Stacked bars add the subsets up per day (mean ± SD on each segment); the 100% stacked bars show each day’s composition, drawn horizontally with gaps between the segments (Format graph › Graph settings › Data sets in each row)."
+  },
+  "zid000019": {
+   "kind": "graph",
+   "id": "zid000019",
+   "name": "T cell subsets (stacked)",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "zid000014",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 360,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "% of CD3⁺ cells"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Stacked bars"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": false
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "above"
+     }
+    },
+    "arrangement": "stacked"
+   }
+  },
+  "zid000020": {
+   "kind": "graph",
+   "id": "zid000020",
+   "name": "T cell subsets (100% stacked, horizontal)",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "zid000014",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 360,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "% of total"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Composition by day"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": false
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     }
+    },
+    "arrangement": "stacked",
+    "stack": {
+     "percent": true,
+     "gap": 1.5
+    },
+    "orientation": "horizontal"
+   }
+  },
+  "zid000021": {
+   "kind": "table",
+   "id": "zid000021",
+   "name": "Tumour volume",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 6
+   },
+   "rowCount": 7,
+   "rowTitles": null,
+   "x": {
+    "title": "Day",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       3,
+       7,
+       10,
+       14,
+       17,
+       21
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000022",
+     "title": "Control",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        54,
+        79,
+        126,
+        186,
+        275,
+        404,
+        563
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        63,
+        82,
+        119,
+        172,
+        262,
+        343,
+        540
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        57,
+        72,
+        121,
+        null,
+        199,
+        278,
+        462
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        50,
+        70,
+        111,
+        149,
+        227,
+        301,
+        523
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        49,
+        65,
+        98,
+        117,
+        143,
+        201,
+        280
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        51,
+        66,
+        93,
+        147,
+        179,
+        254,
+        364
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000023",
+     "title": "Treated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        50,
+        54,
+        67,
+        77,
+        90,
+        null,
+        119
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        60,
+        76,
+        78,
+        95,
+        139,
+        null,
+        195
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        50,
+        72,
+        78,
+        79,
+        120,
+        null,
+        157
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        59,
+        77,
+        84,
+        99,
+        121,
+        null,
+        164
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        69,
+        77,
+        99,
+        108,
+        130,
+        null,
+        186
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        64,
+        72,
+        98,
+        108,
+        138,
+        null,
+        240
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Tumour volume (mm³) of six mice per group, each mouse a replicate subcolumn. Simulated data; one control mouse missed day 10 and the treated group was not measured on day 17. The first graph joins each mouse across the days (a spaghetti plot) with the group mean; the second shades mean ± SEM as a band and breaks the line and band at the missing day (Format graph › Appearance › Lines)."
+  },
+  "zid000024": {
+   "kind": "graph",
+   "id": "zid000024",
+   "name": "Tumour volume (each mouse)",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000021",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Day"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Volume (mm³)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Each mouse and the mean"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "spaghetti": {
+      "show": true
+     },
+     "line": {
+      "show": true
+     }
+    }
+   }
+  },
+  "zid000025": {
+   "kind": "graph",
+   "id": "zid000025",
+   "name": "Tumour volume (mean ± SEM band)",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000021",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Day"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Volume (mm³)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Mean ± SEM"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SEM",
+      "direction": "both"
+     },
+     "envelope": {
+      "show": true,
+      "opacity": 0.25
+     },
+     "line": {
+      "show": true,
+      "gaps": true
+     }
+    }
+   }
+  },
+  "zid000026": {
+   "kind": "table",
+   "id": "zid000026",
+   "name": "Antibody titres",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 10,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000027",
+     "title": "Dose 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        64,
+        64,
+        64,
+        32,
+        64,
+        256,
+        64,
+        128,
+        32,
+        256
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000028",
+     "title": "Dose 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        512,
+        1024,
+        1024,
+        256,
+        1024,
+        128,
+        256,
+        1024,
+        4096,
+        1024
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000029",
+     "title": "Booster",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2048,
+        1024,
+        1024,
+        1024,
+        1024,
+        512,
+        1024,
+        1024,
+        8192,
+        2048
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Reciprocal endpoint titres of ten subjects per visit. Simulated data. Titres are log-normal, so the lines are geometric means with error bars of the geometric mean ×/÷ its SD factor on a log₂ axis (Format graph › Appearance › Error bars); the dashed line is the mean of every titre (Graph settings › Grand mean)."
+  },
+  "zid000030": {
+   "kind": "graph",
+   "id": "zid000030",
+   "name": "Antibody titres (geometric mean)",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000026",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Titre"
+       }
+      ]
+     },
+     "scale": "log2",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Geometric mean ×/÷ SD factor"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "geomean"
+     },
+     "error": {
+      "stat": "geoSD",
+      "direction": "both"
+     }
+    },
+    "grandMean": {
+     "show": true
+    }
+   }
+  },
+  "zid000031": {
+   "kind": "table",
+   "id": "zid000031",
+   "name": "Gene expression",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 10,
+   "rowTitles": [
+    "Il6",
+    "Tnf",
+    "Il1b",
+    "Cxcl10",
+    "Ifng",
+    "Il10",
+    "Tgfb1",
+    "Foxp3",
+    "Gzmb",
+    "Prf1"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000032",
+     "title": "WT 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        8.6,
+        8.03,
+        9.32,
+        4.55,
+        6.51,
+        7.96,
+        6.7,
+        8.69,
+        6.6,
+        7.74
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000033",
+     "title": "WT 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        8.57,
+        8.29,
+        8.76,
+        5.37,
+        6.72,
+        6.92,
+        6.87,
+        8,
+        6.78,
+        8.3
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000034",
+     "title": "WT 3",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        8.33,
+        7.99,
+        8.71,
+        5.44,
+        7.06,
+        7.46,
+        7.2,
+        7.89,
+        6.87,
+        7.59
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000035",
+     "title": "KO 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        10.93,
+        9.83,
+        10.53,
+        8.28,
+        7.79,
+        5.22,
+        6.62,
+        6.44,
+        7.14,
+        7.85
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000036",
+     "title": "KO 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        10.41,
+        10.3,
+        10.36,
+        6.85,
+        7.9,
+        6.21,
+        5.81,
+        6.03,
+        6.89,
+        7.45
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000037",
+     "title": "KO 3",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        10.1,
+        10.79,
+        11.08,
+        7,
+        7.75,
+        6.59,
+        6.14,
+        6.35,
+        7.06,
+        8.33
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "log₂ expression of ten genes in three wild-type and three knockout samples (one value per cell). Simulated data. The heat map shows each gene’s z-scores (row-scaled) on a blue–white–red scale, genes and samples ordered by hierarchical clustering (average linkage on 1 − Pearson r, as R’s hclust orders them), with the dendrograms beside the map (Format graph › Appearance). The samples separate by genotype."
+  },
+  "zid000038": {
+   "kind": "graph",
+   "id": "zid000038",
+   "name": "Gene expression (heat map)",
+   "graphType": "heatmap.cells",
+   "seriesSource": {
+    "table": "zid000031",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 129.60000000000002,
+    "plotHeight": 216
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    },
+    "y": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Gene expression (z-score)"
+     }
+    ]
+   },
+   "style": {
+    "heatmap": {
+     "colors": "blueRed",
+     "standardize": "row",
+     "clusterRows": true,
+     "clusterColumns": true,
+     "linkage": "average",
+     "distance": "pearson"
+    }
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000006",
+  "zid000007",
+  "zid000008",
+  "zid000014",
+  "zid000019",
+  "zid000020",
+  "zid000021",
+  "zid000024",
+  "zid000025",
+  "zid000026",
+  "zid000030",
+  "zid000031",
+  "zid000038"
+ ]
+}

@@ -1,0 +1,96 @@
+{
+  "name": "t2x2_small",
+  "input": {"table":[[3,1],[1,3]]},
+  "params": {},
+  "expected": {
+    "chiSquare": {
+      "chiSq": 2,
+      "df": 1,
+      "p": 0.15729920705028447,
+      "expected": [
+        [2, 2],
+        [2, 2]
+      ]
+    },
+    "fisher": {
+      "p": 0.48571428571428582,
+      "pLess": 0.98571428571428577,
+      "pGreater": 0.24285714285714288
+    },
+    "chiSquareYates": {
+      "chiSq": 0.5,
+      "df": 1,
+      "p": 0.47950012218695348,
+      "expected": [
+        [2, 2],
+        [2, 2]
+      ]
+    },
+    "trend": {
+      "chiSq": 2,
+      "df": 1,
+      "p": 0.15729920705028447
+    },
+    "twoByTwo": {
+      "relativeRisk": {
+        "value": 3,
+        "lower": 0.68521643536547949,
+        "upper": 17.264196794337408
+      },
+      "riskDifference": {
+        "value": 0.5,
+        "lower": -0.25034421115905303,
+        "upper": 0.83489827063870137
+      },
+      "riskDifferenceNoCC": {
+        "value": 0.5,
+        "lower": -0.13548840058295131,
+        "upper": 0.78908326808475571
+      },
+      "nnt": {
+        "value": 2,
+        "lower": 1.19775071426965,
+        "upper": -3.9945001938337716
+      },
+      "oddsRatio": {
+        "value": 9,
+        "lower": 0.31357376750498545,
+        "upper": 306.23680785863837
+      },
+      "sensitivity": {
+        "value": 0.75,
+        "lower": 0.30064184258240201,
+        "upper": 0.98717667640311235
+      },
+      "specificity": {
+        "value": 0.75,
+        "lower": 0.30064184258240201,
+        "upper": 0.98717667640311235
+      },
+      "ppv": {
+        "value": 0.75,
+        "lower": 0.30064184258240201,
+        "upper": 0.98717667640311235
+      },
+      "npv": {
+        "value": 0.75,
+        "lower": 0.30064184258240201,
+        "upper": 0.98717667640311235
+      },
+      "likelihoodRatio": 3
+    },
+    "mcNemar": {
+      "chiSq": 0,
+      "p": 1,
+      "pExact": 1
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "PropCIs": "0.3.0",
+      "exact2x2": "1.7.0",
+      "contingencytables": "3.1.0"
+    }
+  }
+}

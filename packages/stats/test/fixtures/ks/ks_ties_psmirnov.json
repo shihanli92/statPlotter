@@ -1,0 +1,17 @@
+{
+  "name": "ks_ties_psmirnov",
+  "input": {"a":[0,0.29999999999999999,0,0.10000000000000001,0.20000000000000001,0.10000000000000001,0.10000000000000001,0,0.10000000000000001,0,0.20000000000000001],"b":[1.3999999999999999,1.5]},
+  "params": {},
+  "expected": {
+    "d": 1.0000000000000002,
+    "p": 0.01282051282051282,
+    "exact": true,
+    "nA": 11,
+    "nB": 2
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Heavy ties in a, b above everything: D = 1, P = 1/78 (only the split with b = the two largest values). ks.test(exact = TRUE) gives 0 here (R 4.4.3); the oracle uses the brute-force enumeration."
+}

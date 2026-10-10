@@ -1,0 +1,34 @@
+{
+  "name": "prism_example",
+  "input": {"k":7,"n":100,"p0":0.20000000000000001},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 0.00061307406229241614,
+      "pLess": 0.00027698690065619026,
+      "pGreater": 0.99992203639794586
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 0.070000000000000007,
+        "lower": 0.03431926106727267,
+        "upper": 0.13749514739073496
+      },
+      "wilson": {
+        "value": 0.070000000000000007,
+        "lower": 0.03431926106727267,
+        "upper": 0.13749514739073496
+      },
+      "clopperPearson": {
+        "value": 0.070000000000000007,
+        "lower": 0.028605288907438704,
+        "upper": 0.13891972845585732
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Prism's guide: two-tailed P = 0.00061307."
+}

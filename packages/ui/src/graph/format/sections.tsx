@@ -1,0 +1,677 @@
+import { frontFirst } from '@ps/graph'
+import { type Layer, sourceTable } from '@ps/model'
+import type { ReactNode } from 'react'
+import { GroupSection, Section, SectionScopeContext, Select } from '../../components/fields.tsx'
+import { AnnotationPanel } from '../inspector/AnnotationPanel.tsx'
+import { AppearanceByVariableSection } from '../inspector/AppearanceByVariable.tsx'
+import {
+  AxisCommon,
+  AxisExtra,
+  AxisGridSection,
+  AxisLabelsSection,
+  AxisLineSection,
+  AxisNumbersSection,
+  AxisTicksSection,
+  AxisTitleSection,
+  RightAxisRemoveSection,
+} from '../inspector/AxisPanel.tsx'
+import type { PanelContext } from '../inspector/context.ts'
+import {
+  ColourSchemeFields,
+  CopyFormatSection,
+  hasOwnFormats,
+  ResetLayerSeries,
+  SeriesColor,
+  YAxisSelect,
+} from '../inspector/DataSetSection.tsx'
+import { FunctionPanel } from '../inspector/FunctionPanel.tsx'
+import {
+  AddSection,
+  AnnotationsListSection,
+  ArrangementSection,
+  BracketsSection,
+  ChangeLayersSection,
+  CurvesSection,
+  DataSetsSection,
+  FrameSection,
+  FunctionsSection,
+  GraphCommon,
+  GraphTextSection,
+  GraphTitleSection,
+  LegendSection,
+  LevelsSection,
+  RightAxisSection,
+  SizeSection,
+} from '../inspector/GraphSections.tsx'
+import {
+  CommonLayerFields,
+  hasCommonFields,
+  isResultLayer,
+  LayerFields,
+  LayerNameFields,
+  layerPart,
+  ShowForDataSet,
+} from '../inspector/LayerFields.tsx'
+import { LayersSection } from '../inspector/LayersSection.tsx'
+import { LegendEntrySection, LegendPanel } from '../inspector/LegendPanel.tsx'
+import {
+  graphSeries,
+  layerName,
+  layerPath,
+  type SeriesItem,
+  seriesOfLayer,
+} from '../inspector/layers.ts'
+import { PointLabelsSection } from '../inspector/PointLabelsSection.tsx'
+import { PointPanel } from '../inspector/PointPanel.tsx'
+import { RowsSection, SharedAxesSection } from '../inspector/SlicesSection.tsx'
+import { SplitSection } from '../inspector/SplitSection.tsx'
+import { MatchFormatSection } from '../MatchFormat.tsx'
+import { RiskTableSection } from '../results/ResultPanels.tsx'
+import {
+  type AxisKey,
+  type FormatTarget,
+  layerPlace,
+  type OneSeries,
+  pickKey,
+  seriesPlace,
+} from './route.ts'
+
+// Roadmap 46: what each place of the Format panel and dialog shows, as a table of sections.
+// Stage 2 (decisions 910–919): a place is an element — the graph, its title, an axis, the legend,
+// a layer, a data set (curve, function), a point, a bracket, a text box or line (`placeOf`) — and
+// opens on its Common settings, the rest in sections that start closed, their state remembered per
+// kind of element. Each section is wrapped in an element carrying its id (`data-format-section`),
+// which `FormatPanel`'s reveal (and a field search) scroll to; a target's `section` opens one.
+
+/** What a section is given: the panel's context, where it is, and the way to move elsewhere. */
+export interface SectionProps {
+  ctx: PanelContext
+  target: FormatTarget
+  /** Shows another place (a layer, a data set, a point) without closing the panel or dialog. */
+  setTarget: (t: FormatTarget) => void
+}
+
+/** One block of fields in a place of the Format panel. */
+export interface FormatSection {
+  /** Stable within its place: the wrapper's `data-format-section`, what a reveal jumps to. */
+  id: string
+  render: (p: SectionProps) => ReactNode
+  /** Open unless the user closed it (Common; the graph's layer list); else closed at first. */
+  open?: boolean
+  /**
+   * Kept mounted while the place changes to another of the same kind (the graph's layer list,
+   * which keeps its focus and scroll as a layer is chosen in it).
+   */
+  keep?: boolean
+  /**
+   * The graph's own settings shown in several places (the drawing order in the graph's and each
+   * layer's): the Format search lists its fields once (roadmap 47).
+   */
+  shared?: boolean
+}
+
+/** The kinds of place, each with its sections. */
+export type PlaceKind =
+  | 'graph'
+  | 'title'
+  | 'axis'
+  | 'legend'
+  | 'layer'
+  | 'series'
+  | 'point'
+  | 'bracket'
+  | 'object'
+
+/** A target's kind of place (a data set's single point: 'point'). */
+export const placeOf = (t: FormatTarget): PlaceKind =>
+  t.place === 'series' && 'dataSet' in t.series && t.series.point ? 'point' : t.place
+
+const section = (
+  id: string,
+  render: (p: SectionProps) => ReactNode,
+  opts: { open?: boolean; keep?: boolean; shared?: boolean } = {},
+): FormatSection => ({ id, render, ...opts })
+
+const shared = { shared: true }
+
+const open = { open: true }
+
+/** An axis section, for the axis a target names. */
+const axisSection = (
+  id: string,
+  render: (p: { ctx: PanelContext; which: AxisKey }) => ReactNode,
+  opts: { open?: boolean } = {},
+) =>
+  section(
+    id,
+    ({ ctx, target }) => (target.place === 'axis' ? render({ ctx, which: target.axis }) : null),
+    opts,
+  )
+
+/** The sections of each kind of place, in order. */
+export const FORMAT_SECTIONS: Readonly<Record<PlaceKind, readonly FormatSection[]>> = {
+  graph: [
+    section(
+      'layers',
+      ({ ctx, setTarget }) => (
+        <LayersSection
+          ctx={ctx}
+          selected={undefined}
+          onSelect={(id) => setTarget(layerPlace(id, 'layers'))}
+        />
+      ),
+      { open: true, keep: true, shared: true },
+    ),
+    section('common', ({ ctx }) => <GraphCommon ctx={ctx} />, open),
+    section('text', ({ ctx }) => <GraphTextSection ctx={ctx} />),
+    section('frame', ({ ctx }) => <FrameSection ctx={ctx} />),
+    section('size', ({ ctx }) => <SizeSection ctx={ctx} />),
+    section('arrangement', ({ ctx }) => <ArrangementSection ctx={ctx} />),
+    section('levels', ({ ctx }) => <LevelsSection ctx={ctx} />),
+    section('dataSets', ({ ctx }) => <DataSetsSection ctx={ctx} />),
+    section('rows', ({ ctx }) => <RowsSection ctx={ctx} />),
+    section('curves', ({ ctx }) => <CurvesSection ctx={ctx} />),
+    section('functions', ({ ctx }) => <FunctionsSection ctx={ctx} />),
+    section('byVariable', ({ ctx }) => <AppearanceByVariableSection ctx={ctx} />, shared),
+    section('legend', ({ ctx }) => <LegendSection ctx={ctx} />),
+    section('brackets', ({ ctx }) => <BracketsSection ctx={ctx} />, shared),
+    section('riskTable', ({ ctx }) => <RiskTableSection ctx={ctx} />),
+    section('annotations', ({ ctx }) => <AnnotationsListSection ctx={ctx} />),
+    section('add', ({ ctx }) => <AddSection ctx={ctx} />),
+    section('rightAxis', ({ ctx }) => <RightAxisSection ctx={ctx} />),
+    section('sharedAxes', ({ ctx }) => <SharedAxesSection ctx={ctx} />),
+    section('changeLayers', ({ ctx }) => <ChangeLayersSection ctx={ctx} />),
+    section('split', ({ ctx }) => <SplitSection ctx={ctx} />),
+    section('matchFormat', ({ ctx }) => (
+      <MatchFormatSection
+        project={ctx.project}
+        graph={ctx.graph}
+        dispatch={(cmds, label) => ctx.dispatch(cmds, label)}
+      />
+    )),
+    section('source', ({ ctx }) => {
+      const table = sourceTable(ctx.project, ctx.graph.seriesSource.table, ctx.lookup)
+      return (
+        <p className="muted">
+          {table ? `Data from the table “${table.name}”.` : 'The source table is missing.'}
+        </p>
+      )
+    }),
+  ],
+  title: [section('common', ({ ctx }) => <GraphTitleSection ctx={ctx} />, open)],
+  axis: [
+    axisSection('common', (p) => <AxisCommon {...p} />, open),
+    axisSection('numbers', (p) => <AxisNumbersSection {...p} />),
+    axisSection('labels', (p) => <AxisLabelsSection {...p} />),
+    axisSection('title', (p) => <AxisTitleSection {...p} />),
+    axisSection('ticks', (p) => <AxisTicksSection {...p} />),
+    axisSection('tickValues', (p) => <AxisExtra {...p} part="tickValues" />),
+    axisSection('grid', (p) => <AxisGridSection {...p} />),
+    axisSection('line', (p) => <AxisLineSection {...p} />),
+    axisSection('breaks', (p) => <AxisExtra {...p} part="breaks" />),
+    axisSection('scaleBar', (p) => <AxisExtra {...p} part="scaleBar" />),
+    axisSection('treatments', (p) => <AxisExtra {...p} part="treatments" />),
+    axisSection('spans', (p) => <AxisExtra {...p} part="spans" />),
+    axisSection('rightAxis', (p) => <RightAxisRemoveSection {...p} />),
+  ],
+  legend: [
+    section('legendEntry', (p) => <LegendEntrySection {...p} />, open),
+    section('common', ({ ctx }) => <LegendPanel ctx={ctx} part="common" />, open),
+    section('entries', ({ ctx }) => <LegendPanel ctx={ctx} part="entries" />),
+    section('text', ({ ctx }) => <LegendPanel ctx={ctx} part="text" />),
+    section('box', ({ ctx }) => <LegendPanel ctx={ctx} part="box" />),
+  ],
+  layer: [
+    section('legendEntry', (p) => <LegendEntrySection {...p} />, open),
+    section('picker', (p) => <SeriesPicker {...p} />, open),
+    section('common', (p) => <LayerCommon {...p} />, open),
+    section('fields', (p) => <LayerOwnFields {...p} />, open),
+    section('labels', (p) => <LayerLabels {...p} />),
+    section('byVariable', ({ ctx }) => <AppearanceByVariableSection ctx={ctx} />, shared),
+    section(
+      'layers',
+      ({ ctx, target, setTarget }) =>
+        target.place === 'layer' ? (
+          <LayersSection
+            ctx={ctx}
+            selected={target.layer}
+            onSelect={(id) => setTarget(layerPlace(id, 'layers'))}
+          />
+        ) : null,
+      shared,
+    ),
+    section('advanced', (p) => <LayerAdvanced {...p} />),
+  ],
+  series: [
+    section('legendEntry', (p) => <LegendEntrySection {...p} />, open),
+    section('picker', (p) => <SeriesPicker {...p} />, open),
+    section('common', (p) => <SeriesCommon {...p} />, open),
+    section('function', ({ ctx, target }) =>
+      target.place === 'series' && 'fn' in target.series ? (
+        <FunctionPanel ctx={ctx} id={target.series.fn} />
+      ) : null,
+    ),
+    section('parts', (p) => <SeriesParts {...p} />),
+    section('labels', ({ ctx, target }) => {
+      const s = shownSeries(ctx, target)
+      if (!s || s.item.kind === 'function') return null
+      return (
+        <PointLabelsSection
+          ctx={ctx}
+          items={s.item.kind === 'output' ? { output: s.item.key } : { dataSets: [s.item.key] }}
+          hasX={ctx.graph.frame === 'xy'}
+        />
+      )
+    }),
+    section('advanced', (p) => <SeriesAdvanced {...p} />),
+    section('copy', ({ ctx, target }) => {
+      const s = shownSeries(ctx, target)
+      return s ? <CopyFormatSection ctx={ctx} item={s.item} /> : null
+    }),
+  ],
+  point: [
+    section(
+      'point',
+      ({ ctx, target, setTarget }) => {
+        if (target.place !== 'series' || !('dataSet' in target.series) || !target.series.point)
+          return null
+        const { dataSet, point } = target.series
+        return (
+          <PointPanel
+            ctx={ctx}
+            dataSet={dataSet}
+            point={point}
+            layer={target.layer}
+            onWholeDataSet={() => setTarget(seriesPlace({ dataSet }, target.layer))}
+          />
+        )
+      },
+      open,
+    ),
+  ],
+  bracket: [
+    section(
+      'bracket',
+      ({ ctx, target }) =>
+        target.place === 'bracket' ? <AnnotationPanel ctx={ctx} index={target.index} /> : null,
+      open,
+    ),
+    section('brackets', ({ ctx }) => <BracketsSection ctx={ctx} />, shared),
+  ],
+  object: [
+    section(
+      'object',
+      ({ ctx, target }) =>
+        target.place === 'object' ? <AnnotationPanel ctx={ctx} index={target.index} /> : null,
+      open,
+    ),
+  ],
+}
+
+/** The sections of a target's place. */
+export const sectionsFor = (t: FormatTarget): readonly FormatSection[] =>
+  FORMAT_SECTIONS[placeOf(t)]
+
+/** The section a target asks to open, if any. */
+const sectionOf = (t: FormatTarget): string | undefined => ('section' in t ? t.section : undefined)
+
+/**
+ * A target's options: its place's sections, each in its marked wrapper, remembering their open
+ * state per kind of place; the one the target names (or `reveal`, a search's jump) open.
+ */
+export function FormatSections(p: SectionProps & { reveal?: string | undefined }): ReactNode {
+  const kind = placeOf(p.target)
+  const asked = sectionOf(p.target)
+  // One set of fields per place: a field's text never carries over to another element.
+  const place = JSON.stringify(p.target)
+  return sectionsFor(p.target).map((s) => (
+    <SectionScopeContext.Provider
+      key={s.keep ? `${kind}/${s.id}` : `${s.id}|${place}`}
+      value={{ kind, collapsed: !s.open, force: s.id === asked || s.id === p.reveal }}
+    >
+      <div className="format-section" data-format-section={s.id}>
+        {s.render(p)}
+      </div>
+    </SectionScopeContext.Provider>
+  ))
+}
+
+// --- A layer, a data set ---------------------------------------------------------------------
+
+/** A layer that draws a series, its series, and that series' item. */
+interface Drawing {
+  layer: Layer
+  items: readonly SeriesItem[]
+  item: SeriesItem
+}
+
+/** The layers drawing a series, front first. */
+function drawingLayers(ctx: PanelContext, key: string): Drawing[] {
+  return frontFirst(ctx.graph.layers).flatMap((layer) => {
+    const items = seriesOfLayer(ctx.project, ctx.graph, layer, ctx.lookup)
+    const item = items.find((i) => i.key === key)
+    return item ? [{ layer, items, item }] : []
+  })
+}
+
+/** The series a target formats, with the layers drawing it (none: it is gone). */
+function shownSeries(ctx: PanelContext, target: FormatTarget) {
+  if (target.place !== 'series') return null
+  const key = pickKey(target.series)
+  if (key === undefined) return null
+  const drawing = drawingLayers(ctx, key)
+  const item =
+    drawing[0]?.item ?? graphSeries(ctx.project, ctx.graph, ctx.lookup).find((i) => i.key === key)
+  return item ? { key, item, drawing } : null
+}
+
+/**
+ * The layers whose fields go to Common (a line's width and style; error bars' kind and cap
+ * width): the first line and the first error bars drawing the series, visible ones first.
+ */
+function commonLayers(drawing: readonly Drawing[]): Drawing[] {
+  const pick = (test: (l: Layer) => boolean) =>
+    drawing.find((d) => d.layer.visible !== false && test(d.layer)) ??
+    drawing.find((d) => test(d.layer))
+  return [
+    pick((l) => l.geom === 'line' || l.geom === 'step'),
+    pick((l) => l.geom === 'errorbar'),
+  ].filter((d): d is Drawing => !!d)
+}
+
+/** The layer a layer place formats. */
+const shownLayer = (ctx: PanelContext, target: FormatTarget) =>
+  target.place === 'layer' ? ctx.graph.layers.find((l) => l.id === target.layer) : undefined
+
+/** The pick a series picker value names. */
+function pickFrom(v: string): OneSeries {
+  const [kind, k] = [v.slice(0, v.indexOf(':')), v.slice(v.indexOf(':') + 1)]
+  return kind === 'output' ? { output: k } : kind === 'function' ? { fn: k } : { dataSet: k }
+}
+
+/**
+ * Which series a data set's or layer's place formats: one (its place, across every layer drawing
+ * it) or all of a layer's (the layer's place). Named "Data set" (or "Curve", "Function").
+ */
+function SeriesPicker({ ctx, target, setTarget }: SectionProps) {
+  const { graph, project } = ctx
+  const layer = shownLayer(ctx, target)
+  const s = shownSeries(ctx, target)
+  // A heat map's, a pie's labels' and the grand mean's options are the layer's alone.
+  if (layer && ['tile', 'refline', 'connector', 'difference'].includes(layer.geom)) return null
+  // Roadmap 46b: a Significance layer colours by class, not by data set.
+  if (layer?.stat.kind === 'threshold') return null
+  const all = layer
+    ? seriesOfLayer(project, graph, layer, ctx.lookup)
+    : graphSeries(project, graph, ctx.lookup)
+  if (!all.length || (layer && isResultLayer(layer))) return null
+  const kind = (s?.item ?? all[0])!.kind
+  const items = all.filter((i) => i.kind === kind)
+  /** The layer "All" goes to: the one picked in, else the first drawing the series. */
+  const home =
+    layer?.id ?? (target.place === 'series' ? target.layer : undefined) ?? s?.drawing[0]?.layer.id
+  const noun = kind === 'dataSet' ? 'Data set' : kind === 'output' ? 'Curve' : 'Function'
+  const options = [
+    ...(home
+      ? [
+          {
+            value: 'all',
+            label:
+              kind === 'dataSet'
+                ? 'All data sets'
+                : kind === 'output'
+                  ? 'All curves'
+                  : 'All functions',
+          },
+        ]
+      : []),
+    ...items.map((i) => ({ value: `${i.kind}:${i.key}`, label: i.title })),
+  ]
+  return (
+    <div className="series-picker">
+      <Select
+        label={noun}
+        value={s ? `${s.item.kind}:${s.item.key}` : 'all'}
+        options={options}
+        onChange={(v) => {
+          if (v === 'all') return home && setTarget(layerPlace(home))
+          const pick = pickFrom(v)
+          // Keep the layer picked in when it draws the series chosen too.
+          const keep =
+            home &&
+            seriesOfLayer(
+              project,
+              graph,
+              graph.layers.find((l) => l.id === home)!,
+              ctx.lookup,
+            ).some((i) => i.key === pickKey(pick))
+          setTarget(seriesPlace(pick, keep ? home : undefined))
+        }}
+      />
+    </div>
+  )
+}
+
+/**
+ * A data set's Common settings (the user's choice): its colour, its line's width and style and
+ * its error bars' kind and cap width (from the layers drawing them).
+ */
+function SeriesCommon({ ctx, target }: SectionProps) {
+  const s = shownSeries(ctx, target)
+  if (!s) return <p className="muted">This data set is no longer on the graph.</p>
+  const dataSets = graphSeries(ctx.project, ctx.graph, ctx.lookup).filter(
+    (i) => i.kind === 'dataSet',
+  ).length
+  return (
+    <Section title="Common">
+      <SeriesColor ctx={ctx} item={s.item} dataSets={dataSets} />
+      {commonLayers(s.drawing).map((d) => (
+        <CommonLayerFields
+          key={d.layer.id}
+          ctx={ctx}
+          layer={d.layer}
+          items={d.items}
+          seriesKey={s.key}
+        />
+      ))}
+    </Section>
+  )
+}
+
+/** Section titles of the layers drawing a series, told apart by the layer's name if repeated. */
+function partTitles(drawing: readonly Drawing[], graph: PanelContext['graph']) {
+  const titles = drawing.map((d) => layerPart(d.layer).title)
+  return drawing.map((d, i) =>
+    titles.indexOf(titles[i]!) !== titles.lastIndexOf(titles[i]!)
+      ? `${titles[i]} (${layerName(graph, d.layer)})`
+      : titles[i]!,
+  )
+}
+
+/**
+ * A data set's parts, one section per layer drawing it (Symbols, Bars, Error bars, Line…): the
+ * layer's statistic, position and look for this data set, closed at first but for the layer it
+ * was picked in (`target.layer`).
+ */
+function SeriesParts({ ctx, target }: SectionProps) {
+  const s = shownSeries(ctx, target)
+  if (!s || target.place !== 'series') return null
+  const common = new Set(commonLayers(s.drawing).map((d) => d.layer.id))
+  const titles = partTitles(s.drawing, ctx.graph)
+  return s.drawing.map((d, i) => (
+    <SectionScopeContext.Provider
+      key={d.layer.id}
+      value={{
+        kind: 'series',
+        collapsed: true,
+        force: d.layer.id === target.layer || target.section === `layer:${d.layer.id}`,
+      }}
+    >
+      <div className="format-section" data-format-section={`layer:${d.layer.id}`}>
+        <GroupSection title={titles[i]!}>
+          <LayerFields
+            ctx={ctx}
+            layer={d.layer}
+            items={d.items}
+            seriesKey={s.key}
+            common={common.has(d.layer.id)}
+          />
+        </GroupSection>
+      </div>
+    </SectionScopeContext.Provider>
+  ))
+}
+
+/**
+ * A data set's Advanced settings: its Y axis, which layers draw it (with a way to each layer's
+ * every data set), taking a curve off the graph.
+ */
+function SeriesAdvanced({ ctx, target, setTarget }: SectionProps) {
+  const s = shownSeries(ctx, target)
+  if (!s) return null
+  return (
+    <Section title="Advanced">
+      <YAxisSelect ctx={ctx} item={s.item} />
+      {s.drawing.map((d) => (
+        <ShowForDataSet key={d.layer.id} ctx={ctx} layer={d.layer} seriesKey={s.key} />
+      ))}
+      <p className="muted">Every data set at once:</p>
+      <div className="field-row wrap">
+        {s.drawing.map((d) => (
+          <button
+            key={d.layer.id}
+            type="button"
+            className="link"
+            onClick={() => setTarget(layerPlace(d.layer.id))}
+          >
+            {layerName(ctx.graph, d.layer)}…
+          </button>
+        ))}
+      </div>
+      {s.item.kind === 'output' &&
+        s.drawing.map((d) =>
+          d.layer.data?.from === 'outputs' ? (
+            <RemoveCurve key={d.layer.id} ctx={ctx} layer={d.layer} item={s.item} />
+          ) : null,
+        )}
+    </Section>
+  )
+}
+
+/** A layer's Common settings: every data set's colours, and the layer's own Common fields. */
+function LayerCommon({ ctx, target }: SectionProps) {
+  const layer = shownLayer(ctx, target)
+  if (!layer) return <p className="muted">This layer is no longer on the graph.</p>
+  // A line or band at values, an analysis' results: no data sets to colour.
+  if (isResultLayer(layer)) return null
+  const items = seriesOfLayer(ctx.project, ctx.graph, layer, ctx.lookup)
+  // Roadmap 46b: a Significance layer's points are its classes' colours: its Common, the cut-offs.
+  const classed = layer.stat.kind === 'threshold'
+  return (
+    <Section title="Common">
+      {!classed && <ColourSchemeFields ctx={ctx} items={items} />}
+      {hasCommonFields(layer) && (
+        <CommonLayerFields ctx={ctx} layer={layer} items={items} seriesKey={null} />
+      )}
+    </Section>
+  )
+}
+
+/** A layer's own fields for every data set it draws, as one section named by what it draws. */
+function LayerOwnFields({ ctx, target }: SectionProps) {
+  const layer = shownLayer(ctx, target)
+  if (!layer) return null
+  const items = seriesOfLayer(ctx.project, ctx.graph, layer, ctx.lookup)
+  const fields = (
+    <LayerFields
+      key={layer.id}
+      ctx={ctx}
+      layer={layer}
+      items={items}
+      seriesKey={null}
+      common={hasCommonFields(layer)}
+    />
+  )
+  // Lines and bands at values, an analysis' results, the Significance layer: their own sections.
+  if (isResultLayer(layer) || layer.stat.kind === 'threshold') return fields
+  return <GroupSection title={layerPart(layer).title}>{fields}</GroupSection>
+}
+
+/** Labels on every data set's points (a layer drawing the table's data sets). */
+function LayerLabels({ ctx, target }: SectionProps) {
+  const layer = shownLayer(ctx, target)
+  const { graph } = ctx
+  if (!layer) return null
+  const items = seriesOfLayer(ctx.project, graph, layer, ctx.lookup)
+  const dataSets = items.filter((i) => i.kind === 'dataSet')
+  const whole = graph.frame === 'polar' || graph.layers.some((l) => l.stat.kind === 'fraction')
+  if (
+    !dataSets.length ||
+    (layer.data && layer.data.from !== 'table') ||
+    whole ||
+    graph.frame === 'matrix'
+  )
+    return null
+  return (
+    <PointLabelsSection
+      ctx={ctx}
+      items={{ dataSets: dataSets.map((i) => i.key) }}
+      hasX={graph.frame === 'xy'}
+    />
+  )
+}
+
+/** A layer's Advanced settings: its name, its legend entry, its data sets' own formats reset. */
+function LayerAdvanced({ ctx, target }: SectionProps) {
+  const layer = shownLayer(ctx, target)
+  if (!layer) return null
+  return (
+    <Section title="Advanced">
+      <LayerNameFields ctx={ctx} layer={layer} />
+      {hasOwnFormats(layer) && <ResetLayerSeries ctx={ctx} layer={layer} />}
+    </Section>
+  )
+}
+
+/** Takes an analysis' curve off the graph (it stays in the analysis' results). */
+function RemoveCurve({ ctx, layer, item }: { ctx: PanelContext; layer: Layer; item: SeriesItem }) {
+  const { graph } = ctx
+  if (layer.data?.from !== 'outputs') return null
+  const rest = layer.data.series.filter((s) => s.id !== item.key)
+  return (
+    <button
+      type="button"
+      className="danger"
+      onClick={() => {
+        ctx.dispatch(
+          [
+            {
+              type: 'node.set',
+              id: graph.id,
+              path: layerPath(layer.id, 'data'),
+              value: { from: 'outputs', series: rest },
+            },
+            ...graph.layers
+              .filter((l) => l.series?.[item.key])
+              .map((l) => ({
+                type: 'node.set' as const,
+                id: graph.id,
+                path: layerPath(l.id, 'series', item.key),
+                value: undefined,
+              })),
+            {
+              type: 'node.set',
+              id: graph.id,
+              path: ['seriesOverrides', item.key],
+              value: undefined,
+            },
+          ],
+          'Remove curve',
+        )
+        ctx.onSelect(null)
+      }}
+    >
+      Remove curve from graph
+    </button>
+  )
+}

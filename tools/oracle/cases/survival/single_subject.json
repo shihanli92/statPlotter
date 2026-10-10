@@ -1,0 +1,13 @@
+{
+  "input": {
+    "time": [
+      [4],
+      [1, 3, 6]
+    ],
+    "event": [
+      [1],
+      [1, 0, 1]
+    ]
+  },
+  "note": "A group of one subject."
+}

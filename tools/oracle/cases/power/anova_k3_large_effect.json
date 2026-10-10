@@ -1,0 +1,13 @@
+{
+  "input": [],
+  "params": {
+    "design": "anova",
+    "groups": 3,
+    "betweenVar": 25,
+    "withinVar": 20,
+    "alpha": 0.01,
+    "n": 8,
+    "target": 0.94999999999999996,
+    "lo": 2
+  }
+}

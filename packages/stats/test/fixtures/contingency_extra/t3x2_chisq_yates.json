@@ -1,0 +1,41 @@
+{
+  "name": "t3x2_chisq_yates",
+  "input": {"table":[[12,18],[20,10],[28,4]]},
+  "params": {"test":"chiSquare","yates":true,"method":"sidak"},
+  "expected": {
+    "cramersV": 0.40969161844272844,
+    "pairwise": [
+      {
+        "rowA": 0,
+        "rowB": 1,
+        "chiSq": 3.28125,
+        "df": 1,
+        "columns": 2,
+        "p": 0.070075538593341341,
+        "adjusted": 0.19583898406861316
+      },
+      {
+        "rowA": 0,
+        "rowB": 2,
+        "chiSq": 13.256096117424244,
+        "df": 1,
+        "columns": 2,
+        "p": 0.00027169487050751341,
+        "adjusted": 0.00081486317727055987
+      },
+      {
+        "rowA": 1,
+        "rowB": 2,
+        "chiSq": 2.7448877728174601,
+        "df": 1,
+        "columns": 2,
+        "p": 0.09756592710213656,
+        "adjusted": 0.26506919171765897
+      }
+    ]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

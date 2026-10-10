@@ -1,0 +1,22 @@
+{
+  "name": "pearson_constant_y",
+  "input": {"x":[1,2,3,4,5,6],"y":[3,3,3,3,3,3]},
+  "params": {"method":"pearson"},
+  "expected": {
+    "r": "NA",
+    "lower": "NA",
+    "upper": "NA",
+    "r2": "NA",
+    "p": "NA",
+    "n": 6,
+    "t": "NA",
+    "df": 4
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pspearman": "0.3.1"
+    }
+  },
+  "note": "SD(y) = 0: r and P are NaN."
+}

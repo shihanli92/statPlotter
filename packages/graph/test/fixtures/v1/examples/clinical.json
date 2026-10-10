@@ -1,0 +1,5221 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Survival, contingency and multiple variables",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Survival by treatment",
+   "tableKind": "survival",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 72,
+   "rowTitles": null,
+   "x": {
+    "title": "Days",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       4,
+       75,
+       46,
+       51,
+       130,
+       71,
+       180,
+       20,
+       3,
+       21,
+       138,
+       48,
+       85,
+       57,
+       134,
+       38,
+       102,
+       52,
+       10,
+       33,
+       46,
+       45,
+       144,
+       28,
+       87,
+       180,
+       32,
+       111,
+       180,
+       70,
+       3,
+       46,
+       8,
+       180,
+       35,
+       18,
+       180,
+       180,
+       26,
+       103,
+       180,
+       180,
+       18,
+       180,
+       19,
+       180,
+       79,
+       150,
+       180,
+       90,
+       180,
+       180,
+       164,
+       180,
+       180,
+       180,
+       49,
+       180,
+       180,
+       149,
+       90,
+       33,
+       70,
+       180,
+       180,
+       113,
+       162,
+       180,
+       180,
+       180,
+       138,
+       162
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Placebo",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Low dose",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000004",
+     "title": "High dose",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Days to death (code 1) or censoring (code 0: alive at day 180 or lost to follow-up), 24 patients per arm, one per row. Simulated exponential survival times. Kaplan-Meier curves, the log-rank test, the test for trend and hazard ratios."
+  },
+  "zid000005": {
+   "kind": "graph",
+   "id": "zid000005",
+   "name": "Survival by treatment",
+   "graphType": "survival.step",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 260,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Days after enrolment"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Percent survival"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": {
+      "interval": 25,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Survival by treatment"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000006": {
+   "kind": "analysis",
+   "id": "zid000006",
+   "name": "Kaplan-Meier (log-rank)",
+   "analysisId": "survival",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003",
+     "zid000004"
+    ]
+   },
+   "params": {
+    "eventCode": 1,
+    "censoredCode": 0,
+    "ciMethod": "asymmetric",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000007": {
+   "kind": "table",
+   "id": "zid000007",
+   "name": "Adverse events",
+   "tableKind": "contingency",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 2,
+   "rowTitles": [
+    "Drug",
+    "Placebo"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000008",
+     "title": "Adverse event",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        9,
+        21
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000009",
+     "title": "No event",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        91,
+        79
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Patients with and without an adverse event in each arm (100 per arm). Made-up counts. Fisher’s exact test with the relative risk and odds ratio."
+  },
+  "zid000010": {
+   "kind": "graph",
+   "id": "zid000010",
+   "name": "Adverse events",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "zid000007",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Patients"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Adverse events"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000011": {
+   "kind": "analysis",
+   "id": "zid000011",
+   "name": "Fisher’s exact test",
+   "analysisId": "contingency",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000007",
+    "dataSets": [
+     "zid000008",
+     "zid000009"
+    ]
+   },
+   "params": {
+    "test": "fisher",
+    "yates": false,
+    "trend": true,
+    "tails": "two",
+    "riskEstimates": true,
+    "oddsRatio": true,
+    "diagnostic": false,
+    "effectSize": true,
+    "pairwise": "none",
+    "pairwiseControl": "0",
+    "pairwiseMethod": "bonferroni",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000012": {
+   "kind": "table",
+   "id": "zid000012",
+   "name": "Response by dose",
+   "tableKind": "contingency",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "10 mg",
+    "20 mg",
+    "40 mg"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000013",
+     "title": "Responder",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        12,
+        21,
+        30
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000014",
+     "title": "Non-responder",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        38,
+        29,
+        20
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Responders and non-responders at three doses, 50 patients each. Made-up counts. Chi-square test, the chi-square test for trend (Cochran-Armitage), Cramér’s V, and every pair of doses compared (Fisher’s exact test on each pair, Bonferroni-corrected)."
+  },
+  "zid000015": {
+   "kind": "graph",
+   "id": "zid000015",
+   "name": "Response by dose",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "zid000012",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Patients"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Response by dose"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000016": {
+   "kind": "analysis",
+   "id": "zid000016",
+   "name": "Chi-square test",
+   "analysisId": "contingency",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000012",
+    "dataSets": [
+     "zid000013",
+     "zid000014"
+    ]
+   },
+   "params": {
+    "test": "chiSquare",
+    "yates": false,
+    "trend": true,
+    "tails": "two",
+    "riskEstimates": true,
+    "oddsRatio": true,
+    "diagnostic": false,
+    "effectSize": true,
+    "pairwise": "none",
+    "pairwiseControl": "0",
+    "pairwiseMethod": "bonferroni",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000017": {
+   "kind": "analysis",
+   "id": "zid000017",
+   "name": "Doses compared in pairs",
+   "analysisId": "contingency",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000012",
+    "dataSets": [
+     "zid000013",
+     "zid000014"
+    ]
+   },
+   "params": {
+    "test": "fisher",
+    "yates": false,
+    "trend": true,
+    "tails": "two",
+    "riskEstimates": true,
+    "oddsRatio": true,
+    "diagnostic": false,
+    "effectSize": true,
+    "pairwise": "all",
+    "pairwiseControl": "0",
+    "pairwiseMethod": "bonferroni",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000018": {
+   "kind": "table",
+   "id": "zid000018",
+   "name": "Patient cohort",
+   "tableKind": "multipleVariables",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 120,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000019",
+     "title": "Age",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        70,
+        68,
+        66,
+        40,
+        49,
+        60,
+        53,
+        41,
+        60,
+        70,
+        51,
+        58,
+        64,
+        38,
+        68,
+        65,
+        43,
+        71,
+        37,
+        47,
+        58,
+        46,
+        39,
+        63,
+        74,
+        37,
+        54,
+        38,
+        40,
+        44,
+        65,
+        64,
+        68,
+        45,
+        43,
+        41,
+        36,
+        71,
+        57,
+        63,
+        56,
+        57,
+        62,
+        58,
+        60,
+        49,
+        53,
+        52,
+        50,
+        45,
+        62,
+        59,
+        64,
+        52,
+        44,
+        45,
+        37,
+        69,
+        73,
+        63,
+        74,
+        44,
+        73,
+        73,
+        49,
+        65,
+        71,
+        71,
+        37,
+        52,
+        55,
+        38,
+        56,
+        63,
+        66,
+        40,
+        47,
+        51,
+        49,
+        58,
+        51,
+        60,
+        43,
+        72,
+        58,
+        60,
+        55,
+        40,
+        48,
+        59,
+        61,
+        45,
+        60,
+        40,
+        37,
+        49,
+        60,
+        37,
+        69,
+        46,
+        67,
+        37,
+        48,
+        59,
+        65,
+        70,
+        51,
+        73,
+        74,
+        42,
+        46,
+        67,
+        73,
+        46,
+        67,
+        58,
+        39,
+        36,
+        55,
+        62
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000020",
+     "title": "BMI",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        22,
+        22.7,
+        25.4,
+        30.8,
+        25.6,
+        25.7,
+        31.4,
+        22.1,
+        23.2,
+        22,
+        24,
+        23.6,
+        26.8,
+        18.1,
+        34.7,
+        24,
+        30.1,
+        31.4,
+        29.3,
+        29.7,
+        32,
+        32.1,
+        25.1,
+        27.1,
+        30.4,
+        33.1,
+        32.5,
+        23.2,
+        19.3,
+        28.6,
+        25.1,
+        31.1,
+        27.3,
+        31.9,
+        28.6,
+        23.2,
+        34.5,
+        21.8,
+        30.2,
+        22.4,
+        26.4,
+        33.1,
+        19.7,
+        28,
+        33.7,
+        30.6,
+        28.3,
+        29,
+        21.8,
+        29.8,
+        27.8,
+        28.3,
+        28.2,
+        27.7,
+        27.2,
+        32.2,
+        29.3,
+        34.1,
+        29.2,
+        30.5,
+        26.3,
+        29.6,
+        30.2,
+        30.9,
+        25.3,
+        31.5,
+        31,
+        31.5,
+        23.6,
+        21.9,
+        30.1,
+        26.6,
+        24.2,
+        26.3,
+        26.8,
+        24,
+        27.8,
+        32.2,
+        25.3,
+        20.4,
+        27.1,
+        31.1,
+        24.9,
+        30,
+        25.6,
+        30,
+        25.4,
+        24.5,
+        22.3,
+        27.9,
+        24.1,
+        26.8,
+        36,
+        31.5,
+        29.5,
+        22.7,
+        21.7,
+        22.4,
+        33.9,
+        29.5,
+        31.4,
+        23.2,
+        29.5,
+        33.5,
+        30.5,
+        36.4,
+        27.2,
+        30.4,
+        31.1,
+        28.7,
+        26.2,
+        27.8,
+        30.9,
+        27.6,
+        29.2,
+        33.8,
+        24.1,
+        31.1,
+        29,
+        28.8
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000021",
+     "title": "Male",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000022",
+     "title": "Dose",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40,
+        0,
+        10,
+        20,
+        40
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000023",
+     "title": "SBP",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        138,
+        131,
+        148,
+        125,
+        146,
+        138,
+        122,
+        112,
+        124,
+        177,
+        116,
+        124,
+        140,
+        100,
+        163,
+        145,
+        151,
+        152,
+        120,
+        130,
+        147,
+        141,
+        122,
+        131,
+        156,
+        142,
+        136,
+        114,
+        123,
+        136,
+        140,
+        139,
+        138,
+        138,
+        139,
+        134,
+        141,
+        136,
+        140,
+        143,
+        133,
+        141,
+        129,
+        146,
+        156,
+        144,
+        148,
+        139,
+        122,
+        126,
+        140,
+        141,
+        152,
+        130,
+        126,
+        118,
+        136,
+        167,
+        141,
+        140,
+        170,
+        148,
+        152,
+        156,
+        149,
+        141,
+        170,
+        127,
+        119,
+        132,
+        151,
+        121,
+        134,
+        132,
+        140,
+        123,
+        126,
+        149,
+        139,
+        116,
+        141,
+        132,
+        115,
+        135,
+        140,
+        146,
+        138,
+        110,
+        144,
+        147,
+        130,
+        121,
+        155,
+        147,
+        117,
+        128,
+        146,
+        113,
+        151,
+        125,
+        131,
+        112,
+        130,
+        145,
+        152,
+        157,
+        131,
+        127,
+        168,
+        142,
+        124,
+        143,
+        162,
+        139,
+        137,
+        132,
+        134,
+        137,
+        141,
+        126
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000024",
+     "title": "Cholesterol",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        7,
+        6.2,
+        6.4,
+        6.5,
+        6.2,
+        4.2,
+        5.9,
+        5.8,
+        6.1,
+        6.4,
+        4.6,
+        5.5,
+        6,
+        5.3,
+        7,
+        5.4,
+        5.6,
+        6,
+        5.5,
+        5.7,
+        6.6,
+        6,
+        5.2,
+        6.2,
+        7.3,
+        6.3,
+        6.3,
+        5.8,
+        4.9,
+        5.1,
+        5,
+        6.3,
+        7,
+        6,
+        5.5,
+        5.2,
+        6.6,
+        5.4,
+        5.2,
+        4.4,
+        6.2,
+        6.3,
+        5.8,
+        6.1,
+        5.9,
+        5.9,
+        6.5,
+        6.3,
+        6.5,
+        5.8,
+        5.9,
+        7,
+        6.4,
+        5.7,
+        6.5,
+        5.7,
+        5.5,
+        7.9,
+        7.1,
+        6.7,
+        6.1,
+        5.7,
+        5.9,
+        6.5,
+        5.9,
+        7.1,
+        6.9,
+        6,
+        6.1,
+        5.4,
+        5.8,
+        5.9,
+        5.7,
+        6.3,
+        5,
+        5.2,
+        6.6,
+        7.7,
+        5.9,
+        6.8,
+        5.4,
+        6.7,
+        5.5,
+        6.4,
+        5.8,
+        5.1,
+        6.4,
+        5.7,
+        4.7,
+        6,
+        6.7,
+        5.8,
+        6.9,
+        6.4,
+        5.9,
+        4.7,
+        6,
+        5.7,
+        6.2,
+        5,
+        6.9,
+        5.2,
+        5.4,
+        6.2,
+        6.3,
+        7.4,
+        5.7,
+        7.9,
+        7,
+        5,
+        6.2,
+        6.6,
+        7.5,
+        5.8,
+        6.5,
+        5.8,
+        5.7,
+        4.4,
+        5.3,
+        5.9
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000025",
+     "title": "Responder",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000026",
+     "title": "Days",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        9,
+        153,
+        47,
+        365,
+        16,
+        365,
+        56,
+        365,
+        27,
+        78,
+        365,
+        365,
+        179,
+        135,
+        48,
+        365,
+        337,
+        17,
+        183,
+        365,
+        12,
+        243,
+        365,
+        187,
+        62,
+        365,
+        365,
+        365,
+        365,
+        365,
+        75,
+        365,
+        46,
+        229,
+        365,
+        365,
+        91,
+        204,
+        339,
+        109,
+        365,
+        365,
+        39,
+        365,
+        7,
+        355,
+        77,
+        365,
+        365,
+        277,
+        158,
+        338,
+        26,
+        365,
+        365,
+        158,
+        365,
+        330,
+        102,
+        26,
+        54,
+        347,
+        309,
+        331,
+        365,
+        67,
+        239,
+        33,
+        365,
+        365,
+        204,
+        115,
+        92,
+        145,
+        365,
+        259,
+        356,
+        211,
+        365,
+        281,
+        365,
+        365,
+        365,
+        365,
+        99,
+        102,
+        365,
+        365,
+        217,
+        39,
+        277,
+        365,
+        148,
+        365,
+        365,
+        38,
+        28,
+        365,
+        301,
+        365,
+        26,
+        365,
+        365,
+        365,
+        223,
+        85,
+        365,
+        11,
+        130,
+        365,
+        2,
+        365,
+        230,
+        365,
+        365,
+        167,
+        365,
+        365,
+        135,
+        365
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000027",
+     "title": "Died",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000028",
+     "title": "Sex",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "text": [
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Male",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Male",
+      "Female",
+      "Male",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Male",
+      "Female",
+      "Female",
+      "Male",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Male",
+      "Male",
+      "Male",
+      "Male",
+      "Female",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Male",
+      "Female",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Female",
+      "Male",
+      "Male",
+      "Male",
+      "Female",
+      "Female",
+      "Female",
+      "Male",
+      "Male",
+      "Male",
+      "Female",
+      "Male",
+      "Male",
+      "Female"
+     ]
+    },
+    {
+     "id": "zid000029",
+     "title": "Arm",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "text": [
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "Placebo",
+      "10 mg",
+      "20 mg",
+      "40 mg"
+     ]
+    }
+   ],
+   "notes": "120 simulated patients: age, BMI, sex (Male = 1, and as text), dose (mg) and treatment arm (text), systolic blood pressure, cholesterol, response (1 = responder), days of follow-up and death (1) or censoring (0) at one year. Multiple linear regression of SBP (also with sex and arm as categorical predictors, an interaction and predicted SBP), logistic regression of response, Cox regression of survival (numeric and categorical), multifactor ANOVA of SBP by sex and arm, Kaplan-Meier curves by arm, and PCA of the continuous variables."
+  },
+  "zid000030": {
+   "kind": "analysis",
+   "id": "zid000030",
+   "name": "Multiple regression (SBP)",
+   "analysisId": "multipleRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000023",
+     "zid000019",
+     "zid000020",
+     "zid000021",
+     "zid000022"
+    ]
+   },
+   "params": {
+    "y": "zid000023",
+    "intercept": true,
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [],
+    "interpolate": false,
+    "predictions": []
+   }
+  },
+  "zid000031": {
+   "kind": "graph",
+   "id": "zid000031",
+   "name": "Actual vs. predicted",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000032",
+     "ref": {
+      "node": "zid000030",
+      "key": "actualVsPredicted"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Predicted Y"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Actual Y"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Actual vs. predicted"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000033": {
+   "kind": "analysis",
+   "id": "zid000033",
+   "name": "Logistic regression (response vs. dose)",
+   "analysisId": "logisticRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000025",
+     "zid000022"
+    ]
+   },
+   "params": {
+    "y": "zid000025",
+    "intercept": true,
+    "ciMethod": "profile",
+    "cutoff": 0.5,
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [],
+    "interpolate": false,
+    "predictions": []
+   }
+  },
+  "zid000034": {
+   "kind": "graph",
+   "id": "zid000034",
+   "name": "Logistic curve",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000035",
+     "ref": {
+      "node": "zid000033",
+      "key": "data"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    },
+    {
+     "id": "zid000036",
+     "ref": {
+      "node": "zid000033",
+      "key": "curve"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Dose (mg)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Probability"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 1
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Logistic curve"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000037": {
+   "kind": "analysis",
+   "id": "zid000037",
+   "name": "Cox regression",
+   "analysisId": "coxRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000026",
+     "zid000027",
+     "zid000019",
+     "zid000021",
+     "zid000022"
+    ]
+   },
+   "params": {
+    "time": "zid000026",
+    "event": "zid000027",
+    "ties": "efron",
+    "ciMethod": "profile",
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [],
+    "survivalCurves": [
+     {
+      "zid000019": 55,
+      "zid000021": 0,
+      "zid000022": 0
+     },
+     {
+      "zid000019": 55,
+      "zid000021": 0,
+      "zid000022": 20
+     },
+     {
+      "zid000019": 55,
+      "zid000021": 0,
+      "zid000022": 40
+     }
+    ],
+    "baseline": false
+   }
+  },
+  "zid000038": {
+   "kind": "graph",
+   "id": "zid000038",
+   "name": "Estimated survival",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000039",
+     "ref": {
+      "node": "zid000037",
+      "key": "survival:0"
+     }
+    },
+    {
+     "id": "zid000040",
+     "ref": {
+      "node": "zid000037",
+      "key": "survival:1"
+     }
+    },
+    {
+     "id": "zid000041",
+     "ref": {
+      "node": "zid000037",
+      "key": "survival:2"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Probability of survival"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 1
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Estimated survival"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000042": {
+   "kind": "analysis",
+   "id": "zid000042",
+   "name": "Principal components",
+   "analysisId": "pca",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000019",
+     "zid000020",
+     "zid000023",
+     "zid000024"
+    ]
+   },
+   "params": {
+    "standardize": true,
+    "select": "parallel",
+    "variancePercent": 75,
+    "components": 2,
+    "simulations": 1000,
+    "seed": 1,
+    "loadingsPlot": true,
+    "biplot": true,
+    "pcr": false,
+    "pcrY": "",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000043": {
+   "kind": "graph",
+   "id": "zid000043",
+   "name": "Scree plot",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000044",
+     "ref": {
+      "node": "zid000042",
+      "key": "scree"
+     },
+     "style": {
+      "points": {
+       "show": true
+      }
+     }
+    },
+    {
+     "id": "zid000045",
+     "ref": {
+      "node": "zid000042",
+      "key": "parallel"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Principal component"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Eigenvalue"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Scree plot"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000046": {
+   "kind": "graph",
+   "id": "zid000046",
+   "name": "PC scores",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000047",
+     "ref": {
+      "node": "zid000042",
+      "key": "scores"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC1"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC2"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "PC scores"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000048": {
+   "kind": "graph",
+   "id": "zid000048",
+   "name": "Loadings plot",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000049",
+     "ref": {
+      "node": "zid000042",
+      "key": "loading:zid000019"
+     },
+     "colorOf": "zid000019"
+    },
+    {
+     "id": "zid000050",
+     "ref": {
+      "node": "zid000042",
+      "key": "loading:zid000020"
+     },
+     "colorOf": "zid000020"
+    },
+    {
+     "id": "zid000051",
+     "ref": {
+      "node": "zid000042",
+      "key": "loading:zid000023"
+     },
+     "colorOf": "zid000023"
+    },
+    {
+     "id": "zid000052",
+     "ref": {
+      "node": "zid000042",
+      "key": "loading:zid000024"
+     },
+     "colorOf": "zid000024"
+    },
+    {
+     "id": "zid000053",
+     "ref": {
+      "node": "zid000042",
+      "key": "loadings"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC1"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC2"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Loadings plot"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000054": {
+   "kind": "graph",
+   "id": "zid000054",
+   "name": "Biplot",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000055",
+     "ref": {
+      "node": "zid000042",
+      "key": "biplot:scores"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    },
+    {
+     "id": "zid000056",
+     "ref": {
+      "node": "zid000042",
+      "key": "biplot:zid000019"
+     },
+     "colorOf": "zid000019"
+    },
+    {
+     "id": "zid000057",
+     "ref": {
+      "node": "zid000042",
+      "key": "biplot:zid000020"
+     },
+     "colorOf": "zid000020"
+    },
+    {
+     "id": "zid000058",
+     "ref": {
+      "node": "zid000042",
+      "key": "biplot:zid000023"
+     },
+     "colorOf": "zid000023"
+    },
+    {
+     "id": "zid000059",
+     "ref": {
+      "node": "zid000042",
+      "key": "biplot:zid000024"
+     },
+     "colorOf": "zid000024"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC1"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC2"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Biplot"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000060": {
+   "kind": "analysis",
+   "id": "zid000060",
+   "name": "Principal component regression (SBP)",
+   "analysisId": "pca",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000023",
+     "zid000019",
+     "zid000020",
+     "zid000024",
+     "zid000022"
+    ]
+   },
+   "params": {
+    "standardize": true,
+    "select": "fixed",
+    "variancePercent": 75,
+    "components": 2,
+    "simulations": 1000,
+    "seed": 1,
+    "loadingsPlot": false,
+    "biplot": false,
+    "pcr": true,
+    "pcrY": "zid000023",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000061": {
+   "kind": "graph",
+   "id": "zid000061",
+   "name": "Scree plot",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000062",
+     "ref": {
+      "node": "zid000060",
+      "key": "scree"
+     },
+     "style": {
+      "points": {
+       "show": true
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Principal component"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Eigenvalue"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Scree plot"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000063": {
+   "kind": "graph",
+   "id": "zid000063",
+   "name": "PC scores",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000064",
+     "ref": {
+      "node": "zid000060",
+      "key": "scores"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC1"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "PC2"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "PC scores"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000065": {
+   "kind": "analysis",
+   "id": "zid000065",
+   "name": "Multiple regression with categorical predictors (SBP)",
+   "analysisId": "multipleRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000023",
+     "zid000019",
+     "zid000020",
+     "zid000028",
+     "zid000029"
+    ]
+   },
+   "params": {
+    "y": "zid000023",
+    "intercept": true,
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [
+     [
+      "zid000019",
+      "zid000028"
+     ]
+    ],
+    "interpolate": false,
+    "predictions": [
+     {
+      "zid000019": 45,
+      "zid000020": 25,
+      "zid000028": "Female",
+      "zid000029": "40 mg"
+     },
+     {
+      "zid000019": 70,
+      "zid000020": 30,
+      "zid000028": "Male",
+      "zid000029": "Placebo"
+     }
+    ]
+   }
+  },
+  "zid000066": {
+   "kind": "graph",
+   "id": "zid000066",
+   "name": "Actual vs. predicted",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000067",
+     "ref": {
+      "node": "zid000065",
+      "key": "actualVsPredicted"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Predicted Y"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Actual Y"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Actual vs. predicted"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000068": {
+   "kind": "analysis",
+   "id": "zid000068",
+   "name": "Logistic regression (response by dose and sex)",
+   "analysisId": "logisticRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000025",
+     "zid000022",
+     "zid000028",
+     "zid000019"
+    ]
+   },
+   "params": {
+    "y": "zid000025",
+    "intercept": true,
+    "ciMethod": "profile",
+    "cutoff": 0.5,
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [],
+    "interpolate": false,
+    "predictions": [
+     {
+      "zid000022": 30,
+      "zid000028": "Female",
+      "zid000019": 55
+     }
+    ]
+   }
+  },
+  "zid000069": {
+   "kind": "analysis",
+   "id": "zid000069",
+   "name": "Cox regression by arm and sex",
+   "analysisId": "coxRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000026",
+     "zid000027",
+     "zid000019",
+     "zid000028",
+     "zid000029"
+    ]
+   },
+   "params": {
+    "time": "zid000026",
+    "event": "zid000027",
+    "ties": "efron",
+    "ciMethod": "profile",
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [],
+    "survivalCurves": [
+     {
+      "zid000019": 55,
+      "zid000029": "Placebo"
+     },
+     {
+      "zid000019": 55,
+      "zid000029": "40 mg"
+     }
+    ],
+    "baseline": false
+   }
+  },
+  "zid000070": {
+   "kind": "graph",
+   "id": "zid000070",
+   "name": "Estimated survival",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000071",
+     "ref": {
+      "node": "zid000069",
+      "key": "survival:0"
+     }
+    },
+    {
+     "id": "zid000072",
+     "ref": {
+      "node": "zid000069",
+      "key": "survival:1"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Probability of survival"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 1
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Estimated survival"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000073": {
+   "kind": "analysis",
+   "id": "zid000073",
+   "name": "Multifactor ANOVA (SBP by sex and arm)",
+   "analysisId": "multifactorAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000023",
+     "zid000028",
+     "zid000029"
+    ]
+   },
+   "params": {
+    "y": "zid000023",
+    "factors": [],
+    "interactions": null,
+    "comparisons": "mainEffects",
+    "compareFactor": "zid000029",
+    "byFactor": "",
+    "method": "tukey",
+    "family": "perLevel",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000074": {
+   "kind": "analysis",
+   "id": "zid000074",
+   "name": "Kaplan-Meier by arm",
+   "analysisId": "survivalFromVariables",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000026",
+     "zid000027",
+     "zid000029"
+    ]
+   },
+   "params": {
+    "time": "zid000026",
+    "status": "zid000027",
+    "groups": [
+     "zid000029"
+    ],
+    "eventCode": 1,
+    "censoredCode": 0,
+    "eventLevel": "",
+    "censoredLevel": "",
+    "ciMethod": "asymmetric",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000075": {
+   "kind": "graph",
+   "id": "zid000075",
+   "name": "Survival by arm",
+   "graphType": "survival.step",
+   "seriesSource": {
+    "table": "zid000074",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 260,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Days"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Percent survival"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": {
+      "interval": 25,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Kaplan-Meier by arm"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000076": {
+   "kind": "table",
+   "id": "zid000076",
+   "name": "Biomarker",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 40,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000077",
+     "title": "Controls",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        15.1,
+        20.6,
+        12.2,
+        10.3,
+        14.7,
+        12.1,
+        27,
+        14.4,
+        4.5,
+        8.7,
+        8.1,
+        21,
+        9.2,
+        13.6,
+        21.4,
+        5.4,
+        12.6,
+        12.4,
+        19.3,
+        5,
+        6.4,
+        8,
+        10,
+        14.4,
+        14,
+        8.6,
+        5.2,
+        13.5,
+        8.9,
+        10.3,
+        11.4,
+        6.7,
+        7,
+        12.3,
+        26.8,
+        21.3,
+        17.8,
+        24.2,
+        11.8,
+        9.1
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000078",
+     "title": "Patients",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        9.7,
+        27.9,
+        17.9,
+        25.9,
+        33.2,
+        12.4,
+        17.1,
+        34.8,
+        49.2,
+        21.7,
+        38.6,
+        29.6,
+        37.4,
+        22,
+        42.7,
+        9.1,
+        23.4,
+        23.9,
+        30.2,
+        58.6,
+        15.5,
+        17.4,
+        33.6,
+        20.8,
+        12.5,
+        29.4,
+        51.9,
+        12.8,
+        52.1,
+        19.5,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "A serum biomarker (ng/mL) in 40 controls and 30 patients. Simulated lognormal data. The ROC curve shows how well it separates them (area under the curve with its CI) and the sensitivity and specificity at each cut-off."
+  },
+  "zid000079": {
+   "kind": "graph",
+   "id": "zid000079",
+   "name": "Biomarker",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000076",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 108,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Biomarker (ng/mL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Biomarker"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "median"
+     },
+     "error": {
+      "stat": "IQR",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000080": {
+   "kind": "analysis",
+   "id": "zid000080",
+   "name": "ROC curve",
+   "analysisId": "roc",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000076",
+    "dataSets": [
+     "zid000077",
+     "zid000078"
+    ]
+   },
+   "params": {
+    "direction": "auto",
+    "ciMethod": "clopperPearson",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000081": {
+   "kind": "graph",
+   "id": "zid000081",
+   "name": "ROC curve",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000076",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000082",
+     "ref": {
+      "node": "zid000080",
+      "key": "roc"
+     },
+     "style": {
+      "color": {
+       "rgb": "#0072b2"
+      },
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#0072b2"
+        },
+        "width": 2,
+        "dash": "solid"
+       }
+      }
+     }
+    },
+    {
+     "id": "zid000083",
+     "ref": {
+      "node": "zid000080",
+      "key": "identity"
+     },
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#999999"
+        },
+        "width": 1,
+        "dash": "dash"
+       }
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "100% − Specificity%"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 100
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Sensitivity%"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 100
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "ROC curve"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000084": {
+   "kind": "analysis",
+   "id": "zid000084",
+   "name": "Sample size (from the pilot biomarker data)",
+   "analysisId": "powerAnalysis",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000076",
+    "dataSets": [
+     "zid000077",
+     "zid000078"
+    ]
+   },
+   "params": {
+    "design": "unpairedT",
+    "solveFor": "n",
+    "alpha": 0.05,
+    "tails": "two",
+    "power": 0.9,
+    "n": 10,
+    "difference": 1,
+    "sd": 1,
+    "fromData": true,
+    "groups": 3,
+    "anovaInput": "variances",
+    "betweenVar": 1,
+    "withinVar": 1,
+    "cohensF": 0.25,
+    "p1": 0.5,
+    "p2": 0.25,
+    "r": 0.3,
+    "hazardRatio": 0.5,
+    "eventProbability": 0.5
+   }
+  },
+  "zid000085": {
+   "kind": "graph",
+   "id": "zid000085",
+   "name": "Power curve",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000076",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000086",
+     "ref": {
+      "node": "zid000084",
+      "key": "curve"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Sample size"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Power"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 1
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Power curve"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000087": {
+   "kind": "table",
+   "id": "zid000087",
+   "name": "Method comparison",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 40,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000088",
+     "title": "Lab analyser",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        150,
+        112.1,
+        120.2,
+        92.2,
+        142.2,
+        147.5,
+        130.4,
+        123.4,
+        56.9,
+        96.5,
+        133.9,
+        80.5,
+        125.2,
+        109.5,
+        121.1,
+        113,
+        96.6,
+        120.2,
+        143.2,
+        143.9,
+        143.7,
+        126.1,
+        116.2,
+        163.4,
+        133.7,
+        142,
+        116.8,
+        100.1,
+        63.6,
+        84.1,
+        122.4,
+        121.4,
+        109.1,
+        130.1,
+        127.3,
+        149.7,
+        141.7,
+        108.9,
+        69.7,
+        109.1
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000089",
+     "title": "Point of care",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        147.1,
+        118.1,
+        116.3,
+        98.9,
+        153.7,
+        146.5,
+        137.2,
+        138.7,
+        54,
+        99.3,
+        139.9,
+        93.8,
+        132,
+        112.1,
+        114.4,
+        134.4,
+        100.2,
+        136.2,
+        147.1,
+        157.4,
+        152.6,
+        138.8,
+        136.9,
+        176.3,
+        140.9,
+        138.6,
+        117.7,
+        108.3,
+        61.1,
+        94.2,
+        121.4,
+        131.8,
+        118.5,
+        137.7,
+        131.7,
+        156.2,
+        137.9,
+        121.5,
+        76.3,
+        117.7
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Glucose (mg/dL) of 40 samples measured by a lab analyser and a point-of-care device (each row one sample). Simulated with a small proportional bias. Bland-Altman plot of the differences against the averages, with the bias and 95% limits of agreement, and the correlation."
+  },
+  "zid000090": {
+   "kind": "analysis",
+   "id": "zid000090",
+   "name": "Bland-Altman",
+   "analysisId": "blandAltman",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000087",
+    "dataSets": [
+     "zid000088",
+     "zid000089"
+    ]
+   },
+   "params": {
+    "measure": "difference",
+    "order": "aMinusB",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000091": {
+   "kind": "graph",
+   "id": "zid000091",
+   "name": "Bland-Altman plot",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000087",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000092",
+     "ref": {
+      "node": "zid000090",
+      "key": "pairs"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      },
+      "color": {
+       "rgb": "#0072b2"
+      }
+     }
+    },
+    {
+     "id": "zid000093",
+     "ref": {
+      "node": "zid000090",
+      "key": "bias"
+     },
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#000000"
+        },
+        "width": 1.5,
+        "dash": "solid"
+       }
+      }
+     }
+    },
+    {
+     "id": "zid000094",
+     "ref": {
+      "node": "zid000090",
+      "key": "upper"
+     },
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#666666"
+        },
+        "width": 1,
+        "dash": "dash"
+       }
+      }
+     }
+    },
+    {
+     "id": "zid000095",
+     "ref": {
+      "node": "zid000090",
+      "key": "lower"
+     },
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#666666"
+        },
+        "width": 1,
+        "dash": "dash"
+       }
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Average"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Difference"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Bland-Altman plot"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000096": {
+   "kind": "analysis",
+   "id": "zid000096",
+   "name": "Correlation",
+   "analysisId": "correlation",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000087",
+    "dataSets": [
+     "zid000088",
+     "zid000089"
+    ]
+   },
+   "params": {
+    "method": "pearson",
+    "tails": "two",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000097": {
+   "kind": "analysis",
+   "id": "zid000097",
+   "name": "Sample size to detect r = 0.3",
+   "analysisId": "powerAnalysis",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000087",
+    "dataSets": []
+   },
+   "params": {
+    "design": "correlation",
+    "solveFor": "n",
+    "alpha": 0.05,
+    "tails": "two",
+    "power": 0.8,
+    "n": 10,
+    "difference": 1,
+    "sd": 1,
+    "fromData": false,
+    "groups": 3,
+    "anovaInput": "variances",
+    "betweenVar": 1,
+    "withinVar": 1,
+    "cohensF": 0.25,
+    "p1": 0.5,
+    "p2": 0.25,
+    "r": 0.3,
+    "hazardRatio": 0.5,
+    "eventProbability": 0.5
+   }
+  },
+  "zid000098": {
+   "kind": "graph",
+   "id": "zid000098",
+   "name": "Power curve",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000087",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000099",
+     "ref": {
+      "node": "zid000097",
+      "key": "curve"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Sample size"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Power"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 1
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Power curve"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000100": {
+   "kind": "table",
+   "id": "zid000100",
+   "name": "Pea phenotypes",
+   "tableKind": "partsOfWhole",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 4,
+   "rowTitles": [
+    "Round yellow",
+    "Round green",
+    "Wrinkled yellow",
+    "Wrinkled green"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000101",
+     "title": "Peas",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        315,
+        108,
+        101,
+        32
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Mendel’s dihybrid cross (556 peas), the example of Prism’s guide. Compared with the 9:3:3:1 ratio by the chi-square goodness-of-fit test (P = 0.93: no evidence against the ratio)."
+  },
+  "zid000102": {
+   "kind": "analysis",
+   "id": "zid000102",
+   "name": "Observed vs. expected (9:3:3:1)",
+   "analysisId": "goodnessOfFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000100",
+    "dataSets": [
+     "zid000101"
+    ]
+   },
+   "params": {
+    "expectedAs": "percentages",
+    "expected": [
+     56.25,
+     18.75,
+     18.75,
+     6.25
+    ],
+    "test": "binomial"
+   }
+  },
+  "zid000103": {
+   "kind": "table",
+   "id": "zid000103",
+   "name": "Hospital visits",
+   "tableKind": "multipleVariables",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 80,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000104",
+     "title": "Visits",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0,
+        0,
+        1,
+        1,
+        4,
+        3,
+        0,
+        0,
+        2,
+        3,
+        2,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        1,
+        1,
+        3,
+        1,
+        0,
+        2,
+        2,
+        0,
+        4,
+        2,
+        2,
+        0,
+        3,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        4,
+        2,
+        1,
+        1,
+        2,
+        0,
+        0,
+        2,
+        1,
+        1,
+        1,
+        2,
+        0,
+        2,
+        0,
+        0,
+        2,
+        1,
+        1,
+        1,
+        1,
+        4,
+        1,
+        0,
+        1,
+        1,
+        2,
+        0,
+        3,
+        5,
+        5,
+        3,
+        4,
+        2,
+        3,
+        2,
+        1,
+        3,
+        0,
+        4,
+        4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000105",
+     "title": "Age",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        57,
+        64,
+        41,
+        62,
+        58,
+        40,
+        32,
+        55,
+        33,
+        62,
+        54,
+        60,
+        45,
+        56,
+        41,
+        65,
+        41,
+        59,
+        49,
+        58,
+        33,
+        74,
+        55,
+        37,
+        42,
+        36,
+        42,
+        53,
+        53,
+        40,
+        41,
+        31,
+        62,
+        66,
+        41,
+        54,
+        42,
+        51,
+        56,
+        73,
+        40,
+        52,
+        56,
+        48,
+        39,
+        37,
+        39,
+        57,
+        39,
+        58,
+        64,
+        45,
+        56,
+        60,
+        37,
+        51,
+        49,
+        34,
+        38,
+        64,
+        69,
+        54,
+        36,
+        72,
+        47,
+        56,
+        36,
+        30,
+        40,
+        66,
+        56,
+        69,
+        43,
+        54,
+        60,
+        40,
+        58,
+        41,
+        40,
+        61
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000106",
+     "title": "Smoker",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Hospital visits in one year of 80 simulated patients (a Poisson count) with age and smoking (1 = smoker). Poisson regression: the rate ratios per year of age and for smokers."
+  },
+  "zid000107": {
+   "kind": "analysis",
+   "id": "zid000107",
+   "name": "Poisson regression (visits)",
+   "analysisId": "poissonRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000103",
+    "dataSets": [
+     "zid000104",
+     "zid000105",
+     "zid000106"
+    ]
+   },
+   "params": {
+    "y": "zid000104",
+    "intercept": true,
+    "ciMethod": "wald",
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [],
+    "interpolate": false,
+    "predictions": []
+   }
+  },
+  "zid000108": {
+   "kind": "graph",
+   "id": "zid000108",
+   "name": "Actual vs. predicted",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000103",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000109",
+     "ref": {
+      "node": "zid000107",
+      "key": "actualVsPredicted"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Predicted count"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Actual count"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Actual vs. predicted"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000005",
+  "zid000006",
+  "zid000007",
+  "zid000010",
+  "zid000011",
+  "zid000012",
+  "zid000015",
+  "zid000016",
+  "zid000017",
+  "zid000018",
+  "zid000030",
+  "zid000031",
+  "zid000033",
+  "zid000034",
+  "zid000037",
+  "zid000038",
+  "zid000042",
+  "zid000043",
+  "zid000046",
+  "zid000048",
+  "zid000054",
+  "zid000060",
+  "zid000061",
+  "zid000063",
+  "zid000065",
+  "zid000066",
+  "zid000068",
+  "zid000069",
+  "zid000070",
+  "zid000073",
+  "zid000074",
+  "zid000075",
+  "zid000076",
+  "zid000079",
+  "zid000080",
+  "zid000081",
+  "zid000084",
+  "zid000085",
+  "zid000087",
+  "zid000090",
+  "zid000091",
+  "zid000096",
+  "zid000097",
+  "zid000098",
+  "zid000100",
+  "zid000102",
+  "zid000103",
+  "zid000107",
+  "zid000108"
+ ]
+}

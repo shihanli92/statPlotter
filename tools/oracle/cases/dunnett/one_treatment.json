@@ -1,0 +1,7 @@
+{
+  "input": {"n0":5,"n":[7],"df":10,"t":[0.29999999999999999,2.2000000000000002,4.5]},
+  "params": {
+    "twoSided": true
+  },
+  "note": "One treatment: Dunnett's P is the t test's P exactly."
+}

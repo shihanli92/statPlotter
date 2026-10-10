@@ -1,0 +1,12 @@
+{
+  "name": "one_point",
+  "input": {"x":[4],"y":[4]},
+  "params": {},
+  "expected": {
+    "hull": 1
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

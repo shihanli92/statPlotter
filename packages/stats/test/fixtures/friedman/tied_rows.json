@@ -1,0 +1,109 @@
+{
+  "name": "tied_rows",
+  "input": {"rows":[[1,1,1],[2,3,1],[5,5,5],[4,6,5]]},
+  "params": {},
+  "expected": {
+    "stat": 3,
+    "df": 2,
+    "p": 0.22313016014842982,
+    "pExact": 0.5,
+    "rankSums": [7, 10, 7],
+    "meanRanks": [1.75, 2.5, 1.75],
+    "n": 4,
+    "k": 3,
+    "dunn": {
+      "none": [
+        {
+          "i": 0,
+          "j": 1,
+          "rankSumDiff": -3,
+          "meanRankDiff": -0.75,
+          "z": -1.0606601717798212,
+          "p": 0.28884436634648492,
+          "pAdj": 0.28884436634648492
+        },
+        {
+          "i": 0,
+          "j": 2,
+          "rankSumDiff": 0,
+          "meanRankDiff": 0,
+          "z": 0,
+          "p": 1,
+          "pAdj": 1
+        },
+        {
+          "i": 1,
+          "j": 2,
+          "rankSumDiff": 3,
+          "meanRankDiff": 0.75,
+          "z": 1.0606601717798212,
+          "p": 0.28884436634648492,
+          "pAdj": 0.28884436634648492
+        }
+      ],
+      "bonferroni": [
+        {
+          "i": 0,
+          "j": 1,
+          "rankSumDiff": -3,
+          "meanRankDiff": -0.75,
+          "z": -1.0606601717798212,
+          "p": 0.28884436634648492,
+          "pAdj": 0.86653309903945475
+        },
+        {
+          "i": 0,
+          "j": 2,
+          "rankSumDiff": 0,
+          "meanRankDiff": 0,
+          "z": 0,
+          "p": 1,
+          "pAdj": 1
+        },
+        {
+          "i": 1,
+          "j": 2,
+          "rankSumDiff": 3,
+          "meanRankDiff": 0.75,
+          "z": 1.0606601717798212,
+          "p": 0.28884436634648492,
+          "pAdj": 0.86653309903945475
+        }
+      ],
+      "sidak": [
+        {
+          "i": 0,
+          "j": 1,
+          "rankSumDiff": -3,
+          "meanRankDiff": -0.75,
+          "z": -1.0606601717798212,
+          "p": 0.28884436634648492,
+          "pAdj": 0.64033848909058233
+        },
+        {
+          "i": 0,
+          "j": 2,
+          "rankSumDiff": 0,
+          "meanRankDiff": 0,
+          "z": 0,
+          "p": 1,
+          "pAdj": 1
+        },
+        {
+          "i": 1,
+          "j": 2,
+          "rankSumDiff": 3,
+          "meanRankDiff": 0.75,
+          "z": 1.0606601717798212,
+          "p": 0.28884436634648492,
+          "pAdj": 0.64033848909058233
+        }
+      ]
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Two rows tied throughout: they carry no information (tie term 2(3^3 - 3))."
+}

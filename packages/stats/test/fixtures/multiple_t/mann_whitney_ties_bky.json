@@ -1,0 +1,153 @@
+{
+  "name": "mann_whitney_ties_bky",
+  "input": {"rows":[{"a":[14,10,7,11,11],"b":[10,9,12,12,12]},{"a":[12,11,9,7,6],"b":[12,11,11,15,16]},{"a":[10,11,14,10,12],"b":[13,10,10,11,5]},{"a":[12,9,8,14,11],"b":[6,11,11,11,10]},{"a":[11,8,9,9,7],"b":[8,9,10,13,9]},{"a":[14,9,10,11,11],"b":[15,8,14,12,14]},{"a":[12,9,13,11,12],"b":[10,12,13,7,9]},{"a":[12,10,13,7,10],"b":[15,10,9,11,11]},{"a":[7,7,12,10,9],"b":[9,11,11,9,13]},{"a":[11,9,14,8,9],"b":[14,15,12,12,14]}]},
+  "params": {"method":"mannWhitney","family":"bky","q":0.05},
+  "expected": {
+    "rows": [
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 12,
+        "diff": 1,
+        "se": "NaN",
+        "stat": 10.5,
+        "df": "NaN",
+        "p": 0.66666666666666663,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 12,
+        "diff": 3,
+        "se": "NaN",
+        "stat": 3.5,
+        "df": "NaN",
+        "p": 0.079365079365079361,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 10,
+        "diff": -1,
+        "se": "NaN",
+        "stat": 8.5,
+        "df": "NaN",
+        "p": 0.46825396825396826,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 11,
+        "diff": 0,
+        "se": "NaN",
+        "stat": 9.5,
+        "df": "NaN",
+        "p": 0.58730158730158721,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 9,
+        "diff": 0,
+        "se": "NaN",
+        "stat": 8.5,
+        "df": "NaN",
+        "p": 0.44444444444444442,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 11,
+        "centerB": 14,
+        "diff": 3,
+        "se": "NaN",
+        "stat": 7,
+        "df": "NaN",
+        "p": 0.29365079365079361,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 12,
+        "centerB": 10,
+        "diff": -2,
+        "se": "NaN",
+        "stat": 9,
+        "df": "NaN",
+        "p": 0.53968253968253965,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 10,
+        "centerB": 11,
+        "diff": 1,
+        "se": "NaN",
+        "stat": 11,
+        "df": "NaN",
+        "p": 0.80952380952380942,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 11,
+        "diff": 2,
+        "se": "NaN",
+        "stat": 7,
+        "df": "NaN",
+        "p": 0.26984126984126977,
+        "exact": true
+      },
+      {
+        "skip": false,
+        "nA": 5,
+        "nB": 5,
+        "centerA": 9,
+        "centerB": 14,
+        "diff": 5,
+        "se": "NaN",
+        "stat": 3,
+        "df": "NaN",
+        "p": 0.047619047619047616,
+        "exact": true
+      }
+    ],
+    "family": {
+      "m": 10,
+      "m0": 10,
+      "adjusted": [0.77777777777777779, 0.41666666666666669, 0.77083333333333315, 0.77083333333333315, 0.77083333333333315, 0.77083333333333315, 0.77083333333333315, 0.84999999999999998, 0.77083333333333315, 0.41666666666666669],
+      "flagged": [false, false, false, false, false, false, false, false, false, false]
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "emmeans": "2.0.2"
+    }
+  },
+  "note": "Integer data with ties: exact P conditional on the ties (coin)."
+}

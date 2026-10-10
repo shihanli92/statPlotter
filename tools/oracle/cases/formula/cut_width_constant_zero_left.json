@@ -1,0 +1,18 @@
+{
+  "input": {
+    "x": [
+      0,
+      0,
+      0,
+      null
+    ],
+    "n": [
+      4
+    ]
+  },
+  "params": {
+    "kind": "cutwidth",
+    "right": false
+  },
+  "note": "constant zero: R widens the range by 1/1000 each side"
+}

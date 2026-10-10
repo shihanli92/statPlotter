@@ -1,0 +1,13 @@
+{
+  "name": "prop",
+  "input": [],
+  "params": {"design":"prop","p1":0.5,"p2":0.75,"alpha":0.05,"n":50,"target":0.9,"lo":2},
+  "expected": {
+    "power": 0.74016590133138793,
+    "nFor": 76.706928451777415
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

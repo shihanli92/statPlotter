@@ -1,0 +1,1 @@
+{ "input": { "a": [1, 2, 3], "b": [1, 2, 3] }, "params": { "exact": true }, "note": "All differences zero: no test; P and HL are NaN." }

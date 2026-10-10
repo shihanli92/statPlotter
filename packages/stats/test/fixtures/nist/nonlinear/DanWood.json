@@ -1,0 +1,50 @@
+{
+  "name": "DanWood",
+  "input": {
+    "y": [
+      2.138,
+      3.421,
+      3.597,
+      4.34,
+      4.882,
+      5.66
+    ],
+    "x": [
+      1.309,
+      1.471,
+      1.49,
+      1.565,
+      1.611,
+      1.68
+    ]
+  },
+  "params": {
+    "model": "y = b1*x**b2 + e",
+    "start1": [
+      1,
+      5
+    ],
+    "start2": [
+      0.7,
+      4
+    ]
+  },
+  "expected": {
+    "n": 6,
+    "params": [
+      0.76886226176,
+      3.8604055871
+    ],
+    "se": [
+      0.01828197386,
+      0.051726610913
+    ],
+    "ssResidual": 0.0043173084083,
+    "residualSD": 0.032853114039,
+    "df": 4
+  },
+  "source": {
+    "nist": "https://www.itl.nist.gov/div898/strd/nls/data/LINKS/DATA/DanWood.dat",
+    "difficulty": "lower"
+  }
+}

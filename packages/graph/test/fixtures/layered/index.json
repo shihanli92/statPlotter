@@ -1,0 +1,305 @@
+[
+ {
+  "name": "layers-xy-bars-by-layer",
+  "table": "xy",
+  "graph": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample xy",
+   "frame": "xy",
+   "layers": [
+    {
+     "id": "line",
+     "geom": "line",
+     "stat": {
+      "kind": "summary",
+      "center": "mean"
+     }
+    },
+    {
+     "id": "bars",
+     "geom": "bar",
+     "stat": {
+      "kind": "summary",
+      "center": "mean"
+     },
+     "style": {
+      "width": 0.8
+     }
+    },
+    {
+     "id": "box",
+     "geom": "box",
+     "stat": {
+      "kind": "boxplot",
+      "whiskers": "minmax"
+     },
+     "seriesHidden": true,
+     "style": {
+      "width": 0.8
+     }
+    },
+    {
+     "id": "error",
+     "geom": "errorbar",
+     "stat": {
+      "kind": "summary",
+      "center": "mean",
+      "error": "SD"
+     }
+    },
+    {
+     "id": "points",
+     "geom": "points",
+     "stat": {
+      "kind": "summary",
+      "center": "mean"
+     }
+    }
+   ],
+   "look": "xy.scatter",
+   "drawOrder": "layer",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "X"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample xy"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ {
+  "name": "layers-grouped-time-course-by-layer",
+  "table": "grouped",
+  "graph": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample grouped",
+   "frame": "grouped",
+   "layers": [
+    {
+     "id": "line",
+     "geom": "line",
+     "stat": {
+      "kind": "summary",
+      "center": "mean"
+     },
+     "position": {
+      "kind": "aligned"
+     }
+    },
+    {
+     "id": "error",
+     "geom": "errorbar",
+     "stat": {
+      "kind": "summary",
+      "center": "mean",
+      "error": "SD"
+     },
+     "position": {
+      "kind": "aligned"
+     },
+     "style": {
+      "direction": "both"
+     }
+    },
+    {
+     "id": "points",
+     "geom": "points",
+     "stat": {
+      "kind": "summary",
+      "center": "mean"
+     },
+     "position": {
+      "kind": "aligned"
+     }
+    }
+   ],
+   "look": "grouped.scatter",
+   "drawOrder": "layer",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample grouped"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ {
+  "name": "layers-violin-box-points-by-layer",
+  "table": "column",
+  "graph": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample column",
+   "frame": "category",
+   "layers": [
+    {
+     "id": "violin",
+     "geom": "violin",
+     "stat": {
+      "kind": "density",
+      "smoothing": 1,
+      "extent": "truncated",
+      "center": "median"
+     }
+    },
+    {
+     "id": "box",
+     "geom": "box",
+     "stat": {
+      "kind": "boxplot",
+      "whiskers": "minmax"
+     },
+     "style": {
+      "width": 0.12,
+      "fill": {
+       "type": "solid",
+       "color": {
+        "rgb": "#ffffff"
+       },
+       "opacity": 1
+      }
+     }
+    },
+    {
+     "id": "points",
+     "geom": "points",
+     "stat": {
+      "kind": "identity"
+     },
+     "style": {
+      "size": 4
+     }
+    }
+   ],
+   "look": "column.box",
+   "drawOrder": "layer",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample column"
+     }
+    ]
+   },
+   "style": {}
+  }
+ }
+]

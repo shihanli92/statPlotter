@@ -1,0 +1,85 @@
+{
+  "name": "ties_between_groups",
+  "input": {"controls":[1,2,2,3,3,3,4,5],"patients":[2,3,3,4,4,5,6,6,7]},
+  "params": {},
+  "expected": {
+    "points": [
+      {
+        "threshold": 1.5,
+        "sensitivity": 1,
+        "sensLower": 0.66373288312005707,
+        "sensUpper": 1,
+        "specificity": 0.125,
+        "specLower": 0.0031597235312519093,
+        "specUpper": 0.52650967087520661,
+        "likelihoodRatio": 1.1428571428571428
+      },
+      {
+        "threshold": 2.5,
+        "sensitivity": 0.88888888888888884,
+        "sensLower": 0.51750348508266297,
+        "sensUpper": 0.99719086325340078,
+        "specificity": 0.375,
+        "specLower": 0.085233414137253563,
+        "specUpper": 0.75513678363344838,
+        "likelihoodRatio": 1.4222222222222221
+      },
+      {
+        "threshold": 3.5,
+        "sensitivity": 0.66666666666666663,
+        "sensLower": 0.29929505620854041,
+        "sensUpper": 0.92514536858030816,
+        "specificity": 0.75,
+        "specLower": 0.34914420558717579,
+        "specUpper": 0.96814597375005573,
+        "likelihoodRatio": 2.6666666666666665
+      },
+      {
+        "threshold": 4.5,
+        "sensitivity": 0.44444444444444442,
+        "sensLower": 0.13699566226516655,
+        "sensUpper": 0.78799149322113193,
+        "specificity": 0.875,
+        "specLower": 0.47349032912479344,
+        "specUpper": 0.99684027646874807,
+        "likelihoodRatio": 3.5555555555555554
+      },
+      {
+        "threshold": 5.5,
+        "sensitivity": 0.33333333333333331,
+        "sensLower": 0.074854631419691828,
+        "sensUpper": 0.70070494379145964,
+        "specificity": 1,
+        "specLower": 0.63058335244718078,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 6.5,
+        "sensitivity": 0.1111111111111111,
+        "sensLower": 0.0028091367465992146,
+        "sensUpper": 0.48249651491733703,
+        "specificity": 1,
+        "specLower": 0.63058335244718078,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      }
+    ],
+    "auc": 0.77083333333333337,
+    "se": 0.11498984816327353,
+    "lower": 0.545457372345588,
+    "upper": 0.99620929432107874,
+    "p": 0.060601969712006057,
+    "se0": 0.14433756729740643,
+    "z": 1.8763883748662842,
+    "direction": "higher",
+    "nControls": 8,
+    "nPatients": 9
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pROC": "1.19.1"
+    }
+  }
+}

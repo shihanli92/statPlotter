@@ -1,0 +1,93 @@
+{
+  "name": "t2x2_all_outcome",
+  "input": {"table":[[5,0],[7,0]]},
+  "params": {},
+  "expected": {
+    "chiSquare": {
+      "chiSq": "NaN",
+      "df": 1,
+      "p": "NaN",
+      "expected": [
+        [5, 0],
+        [7, 0]
+      ]
+    },
+    "fisher": {
+      "p": 1,
+      "pLess": 1,
+      "pGreater": 1
+    },
+    "chiSquareYates": {
+      "chiSq": "Inf",
+      "df": 1,
+      "p": 0,
+      "expected": [
+        [5, 0],
+        [7, 0]
+      ]
+    },
+    "trend": {
+      "chiSq": "Inf",
+      "df": 1,
+      "p": 0
+    },
+    "twoByTwo": {
+      "relativeRisk": {
+        "value": 1,
+        "lower": 0.56551753521682557,
+        "upper": 1.5487798315277312
+      },
+      "riskDifference": {
+        "value": 0,
+        "lower": -0.53705601746752318,
+        "upper": 0.43906612810800649
+      },
+      "riskDifferenceNoCC": {
+        "value": 0,
+        "lower": -0.43448246478317465,
+        "upper": 0.35433043506668738
+      },
+      "nnt": null,
+      "oddsRatio": {
+        "value": "NaN",
+        "lower": 0,
+        "upper": "Inf"
+      },
+      "sensitivity": {
+        "value": 1,
+        "lower": 0.56551753521682535,
+        "upper": 1
+      },
+      "specificity": {
+        "value": 0,
+        "lower": 0,
+        "upper": 0.35433043506668727
+      },
+      "ppv": {
+        "value": 0.41666666666666669,
+        "lower": 0.19326031365875662,
+        "upper": 0.68048868745045021
+      },
+      "npv": {
+        "value": "NaN",
+        "lower": "NaN",
+        "upper": "NaN"
+      },
+      "likelihoodRatio": 1
+    },
+    "mcNemar": {
+      "chiSq": 5.1428571428571432,
+      "p": 0.023342202012890875,
+      "pExact": 0.015625000000000007
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "PropCIs": "0.3.0",
+      "exact2x2": "1.7.0",
+      "contingencytables": "3.1.0"
+    }
+  },
+  "note": "Every subject has the outcome: RR = 1 with the Koopman limits n1/(n1+z^2), (n2+z^2)/n2."
+}

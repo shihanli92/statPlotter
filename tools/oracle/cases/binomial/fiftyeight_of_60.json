@@ -1,0 +1,11 @@
+{
+  "input": {
+    "k": 58,
+    "n": 60,
+    "p0": 0.90000000000000002
+  },
+  "params": {
+    "fn": "binomial"
+  },
+  "note": "n - x = 2: Poisson upper limit."
+}

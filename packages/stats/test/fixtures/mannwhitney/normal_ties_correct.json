@@ -1,0 +1,26 @@
+{
+  "name": "normal_ties_correct",
+  "input": {"a":[1,2,2,3,4,4],"b":[2,3,5,5,6]},
+  "params": {"exact":false,"correct":true},
+  "expected": {
+    "uA": 6.5,
+    "uB": 23.5,
+    "U": 6.5,
+    "sumRanksA": 27.5,
+    "sumRanksB": 38.5,
+    "medianA": 2.5,
+    "medianB": 5,
+    "p": 0.13770287768403502,
+    "method": "normal",
+    "ties": true,
+    "hlEstimate": 1.446733896882173,
+    "hlLo": -0.99995737566714271,
+    "hlHi": 3.9999518219520214
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

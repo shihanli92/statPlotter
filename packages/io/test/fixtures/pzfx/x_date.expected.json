@@ -1,0 +1,24 @@
+{
+  "file": "x_date.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Sample Data",
+      "columns": [
+        {
+          "name": "Date X",
+          "values": [0, 5.22929500342231, 8.1232032854209404, 8.2381930184804908, 8.2765229295003397, 8.3121149897330593, 8.5420944558521601, 8.6570841889117105, 8.9062286105407296, 9.2320328542094394, 9.5386721423682399, 9.7686516084873407, 9.8836413415468893, 9.9657768651608496, 9.9986310746064309, 10.113620807666001, 10.209445585215599, 10.2614647501711, 10.324435318275199, 10.3436002737851, 10.362765229295, 10.381930184804901, 10.4147843942505, 10.4585900068446, 10.502395619438699, 10.54893908282, 10.592744695414099, 10.631074606434, 10.669404517453801, 10.7268993839836, 10.7843942505133, 10.880219028062999, 11.0910335386721, 11.2060232717317, 11.4743326488706, 11.7426420260096, 11.9123887748118, 12.0876112251882, 12.260095824777499, 12.4325804243669, 13.043121149897299, 13.103353867214199, 13.467488021902801, 13.826146475017101, 13.921971252566699, 14.0807665982204, 14.2532511978097, 14.3490759753593, 14.5598904859685, 14.7515400410678],
+          "excluded": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        },
+        {
+          "name": "Observation",
+          "values": [120, 64, 46, 51, 52, 53, 54, 68, 59, 68, 77, 86, 74, 83, 80, 49, 56, 65, 72, 60, 58, 63, 51, 44, 48, 53, 50, 53, 49, 50, 47, 48, 92, 90, 94, 103, 90, 90, 85, 93, 107, 104, 89, 88, 83, 101, 79, 77, 92, 87],
+          "excluded": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        }
+      ]
+    }
+  ]
+}

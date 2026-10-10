@@ -1,0 +1,10 @@
+{
+  "input": {
+    "observed": [12, 30, 25, 13],
+    "expected": [20, 40, 30, 10]
+  },
+  "params": {
+    "fn": "gof"
+  },
+  "note": "Expected counts summing to 100 against 80 observed: rescaled."
+}

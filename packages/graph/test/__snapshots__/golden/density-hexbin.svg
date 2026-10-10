@@ -1,0 +1,654 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="336.418pt" height="262.48pt" viewBox="0 0 336.418 262.48">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="112.045" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Synthetic cells</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/hexes">
+<g data-id="series/v5/hex/10">
+<polygon points="155.812,201.533 155.812,206.613 151.413,209.152 147.014,206.613 147.014,201.533 151.413,198.993" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/11">
+<polygon points="164.61,201.533 164.61,206.613 160.211,209.152 155.812,206.613 155.812,201.533 160.211,198.993" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/12">
+<polygon points="173.408,201.533 173.408,206.613 169.009,209.152 164.61,206.613 164.61,201.533 169.009,198.993" fill="#32668d" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/13">
+<polygon points="182.206,201.533 182.206,206.613 177.807,209.152 173.408,206.613 173.408,201.533 177.807,198.993" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/14">
+<polygon points="191.003,201.533 191.003,206.613 186.604,209.152 182.206,206.613 182.206,201.533 186.604,198.993" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/31">
+<polygon points="160.211,193.914 160.211,198.993 155.812,201.533 151.413,198.993 151.413,193.914 155.812,191.374" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/32">
+<polygon points="169.009,193.914 169.009,198.993 164.61,201.533 160.211,198.993 160.211,193.914 164.61,191.374" fill="#1f9e88" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/33">
+<polygon points="177.807,193.914 177.807,198.993 173.408,201.533 169.009,198.993 169.009,193.914 173.408,191.374" fill="#fde725" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/34">
+<polygon points="186.604,193.914 186.604,198.993 182.206,201.533 177.807,198.993 177.807,193.914 182.206,191.374" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/49">
+<polygon points="129.418,186.295 129.418,191.374 125.02,193.914 120.621,191.374 120.621,186.295 125.02,183.755" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/54">
+<polygon points="173.408,186.295 173.408,191.374 169.009,193.914 164.61,191.374 164.61,186.295 169.009,183.755" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/55">
+<polygon points="182.206,186.295 182.206,191.374 177.807,193.914 173.408,191.374 173.408,186.295 177.807,183.755" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/70">
+<polygon points="133.817,178.676 133.817,183.755 129.418,186.295 125.02,183.755 125.02,178.676 129.418,176.136" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/71">
+<polygon points="142.615,178.676 142.615,183.755 138.216,186.295 133.817,183.755 133.817,178.676 138.216,176.136" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/90">
+<polygon points="120.621,171.056 120.621,176.136 116.222,178.676 111.823,176.136 111.823,171.056 116.222,168.517" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/91">
+<polygon points="129.418,171.056 129.418,176.136 125.02,178.676 120.621,176.136 120.621,171.056 125.02,168.517" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/92">
+<polygon points="138.216,171.056 138.216,176.136 133.817,178.676 129.418,176.136 129.418,171.056 133.817,168.517" fill="#3d4e8a" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/93">
+<polygon points="147.014,171.056 147.014,176.136 142.615,178.676 138.216,176.136 138.216,171.056 142.615,168.517" fill="#433d84" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/94">
+<polygon points="155.812,171.056 155.812,176.136 151.413,178.676 147.014,176.136 147.014,171.056 151.413,168.517" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/106">
+<polygon points="81.03,163.437 81.03,168.517 76.631,171.056 72.232,168.517 72.232,163.437 76.631,160.898" fill="#404587" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/107">
+<polygon points="89.828,163.437 89.828,168.517 85.429,171.056 81.03,168.517 81.03,163.437 85.429,160.898" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/110">
+<polygon points="116.222,163.437 116.222,168.517 111.823,171.056 107.424,168.517 107.424,163.437 111.823,160.898" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/111">
+<polygon points="125.02,163.437 125.02,168.517 120.621,171.056 116.222,168.517 116.222,163.437 120.621,160.898" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/112">
+<polygon points="133.817,163.437 133.817,168.517 129.418,171.056 125.02,168.517 125.02,163.437 129.418,160.898" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/113">
+<polygon points="142.615,163.437 142.615,168.517 138.216,171.056 133.817,168.517 133.817,163.437 138.216,160.898" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/114">
+<polygon points="151.413,163.437 151.413,168.517 147.014,171.056 142.615,168.517 142.615,163.437 147.014,160.898" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/115">
+<polygon points="160.211,163.437 160.211,168.517 155.812,171.056 151.413,168.517 151.413,163.437 155.812,160.898" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/127">
+<polygon points="76.631,155.818 76.631,160.898 72.232,163.437 67.833,160.898 67.833,155.818 72.232,153.278" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/128">
+<polygon points="85.429,155.818 85.429,160.898 81.03,163.437 76.631,160.898 76.631,155.818 81.03,153.278" fill="#3d4e8a" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/131">
+<polygon points="111.823,155.818 111.823,160.898 107.424,163.437 103.025,160.898 103.025,155.818 107.424,153.278" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/133">
+<polygon points="129.418,155.818 129.418,160.898 125.02,163.437 120.621,160.898 120.621,155.818 125.02,153.278" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/134">
+<polygon points="138.216,155.818 138.216,160.898 133.817,163.437 129.418,160.898 129.418,155.818 133.817,153.278" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/136">
+<polygon points="155.812,155.818 155.812,160.898 151.413,163.437 147.014,160.898 147.014,155.818 151.413,153.278" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/153">
+<polygon points="125.02,148.199 125.02,153.278 120.621,155.818 116.222,153.278 116.222,148.199 120.621,145.659" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/157">
+<polygon points="160.211,148.199 160.211,153.278 155.812,155.818 151.413,153.278 151.413,148.199 155.812,145.659" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/174">
+<polygon points="120.621,140.58 120.621,145.659 116.222,148.199 111.823,145.659 111.823,140.58 116.222,138.04" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/175">
+<polygon points="129.418,140.58 129.418,145.659 125.02,148.199 120.621,145.659 120.621,140.58 125.02,138.04" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/176">
+<polygon points="138.216,140.58 138.216,145.659 133.817,148.199 129.418,145.659 129.418,140.58 133.817,138.04" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/177">
+<polygon points="147.014,140.58 147.014,145.659 142.615,148.199 138.216,145.659 138.216,140.58 142.615,138.04" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/179">
+<polygon points="164.61,140.58 164.61,145.659 160.211,148.199 155.812,145.659 155.812,140.58 160.211,138.04" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/180">
+<polygon points="173.408,140.58 173.408,145.659 169.009,148.199 164.61,145.659 164.61,140.58 169.009,138.04" fill="#433d84" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/181">
+<polygon points="182.206,140.58 182.206,145.659 177.807,148.199 173.408,145.659 173.408,140.58 177.807,138.04" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/185">
+<polygon points="217.397,140.58 217.397,145.659 212.998,148.199 208.599,145.659 208.599,140.58 212.998,138.04" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/190">
+<polygon points="81.03,132.961 81.03,138.04 76.631,140.58 72.232,138.04 72.232,132.961 76.631,130.421" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/191">
+<polygon points="89.828,132.961 89.828,138.04 85.429,140.58 81.03,138.04 81.03,132.961 85.429,130.421" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/192">
+<polygon points="98.626,132.961 98.626,138.04 94.227,140.58 89.828,138.04 89.828,132.961 94.227,130.421" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/193">
+<polygon points="107.424,132.961 107.424,138.04 103.025,140.58 98.626,138.04 98.626,132.961 103.025,130.421" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/194">
+<polygon points="116.222,132.961 116.222,138.04 111.823,140.58 107.424,138.04 107.424,132.961 111.823,130.421" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/195">
+<polygon points="125.02,132.961 125.02,138.04 120.621,140.58 116.222,138.04 116.222,132.961 120.621,130.421" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/196">
+<polygon points="133.817,132.961 133.817,138.04 129.418,140.58 125.02,138.04 125.02,132.961 129.418,130.421" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/197">
+<polygon points="142.615,132.961 142.615,138.04 138.216,140.58 133.817,138.04 133.817,132.961 138.216,130.421" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/199">
+<polygon points="160.211,132.961 160.211,138.04 155.812,140.58 151.413,138.04 151.413,132.961 155.812,130.421" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/200">
+<polygon points="169.009,132.961 169.009,138.04 164.61,140.58 160.211,138.04 160.211,132.961 164.61,130.421" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/204">
+<polygon points="204.2,132.961 204.2,138.04 199.801,140.58 195.402,138.04 195.402,132.961 199.801,130.421" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/205">
+<polygon points="212.998,132.961 212.998,138.04 208.599,140.58 204.2,138.04 204.2,132.961 208.599,130.421" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/206">
+<polygon points="221.796,132.961 221.796,138.04 217.397,140.58 212.998,138.04 212.998,132.961 217.397,130.421" fill="#3d4e8a" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/207">
+<polygon points="230.594,132.961 230.594,138.04 226.195,140.58 221.796,138.04 221.796,132.961 226.195,130.421" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/208">
+<polygon points="239.392,132.961 239.392,138.04 234.993,140.58 230.594,138.04 230.594,132.961 234.993,130.421" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/211">
+<polygon points="76.631,125.341 76.631,130.421 72.232,132.961 67.833,130.421 67.833,125.341 72.232,122.802" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/212">
+<polygon points="85.429,125.341 85.429,130.421 81.03,132.961 76.631,130.421 76.631,125.341 81.03,122.802" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/213">
+<polygon points="94.227,125.341 94.227,130.421 89.828,132.961 85.429,130.421 85.429,125.341 89.828,122.802" fill="#1f9e88" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/214">
+<polygon points="103.025,125.341 103.025,130.421 98.626,132.961 94.227,130.421 94.227,125.341 98.626,122.802" fill="#32668d" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/216">
+<polygon points="120.621,125.341 120.621,130.421 116.222,132.961 111.823,130.421 111.823,125.341 116.222,122.802" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/217">
+<polygon points="129.418,125.341 129.418,130.421 125.02,132.961 120.621,130.421 120.621,125.341 125.02,122.802" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/218">
+<polygon points="138.216,125.341 138.216,130.421 133.817,132.961 129.418,130.421 129.418,125.341 133.817,122.802" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/219">
+<polygon points="147.014,125.341 147.014,130.421 142.615,132.961 138.216,130.421 138.216,125.341 142.615,122.802" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/225">
+<polygon points="199.801,125.341 199.801,130.421 195.402,132.961 191.003,130.421 191.003,125.341 195.402,122.802" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/226">
+<polygon points="208.599,125.341 208.599,130.421 204.2,132.961 199.801,130.421 199.801,125.341 204.2,122.802" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/227">
+<polygon points="217.397,125.341 217.397,130.421 212.998,132.961 208.599,130.421 208.599,125.341 212.998,122.802" fill="#404587" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/228">
+<polygon points="226.195,125.341 226.195,130.421 221.796,132.961 217.397,130.421 217.397,125.341 221.796,122.802" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/229">
+<polygon points="234.993,125.341 234.993,130.421 230.594,132.961 226.195,130.421 226.195,125.341 230.594,122.802" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/231">
+<polygon points="252.588,125.341 252.588,130.421 248.189,132.961 243.791,130.421 243.791,125.341 248.189,122.802" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/233">
+<polygon points="89.828,117.722 89.828,122.802 85.429,125.341 81.03,122.802 81.03,117.722 85.429,115.183" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/234">
+<polygon points="98.626,117.722 98.626,122.802 94.227,125.341 89.828,122.802 89.828,117.722 94.227,115.183" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/235">
+<polygon points="107.424,117.722 107.424,122.802 103.025,125.341 98.626,122.802 98.626,117.722 103.025,115.183" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/236">
+<polygon points="116.222,117.722 116.222,122.802 111.823,125.341 107.424,122.802 107.424,117.722 111.823,115.183" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/237">
+<polygon points="125.02,117.722 125.02,122.802 120.621,125.341 116.222,122.802 116.222,117.722 120.621,115.183" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/238">
+<polygon points="133.817,117.722 133.817,122.802 129.418,125.341 125.02,122.802 125.02,117.722 129.418,115.183" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/245">
+<polygon points="195.402,117.722 195.402,122.802 191.003,125.341 186.604,122.802 186.604,117.722 191.003,115.183" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/246">
+<polygon points="204.2,117.722 204.2,122.802 199.801,125.341 195.402,122.802 195.402,117.722 199.801,115.183" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/247">
+<polygon points="212.998,117.722 212.998,122.802 208.599,125.341 204.2,122.802 204.2,117.722 208.599,115.183" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/248">
+<polygon points="221.796,117.722 221.796,122.802 217.397,125.341 212.998,122.802 212.998,117.722 217.397,115.183" fill="#472b79" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/249">
+<polygon points="230.594,117.722 230.594,122.802 226.195,125.341 221.796,122.802 221.796,117.722 226.195,115.183" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/250">
+<polygon points="239.392,117.722 239.392,122.802 234.993,125.341 230.594,122.802 230.594,117.722 234.993,115.183" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/251">
+<polygon points="248.189,117.722 248.189,122.802 243.791,125.341 239.392,122.802 239.392,117.722 243.791,115.183" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/257">
+<polygon points="111.823,110.103 111.823,115.183 107.424,117.722 103.025,115.183 103.025,110.103 107.424,107.563" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/258">
+<polygon points="120.621,110.103 120.621,115.183 116.222,117.722 111.823,115.183 111.823,110.103 116.222,107.563" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/259">
+<polygon points="129.418,110.103 129.418,115.183 125.02,117.722 120.621,115.183 120.621,110.103 125.02,107.563" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/267">
+<polygon points="199.801,110.103 199.801,115.183 195.402,117.722 191.003,115.183 191.003,110.103 195.402,107.563" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/268">
+<polygon points="208.599,110.103 208.599,115.183 204.2,117.722 199.801,115.183 199.801,110.103 204.2,107.563" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/269">
+<polygon points="217.397,110.103 217.397,115.183 212.998,117.722 208.599,115.183 208.599,110.103 212.998,107.563" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/288">
+<polygon points="204.2,102.484 204.2,107.563 199.801,110.103 195.402,107.563 195.402,102.484 199.801,99.944" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/304">
+<polygon points="155.812,94.865 155.812,99.944 151.413,102.484 147.014,99.944 147.014,94.865 151.413,92.325" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/323">
+<polygon points="142.615,87.246 142.615,92.325 138.216,94.865 133.817,92.325 133.817,87.246 138.216,84.706" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/325">
+<polygon points="160.211,87.246 160.211,92.325 155.812,94.865 151.413,92.325 151.413,87.246 155.812,84.706" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/326">
+<polygon points="169.009,87.246 169.009,92.325 164.61,94.865 160.211,92.325 160.211,87.246 164.61,84.706" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/346">
+<polygon points="155.812,79.626 155.812,84.706 151.413,87.246 147.014,84.706 147.014,79.626 151.413,77.087" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/347">
+<polygon points="164.61,79.626 164.61,84.706 160.211,87.246 155.812,84.706 155.812,79.626 160.211,77.087" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/348">
+<polygon points="173.408,79.626 173.408,84.706 169.009,87.246 164.61,84.706 164.61,79.626 169.009,77.087" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/366">
+<polygon points="151.413,72.007 151.413,77.087 147.014,79.626 142.615,77.087 142.615,72.007 147.014,69.468" fill="#460c5e" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/369">
+<polygon points="177.807,72.007 177.807,77.087 173.408,79.626 169.009,77.087 169.009,72.007 173.408,69.468" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/385">
+<polygon points="129.418,64.388 129.418,69.468 125.02,72.007 120.621,69.468 120.621,64.388 125.02,61.848" fill="#481769" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/386">
+<polygon points="138.216,64.388 138.216,69.468 133.817,72.007 129.418,69.468 129.418,64.388 133.817,61.848" fill="#404587" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/387">
+<polygon points="147.014,64.388 147.014,69.468 142.615,72.007 138.216,69.468 138.216,64.388 142.615,61.848" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/406">
+<polygon points="133.817,56.769 133.817,61.848 129.418,64.388 125.02,61.848 125.02,56.769 129.418,54.229" fill="#482171" stroke="none"/>
+</g>
+<g data-id="series/v5/hex/407">
+<polygon points="142.615,56.769 142.615,61.848 138.216,64.388 133.817,61.848 133.817,56.769 138.216,54.229" fill="#26838e" stroke="none"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="53.065" y1="215.785" x2="53.065" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="53.065" y1="215.785" x2="49.065" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="219.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−15</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="53.065" y1="190.071" x2="49.065" y2="190.071" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="193.884" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−10</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="53.065" y1="164.357" x2="49.065" y2="164.357" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="168.17" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−5</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="53.065" y1="138.642" x2="49.065" y2="138.642" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="39.948" y="142.456" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="53.065" y1="112.928" x2="49.065" y2="112.928" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="39.948" y="116.741" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="53.065" y1="87.214" x2="49.065" y2="87.214" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="33.83" y="91.027" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/y/tick/6">
+<line x1="53.065" y1="61.499" x2="49.065" y2="61.499" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="33.83" y="65.313" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/y/tick/7">
+<line x1="53.065" y1="35.785" x2="49.065" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="33.83" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 125.785)" xml:space="preserve"><tspan x="-7.858" y="129.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">UMAP 2</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="53.065" y1="215.785" x2="269.065" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="53.065" y1="215.785" x2="53.065" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="43.736" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−10</tspan></text>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="96.265" y1="215.785" x2="96.265" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="89.995" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−5</tspan></text>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="139.465" y1="215.785" x2="139.465" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="136.407" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="182.665" y1="215.785" x2="182.665" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="179.607" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5</tspan></text>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="225.865" y1="215.785" x2="225.865" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="219.748" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="269.065" y1="215.785" x2="269.065" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="262.948" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="138.504" y="251.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">UMAP 1</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/density/hexes">
+<g data-id="legend/density/hexes/label">
+<text fill="#000000" xml:space="preserve"><tspan x="299.065" y="47.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Count</tspan></text>
+</g>
+</g>
+<g data-id="legend/density/hexes/bar">
+<g data-id="legend/density/hexes/bar/band/0">
+<rect x="281.065" y="149.785" width="10" height="2" fill="#450457" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/1">
+<rect x="281.065" y="148.285" width="10" height="2" fill="#460a5c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/2">
+<rect x="281.065" y="146.785" width="10" height="2" fill="#470f62" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/3">
+<rect x="281.065" y="145.285" width="10" height="2" fill="#481567" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/4">
+<rect x="281.065" y="143.785" width="10" height="2" fill="#481b6c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/5">
+<rect x="281.065" y="142.285" width="10" height="2" fill="#482070" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/6">
+<rect x="281.065" y="140.785" width="10" height="2" fill="#472575" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/7">
+<rect x="281.065" y="139.285" width="10" height="2" fill="#472a79" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/8">
+<rect x="281.065" y="137.785" width="10" height="2" fill="#462f7c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/9">
+<rect x="281.065" y="136.285" width="10" height="2" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/10">
+<rect x="281.065" y="134.785" width="10" height="2" fill="#443982" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/11">
+<rect x="281.065" y="133.285" width="10" height="2" fill="#433e85" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/12">
+<rect x="281.065" y="131.785" width="10" height="2" fill="#414287" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/13">
+<rect x="281.065" y="130.285" width="10" height="2" fill="#3f4788" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/14">
+<rect x="281.065" y="128.785" width="10" height="2" fill="#3e4b89" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/15">
+<rect x="281.065" y="127.285" width="10" height="2" fill="#3c508a" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/16">
+<rect x="281.065" y="125.785" width="10" height="2" fill="#3a548b" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/17">
+<rect x="281.065" y="124.285" width="10" height="2" fill="#38588c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/18">
+<rect x="281.065" y="122.785" width="10" height="2" fill="#365d8c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/19">
+<rect x="281.065" y="121.285" width="10" height="2" fill="#34618d" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/20">
+<rect x="281.065" y="119.785" width="10" height="2" fill="#32658d" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/21">
+<rect x="281.065" y="118.285" width="10" height="2" fill="#30698d" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/22">
+<rect x="281.065" y="116.785" width="10" height="2" fill="#2f6c8e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/23">
+<rect x="281.065" y="115.285" width="10" height="2" fill="#2d708e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/24">
+<rect x="281.065" y="113.785" width="10" height="2" fill="#2b748e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/25">
+<rect x="281.065" y="112.285" width="10" height="2" fill="#2a788e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/26">
+<rect x="281.065" y="110.785" width="10" height="2" fill="#287c8e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/27">
+<rect x="281.065" y="109.285" width="10" height="2" fill="#27808e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/28">
+<rect x="281.065" y="107.785" width="10" height="2" fill="#25848e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/29">
+<rect x="281.065" y="106.285" width="10" height="2" fill="#24878d" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/30">
+<rect x="281.065" y="104.785" width="10" height="2" fill="#238b8d" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/31">
+<rect x="281.065" y="103.285" width="10" height="2" fill="#228e8c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/32">
+<rect x="281.065" y="101.785" width="10" height="2" fill="#21928c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/33">
+<rect x="281.065" y="100.285" width="10" height="2" fill="#20968b" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/34">
+<rect x="281.065" y="98.785" width="10" height="2" fill="#20998a" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/35">
+<rect x="281.065" y="97.285" width="10" height="2" fill="#1f9d89" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/36">
+<rect x="281.065" y="95.785" width="10" height="2" fill="#20a187" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/37">
+<rect x="281.065" y="94.285" width="10" height="2" fill="#22a485" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/38">
+<rect x="281.065" y="92.785" width="10" height="2" fill="#24a884" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/39">
+<rect x="281.065" y="91.285" width="10" height="2" fill="#26ab82" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/40">
+<rect x="281.065" y="89.785" width="10" height="2" fill="#2aaf7f" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/41">
+<rect x="281.065" y="88.285" width="10" height="2" fill="#30b37c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/42">
+<rect x="281.065" y="86.785" width="10" height="2" fill="#35b679" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/43">
+<rect x="281.065" y="85.285" width="10" height="2" fill="#3bba76" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/44">
+<rect x="281.065" y="83.785" width="10" height="2" fill="#42be72" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/45">
+<rect x="281.065" y="82.285" width="10" height="2" fill="#4ac16e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/46">
+<rect x="281.065" y="80.785" width="10" height="2" fill="#51c469" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/47">
+<rect x="281.065" y="79.285" width="10" height="2" fill="#59c765" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/48">
+<rect x="281.065" y="77.785" width="10" height="2" fill="#62c960" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/49">
+<rect x="281.065" y="76.285" width="10" height="2" fill="#6bcc5b" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/50">
+<rect x="281.065" y="74.785" width="10" height="2" fill="#74cf55" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/51">
+<rect x="281.065" y="73.285" width="10" height="2" fill="#7dd250" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/52">
+<rect x="281.065" y="71.785" width="10" height="2" fill="#87d44a" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/53">
+<rect x="281.065" y="70.285" width="10" height="2" fill="#91d643" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/54">
+<rect x="281.065" y="68.785" width="10" height="2" fill="#9bd93c" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/55">
+<rect x="281.065" y="67.285" width="10" height="2" fill="#a5db35" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/56">
+<rect x="281.065" y="65.785" width="10" height="2" fill="#afdd2f" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/57">
+<rect x="281.065" y="64.285" width="10" height="2" fill="#bade29" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/58">
+<rect x="281.065" y="62.785" width="10" height="2" fill="#c5e023" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/59">
+<rect x="281.065" y="61.285" width="10" height="2" fill="#d0e11d" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/60">
+<rect x="281.065" y="59.785" width="10" height="2" fill="#dae31b" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/61">
+<rect x="281.065" y="58.285" width="10" height="2" fill="#e4e41e" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/62">
+<rect x="281.065" y="56.785" width="10" height="2" fill="#eee521" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/band/63">
+<rect x="281.065" y="55.785" width="10" height="1.5" fill="#f8e624" stroke="none"/>
+</g>
+<g data-id="legend/density/hexes/bar/frame">
+<rect x="281.065" y="55.785" width="10" height="96" fill="none" stroke="#000000" stroke-width="0.5"/>
+</g>
+<g data-id="legend/density/hexes/bar/tick/0">
+<line x1="291.065" y1="126.373" x2="294.065" y2="126.373" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/density/hexes/bar/label/0">
+<text fill="#000000" xml:space="preserve"><tspan x="296.065" y="130.187" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="legend/density/hexes/bar/tick/1">
+<line x1="291.065" y1="98.138" x2="294.065" y2="98.138" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/density/hexes/bar/label/1">
+<text fill="#000000" xml:space="preserve"><tspan x="296.065" y="101.952" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="legend/density/hexes/bar/tick/2">
+<line x1="291.065" y1="69.903" x2="294.065" y2="69.903" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/density/hexes/bar/label/2">
+<text fill="#000000" xml:space="preserve"><tspan x="296.065" y="73.716" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30</tspan></text>
+</g>
+<g data-id="legend/density/hexes/bar/label">
+<text fill="#000000" xml:space="preserve"></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

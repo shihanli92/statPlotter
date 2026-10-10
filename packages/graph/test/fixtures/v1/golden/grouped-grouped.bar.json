@@ -1,0 +1,150 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Untitled",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "t1": {
+   "kind": "table",
+   "id": "t1",
+   "name": "Sample grouped",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "WT",
+    "KO",
+    "Het"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "a",
+     "title": "Vehicle",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        10,
+        20,
+        15
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        12,
+        23,
+        14
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        11,
+        19,
+        17
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b",
+     "title": "Treated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        14,
+        26,
+        18
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        13,
+        29,
+        16
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        16,
+        24,
+        19
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "g1": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample grouped",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample grouped"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "t1",
+  "g1"
+ ]
+}

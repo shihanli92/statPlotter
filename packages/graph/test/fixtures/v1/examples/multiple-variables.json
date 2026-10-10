@@ -1,0 +1,1079 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Multiple variables",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Blood pressure trial",
+   "tableKind": "multipleVariables",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 36,
+   "rowTitles": [
+    "P01",
+    "P02",
+    "P03",
+    "P04",
+    "P05",
+    "P06",
+    "P07",
+    "P08",
+    "P09",
+    "P10",
+    "P11",
+    "P12",
+    "P13",
+    "P14",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P19",
+    "P20",
+    "P21",
+    "P22",
+    "P23",
+    "P24",
+    "P25",
+    "P26",
+    "P27",
+    "P28",
+    "P29",
+    "P30",
+    "P31",
+    "P32",
+    "P33",
+    "P34",
+    "P35",
+    "P36"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Group",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "text": [
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose",
+      "Placebo",
+      "Low dose",
+      "High dose"
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Sex",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "text": [
+      "F",
+      "F",
+      "M",
+      "M",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "M",
+      "M",
+      "M",
+      "F",
+      "F",
+      "F",
+      "F",
+      "M",
+      "M",
+      "F",
+      "M",
+      "M",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "M",
+      "M",
+      "M",
+      "F",
+      "F",
+      "F"
+     ]
+    },
+    {
+     "id": "zid000004",
+     "title": "Age",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        45,
+        61,
+        56,
+        44,
+        44,
+        41,
+        60,
+        42,
+        41,
+        53,
+        69,
+        54,
+        69,
+        63,
+        58,
+        67,
+        61,
+        63,
+        48,
+        68,
+        57,
+        58,
+        64,
+        49,
+        41,
+        55,
+        45,
+        59,
+        45,
+        51,
+        66,
+        41,
+        54,
+        47,
+        58,
+        50
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000005",
+     "title": "Weight (kg)",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        49.4,
+        75.6,
+        79.8,
+        80.1,
+        86.4,
+        73.7,
+        75.8,
+        55,
+        61.7,
+        53.8,
+        96.9,
+        68.2,
+        77.8,
+        71.9,
+        58.2,
+        55.5,
+        76.7,
+        77.4,
+        106.8,
+        94.2,
+        70.3,
+        56,
+        100.1,
+        60.3,
+        78.6,
+        74.4,
+        72.2,
+        67.7,
+        60.9,
+        99.8,
+        86.4,
+        97.9,
+        78.7,
+        51.4,
+        53.8,
+        82.4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000006",
+     "title": "Height (m)",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.53,
+        1.62,
+        1.79,
+        1.68,
+        1.76,
+        1.78,
+        1.75,
+        1.55,
+        1.66,
+        1.58,
+        1.78,
+        1.73,
+        1.76,
+        1.71,
+        1.61,
+        1.58,
+        1.65,
+        1.63,
+        1.94,
+        1.81,
+        1.69,
+        1.63,
+        1.88,
+        1.65,
+        1.6,
+        1.8,
+        1.61,
+        1.7,
+        1.64,
+        1.84,
+        1.81,
+        1.76,
+        1.84,
+        1.55,
+        1.6,
+        1.73
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000007",
+     "title": "BMI",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "formula": "=[Weight (kg)] / [Height (m)]^2"
+    },
+    {
+     "id": "zid000008",
+     "title": "SBP before",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        160,
+        124,
+        125,
+        132,
+        136,
+        138,
+        148,
+        136,
+        149,
+        169,
+        135,
+        153,
+        136,
+        150,
+        133,
+        146,
+        153,
+        167,
+        132,
+        180,
+        153,
+        162,
+        145,
+        154,
+        146,
+        142,
+        147,
+        140,
+        148,
+        167,
+        150,
+        147,
+        136,
+        131,
+        164,
+        147
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000009",
+     "title": "SBP after",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        158,
+        112,
+        119,
+        135,
+        128,
+        124,
+        142,
+        null,
+        133,
+        161,
+        127,
+        138,
+        133,
+        134,
+        123,
+        154,
+        144,
+        144,
+        126,
+        170,
+        null,
+        166,
+        145,
+        153,
+        160,
+        125,
+        132,
+        160,
+        133,
+        155,
+        144,
+        128,
+        129,
+        139,
+        163,
+        131
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000010",
+     "title": "Change",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "formula": "=[SBP after] - [SBP before]"
+    },
+    {
+     "id": "zid000011",
+     "title": "Obese",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "formula": "=IF(BMI >= 30, 1, 0)"
+    },
+    {
+     "id": "zid000012",
+     "title": "Treated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "formula": "=Group <> \"Placebo\""
+    }
+   ],
+   "notes": "36 simulated patients in three arms of a blood-pressure trial. Group and Sex are text (categorical) variables: they hold words, shown left-aligned and marked “abc” in the header. BMI, Change, Obese and Treated are calculated variables (ƒx): select one to see its formula in the bar above the grid. They update as soon as a value they use changes; try editing a weight, or a follow-up blood pressure. Two follow-up visits were missed, so their Change is empty. The bubble plot is coloured by Group (a text variable: one colour per category). “Change by group” was made with Extract and rearrange (Change split by the categories of Group) and is analyzed by a one-way ANOVA; the multiple regression uses the calculated BMI and Treated as predictors."
+  },
+  "zid000013": {
+   "kind": "graph",
+   "id": "zid000013",
+   "name": "Age, BMI and weight (bubble plot)",
+   "graphType": "bubble.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Age (years)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "BMI (kg/m"
+       },
+       {
+        "text": "2",
+        "sup": true
+       },
+       {
+        "text": ")"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Coloured by a text variable"
+     }
+    ]
+   },
+   "style": {
+    "bubble": {
+     "x": "zid000004",
+     "y": "zid000007",
+     "size": "zid000005",
+     "color": "zid000002",
+     "maxSize": 22
+    }
+   }
+  },
+  "zid000014": {
+   "kind": "table",
+   "id": "zid000014",
+   "name": "Change by group",
+   "x": null,
+   "notes": "Made from “Blood pressure trial” with Extract and rearrange: the calculated Change (mmHg) split by the categories of Group. A copy: it does not follow edits to the trial table.",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 12,
+   "rowTitles": null,
+   "dataSets": [
+    {
+     "id": "zid000015",
+     "title": "Placebo",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        -2,
+        3,
+        -6,
+        -8,
+        -3,
+        8,
+        -6,
+        4,
+        14,
+        20,
+        -6,
+        8
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000016",
+     "title": "Low dose",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        -12,
+        -8,
+        -8,
+        -16,
+        -9,
+        -10,
+        0,
+        -17,
+        -15,
+        -19,
+        -1,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000017",
+     "title": "High dose",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        -6,
+        -14,
+        -16,
+        -15,
+        -10,
+        -23,
+        -1,
+        -15,
+        -12,
+        -7,
+        -16,
+        null
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "zid000018": {
+   "kind": "graph",
+   "id": "zid000018",
+   "name": "Change by group",
+   "graphType": "column.bar",
+   "seriesSource": {
+    "table": "zid000014",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 150,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Change in SBP (mmHg)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000020",
+     "a": "zid000015",
+     "b": "zid000016",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000019",
+      "comparison": "zid000015|zid000016",
+      "show": "stars"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000021",
+     "a": "zid000015",
+     "b": "zid000017",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000019",
+      "comparison": "zid000015|zid000017",
+      "show": "stars"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Change by group"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000019": {
+   "kind": "analysis",
+   "id": "zid000019",
+   "name": "One-way ANOVA of change",
+   "analysisId": "oneWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000014",
+    "dataSets": [
+     "zid000015",
+     "zid000016",
+     "zid000017"
+    ]
+   },
+   "params": {
+    "matched": false,
+    "sphericity": "gg",
+    "gaussian": true,
+    "equalSD": "yes",
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "welchMethod": "dunnett-t3",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000022": {
+   "kind": "analysis",
+   "id": "zid000022",
+   "name": "Multiple regression (SBP after)",
+   "analysisId": "multipleRegression",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000009",
+     "zid000008",
+     "zid000007",
+     "zid000012"
+    ]
+   },
+   "params": {
+    "y": "zid000009",
+    "intercept": true,
+    "confidenceLevel": 0.95,
+    "categorical": [],
+    "referenceRule": "first",
+    "referenceLevels": {},
+    "interactions": [],
+    "interpolate": false,
+    "predictions": []
+   }
+  },
+  "zid000023": {
+   "kind": "graph",
+   "id": "zid000023",
+   "name": "Actual vs. predicted",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000024",
+     "ref": {
+      "node": "zid000022",
+      "key": "actualVsPredicted"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Predicted Y"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Actual Y"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Actual vs. predicted"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000013",
+  "zid000014",
+  "zid000018",
+  "zid000019",
+  "zid000022",
+  "zid000023"
+ ]
+}

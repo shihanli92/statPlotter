@@ -1,0 +1,6 @@
+{
+  "input": {
+    "x": [2.1000000000000001, 3.7000000000000002, 3]
+  },
+  "note": "Only Shapiro-Wilk is defined (exact P for n = 3)."
+}

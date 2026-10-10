@@ -1,0 +1,17 @@
+{
+  "name": "n8_n10_ties",
+  "input": {"a":[5,6,5,4,6,7,2,5],"b":[8,5,10,9,4,6,8,4,6,7]},
+  "params": {},
+  "expected": {
+    "d": 0.40000000000000002,
+    "p": 0.20974450386215093,
+    "exact": true,
+    "nA": 8,
+    "nB": 10
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Exact with ties (conditional on the tie pattern, as psmirnov(z =) in R >= 4.3)."
+}

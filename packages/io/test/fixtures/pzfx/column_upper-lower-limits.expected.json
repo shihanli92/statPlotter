@@ -1,0 +1,44 @@
+{
+  "file": "column_upper-lower-limits.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "A_MEAN",
+          "values": [100, 110, 120],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "A_UPPERLIMIT",
+          "values": [110, 120, 130],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "A_LOWERLIMIT",
+          "values": [70, 90, 110],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B_MEAN",
+          "values": [10, 20, 30],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B_UPPERLIMIT",
+          "values": [11, 22, 33],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B_LOWERLIMIT",
+          "values": [7, 18, 29],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

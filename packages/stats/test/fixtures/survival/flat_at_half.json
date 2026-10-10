@@ -1,0 +1,211 @@
+{
+  "name": "flat_at_half",
+  "input": {"time":[[1,2,4,6,17,20],[1,3,5,7,9,11]],"event":[[1,1,1,0,1,0],[1,1,1,1,1,1]]},
+  "params": {},
+  "expected": {
+    "km": [
+      {
+        "n": 6,
+        "events": 4,
+        "censored": 2,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 6,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 1,
+            "atRisk": 6,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.83333333333333337,
+            "se": 0.15214515486254615,
+            "lower": 0.273122849928356,
+            "upper": 0.97471242669089353
+          },
+          {
+            "time": 2,
+            "atRisk": 5,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.66666666666666674,
+            "se": 0.19245008972987529,
+            "lower": 0.19461663680623487,
+            "upper": 0.90443416432251644
+          },
+          {
+            "time": 4,
+            "atRisk": 4,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.5,
+            "se": 0.20412414523193151,
+            "lower": 0.11094826035143802,
+            "upper": 0.80370923685005669
+          },
+          {
+            "time": 6,
+            "atRisk": 3,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.5,
+            "se": 0.20412414523193151,
+            "lower": 0.11094826035143802,
+            "upper": 0.80370923685005669
+          },
+          {
+            "time": 17,
+            "atRisk": 2,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.25,
+            "se": 0.20412414523193151,
+            "lower": 0.012309516475010473,
+            "upper": 0.64594853739810054
+          },
+          {
+            "time": 20,
+            "atRisk": 1,
+            "events": 0,
+            "censored": 1,
+            "survival": 0.25,
+            "se": 0.20412414523193151,
+            "lower": 0.012309516475010473,
+            "upper": 0.64594853739810054
+          }
+        ],
+        "median": {
+          "value": 10.5,
+          "lower": 1,
+          "upper": "Inf"
+        }
+      },
+      {
+        "n": 6,
+        "events": 6,
+        "censored": 0,
+        "steps": [
+          {
+            "time": 0,
+            "atRisk": 6,
+            "events": 0,
+            "censored": 0,
+            "survival": 1,
+            "se": 0,
+            "lower": 1,
+            "upper": 1
+          },
+          {
+            "time": 1,
+            "atRisk": 6,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.83333333333333337,
+            "se": 0.15214515486254615,
+            "lower": 0.273122849928356,
+            "upper": 0.97471242669089353
+          },
+          {
+            "time": 3,
+            "atRisk": 5,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.66666666666666674,
+            "se": 0.19245008972987529,
+            "lower": 0.19461663680623487,
+            "upper": 0.90443416432251644
+          },
+          {
+            "time": 5,
+            "atRisk": 4,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.5,
+            "se": 0.20412414523193151,
+            "lower": 0.11094826035143802,
+            "upper": 0.80370923685005669
+          },
+          {
+            "time": 7,
+            "atRisk": 3,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.33333333333333331,
+            "se": 0.19245008972987526,
+            "lower": 0.046082243412045087,
+            "upper": 0.67556435796930081
+          },
+          {
+            "time": 9,
+            "atRisk": 2,
+            "events": 1,
+            "censored": 0,
+            "survival": 0.16666666666666666,
+            "se": 0.15214515486254615,
+            "lower": 0.0077231040401721449,
+            "upper": 0.51680178184490966
+          },
+          {
+            "time": 11,
+            "atRisk": 1,
+            "events": 1,
+            "censored": 0,
+            "survival": 0,
+            "se": 0,
+            "lower": 0,
+            "upper": 0
+          }
+        ],
+        "median": {
+          "value": 6,
+          "lower": 1,
+          "upper": "Inf"
+        }
+      }
+    ],
+    "logRank": {
+      "chiSq": 0.96020836275688171,
+      "df": 1,
+      "p": 0.32713438652911825
+    },
+    "gehanBreslowWilcoxon": {
+      "chiSq": 0.10634441087613294,
+      "df": 1,
+      "p": 0.74434498395960591
+    },
+    "logRankTrend": null,
+    "hazardRatio": {
+      "mantelHaenszel": {
+        "value": 1.9483023423258876,
+        "lower": 0.51321162713315527,
+        "upper": 7.396328953645626
+      },
+      "logRank": {
+        "value": 1.7892446919596245,
+        "lower": 0.51550037944098637,
+        "upper": 6.2102700509693465
+      }
+    },
+    "medianRatio": {
+      "value": 0.5714285714285714,
+      "lower": 0.16125519612134723,
+      "upper": 2.02493079354279
+    },
+    "observed": [4, 6],
+    "expected": [5.4396825396825399, 4.5603174603174592]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3",
+      "coin": "1.4.5"
+    }
+  },
+  "note": "Group 1: S = 1/2 exactly from t = 4 to 17 (a censoring at 6 leaves it there), so the median is the midpoint 10.5 (Machin / Prism / R). Group 2 falls to 0 (last subject has the event)."
+}

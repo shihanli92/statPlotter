@@ -1,0 +1,49 @@
+{
+  "input": {"y": [9.6503755799017483, 9.8482432874040882, 14.724545115520677,   9.11354503782972,  11.98056055185185, 15.150929553557486, 7.3730521950212298, 10.803540105531134, 12.156153670907484, 8.2400603739661467, 11.909580184342603, 13.327909442619347, 13.359520531999374, 12.305205589827494, 15.398801220516519, 13.154062233169109, 14.922503145806425,  21.76863555581777, 14.443238609444677,   14.6451329721516, 21.084644848470319, 10.349745258200546, 15.565720447449973, 19.743359191430102, 8.1605386629997767, 13.421321570902624, 15.573183608703172], "row": [                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  1,                  1,                  1,                  1,                  1,                  1,                  1,                  1,                  1,                  1,                  1,                  1], "col": [                 0,                  1,                  2,                  0,                  1,                  2,                  0,                  1,                  2,                  0,                  1,                  2,                  0,                  1,                  2,                  0,                  1,                  2,                  0,                  1,                  2,                  0,                  1,                  2,                  0,                  1,                  2], "subject": [                 0,                  0,                  0,                  1,                  1,                  1,                  2,                  2,                  2,                  3,                  3,                  3,                  4,                  4,                  4,                  5,                  5,                  5,                  6,                  6,                  6,                  7,                  7,                  7,                  8,                  8,                  8]},
+  "params": {
+    "design": "twoway",
+    "repeated": "columns",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": [
+      {
+        "family": "withinRows",
+        "kind": "allPairs",
+        "method": "tukey"
+      },
+      {
+        "family": "withinRows",
+        "kind": "allPairs",
+        "method": "sidak",
+        "singleFamily": true
+      },
+      {
+        "family": "withinRows",
+        "kind": "vsControl",
+        "method": "dunnett"
+      },
+      {
+        "family": "withinColumns",
+        "kind": "allPairs",
+        "method": "sidak"
+      },
+      {
+        "family": "withinColumns",
+        "kind": "vsControl",
+        "method": "dunnett",
+        "control": 1
+      },
+      {
+        "family": "mainRows",
+        "kind": "allPairs",
+        "method": "tukey"
+      },
+      {
+        "family": "mainColumns",
+        "kind": "allPairs",
+        "method": "sidak"
+      }
+    ]
+  },
+  "note": "Rows = groups (between), columns = repeated; 5 and 4 subjects."
+}

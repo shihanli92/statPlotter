@@ -1,0 +1,2190 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Data processing and nested data",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "IL-6 (skewed)",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 12,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Control",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        62.6,
+        48.6,
+        24.1,
+        22.9,
+        36.1,
+        182.6,
+        31.3,
+        43.5,
+        15.3,
+        38.2,
+        22.8,
+        30.1
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Infected",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        58.7,
+        96.4,
+        105,
+        65.8,
+        166.2,
+        158,
+        162.2,
+        41.9,
+        96.6,
+        78.8,
+        141.4,
+        158.3
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Serum IL-6 (pg/mL) in 12 control and 12 infected mice. Simulated lognormal data: right-skewed, with the spread growing with the mean. Transform (Y = log(Y)) makes a table of log10 values, and the t test analyzes that table; both update when a value here changes."
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "IL-6 (skewed)",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 108,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "IL-6 (pg/mL)"
+       }
+      ]
+     },
+     "scale": "log10",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "IL-6 (log axis)"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   }
+  },
+  "zid000005": {
+   "kind": "analysis",
+   "id": "zid000005",
+   "name": "log10 of IL-6",
+   "analysisId": "transform",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "y": "log10",
+    "k": 1,
+    "kByDataSet": {},
+    "x": "none",
+    "kx": 1
+   }
+  },
+  "zid000006": {
+   "kind": "graph",
+   "id": "zid000006",
+   "name": "log10 IL-6",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000005",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 108,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "log"
+       },
+       {
+        "text": "10",
+        "sub": true
+       },
+       {
+        "text": " IL-6 (pg/mL)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000008",
+     "a": "zid000002",
+     "b": "zid000003",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000007",
+      "comparison": "zid000002|zid000003",
+      "show": "number"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "log"
+     },
+     {
+      "text": "10",
+      "sub": true
+     },
+     {
+      "text": " IL-6"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000007": {
+   "kind": "analysis",
+   "id": "zid000007",
+   "name": "t test of log10 IL-6",
+   "analysisId": "ttest",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000005",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "design": "unpaired",
+    "unpaired": {
+     "assumeEqualSD": true
+    },
+    "paired": {
+     "measure": "difference"
+    },
+    "tails": "two",
+    "confidenceLevel": 0.95,
+    "reportFTestVariances": true
+   }
+  },
+  "zid000009": {
+   "kind": "table",
+   "id": "zid000009",
+   "name": "Reporter assay (raw)",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 9,
+   "rowTitles": null,
+   "x": {
+    "title": "log[Agonist], M",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       -9,
+       -8.5,
+       -8,
+       -7.5,
+       -7,
+       -6.5,
+       -6,
+       -5.5,
+       -5
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000010",
+     "title": "Cell line 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2156,
+        4192,
+        10870,
+        22944,
+        33917,
+        36927,
+        46822,
+        48330,
+        48072
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2489,
+        4494,
+        9832,
+        23003,
+        36015,
+        41297,
+        49358,
+        48984,
+        46719
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2223,
+        4949,
+        10898,
+        22797,
+        35400,
+        44764,
+        45794,
+        48129,
+        46710
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000011",
+     "title": "Cell line 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        918,
+        1251,
+        2175,
+        4354,
+        7749,
+        13660,
+        17375,
+        20008,
+        21807
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        901,
+        1164,
+        2007,
+        4246,
+        7839,
+        15011,
+        18259,
+        21316,
+        21856
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        916,
+        1146,
+        2057,
+        4130,
+        8320,
+        14130,
+        17936,
+        20643,
+        22473
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Luciferase signal (RLU), triplicates, in two cell lines with very different signal windows. Simulated data. Normalize scales each data set from its smallest (0%) to its largest (100%) mean; a normalized dose-response curve is then fit to the normalized table (a chained analysis)."
+  },
+  "zid000012": {
+   "kind": "graph",
+   "id": "zid000012",
+   "name": "Reporter assay (raw)",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000009",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "log[Agonist], M"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Luminescence (RLU)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Reporter assay (raw)"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000013": {
+   "kind": "analysis",
+   "id": "zid000013",
+   "name": "Normalized response",
+   "analysisId": "normalize",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000009",
+    "dataSets": [
+     "zid000010",
+     "zid000011"
+    ]
+   },
+   "params": {
+    "zero": "smallest",
+    "zeroValue": 0,
+    "hundred": "largest",
+    "hundredValue": 100,
+    "display": "percent"
+   }
+  },
+  "zid000014": {
+   "kind": "graph",
+   "id": "zid000014",
+   "name": "Normalized response",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000013",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000016",
+     "ref": {
+      "node": "zid000015",
+      "key": "curve:zid000010"
+     },
+     "colorOf": "zid000010"
+    },
+    {
+     "id": "zid000017",
+     "ref": {
+      "node": "zid000015",
+      "key": "curve:zid000011"
+     },
+     "colorOf": "zid000011"
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "log[Agonist], M"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Response (%)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Normalized response"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000015": {
+   "kind": "analysis",
+   "id": "zid000015",
+   "name": "Fit of normalized response",
+   "analysisId": "nonlinearFit",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000013",
+    "dataSets": [
+     "zid000010",
+     "zid000011"
+    ]
+   },
+   "params": {
+    "equation": "agonist-normalized-response-variable-slope",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+     "residuals": false,
+     "runsTest": false,
+     "replicatesTest": false,
+     "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000018": {
+   "kind": "table",
+   "id": "zid000018",
+   "name": "Calcium traces",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 16,
+   "rowTitles": null,
+   "x": {
+    "title": "Time (s)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       4,
+       8,
+       12,
+       16,
+       20,
+       24,
+       28,
+       32,
+       36,
+       40,
+       44,
+       48,
+       52,
+       56,
+       60
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000019",
+     "title": "Blank",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        105,
+        100,
+        102,
+        112,
+        119,
+        115,
+        116,
+        120,
+        126,
+        125,
+        137,
+        136,
+        139,
+        137,
+        141,
+        144
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        96,
+        101,
+        112,
+        110,
+        117,
+        113,
+        115,
+        118,
+        125,
+        132,
+        124,
+        132,
+        136,
+        140,
+        140,
+        144
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        103,
+        104,
+        109,
+        112,
+        108,
+        115,
+        118,
+        118,
+        127,
+        131,
+        132,
+        136,
+        138,
+        140,
+        147,
+        149
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000020",
+     "title": "Agonist",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        109,
+        100,
+        105,
+        279,
+        322,
+        322,
+        281,
+        246,
+        222,
+        199,
+        171,
+        162,
+        162,
+        166,
+        166,
+        151
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        105,
+        96,
+        107,
+        290,
+        336,
+        315,
+        285,
+        263,
+        222,
+        199,
+        183,
+        162,
+        163,
+        144,
+        148,
+        156
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        107,
+        112,
+        102,
+        291,
+        332,
+        316,
+        273,
+        252,
+        209,
+        195,
+        167,
+        160,
+        158,
+        148,
+        162,
+        149
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000021",
+     "title": "Agonist + antagonist",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        96,
+        108,
+        115,
+        183,
+        207,
+        207,
+        192,
+        183,
+        149,
+        152,
+        156,
+        151,
+        165,
+        144,
+        149,
+        143
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        93,
+        100,
+        105,
+        182,
+        184,
+        199,
+        201,
+        165,
+        177,
+        153,
+        144,
+        166,
+        124,
+        153,
+        134,
+        150
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        103,
+        104,
+        100,
+        180,
+        190,
+        207,
+        183,
+        166,
+        164,
+        148,
+        154,
+        154,
+        131,
+        143,
+        153,
+        170
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Fluorescence of a calcium dye (triplicate wells) after adding agonist at 8 s. Blank wells drift upwards. Simulated data. Remove baseline subtracts the blank at each time; area under the curve then measures each baseline-corrected response."
+  },
+  "zid000022": {
+   "kind": "graph",
+   "id": "zid000022",
+   "name": "Calcium traces",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time (s)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Fluorescence (AU)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Calcium traces"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     },
+     "line": {
+      "show": true
+     }
+    }
+   }
+  },
+  "zid000023": {
+   "kind": "analysis",
+   "id": "zid000023",
+   "name": "Blank subtracted",
+   "analysisId": "removeBaseline",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000018",
+    "dataSets": [
+     "zid000019",
+     "zid000020",
+     "zid000021"
+    ]
+   },
+   "params": {
+    "mode": "dataSet",
+    "baseline": "zid000019",
+    "rowsAt": "first",
+    "rowCount": 1,
+    "operation": "difference",
+    "match": "mean"
+   }
+  },
+  "zid000024": {
+   "kind": "graph",
+   "id": "zid000024",
+   "name": "Blank subtracted",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000023",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time (s)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "ΔFluorescence (AU)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Blank subtracted"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     },
+     "line": {
+      "show": true
+     }
+    }
+   }
+  },
+  "zid000025": {
+   "kind": "analysis",
+   "id": "zid000025",
+   "name": "Area under the curve",
+   "analysisId": "areaUnderCurve",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000023",
+    "dataSets": [
+     "zid000020",
+     "zid000021"
+    ]
+   },
+   "params": {
+    "baseline": 0,
+    "minPeakHeight": 10,
+    "minPeakPoints": 1,
+    "direction": "above",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000026": {
+   "kind": "table",
+   "id": "zid000026",
+   "name": "Cell diameters",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 150,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000027",
+     "title": "Resting",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        11.5,
+        10.4,
+        12.4,
+        11.8,
+        12.2,
+        11.2,
+        10.8,
+        12.8,
+        10.4,
+        11.1,
+        11,
+        14.2,
+        12.3,
+        9.6,
+        12,
+        11.9,
+        12.6,
+        10.5,
+        12.2,
+        14.3,
+        9.4,
+        11.4,
+        13.3,
+        15.9,
+        10.9,
+        12.8,
+        12.1,
+        13.3,
+        11.6,
+        9.8,
+        11.9,
+        11.1,
+        9.7,
+        9.7,
+        11.2,
+        12,
+        12.3,
+        8.7,
+        9.3,
+        12.7,
+        12,
+        14.9,
+        11.9,
+        8.1,
+        9,
+        8.7,
+        11.6,
+        13,
+        9.3,
+        10.1,
+        11.7,
+        10,
+        9.9,
+        10.5,
+        12.2,
+        8.7,
+        8.3,
+        12.4,
+        10.8,
+        12.2,
+        12.4,
+        11.7,
+        9.6,
+        9.7,
+        10.4,
+        14.5,
+        11.2,
+        12.1,
+        10.6,
+        12.2,
+        10.4,
+        11.5,
+        11.9,
+        12.2,
+        11.4,
+        10.7,
+        12.5,
+        12.9,
+        8.4,
+        11.6,
+        10.8,
+        9.3,
+        10.2,
+        10.9,
+        9.3,
+        9.8,
+        10.7,
+        11.4,
+        11.6,
+        10.7,
+        12.7,
+        9,
+        14,
+        11.5,
+        11.4,
+        9.2,
+        14.1,
+        10,
+        11.1,
+        11.5,
+        11.4,
+        12.5,
+        10.6,
+        10.1,
+        11.1,
+        11.7,
+        9.7,
+        13.1,
+        7.8,
+        13.4,
+        11.2,
+        9.8,
+        9,
+        12.5,
+        12,
+        11.6,
+        10.4,
+        10.3,
+        12.1,
+        10.1,
+        10.2,
+        12.6,
+        11.8,
+        10.8,
+        10,
+        10.5,
+        9.1,
+        11,
+        11.9,
+        12.2,
+        10.6,
+        8.4,
+        10.8,
+        11.5,
+        12.1,
+        9.5,
+        9.9,
+        11.2,
+        11.9,
+        9.9,
+        10.5,
+        11.5,
+        11.6,
+        11.9,
+        10.3,
+        11.1,
+        9.4,
+        11.1,
+        10.2,
+        13.2
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000028",
+     "title": "Activated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        13.6,
+        11.6,
+        16.4,
+        11.9,
+        17,
+        12.5,
+        14,
+        9.6,
+        12.8,
+        14.8,
+        14.5,
+        15.2,
+        14.2,
+        13.3,
+        16.2,
+        13.7,
+        10.7,
+        10.8,
+        16.3,
+        12.2,
+        12.5,
+        13,
+        14.9,
+        15.1,
+        14,
+        15.3,
+        10.5,
+        14.4,
+        13.5,
+        16.2,
+        13.4,
+        14.5,
+        11.1,
+        13.9,
+        14.1,
+        12.9,
+        15.3,
+        15.8,
+        10.8,
+        13.6,
+        14.5,
+        15.1,
+        17.1,
+        16.6,
+        9.6,
+        12.8,
+        17.2,
+        15.1,
+        11.1,
+        14.4,
+        14.3,
+        16.8,
+        12.9,
+        12.4,
+        17.6,
+        13.8,
+        12.2,
+        12.8,
+        10.6,
+        11.8,
+        17.5,
+        14,
+        15.1,
+        13.9,
+        15,
+        14.2,
+        14,
+        14.4,
+        13.3,
+        17,
+        16.5,
+        15.6,
+        14.9,
+        13.7,
+        13.2,
+        13.1,
+        14.1,
+        16,
+        14.6,
+        13.2,
+        11.3,
+        16.6,
+        12.5,
+        14.1,
+        16.4,
+        14.9,
+        11.2,
+        12.9,
+        15.2,
+        15.6,
+        13,
+        14.2,
+        13.4,
+        9.9,
+        11.3,
+        15.4,
+        14,
+        16.8,
+        15.4,
+        13.5,
+        13.6,
+        15.3,
+        12.9,
+        15.5,
+        15.6,
+        15.1,
+        18.5,
+        13.3,
+        13.5,
+        12.9,
+        14.3,
+        12,
+        13.4,
+        10.5,
+        15.1,
+        12.9,
+        14.2,
+        17.2,
+        14.4,
+        11.6,
+        15.3,
+        12.6,
+        11.6,
+        17,
+        9.8,
+        17.4,
+        14.7,
+        12.7,
+        9.8,
+        14.8,
+        17.9,
+        12.4,
+        13.2,
+        14.8,
+        16.1,
+        14.3,
+        10.1,
+        15.2,
+        14.6,
+        12.7,
+        12.9,
+        12.8,
+        14.3,
+        13.4,
+        13.3,
+        17.6,
+        13.3,
+        14.5,
+        13.9,
+        14
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Diameters (µm) of 150 resting and 150 activated cells. Simulated data. Frequency distribution bins them (automatic bin width) into an XY table of bin centres, graphed as a histogram: bars a bin wide at the bin centres, the two groups overlapping in translucent colours."
+  },
+  "zid000029": {
+   "kind": "analysis",
+   "id": "zid000029",
+   "name": "Frequency distribution",
+   "analysisId": "frequencyDistribution",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000026",
+    "dataSets": [
+     "zid000027",
+     "zid000028"
+    ]
+   },
+   "params": {
+    "tabulate": "counts",
+    "cumulative": false,
+    "autoBinWidth": true,
+    "binWidth": 1,
+    "autoFirstCenter": true,
+    "firstCenter": 0,
+    "useUpperLimit": false,
+    "upperLimit": 100,
+    "replicates": "each"
+   }
+  },
+  "zid000030": {
+   "kind": "graph",
+   "id": "zid000030",
+   "name": "Frequency distribution",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000029",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Diameter (µm)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Number of cells"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Frequency distribution"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": false,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "none"
+     },
+     "bar": {
+      "show": true,
+      "fill": {
+       "type": "solid",
+       "color": {
+        "series": true
+       },
+       "opacity": 0.45
+      }
+     },
+     "line": {
+      "show": false
+     }
+    }
+   }
+  },
+  "zid000031": {
+   "kind": "table",
+   "id": "zid000031",
+   "name": "Assay with an outlier",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000032",
+     "title": "Batch 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        56.7,
+        49.9,
+        54.1,
+        54.1,
+        50.4,
+        48.1,
+        51,
+        57.6
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000033",
+     "title": "Batch 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        56.4,
+        52.1,
+        51.3,
+        91.4,
+        55.9,
+        55,
+        58.6,
+        60.6
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000034",
+     "title": "Batch 3",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        56.3,
+        59.4,
+        56,
+        58.9,
+        62,
+        59.2,
+        60,
+        60.9
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Potency (%) of three production batches, 8 assays each. One assay of batch 2 (row 4) was planted as an outlier. Identify outliers (ROUT, Q = 1%) finds it and makes a cleaned table with it left out; the one-way ANOVA analyzes the cleaned table."
+  },
+  "zid000035": {
+   "kind": "graph",
+   "id": "zid000035",
+   "name": "Assay with an outlier",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000031",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Potency (%)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Assay with an outlier"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   },
+   "pointOverrides": {
+    "zid000033": {
+     "r3s0": {
+      "color": {
+       "rgb": "#d55e00"
+      },
+      "label": "Outlier"
+     }
+    }
+   }
+  },
+  "zid000036": {
+   "kind": "analysis",
+   "id": "zid000036",
+   "name": "Outliers (ROUT)",
+   "analysisId": "identifyOutliers",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000031",
+    "dataSets": [
+     "zid000032",
+     "zid000033",
+     "zid000034"
+    ]
+   },
+   "params": {
+    "method": "rout",
+    "q": 1,
+    "alpha": 0.05
+   }
+  },
+  "zid000037": {
+   "kind": "graph",
+   "id": "zid000037",
+   "name": "Assay, outlier removed",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000036",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Potency (%)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000039",
+     "a": "zid000032",
+     "b": "zid000034",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000038",
+      "comparison": "zid000032|zid000034",
+      "show": "stars"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Outlier removed"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   }
+  },
+  "zid000038": {
+   "kind": "analysis",
+   "id": "zid000038",
+   "name": "One-way ANOVA of cleaned data",
+   "analysisId": "oneWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000036",
+    "dataSets": [
+     "zid000032",
+     "zid000033",
+     "zid000034"
+    ]
+   },
+   "params": {
+    "matched": false,
+    "sphericity": "gg",
+    "gaussian": true,
+    "equalSD": "yes",
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "welchMethod": "dunnett-t3",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000040": {
+   "kind": "table",
+   "id": "zid000040",
+   "name": "Dendritic spines",
+   "tableKind": "nested",
+   "yFormat": {
+    "type": "replicates",
+    "count": 4
+   },
+   "rowCount": 6,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000041",
+     "title": "Control",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        6.9,
+        8.1,
+        7.7,
+        10.9,
+        7.7,
+        9.4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        7.6,
+        9,
+        9.7,
+        12.3,
+        9,
+        11.3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        10.5,
+        8.6,
+        11.4,
+        7.8,
+        10.9,
+        10
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        6.9,
+        10,
+        10.7,
+        9.8,
+        8.1,
+        6.9
+       ]
+      }
+     ],
+     "subcolumnTitles": [
+      "Mouse 1",
+      "Mouse 2",
+      "Mouse 3",
+      "Mouse 4"
+     ]
+    },
+    {
+     "id": "zid000042",
+     "title": "Drug A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        14.3,
+        12.9,
+        10,
+        11.2,
+        13.4,
+        15.9
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        16.1,
+        14,
+        15.6,
+        14.4,
+        14.1,
+        15.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        19.2,
+        18.9,
+        18.2,
+        18.2,
+        16.9,
+        21.5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        11.6,
+        17.8,
+        17.9,
+        19.6,
+        15.9,
+        15.4
+       ]
+      }
+     ],
+     "subcolumnTitles": [
+      "Mouse 5",
+      "Mouse 6",
+      "Mouse 7",
+      "Mouse 8"
+     ]
+    },
+    {
+     "id": "zid000043",
+     "title": "Drug B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        11.2,
+        13.8,
+        12.2,
+        8.9,
+        10.2,
+        12.3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        9.8,
+        13.1,
+        13.7,
+        10.9,
+        13.2,
+        12.9
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        7.9,
+        8.8,
+        9.5,
+        9.5,
+        9.1,
+        7.4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        14.8,
+        14.7,
+        17.9,
+        18.7,
+        18,
+        15.9
+       ]
+      }
+     ],
+     "subcolumnTitles": [
+      "Mouse 9",
+      "Mouse 10",
+      "Mouse 11",
+      "Mouse 12"
+     ]
+    }
+   ],
+   "notes": "Spine density (per 10 µm) of 6 neurons (rows) in each of 4 mice (subcolumns) per group. Simulated with mice differing more than neurons within a mouse, so the mouse is the experimental unit. Nested one-way ANOVA (mixed model) and a nested t test of Control vs. Drug A."
+  },
+  "zid000044": {
+   "kind": "graph",
+   "id": "zid000044",
+   "name": "Dendritic spines",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000040",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 276,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Spines per 10 µm"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000047",
+     "a": "zid000041",
+     "b": "zid000042",
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000045",
+      "comparison": "zid000041|zid000042",
+      "show": "stars"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Dendritic spines"
+     }
+    ]
+   },
+   "style": {
+    "nested": {
+     "layout": "subjects",
+     "mark": "shade",
+     "subjectMeans": true
+    },
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "none"
+     }
+    }
+   }
+  },
+  "zid000045": {
+   "kind": "analysis",
+   "id": "zid000045",
+   "name": "Nested one-way ANOVA",
+   "analysisId": "nestedOneWay",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000040",
+    "dataSets": [
+     "zid000041",
+     "zid000042",
+     "zid000043"
+    ]
+   },
+   "params": {
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000046": {
+   "kind": "analysis",
+   "id": "zid000046",
+   "name": "Nested t test (Control vs. Drug A)",
+   "analysisId": "nestedT",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000040",
+    "dataSets": [
+     "zid000041",
+     "zid000042"
+    ]
+   },
+   "params": {
+    "tails": "two",
+    "confidenceLevel": 0.95
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000006",
+  "zid000007",
+  "zid000009",
+  "zid000012",
+  "zid000013",
+  "zid000014",
+  "zid000015",
+  "zid000018",
+  "zid000022",
+  "zid000023",
+  "zid000024",
+  "zid000025",
+  "zid000026",
+  "zid000029",
+  "zid000030",
+  "zid000031",
+  "zid000035",
+  "zid000036",
+  "zid000037",
+  "zid000038",
+  "zid000040",
+  "zid000044",
+  "zid000045",
+  "zid000046"
+ ]
+}

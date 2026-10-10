@@ -1,0 +1,37 @@
+{
+  "name": "platykurtic_n8",
+  "input": {"x":[0,0,0,0,1,1,1,1]},
+  "params": {},
+  "expected": {
+    "dagostino": {
+      "stat": 8.6552346779430032,
+      "p": 0.013198958698596152,
+      "skewness": 0,
+      "kurtosis": -2,
+      "zSkewness": 0,
+      "zKurtosis": -2.9419780213222197
+    },
+    "shapiroWilk": {
+      "stat": 0.66465590385737006,
+      "p": 0.00089170190471264069
+    },
+    "andersonDarling": {
+      "stat": 1.4473823578644724,
+      "p": 0.00097757020352872066,
+      "a2": 1.2821103239214704
+    },
+    "ks": {
+      "stat": 0.32521259693835092,
+      "p": 0.012727583621597418,
+      "pAbove010": false
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "nortest": "1.0.4",
+      "moments": "0.14.1"
+    }
+  },
+  "note": "b2 = 1: the Anscombe-Glynn cube-root base is negative; moments::anscombe.test gives NaN, we use the real cube root."
+}

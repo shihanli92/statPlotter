@@ -1,0 +1,139 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Before-after",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Paired",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 5,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Before",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5,
+        6,
+        7,
+        8,
+        6
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "After",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        7,
+        6.5,
+        9,
+        9,
+        8
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Before-after, first data set styled",
+   "graphType": "column.beforeAfter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "zid000002": {
+     "color": {
+      "rgb": "#aa3377"
+     },
+     "error": {
+      "line": {
+       "color": {
+        "rgb": "#228833"
+       },
+       "width": 2,
+       "dash": "dash"
+      }
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 108,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Paired"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "size": 7
+     }
+    }
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004"
+ ]
+}

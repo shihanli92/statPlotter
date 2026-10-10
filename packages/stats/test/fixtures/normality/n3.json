@@ -1,0 +1,37 @@
+{
+  "name": "n3",
+  "input": {"x":[2.1000000000000001,3.7000000000000002,3]},
+  "params": {},
+  "expected": {
+    "dagostino": {
+      "stat": "NaN",
+      "p": "NaN",
+      "skewness": "NaN",
+      "kurtosis": "NaN",
+      "zSkewness": "NaN",
+      "zKurtosis": "NaN"
+    },
+    "shapiroWilk": {
+      "stat": 0.99481865284974091,
+      "p": 0.86240632318290256
+    },
+    "andersonDarling": {
+      "stat": "NaN",
+      "p": "NaN",
+      "a2": "NaN"
+    },
+    "ks": {
+      "stat": "NaN",
+      "p": "NaN",
+      "pAbove010": false
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "nortest": "1.0.4",
+      "moments": "0.14.1"
+    }
+  },
+  "note": "Only Shapiro-Wilk is defined (exact P for n = 3)."
+}

@@ -1,0 +1,64 @@
+{
+  "name": "infinite",
+  "input": {"time":[1,2,3,4,5,6,7,8,9,10],"event":[1,1,1,0,1,1,1,0,1,1],"X":[[1,0.29999999999999999],[1,-0.20000000000000001],[1,0.5],[1,0.10000000000000001],[0,-0.40000000000000002],[0,0.80000000000000004],[0,-0.10000000000000001],[0,0.20000000000000001],[0,0.59999999999999998],[0,-0.69999999999999996]],"names":["G","Z"]},
+  "params": {},
+  "expected": {
+    "n": 10,
+    "nEvents": 8,
+    "logLik": -8.47180078014458,
+    "nullLogLik": -12.059890135352092,
+    "lrTest": {
+      "chiSq": 7.176178710415023,
+      "df": 2,
+      "p": 0.027651111436381083
+    },
+    "scoreTest": {
+      "chiSq": 6.5549451092800313,
+      "df": 2,
+      "p": 0.037723480455841736
+    },
+    "status": "infinite",
+    "coefficients": [
+      {
+        "name": "G",
+        "estimate": "NaN",
+        "se": "NaN",
+        "lower": "NaN",
+        "upper": "NaN",
+        "stat": "NaN",
+        "p": "NaN",
+        "hazardRatio": "NaN",
+        "hrLower": "NaN",
+        "hrUpper": "NaN"
+      },
+      {
+        "name": "Z",
+        "estimate": "NaN",
+        "se": "NaN",
+        "lower": "NaN",
+        "upper": "NaN",
+        "stat": "NaN",
+        "p": "NaN",
+        "hazardRatio": "NaN",
+        "hrLower": "NaN",
+        "hrUpper": "NaN"
+      }
+    ],
+    "waldTest": {
+      "chiSq": "NaN",
+      "df": "NaN",
+      "p": "NaN"
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "survival": "3.8.3"
+    }
+  },
+  "tol": {
+    "rtol": 1e-08,
+    "atol": 1.0000000000000001e-05
+  },
+  "note": "Monotone likelihood: every G = 1 subject fails before any G = 0 subject is at risk alone, so beta_G -> +Inf. Only the score test and nulls are exact."
+}

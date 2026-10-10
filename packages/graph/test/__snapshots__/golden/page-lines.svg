@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300pt" height="200pt" viewBox="0 0 300 200">
+<g data-id="page">
+<g data-id="item/a">
+<g data-id="item/a/line">
+<line x1="30" y1="20" x2="260" y2="30" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="item/b">
+<g data-id="item/b/line">
+<line x1="30" y1="50" x2="256.753" y2="59.859" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="item/b/head/0">
+<polygon points="260,60 253.393,62.315 253.619,57.12" fill="#000000" stroke="none"/>
+</g>
+</g>
+<g data-id="item/c">
+<g data-id="item/c/line">
+<line x1="33.871" y1="80.168" x2="259.251" y2="89.967" stroke="#000000" stroke-width="1.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/c/head/0">
+<path d="M248.184,94.141L260,90L248.588,84.849" fill="none" stroke="#000000" stroke-width="1.5" stroke-linejoin="miter"/>
+</g>
+<g data-id="item/c/head/1">
+<polygon points="30,80 37.877,77.24 37.608,83.434" fill="#000000" stroke="none"/>
+</g>
+</g>
+<g data-id="item/d">
+<g data-id="item/d/line">
+<line x1="30.5" y1="110.022" x2="259.5" y2="119.978" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="item/d/head/0">
+<line x1="259.887" y1="122.598" x2="260.113" y2="117.402" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="item/d/head/1">
+<line x1="30.113" y1="107.402" x2="29.887" y2="112.598" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="item/e">
+<g data-id="item/e/line">
+<line x1="31.574" y1="140.068" x2="254.755" y2="149.772" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/e/head/0">
+<polygon points="260,150 249.327,153.74 249.692,145.348" fill="#000000" stroke="none"/>
+</g>
+<g data-id="item/e/head/1">
+<ellipse cx="30" cy="140" rx="1.575" ry="1.575" fill="#000000" stroke="none"/>
+</g>
+</g>
+<g data-id="item/f">
+<g data-id="item/f/line">
+<line x1="30" y1="170" x2="256.753" y2="179.859" stroke="#000000" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+<g data-id="item/f/head/0">
+<polygon points="260,180 253.393,182.315 253.619,177.12" fill="#000000" stroke="none"/>
+</g>
+</g>
+</g>
+</svg>

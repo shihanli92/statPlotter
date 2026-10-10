@@ -1,0 +1,4850 @@
+:root {
+  --bg: #f4f5f7;
+  --panel: #ffffff;
+  --panel-2: #fafbfc;
+  --border: #dfe2e6;
+  --border-strong: #c5cad1;
+  --border-hover: #a9b0b9;
+  --text: #1d2126;
+  --text-2: #3a4048;
+  --label: #454c55;
+  --muted: #5c6470;
+  --accent: #2864cc;
+  --accent-strong: #2864cc;
+  --accent-hover: #2254b0;
+  --on-accent: #ffffff;
+  --accent-soft: #e6eefc;
+  --sel: #dbe7fd;
+  --sel-strong: #dfe6f3;
+  --hover: #eef0f3;
+  --danger: #c4312b;
+  --danger-strong: #c4312b;
+  --danger-border: #e3b3b0;
+  --excluded: #2a5bd7;
+  --input-bg: #ffffff;
+  /* Tables */
+  --grid-head: #eef0f3;
+  --grid-rownum: #f6f7f9;
+  --cell: #ffffff;
+  --cell-title: #fbfbfc;
+  --cell-beyond: #fcfcfd;
+  --match: #fff4c2;
+  --match-sel: #f3e7a6;
+  --match-current: #ffd84d;
+  --calc-bg: #f5f7fb;
+  --calc-text: #33415c;
+  --badge-bg: #dde3ee;
+  --badge-text: #45526b;
+  --badge-calc-bg: #e2ecff;
+  --badge-calc-text: #2a4fa0;
+  --badge-error-bg: #fde2e0;
+  --table-head: #f1f3f5;
+  --row-line: #eef0f2;
+  /* Messages */
+  --error-text: #b42318;
+  --error-strong: #8c2420;
+  --error-bg: #fdeceb;
+  --error-border: #f3c2bf;
+  --warn-text: #8a5200;
+  --warn-strong: #6b5100;
+  --warn-bg: #fff7e0;
+  --warn-bg-border: #efd88a;
+  --warn-border: #e0a100;
+  --info-bg: #eef4fb;
+  --info-border: #c9dcf0;
+  --info-text: #1f4a73;
+  --diag-border: #c9ced6;
+  --list-on: #1b4fa8;
+  --user-mark: #b07c00;
+  --toast-bg: #2b2f36;
+  --tint-teal: #e7f4f2;
+  --tint-orange: #fdece6;
+  --tint-purple: #efe9f8;
+  --tint-pink: #fbe8f1;
+  --tint-grey: #eef0f3;
+  /* Graphs and pages stay on white paper in both themes (decision 617); so do the plot-style
+     icons the graph engine draws (on their light tints). */
+  --canvas: #e9ebee;
+  --paper: #ffffff;
+  --paper-text: #1d2126;
+  --paper-shadow-1: rgba(20, 30, 40, 0.15);
+  --paper-shadow-2: rgba(20, 30, 40, 0.08);
+  --page-shadow: rgb(0 0 0 / 0.25);
+  --handle: #2f7cf6;
+  /* Shadows and veils */
+  --shadow: rgb(0 0 0 / 0.2);
+  --shadow-soft: rgb(0 0 0 / 0.14);
+  --backdrop: rgba(20, 24, 30, 0.35);
+  --focus: #2864cc;
+  --radius: 6px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+
+/* Dark (roadmap 41): the app's chrome only — every colour above that isn't paper. Chosen in
+   Preferences or following the system (`data-theme`, set by theme/colorScheme.ts). Text and
+   controls meet WCAG AA against these backgrounds (ui/test/darkMode.test.ts). */
+:root[data-theme="dark"] {
+  --bg: #16181c;
+  --panel: #1f2227;
+  --panel-2: #252930;
+  --border: #353a42;
+  --border-strong: #4c535d;
+  --border-hover: #66707c;
+  --text: #e6e8eb;
+  --text-2: #cdd2d9;
+  --label: #bcc3cc;
+  --muted: #a3abb6;
+  --accent: #7aa8ff;
+  --accent-strong: #2864cc;
+  --accent-hover: #285cb8;
+  --on-accent: #ffffff;
+  --accent-soft: #1d2b44;
+  --sel: #263b5e;
+  --sel-strong: #2c4166;
+  --hover: #2b2f36;
+  --danger: #ff8a80;
+  --danger-strong: #c4312b;
+  --danger-border: #7a3530;
+  --excluded: #8fb0ff;
+  --input-bg: #17191d;
+  --grid-head: #262a30;
+  --grid-rownum: #21242a;
+  --cell: #1a1c20;
+  --cell-title: #1e2125;
+  --cell-beyond: #1c1e22;
+  --match: #4f4105;
+  --match-sel: #5f4f12;
+  --match-current: #7a6200;
+  --calc-bg: #1d2431;
+  --calc-text: #b8c6e0;
+  --badge-bg: #2e3540;
+  --badge-text: #c3cbd6;
+  --badge-calc-bg: #1f2d4a;
+  --badge-calc-text: #a3c0ff;
+  --badge-error-bg: #4a201c;
+  --table-head: #262a30;
+  --row-line: #2c3036;
+  --error-text: #ff8f85;
+  --error-strong: #ffb4ab;
+  --error-bg: #3a1d1b;
+  --error-border: #6b302b;
+  --warn-text: #f0b45c;
+  --warn-strong: #f2cd6b;
+  --warn-bg: #352b10;
+  --warn-bg-border: #6b5a20;
+  --warn-border: #e0a100;
+  --info-bg: #172231;
+  --info-border: #2d4a6b;
+  --info-text: #a9cdf0;
+  --diag-border: #4c535d;
+  --list-on: #a3c0ff;
+  --user-mark: #f2b632;
+  --toast-bg: #3a3f48;
+  --canvas: #2b2e34;
+  --paper-shadow-1: rgba(0, 0, 0, 0.5);
+  --paper-shadow-2: rgba(0, 0, 0, 0.35);
+  --page-shadow: rgb(0 0 0 / 0.6);
+  --handle: #4d8dff;
+  --shadow: rgb(0 0 0 / 0.55);
+  --shadow-soft: rgb(0 0 0 / 0.45);
+  --backdrop: rgba(0, 0, 0, 0.55);
+  --focus: #7aa8ff;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font: 13px / 1.4 var(--font);
+  color: var(--text);
+  background: var(--bg);
+}
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+button:hover:not(:disabled) {
+  background: var(--panel-2);
+  border-color: var(--border-hover);
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button.primary {
+  background: var(--accent-strong);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+button.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+button.danger {
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+button.link {
+  border: none;
+  background: none;
+  color: var(--accent);
+  padding: 0;
+}
+
+input,
+select {
+  font: inherit;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 3px 6px;
+  background: var(--input-bg);
+}
+textarea {
+  color: var(--text);
+  background: var(--input-bg);
+}
+input:focus,
+select:focus,
+button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -1px;
+}
+/* Visible focus everywhere (roadmap 41): whatever the keyboard reaches. Zero specificity, so a
+   component's own focus style wins. */
+:where(a[href], textarea, summary, [tabindex], [contenteditable="true"], [role]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+/* Audit 3 (A13): focus moved by a shortcut, where the browser wouldn't show it (`focusVisibly`). */
+.focus-ring:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- Shell ---------- */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.workspace {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+}
+
+.empty {
+  margin: auto;
+  max-width: 380px;
+  text-align: center;
+  color: var(--muted);
+}
+.empty h2 {
+  color: var(--text);
+  font-size: 18px;
+}
+/* Roadmap 43: the start screen's actions, one under the other. */
+.empty-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 260px;
+  margin: 16px auto 0;
+}
+.empty-drop {
+  font-size: 12px;
+}
+/* Roadmap 48: the privacy note, one quiet line that opens to the full wording. */
+.empty-privacy {
+  margin-top: 20px;
+  font-size: 12px;
+}
+.empty-privacy summary {
+  cursor: pointer;
+  width: fit-content;
+  margin: 0 auto;
+}
+.empty-privacy p {
+  text-align: left;
+  line-height: 1.45;
+}
+
+.view-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+  flex-wrap: wrap;
+}
+.view-toolbar .sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 4px;
+}
+.view-toolbar .hint {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+/* The graph and layout views' toolbars keep one height whatever is selected (decision 60, roadmap
+   43): one row, the hint the only part that shrinks, so the graph or page never moves between the
+   two clicks of a double-click or under a pointer about to drag. */
+.view-toolbar.fixed {
+  flex-wrap: nowrap;
+  height: 41px;
+}
+.view-toolbar.fixed > * {
+  flex-shrink: 0;
+}
+/* The graph view's hint follows the selection, next to Add ▾ (two lines at most, the whole text
+   in its tooltip); the graph's size stays at the right. */
+.view-toolbar .hint.selection-hint {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 4px;
+}
+.selection-text-anchor {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.selection-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  line-height: 14px;
+  max-height: 28px;
+  overflow-wrap: anywhere;
+}
+.size-readout {
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+/* The layout view's hints: two lines at most, the whole text in their tooltip. */
+.view-toolbar.fixed .hint-anchor {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: 4px;
+}
+.view-toolbar.fixed .hint-anchor > .hint {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  line-height: 14px;
+  max-height: 28px;
+}
+/* Roadmap 45: the format bar under the graph and layout views' toolbars, one row of a fixed
+   height whatever is selected (greyed groups stay in place), so the graph or page never moves. */
+.format-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 2px;
+  height: 33px;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 12px;
+  white-space: nowrap;
+  /* Narrow views (a page with its inspector at 1024 px): the strip scrolls sideways rather than
+     wrap or grow; its scroll bar hidden (the height stays), the focused control scrolled in. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.format-bar::-webkit-scrollbar {
+  display: none;
+}
+/* Run mode: the docked editor toolbar's menus hang below the strip. */
+.format-bar.editing {
+  overflow: visible;
+}
+.format-bar > *,
+.format-bar .fb-group > * {
+  flex-shrink: 0;
+}
+.format-bar .fb-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.format-bar button {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: var(--text);
+  font: 12px var(--font);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.format-bar button:hover:not(:disabled) {
+  background: var(--accent-soft);
+}
+.format-bar button:disabled {
+  color: var(--muted);
+  opacity: 0.45;
+}
+.format-bar button[aria-pressed="true"],
+.format-bar button[aria-expanded="true"] {
+  background: var(--sel);
+}
+.format-bar button[aria-pressed="mixed"] {
+  background: linear-gradient(135deg, var(--sel) 50%, transparent 50%);
+}
+.format-bar .fb-sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 2px;
+  background: var(--border);
+}
+.format-bar .fb-name {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-width: 64px;
+  max-width: 190px;
+  overflow: hidden;
+}
+.format-bar .fb-name-button {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  justify-content: flex-start;
+  border-color: var(--border);
+}
+.format-bar .fb-name-button::after,
+.format-bar .fb-menu-button::after {
+  content: "▾";
+  margin-left: 3px;
+  color: var(--muted);
+}
+.format-bar .fb-name-button::after {
+  flex-shrink: 0;
+}
+.format-bar .fb-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+.format-bar.editing .fb-name-text {
+  max-width: 180px;
+  margin-right: 8px;
+  color: var(--muted);
+}
+.format-bar .fb-menu-button {
+  min-width: 58px;
+  justify-content: space-between;
+  border-color: var(--border);
+}
+.format-bar .fb-menu-button.narrow {
+  min-width: 52px;
+}
+.format-bar .fb-menu-button.tiny {
+  min-width: 34px;
+}
+.format-bar .fb-size {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--input-bg);
+}
+.format-bar .fb-size.disabled {
+  opacity: 0.45;
+}
+.format-bar .fb-size input {
+  width: 34px;
+  height: 22px;
+  padding: 0 3px;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: 12px var(--font);
+  text-align: right;
+}
+.format-bar .fb-size button {
+  min-width: 14px;
+  height: 22px;
+  padding: 0 2px;
+  border: none;
+  color: var(--muted);
+}
+.format-bar .fb-color {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+.format-bar .fb-color.fill,
+.format-bar .fb-color.line {
+  flex-direction: row;
+  gap: 3px;
+}
+.bar-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 4px;
+  margin-top: 1px;
+  border: 1px solid rgb(0 0 0 / 0.25);
+}
+.fb-color.fill .bar-swatch,
+.fb-color.line .bar-swatch {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  border-radius: 2px;
+}
+/* Mixed: stripes; none: a red slash. */
+.bar-swatch.mixed {
+  background: repeating-linear-gradient(45deg, var(--muted) 0 2px, transparent 2px 4px);
+}
+.bar-swatch.none {
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    var(--danger) 50%,
+    transparent calc(50% + 1px)
+  );
+}
+/* Roadmap 47: a group of the bar (folded into More ▾ when the bar is too narrow), and the More
+   popover holding the folded ones: the same controls in a strip below the button. */
+.format-bar .fb-unit {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.format-bar .fb-unit > * {
+  flex-shrink: 0;
+}
+.format-bar.fb-overflow {
+  position: fixed;
+  z-index: 69;
+  height: auto;
+  min-height: 33px;
+  max-width: calc(100vw - 8px);
+  flex-wrap: wrap;
+  row-gap: 4px;
+  padding: 3px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px var(--shadow-soft);
+  overflow: visible;
+}
+.format-bar.fb-overflow > .fb-unit:first-child > .fb-sep:first-child {
+  display: none;
+}
+.format-bar .fb-dock {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.format-bar .fb-dock[hidden] {
+  display: none;
+}
+/* The in-place editor's toolbar docked in the bar (run mode): one row, in the bar's place. */
+.rt-toolbar.docked {
+  position: relative;
+  z-index: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+.rt-toolbar.docked .rt-row + .rt-row {
+  border-left: 1px solid var(--border);
+  padding-left: 4px;
+  margin-left: 2px;
+}
+.rt-toolbar.docked .rt-popup {
+  z-index: 60;
+}
+/* The format painter armed: the canvas and pages show a copy cursor. */
+body[data-painting] .canvas,
+body[data-painting] .canvas svg,
+body[data-painting] .canvas svg * {
+  cursor: copy;
+}
+.bar-menu {
+  position: fixed;
+  z-index: 70;
+  padding: 4px;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px var(--shadow-soft);
+  font-size: 13px;
+}
+.bar-menu.list {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  max-height: 320px;
+}
+.bar-menu.swatch-grid {
+  display: grid;
+  gap: 3px;
+  width: max-content;
+}
+.bar-menu.swatch-grid button:not(.swatch) {
+  text-align: center;
+}
+.bar-menu button {
+  padding: 3px 8px;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  color: var(--text);
+  font: 13px var(--font);
+  text-align: left;
+  white-space: nowrap;
+}
+.bar-menu button[aria-checked="true"] {
+  background: var(--sel);
+}
+.bar-menu button:hover,
+.bar-menu button:focus-visible {
+  background: var(--accent-soft);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.bar-menu button.swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgb(0 0 0 / 0.25);
+}
+.bar-menu button.swatch[aria-checked="true"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.bar-menu-sep {
+  margin: 3px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+.bar-width {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bar-width > span {
+  display: inline-block;
+  width: 28px;
+  background: currentColor;
+}
+.bar-glyph {
+  display: inline-block;
+  width: 14px;
+  text-align: center;
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- Navigator ---------- */
+
+.navigator {
+  width: 220px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  background: var(--panel-2);
+  border-right: 1px solid var(--border);
+  padding: 8px 0;
+}
+.nav-section h3 {
+  margin: 10px 14px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 14px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.nav-item:hover {
+  background: var(--hover);
+}
+.nav-item.on {
+  background: var(--accent-soft);
+  border-left-color: var(--accent);
+}
+/* Roadmap 47: several sheets selected. Selected rows are tinted; the open sheet keeps its bar
+   (tinted too when selected); focus keeps its ring. */
+.nav-item {
+  user-select: none;
+  -webkit-user-select: none;
+}
+.nav-item input {
+  user-select: text;
+  -webkit-user-select: text;
+}
+.nav-item.selected {
+  background: var(--accent-soft);
+}
+.navigator.multi .nav-item.on:not(.selected) {
+  background: none;
+}
+.nav-selection {
+  margin: 2px 14px 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+/* Empty, it takes no room but stays a live region. */
+.nav-selection:empty {
+  margin: 0;
+}
+.nav-item .name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav-item input {
+  flex: 1;
+  min-width: 0;
+}
+.nav-delete {
+  cursor: pointer;
+  visibility: hidden;
+  border: none;
+  background: none;
+  color: var(--muted);
+  padding: 0 4px;
+  font-size: 15px;
+  line-height: 1;
+}
+.nav-item:hover .nav-delete {
+  visibility: visible;
+}
+.icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.icon-table {
+  background:
+    linear-gradient(#8a94a3 0 0) 0 33% / 100% 1px no-repeat,
+    linear-gradient(#8a94a3 0 0) 0 66% / 100% 1px no-repeat,
+    linear-gradient(90deg, #8a94a3 0 0) 50% 0 / 1px 100% no-repeat;
+  border: 1px solid #8a94a3;
+}
+.icon-analysis {
+  background: #7a5bd6;
+  border-radius: 50%;
+}
+/* An analysis that produces a data table (Transform, Normalize…): a table drawn in its colour. */
+.icon-analysis.icon-result-table {
+  border-radius: 2px;
+  background:
+    linear-gradient(#fff 0 0) 0 33% / 100% 1px no-repeat,
+    linear-gradient(#fff 0 0) 0 66% / 100% 1px no-repeat,
+    linear-gradient(90deg, #fff 0 0) 50% 0 / 1px 100% no-repeat,
+    #7a5bd6;
+}
+.icon-graph {
+  background:
+    linear-gradient(#0072b2 0 0) 15% 100% / 22% 60% no-repeat,
+    linear-gradient(#d55e00 0 0) 50% 100% / 22% 100% no-repeat,
+    linear-gradient(#009e73 0 0) 85% 100% / 22% 40% no-repeat;
+}
+.badge {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.badge.error {
+  background: var(--danger-strong);
+  color: var(--on-accent);
+}
+.badge.pending {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  animation: pulse 1s infinite alternate;
+}
+@keyframes pulse {
+  to {
+    opacity: 0.3;
+  }
+}
+/* Audit 3 (A15): still, at its full colour, with reduced motion asked for. */
+@media (prefers-reduced-motion: reduce) {
+  .badge.pending {
+    animation: none;
+  }
+}
+
+/* ---------- Data grid ---------- */
+
+.table-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.table-notes {
+  flex: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.table-notes summary {
+  cursor: pointer;
+  color: var(--muted);
+  /* A whole number of pixels (the font's normal line height is 13.8 px in Firefox), so the views
+     below it start on a whole pixel: pointers report whole pixels in WebKit and Firefox, and a
+     page or graph a fraction of a pixel off would take every press 0.2 px off (roadmap 43). */
+  line-height: 16px;
+}
+.table-notes pre {
+  margin: 4px 0 2px;
+  max-height: 40vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--font);
+}
+/* Sheet notes, editable (roadmap 31). */
+.sheet-notes summary {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sheet-notes textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 4px 0 2px;
+  max-height: 40vh;
+  resize: vertical;
+  font: 12px var(--font);
+}
+.grid-scroller {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+.grid {
+  outline: none;
+  display: inline-block;
+  min-width: 100%;
+}
+.grid table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+.grid th,
+.grid td {
+  height: 24px;
+  padding: 0 6px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--grid-head);
+  font-weight: 600;
+  text-align: center;
+}
+.grid thead tr:nth-child(2) th {
+  top: 24px;
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 12px;
+}
+/* Nested tables: subjects' names in the second header row (untitled ones show a default). */
+.grid thead th.sub-title.untitled {
+  font-style: italic;
+  font-weight: 400;
+}
+.grid thead th.sub-title .title-input {
+  /* A fixed width: an input's intrinsic width would widen the column while editing. */
+  width: 86px;
+  font-weight: 500;
+  font-size: 12px;
+}
+.grid th.corner {
+  left: 0;
+  z-index: 3;
+  width: 44px;
+}
+.grid th.col-title {
+  min-width: 96px;
+  cursor: default;
+}
+.grid .title-input {
+  width: 100%;
+  font-weight: 600;
+  text-align: center;
+}
+.grid th.row-num {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--grid-rownum);
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 11px;
+  text-align: right;
+  width: 44px;
+}
+.grid td {
+  min-width: 96px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--cell);
+}
+.grid td.num {
+  text-align: right;
+}
+.grid td.row-title {
+  min-width: 140px;
+  background: var(--cell-title);
+}
+.grid td.group-start {
+  border-left: 1px solid var(--border-strong);
+}
+.grid tr.beyond td {
+  background: var(--cell-beyond);
+}
+.grid td.sel {
+  background: var(--sel);
+}
+.grid td.focus {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.grid td.excluded {
+  color: var(--excluded);
+  font-style: italic;
+}
+.excl-mark {
+  margin-left: 1px;
+}
+/* Roadmap 39: a value substituted for one at a detection limit ("<0.5", "BLQ"). */
+.grid td.at-limit {
+  background-image: linear-gradient(135deg, var(--accent) 0 5px, transparent 5px);
+  color: var(--muted);
+}
+.limit-mark {
+  float: left;
+  margin-right: 2px;
+  color: var(--accent);
+  font-weight: 600;
+}
+.limit-number input {
+  width: 6em;
+}
+.limit-words .field-row {
+  flex-wrap: wrap;
+}
+/* Roadmap 39: dropping files on the window. */
+.drop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 3px dashed var(--accent);
+  pointer-events: none;
+}
+.drop-overlay .drop-card {
+  max-width: 28em;
+  padding: 16px 20px;
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 4px 24px var(--shadow);
+}
+.drop-overlay .drop-card ul {
+  margin: 6px 0 0;
+  padding-left: 1.2em;
+}
+.import-report li {
+  margin-bottom: 6px;
+}
+.import-report .defaulted {
+  color: var(--muted);
+}
+.grid .cell-input {
+  width: 100%;
+  height: 22px;
+  border: none;
+  padding: 0;
+  text-align: right;
+  outline: none;
+  background: var(--cell);
+}
+
+/* Table editing (roadmap 29): row selection and moves, column drags and widths, find. */
+.grid th.row-num {
+  cursor: default;
+}
+.grid th.row-num.sel {
+  background: var(--sel-strong);
+  color: var(--text);
+}
+.grid th.col-title,
+.grid th.sub-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grid .col-resize {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 7px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 1;
+}
+.grid .col-resize:hover {
+  background: var(--accent-soft);
+}
+.grid th.drop-before {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.grid th.drop-after {
+  box-shadow: inset -3px 0 0 var(--accent);
+}
+.grid th.row-num.drop-before {
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+.grid th.row-num.drop-after {
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+.grid td.match,
+.grid th.match {
+  background: var(--match);
+}
+.grid td.match.sel {
+  background: var(--match-sel);
+}
+.grid td.match-current,
+.grid th.match-current {
+  background: var(--match-current);
+}
+.find-bar {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.find-bar input[type="search"],
+.find-bar input[type="text"] {
+  width: 160px;
+}
+.find-bar button {
+  padding: 2px 8px;
+}
+.find-bar .find-count,
+.find-bar .find-status {
+  color: var(--muted);
+  font-size: 12px;
+  min-width: 60px;
+}
+.find-bar .find-close {
+  margin-left: auto;
+}
+dialog .field.sort-key {
+  display: grid;
+  grid-template-columns: 64px 1fr 190px;
+  align-items: center;
+  gap: 6px;
+}
+fieldset.field input.count {
+  width: 70px;
+  margin-left: 6px;
+}
+
+/* Multiple-variables tables: text and calculated variables, and the formula bar. */
+.grid td.text,
+.grid .cell-input.text {
+  text-align: left;
+}
+.grid td.calc {
+  background: var(--calc-bg);
+  color: var(--calc-text);
+}
+.grid td.calc.sel {
+  background: var(--sel);
+}
+.grid td.invalid {
+  color: var(--error-text);
+  font-size: 11px;
+}
+.var-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+  vertical-align: 1px;
+  color: var(--badge-text);
+  background: var(--badge-bg);
+}
+.var-badge.calc {
+  font-style: italic;
+  background: var(--badge-calc-bg);
+  color: var(--badge-calc-text);
+}
+.var-badge.error {
+  background: var(--badge-error-bg);
+  color: var(--error-text);
+}
+.formula-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+  font-size: 12px;
+  min-width: 0;
+}
+.formula-bar .formula-kind {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.formula-bar .fx {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--badge-calc-text);
+  cursor: help;
+}
+.formula-bar .formula-input {
+  width: 100%;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 12px;
+}
+.formula-bar {
+  position: relative;
+}
+.formula-bar .fx {
+  border: none;
+  background: none;
+  padding: 0 2px;
+  cursor: pointer;
+}
+.formula-bar .fx[aria-expanded="true"] {
+  background: var(--accent-soft);
+  border-radius: 3px;
+}
+/* Roadmap 38: autocomplete and the functions' reference. */
+.formula-bar .formula-field {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 120px;
+}
+.formula-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  min-width: 280px;
+  max-width: 520px;
+  margin-top: 2px;
+  padding: 2px 0;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 14px var(--shadow-soft);
+}
+.formula-suggestions [role="option"] {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.formula-suggestions [role="option"].active,
+.formula-suggestions [role="option"]:hover {
+  background: var(--sel);
+}
+.formula-suggestions .name {
+  font-family: var(--mono);
+}
+.formula-reference {
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  right: 10px;
+  z-index: 29;
+  max-height: 360px;
+  overflow: auto;
+  padding: 8px 12px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 14px var(--shadow-soft);
+  columns: 2 320px;
+}
+.formula-reference-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  column-span: all;
+}
+.formula-reference-head button {
+  margin-left: auto;
+}
+.formula-reference section {
+  break-inside: avoid;
+}
+.formula-reference h4 {
+  margin: 8px 0 2px;
+  font-size: 12px;
+}
+.formula-reference dl {
+  margin: 0;
+}
+.formula-reference dl > div {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+.formula-reference dt button {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  text-align: left;
+}
+.formula-reference dt button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+.formula-reference dd {
+  margin: 0;
+  color: var(--muted);
+}
+/* Roadmap 38: Filter rows' condition editor, Recode's levels. */
+.condition-editor .condition-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  margin: 0 0 6px;
+}
+.condition-editor .condition-or {
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.condition-editor .condition-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.condition-editor .condition-and {
+  width: 28px;
+  color: var(--muted);
+  text-align: right;
+}
+.condition-editor .condition-row input {
+  flex: 1 1 120px;
+  min-width: 80px;
+}
+.recode-table {
+  border-collapse: collapse;
+  margin: 6px 0;
+  max-height: 260px;
+  display: block;
+  overflow: auto;
+}
+.recode-table th,
+.recode-table td {
+  padding: 2px 8px 2px 0;
+  text-align: left;
+}
+.formula-bar .formula-name {
+  width: 140px;
+}
+.formula-bar .formula-status {
+  flex: 1 1 200px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.warn-text {
+  color: var(--warn-text);
+}
+
+/* ---------- Results ---------- */
+
+.results-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.results-view .sheet {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 20px;
+  transition: opacity 0.15s;
+}
+.results-view .sheet.stale {
+  opacity: 0.55;
+}
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 6px 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.tabs button {
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: none;
+  color: var(--muted);
+}
+.tabs button.on {
+  border-color: var(--border);
+  background: var(--panel);
+  color: var(--text);
+  margin-bottom: -1px;
+}
+table.results {
+  border-collapse: collapse;
+  margin: 0 0 18px;
+  min-width: 440px;
+  font-variant-numeric: tabular-nums;
+}
+table.results th {
+  text-align: left;
+  font-weight: 600;
+  padding: 6px 8px;
+  background: var(--table-head);
+  border-bottom: 1px solid var(--border);
+}
+table.results td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--row-line);
+}
+table.results td.num {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+table.results td.txt {
+  text-align: right;
+}
+table.results.kv td:first-child {
+  color: var(--text-2);
+}
+/* A result table shown as a read-only grid inside the results view. */
+.results-view .result-table {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.results-view .result-table.stale {
+  opacity: 0.55;
+}
+.results-view .result-table .table-view {
+  flex: 1;
+  min-height: 0;
+}
+.banner.info {
+  margin: 12px 20px 0;
+  padding: 8px 12px;
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius);
+  color: var(--info-text);
+}
+/* Audit 2, P4: a long analysis' progress and Cancel, or Cancelled and Run again. */
+.banner.job-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.banner.job-status progress {
+  width: 120px;
+}
+.banner.job-status .elapsed,
+.banner.job-status .remaining {
+  font-variant-numeric: tabular-nums;
+}
+.banner.error {
+  margin: 12px 20px 0;
+  padding: 8px 12px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius);
+  color: var(--error-strong);
+}
+/* Roadmap 43: a results error's hint (what the analysis needs) and Go to table. */
+.results-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 12px;
+  row-gap: 2px;
+}
+.results-error .error-hint {
+  flex-basis: 100%;
+  order: 1;
+  color: var(--text);
+  font-size: 12px;
+}
+.results-error button.link {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.diagnostics {
+  margin: 10px 20px 0;
+  padding: 0;
+  list-style: none;
+}
+.diagnostics li {
+  padding: 4px 10px;
+  border-left: 3px solid var(--diag-border);
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.diagnostics li.warning {
+  border-left-color: var(--warn-border);
+  color: var(--warn-strong);
+}
+.diagnostics li.error {
+  border-left-color: var(--danger);
+  color: var(--error-strong);
+}
+
+/* ---------- Graph ---------- */
+
+.graph-view {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+.graph-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.canvas {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  padding: 32px;
+  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+/* Centre with auto margins, not align-items: they drop to 0 when the graph is wider than the
+   canvas, so its left side stays reachable by scrolling. */
+.canvas > * {
+  margin-inline: auto;
+}
+svg.scene {
+  flex-shrink: 0;
+  box-shadow:
+    0 1px 3px var(--paper-shadow-1),
+    0 4px 16px var(--paper-shadow-2);
+  cursor: default;
+}
+/* Decision 450: a canvas drawing at most 1,000 points per column says so, with a switch. */
+.screen-sample-note {
+  margin: 0 0 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.warnings {
+  margin: 0;
+  padding: 6px 12px;
+  list-style: none;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-bg-border);
+  border-radius: var(--radius);
+  color: var(--warn-strong);
+}
+
+.inspector {
+  width: 280px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--border);
+  background: var(--panel-2);
+  padding: 12px 14px 24px;
+}
+.inspector-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.inspector-header h2 {
+  font-size: 14px;
+  margin: 0;
+}
+.inspector-section {
+  border-top: 1px solid var(--border);
+  padding: 10px 0 4px;
+}
+.inspector-section h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.inspector button {
+  display: block;
+  width: 100%;
+  margin: 0 0 6px;
+  text-align: left;
+  white-space: normal;
+}
+.inspector button.link {
+  display: inline;
+  width: auto;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+.field > label {
+  font-size: 12px;
+  color: var(--label);
+}
+.field.check {
+  flex-direction: row;
+}
+.field input[type="number"],
+.field input[type="text"],
+.field select {
+  width: 100%;
+}
+.field .help {
+  font-size: 11px;
+  color: var(--muted);
+}
+.field .help.error {
+  color: var(--danger);
+}
+fieldset.field {
+  border: none;
+  padding: 0;
+  margin: 0 0 12px;
+  gap: 5px;
+}
+fieldset.field legend {
+  font-size: 12px;
+  color: var(--label);
+  margin-bottom: 4px;
+  padding: 0;
+}
+.swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  display: inline-block;
+}
+/* Colours that differ between the items edited (a striped swatch). */
+.swatch.mixed,
+.color-chip.mixed {
+  background: conic-gradient(#0072b2 0 25%, #d55e00 0 50%, #009e73 0 75%, #cc79a7 0);
+}
+
+/* Roadmap 46 (V6): a colour field is one button (the swatch, what it holds, ▾) opening the
+   colour popover (`ColorPicker.tsx`), shared with the format bar's colour buttons. */
+.color-chip {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+/* No colour (No fill, No line): a slash. */
+.color-chip.none {
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    var(--danger) calc(50% - 1px) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+.color-chip.blank {
+  border-style: dashed;
+}
+.color-chip.series {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--text);
+}
+.color-button,
+.inspector .color-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  max-width: 100%;
+  min-width: 132px;
+  margin: 0;
+  padding: 3px 6px;
+  text-align: left;
+  white-space: nowrap;
+}
+.color-button .color-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.color-button .color-caret {
+  color: var(--muted);
+  font-size: 10px;
+}
+.color-button-field {
+  align-items: flex-start;
+}
+.color-popover {
+  position: fixed;
+  z-index: 80;
+  top: 0;
+  left: 0;
+  padding: 6px;
+  overflow-y: auto;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px var(--shadow-soft);
+  font: 13px var(--font);
+}
+.color-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-radius: 4px;
+}
+.color-choices:focus {
+  outline: none;
+}
+.color-choices:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.color-row {
+  display: grid;
+  grid-template-columns: repeat(8, 24px);
+  gap: 3px;
+}
+.color-row.wide {
+  grid-template-columns: 1fr;
+}
+.color-row-label {
+  grid-column: 1 / -1;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.color-choice {
+  cursor: default;
+  border-radius: 4px;
+}
+.color-choice.cell {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.color-choice.cell .color-chip {
+  width: 20px;
+  height: 20px;
+}
+.color-choice.wide {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+}
+.color-choice.active {
+  background: var(--accent-soft);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.color-choice[aria-selected="true"] {
+  background: var(--sel);
+}
+.color-choice.cell[aria-selected="true"] .color-chip {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.color-custom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+.color-custom-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--label);
+}
+.color-custom-picker input[type="color"] {
+  width: 28px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+.color-hex {
+  width: 84px;
+  font: 12px var(--mono, var(--font));
+}
+
+/* ---------- Dialogs ---------- */
+
+dialog.dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  box-shadow: 0 12px 40px var(--shadow);
+  color: var(--text);
+}
+dialog.dialog.wide {
+  width: 720px;
+}
+dialog.dialog::backdrop {
+  background: var(--backdrop);
+}
+dialog.dialog header {
+  padding: 14px 18px 0;
+}
+dialog.dialog h2 {
+  margin: 0;
+  font-size: 15px;
+}
+.dialog-body {
+  padding: 14px 18px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+dialog.dialog footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.recovery-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.recovery-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.recovery-list li > div {
+  flex: 1;
+  min-width: 0;
+}
+.recovery-list li span {
+  color: var(--muted);
+}
+.analyze {
+  display: flex;
+  gap: 18px;
+  min-height: 320px;
+}
+.analyze-list {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 12px;
+}
+.analyze-list h4,
+.analyze-group {
+  margin: 0 0 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.list-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  border: none;
+  background: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+}
+.list-item.on {
+  background: var(--accent-soft);
+  color: var(--list-on);
+  font-weight: 500;
+}
+/* Roadmap 43: the list's search (a combobox), its highlighted row, and nothing found. */
+.analyze-search {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+.analyze-options {
+  max-height: 52vh;
+  overflow-y: auto;
+}
+.analyze-options [role="option"] {
+  cursor: default;
+}
+.analyze-list:focus-within .list-item.active {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.analyze-empty {
+  margin: 4px 8px;
+}
+.analyze-detail {
+  flex: 1;
+  min-width: 0;
+}
+.analyze-detail > p {
+  margin-top: 0;
+}
+
+/* Reuse dialogs (roadmap 31). */
+dialog.dialog footer .spacer {
+  flex: 1;
+}
+.inline-fields,
+.field.inline-fields {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.inline-fields input[type="text"],
+.inline-fields select {
+  width: auto;
+  flex: 1 1 120px;
+  min-width: 0;
+}
+.field-label {
+  font-size: 12px;
+  color: var(--label);
+}
+.name-list {
+  margin: 2px 0 0;
+  padding-left: 18px;
+  max-height: 160px;
+  overflow-y: auto;
+  font-size: 12px;
+}
+.apply-warnings {
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-left: 3px solid var(--danger);
+  background: var(--panel-2);
+  font-size: 12px;
+}
+.apply-warnings ul {
+  margin: 4px 0 0;
+  padding-left: 16px;
+}
+.row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---------- Toast ---------- */
+
+/* Audit 2, U15: an error (kept until dismissed) above a notice (passing), each in its own live
+   region; the regions are always there, and let clicks through where they are empty. */
+.toasts {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  max-width: 420px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: var(--toast-bg);
+  color: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 24px var(--shadow);
+}
+.toast.error {
+  border-left: 4px solid var(--danger);
+}
+.toast button {
+  background: none;
+  border: none;
+  color: #c9ced6;
+  padding: 0 2px;
+}
+/* Roadmap 43: a notice's action ("Format graph · Undo"). */
+.toast .toast-action {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.toast button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+
+/* ---------- Curve-fit dialog ---------- */
+
+.equation-text {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 12px;
+  box-sizing: border-box;
+}
+.formula {
+  margin-top: 4px;
+  padding: 6px 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-2);
+  white-space: normal;
+}
+fieldset.constraints {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+fieldset.constraints legend {
+  font-size: 12px;
+  color: var(--label);
+  margin-bottom: 4px;
+  padding: 0;
+}
+fieldset.constraints table {
+  border-collapse: collapse;
+  width: 100%;
+}
+fieldset.constraints td {
+  padding: 4px 6px 4px 0;
+  vertical-align: top;
+  border-bottom: 1px solid var(--row-line);
+}
+fieldset.constraints td:first-child {
+  width: 45%;
+}
+fieldset.constraints input[type="number"] {
+  width: 90px;
+}
+.results-view .note {
+  margin: 0 0 12px;
+  color: var(--text-2);
+}
+
+/* Layout pages */
+.scene.page {
+  box-shadow: 0 1px 4px var(--page-shadow);
+}
+.layout-hit {
+  cursor: move;
+}
+.layout-handle {
+  cursor: nwse-resize;
+}
+.icon-layout {
+  border: 1px solid #8a94a3;
+  background:
+    linear-gradient(#0072b2 0 0) 20% 25% / 30% 30% no-repeat,
+    linear-gradient(#d55e00 0 0) 80% 25% / 30% 30% no-repeat,
+    linear-gradient(#009e73 0 0) 50% 80% / 60% 25% no-repeat;
+}
+
+/* Large CSV import (roadmap 34e): the columns to import, with their types */
+/* (Its missing codes and detection limits: a frame only to disable them while reading.) */
+.large-import-rules {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.large-import-columns {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin: 0 0 12px;
+  padding: 4px 8px 8px;
+}
+.large-import-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px 16px;
+  max-height: 220px;
+  overflow: auto;
+}
+.large-import-column {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+.large-import-column label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Import dialog */
+.import-preview {
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.import-preview table {
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.import-preview td {
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.import-preview td.num {
+  text-align: right;
+}
+.import-preview tr.head td {
+  font-weight: 600;
+  background: var(--grid-head);
+}
+.import-preview td.left-out {
+  background: var(--error-bg);
+  color: var(--danger);
+  text-decoration: line-through;
+}
+.import-preview td.row-title {
+  font-weight: 600;
+}
+.import-preview.result {
+  max-height: 180px;
+}
+.import-result-label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.import-account.warn {
+  color: var(--danger);
+  font-size: 12px;
+}
+.import-preview .muted {
+  padding: 4px 6px;
+}
+.error-text {
+  color: var(--danger);
+  margin-top: 8px;
+}
+
+/* Collapsible inspector sections */
+.inspector-section h3 .section-toggle {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+/* Audit 3 (A2): `all: unset` above outranks the buttons' focus ring: the headings' own. */
+.inspector-section h3 .section-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.inspector-section h3 .chevron {
+  font-size: 10px;
+  width: 10px;
+  color: var(--muted);
+}
+/* Roadmap 46: a layer's own sections inside a data set's section (Symbols › Many points). */
+.inspector-subsection h4 {
+  margin: 10px 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.inspector .field-row {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+}
+.inspector .field-row > * {
+  flex: 1;
+  min-width: 0;
+}
+.palette-preview {
+  display: flex;
+  gap: 2px;
+  margin: 4px 0 8px;
+}
+.palette-preview span {
+  flex: 1;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgb(0 0 0 / 0.1);
+}
+.dataset-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dataset-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.dataset-list .order {
+  display: flex;
+  gap: 2px;
+}
+.inspector .dataset-list .order button {
+  width: auto;
+  padding: 0 6px;
+  margin: 0;
+}
+.inspector .field-row button {
+  margin-bottom: 0;
+}
+/* Format graph › Appearance › Layers (roadmap 33c). */
+.layers-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.inspector .layers-toolbar button {
+  width: auto;
+  margin: 0;
+  padding: 2px 8px;
+}
+.layer-list {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 0 0 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--panel);
+}
+.layer-list:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.layer-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  cursor: pointer;
+  user-select: none;
+}
+.layer-row.on {
+  background: var(--accent-soft);
+}
+.layer-row.attached .layer-name {
+  padding-left: 14px;
+}
+.layer-row.hidden-layer .layer-name {
+  color: var(--muted);
+}
+.layer-row .grip {
+  color: var(--muted);
+  cursor: grab;
+}
+.inspector .layer-row .eye {
+  width: auto;
+  margin: 0;
+  padding: 0 4px;
+  border: none;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+}
+.layer-row .layer-name {
+  flex: 1;
+  min-width: 0;
+}
+.chip.unavailable,
+.style-icon.unavailable {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.layers-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 4px 0;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  font-size: 12px;
+}
+
+/*
+ * The New data table dialog (roadmap 43): the table types beside what goes in the table (sample
+ * data, the Y values' format, the size), so all of it shows without scrolling at 1024 × 768.
+ */
+dialog.dialog.wide:has(.new-table) {
+  width: min(860px, calc(100vw - 32px));
+}
+.new-table {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  column-gap: 28px;
+  align-items: start;
+}
+.new-table > .new-table-name {
+  grid-column: 1 / -1;
+}
+.new-table .check {
+  align-items: flex-start;
+}
+.new-table .check > input {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.new-table fieldset .muted {
+  font-size: 12px;
+}
+@media (max-width: 720px) {
+  .new-table {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The graph builder (roadmap 33c, design §7.1). */
+dialog.dialog.wide:has(.graph-builder) {
+  width: min(1100px, calc(100vw - 32px));
+}
+dialog.dialog:has(.graph-builder) .dialog-body {
+  max-height: 80vh;
+}
+.graph-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.builder-context {
+  margin: -6px 0 0;
+}
+.builder-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 3px 11px;
+  background: var(--panel);
+  font-size: 12px;
+}
+.chip.on {
+  background: var(--accent-strong);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.chip.provenance {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.chip.custom {
+  border-style: dashed;
+  color: var(--muted);
+}
+/* The user's own presets: first in the row, starred, a tinted edge. */
+.chip.user {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.chip.user.on {
+  background: var(--accent-strong);
+}
+.user-mark {
+  color: var(--user-mark);
+}
+.chip.user.on .user-mark {
+  color: var(--on-accent);
+}
+.preset-row-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.preset-row-line .preset-chips {
+  flex: 1;
+}
+.preset-actions {
+  display: flex;
+  gap: 10px;
+  white-space: nowrap;
+}
+.preset-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.preset-row .preset-name {
+  flex: 1 1 220px;
+}
+.preset-buttons,
+.preset-rename {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.builder-styles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+.style-family {
+  --tint: var(--tint-teal);
+  --tint-ring: #2a9d8f;
+}
+.style-family.family-summary {
+  --tint: var(--tint-orange);
+  --tint-ring: #e07a5f;
+}
+.style-family.family-trend {
+  --tint: var(--tint-purple);
+  --tint-ring: #7b5ea7;
+}
+.style-family.family-connection {
+  --tint: var(--tint-pink);
+  --tint-ring: #c9578c;
+}
+.style-family.family-special {
+  --tint: var(--tint-grey);
+  --tint-ring: #59626e;
+}
+.style-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.style-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 70px;
+  padding: 2px;
+  border: none;
+  background: none;
+  font-size: 11px;
+  text-align: center;
+}
+.style-icon .icon-circle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--tint);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+.style-icon.on .icon-circle {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.style-icon:focus-visible {
+  outline: none;
+}
+.style-icon:focus-visible .icon-circle {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.style-icon .plot-icon-svg {
+  width: 38px;
+  height: 38px;
+}
+.check-badge {
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  color: var(--on-accent);
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+}
+.builder-note {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+}
+.builder-main {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  gap: 14px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.layer-grid {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-height: 60px;
+}
+.layer-grid .layer-row {
+  cursor: default;
+  border-bottom: 1px solid var(--border);
+}
+.layer-grid .layer-row:last-child {
+  border-bottom: none;
+}
+.layer-grid .layer-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.layer-grid .layer-row.attached .layer-name {
+  padding-left: 0;
+}
+.layer-grid .layer-row.attached .layer-index {
+  padding-left: 8px;
+}
+.layer-index {
+  width: 18px;
+  color: var(--muted);
+  text-align: right;
+}
+.layer-icon .plot-icon-svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+/* Engine-drawn icons keep their colours: on paper in the dark theme. */
+:root[data-theme="dark"] .layer-icon .plot-icon-svg {
+  background: var(--paper);
+  border-radius: 3px;
+}
+.layer-grid select {
+  max-width: 140px;
+}
+.layer-buttons {
+  display: flex;
+  gap: 2px;
+}
+.layer-buttons button {
+  padding: 0 6px;
+}
+.builder-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 4px 14px;
+  margin-top: 8px;
+}
+.builder-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 240px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+}
+.builder-preview svg {
+  width: 100%;
+  height: 100%;
+  max-height: 340px;
+}
+/* Roadmap 34f: a big table's preview draws a sample; a newer one is on its way. */
+.builder-preview-note {
+  margin: 0 0 4px;
+  font-size: 11px;
+}
+.builder-preview.stale svg {
+  opacity: 0.6;
+}
+.builder-warnings {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--danger);
+}
+.builder-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px 18px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.builder-strip .row-picks {
+  max-height: 96px;
+  overflow-y: auto;
+}
+.map-variables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.map-variables .map-levels {
+  width: auto;
+  margin: 0;
+}
+/* Order of levels (roadmap 34a): a graph of variables' categories and colour groups. */
+.level-orders {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.level-list {
+  list-style: none;
+  margin: 0 0 6px;
+  padding: 0;
+  max-height: 260px;
+  overflow: auto;
+  min-width: 180px;
+}
+.level-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  cursor: grab;
+}
+.level-list li:focus-visible {
+  outline: 2px solid var(--accent);
+}
+.level-list li.dragging {
+  opacity: 0.5;
+}
+.level-list .order {
+  display: flex;
+  gap: 2px;
+}
+.level-list .order button {
+  width: auto;
+  padding: 0 6px;
+  margin: 0;
+}
+.level-sorts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.level-sorts button {
+  width: auto;
+  margin: 0;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.inspector .field-row > .threshold-remove {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 0 8px;
+}
+.row-picker-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 2px 4px;
+  max-height: 180px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.row-picker-list li .field.check {
+  margin: 0;
+}
+/* Rich text editor (roadmap 28): a contenteditable styled like an input, and its toolbar */
+.rt-editor {
+  display: block;
+  min-height: 1.5em;
+  /* Text that goes on a graph: edited on paper, in the graph's colours (decision 617). */
+  color: var(--paper-text);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 3px 6px;
+  background: var(--paper);
+  cursor: text;
+  overflow-wrap: anywhere;
+}
+.rt-editor.single {
+  white-space: pre;
+  overflow: hidden;
+}
+.rt-editor.multiline {
+  white-space: pre-wrap;
+}
+.rt-editor:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.rt-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--muted);
+}
+.rt-editor sup,
+.rt-editor sub,
+.rich sup,
+.rich sub {
+  font-size: 0.7em;
+  line-height: 0;
+}
+.rt-wrap {
+  display: contents;
+}
+.rt-toolbar {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 2px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px var(--shadow-soft);
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  text-align: left;
+}
+/* Two rows (roadmap 28b): font, size, grow / shrink, colour; then formats, alignment, clear, symbols */
+.rt-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.rt-row button {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.rt-row button:hover {
+  background: var(--accent-soft);
+}
+.rt-row button[aria-pressed="true"],
+.rt-row button[aria-expanded="true"] {
+  background: var(--sel);
+}
+.rt-row .rt-menu-button {
+  width: 64px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+.rt-menu-button::after {
+  content: "▾";
+  float: right;
+  color: var(--muted);
+}
+.rt-size {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.rt-size input {
+  width: 34px;
+  height: 22px;
+  padding: 0 3px;
+  border: none;
+  font: 12px var(--font);
+  text-align: right;
+  background: none;
+}
+.rt-row .rt-size button {
+  min-width: 14px;
+  height: 22px;
+  padding: 0 2px;
+  color: var(--muted);
+}
+.rt-item {
+  display: contents;
+}
+.rt-sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 3px 2px;
+  background: var(--border);
+}
+.rt-color {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+.rt-color-bar {
+  width: 14px;
+  height: 3px;
+  margin-top: 1px;
+  border: 1px solid rgb(0 0 0 / 0.2);
+}
+.rt-color-bar.mixed {
+  background: none;
+}
+.rt-clear sub {
+  font-size: 0.7em;
+}
+.rt-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  margin-top: 2px;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px var(--shadow-soft);
+}
+.rt-toolbar.up .rt-popup {
+  top: auto;
+  bottom: 100%;
+  margin: 0 0 2px;
+}
+.rt-list {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+.rt-list button,
+.rt-colors .rt-auto {
+  padding: 3px 8px;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  font-size: 13px;
+  text-align: left;
+  color: var(--text);
+}
+.rt-list button[aria-checked="true"],
+.rt-colors .rt-auto[aria-checked="true"] {
+  background: var(--sel);
+}
+.rt-list button:hover,
+.rt-colors .rt-auto:hover {
+  background: var(--accent-soft);
+}
+.rt-sizes {
+  min-width: 56px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.rt-colors {
+  width: 180px;
+}
+.rt-colors .rt-auto {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.rt-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.rt-swatches .swatch {
+  width: 18px;
+  height: 18px;
+}
+.rt-swatches .swatch[aria-checked="true"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.rt-symbols {
+  width: 272px;
+}
+.rt-symbols > div {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.rt-symbols button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 13px;
+}
+.rt-symbols button:hover {
+  background: var(--accent-soft);
+}
+/* Inline text editor over the graph */
+.inline-edit {
+  position: absolute;
+  z-index: 5;
+  font: inherit;
+  padding: 1px 4px;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--paper-text);
+  box-shadow: 0 2px 6px var(--shadow-soft);
+}
+.scene-wrap {
+  position: relative;
+}
+/* Hover cards (roadmap 34d): a mark's row or statistics, over the graph beside the mark. */
+.hover-card {
+  position: absolute;
+  z-index: 20;
+  min-width: 120px;
+  max-width: 280px;
+  padding: 6px 9px 7px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px var(--shadow-soft);
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text);
+  white-space: normal;
+}
+.hover-card-title {
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.hover-card dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 10px;
+  margin: 0;
+}
+.hover-card dt {
+  color: var(--muted);
+}
+.hover-card dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.hover-card button.link {
+  margin-top: 4px;
+  padding: 0;
+}
+/* Plot resize handles (roadmaps 22, 23): the plot's corners and edges. */
+.resize-handle {
+  fill: #ffffff;
+  stroke: var(--handle);
+}
+.resize-handle:hover,
+.resize-handle.active {
+  fill: var(--handle);
+}
+.resize-handle.resize-e,
+.resize-handle.resize-w {
+  cursor: ew-resize;
+}
+.resize-handle.resize-n,
+.resize-handle.resize-s {
+  cursor: ns-resize;
+}
+.resize-handle.resize-ne,
+.resize-handle.resize-sw {
+  cursor: nesw-resize;
+}
+.resize-handle.resize-nw,
+.resize-handle.resize-se {
+  cursor: nwse-resize;
+}
+.drag-readout {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgb(30 36 44 / 0.85);
+  color: #fff;
+  font-size: 11px;
+}
+/* Graph text is edited by double-click, not selected by dragging. */
+svg.scene {
+  user-select: none;
+  -webkit-user-select: none;
+}
+.align-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.align-bar button {
+  white-space: nowrap;
+}
+/* Drawing tools on layout pages (roadmap 32). */
+.tool-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.tool-strip .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 26px;
+  padding: 0;
+}
+.tool-strip .icon-button.on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.scene.page.drawing .layout-hit {
+  cursor: crosshair;
+}
+.item-handle:hover {
+  fill: var(--handle);
+}
+.button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.plain-list {
+  list-style: none;
+  margin: 0 0 6px;
+  padding: 0;
+}
+
+/* ---------- Format dialogs (graph, axes, legend, bracket, text) ---------- */
+
+/* The graph behind a Format dialog shows the committed state: grey it (beside the backdrop) so
+   the dialog's preview is clearly the one to look at. */
+.canvas:focus {
+  outline: none;
+}
+.canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.graph-view.formatting .canvas svg.scene {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+dialog.format-dialog {
+  width: min(1000px, calc(100vw - 32px));
+  height: min(680px, calc(100vh - 32px));
+  min-width: min(560px, calc(100vw - 32px));
+  min-height: 380px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  /* The bottom-right corner resizes it; the title bar moves it. */
+  resize: both;
+  overflow: hidden;
+  /* Its content adapts to the dialog's own width (see the @container rule below). */
+  container-type: inline-size;
+}
+dialog.format-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.format-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 18px 8px;
+  cursor: move;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.format-header .muted {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.format-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.format-tabs [role="tab"] {
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: none;
+  color: var(--muted);
+  padding: 6px 12px;
+  margin-bottom: -1px;
+}
+.format-tabs [role="tab"][aria-selected="true"] {
+  border-color: var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 500;
+}
+.format-tabs [role="tab"]:hover:not([aria-selected="true"]) {
+  color: var(--text);
+  background: var(--panel-2);
+}
+.format-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.format-options.inspector {
+  width: 340px;
+  flex-shrink: 0;
+  border-left: none;
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+  padding: 4px 16px 16px;
+}
+/* A section of the table (`sections.tsx`): a marker for reveals and search, no box of its own. */
+.format-section {
+  display: contents;
+}
+.format-options.inspector > .format-section:first-child > .inspector-section:first-child,
+.format-options .series-picker + .inspector-section {
+  border-top: none;
+}
+.series-picker {
+  position: sticky;
+  top: -4px;
+  z-index: 1;
+  margin: 0 -16px 4px;
+  padding: 10px 16px 2px;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--border);
+}
+/* Appearance scoped to one point: say so, with the way back to the data set. */
+.point-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 0 4px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  border: 1px solid var(--info-border);
+}
+.format-options.inspector .point-banner button.link {
+  display: inline;
+  width: auto;
+  margin: 0;
+  white-space: nowrap;
+}
+.format-preview {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas);
+}
+.format-preview-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 12px;
+}
+.format-preview-canvas {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.format-footer {
+  align-items: center;
+}
+.format-footer > span {
+  flex: 1;
+  font-size: 12px;
+}
+.format-error {
+  color: var(--danger);
+}
+/* Narrow (a small window, or the dialog resized down): preview above the options. */
+@container (max-width: 640px) {
+  .format-body {
+    flex-direction: column-reverse;
+  }
+  .format-options.inspector {
+    width: auto;
+    flex: 1;
+    min-height: 0;
+    border-right: none;
+    border-top: 1px solid var(--border);
+  }
+  .format-preview {
+    flex: 0 0 38%;
+  }
+}
+
+/* ---------- The docked Format panel (roadmap 46) ---------- */
+
+/* Right of the canvas, full height like a page's inspector (whose place it takes on pages); its
+   width is the user's (the splitter on its left edge, remembered). */
+.graph-view {
+  position: relative;
+}
+.format-panel {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  border-left: 1px solid var(--border);
+  background: var(--panel);
+}
+.format-panel-resize {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  width: 7px;
+  z-index: 2;
+  cursor: col-resize;
+  touch-action: none;
+}
+.format-panel-resize:hover,
+.format-panel-resize:focus-visible {
+  background: var(--accent);
+  opacity: 0.5;
+  outline: none;
+}
+.format-panel-header {
+  padding: 8px 12px 6px 14px;
+  flex-shrink: 0;
+}
+.format-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.format-panel-title h2 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.format-panel-close {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: var(--radius);
+}
+.format-panel-close:hover {
+  background: var(--panel-2);
+  color: var(--text);
+}
+.format-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.format-panel-actions .muted {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.format-panel-actions button {
+  font-size: 12px;
+  padding: 2px 8px;
+}
+.format-panel .format-error {
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+/* Tabs wrap rather than scroll: every tab stays in sight in a narrow panel. */
+.format-panel .format-tabs {
+  flex-wrap: wrap;
+  padding: 0 10px;
+}
+.format-panel .format-options.inspector {
+  width: auto;
+  flex: 1;
+  min-height: 0;
+  border: none;
+  background: var(--panel);
+  padding: 4px 16px 16px;
+}
+/* Narrow windows (under 1200 px): a drawer over the right of the canvas, below the toolbar and
+   the format bar (41 + 33 px, fixed: decisions 834, 880), so the graph keeps its width. */
+@media (max-width: 1199px) {
+  .format-panel {
+    position: absolute;
+    top: 74px;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    max-width: calc(100% - 120px);
+    box-shadow: -6px 0 18px var(--shadow-soft);
+  }
+  /* The canvas scrolls its content out from under the drawer (the graph keeps its size). */
+  .graph-view:has(> .format-panel) .canvas {
+    padding-right: calc(var(--format-panel-width, 340px) + 32px);
+  }
+}
+
+/* The field search (roadmap 46, V5): a box in the panel's header (and the dialog's), its results
+   a list under it, over the options. */
+.format-search {
+  position: relative;
+  margin-top: 6px;
+}
+.format-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+.format-search-results {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  box-shadow: 0 4px 16px var(--shadow-soft);
+}
+.format-search-results [role="option"] {
+  padding: 4px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: default;
+  overflow-wrap: anywhere;
+}
+.format-search-results [role="option"].active {
+  background: var(--accent-soft);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.format-search-results .format-search-row {
+  display: block;
+}
+/* Roadmap 47: a setting of several layers, one row naming them; each layer is an option. */
+.format-search-results .format-search-row.layers {
+  padding: 4px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: default;
+  overflow-wrap: anywhere;
+}
+.format-search-results .format-search-row.layers.active-row {
+  background: var(--accent-soft);
+}
+.format-search-results .format-search-layer[role="option"] {
+  display: inline;
+  padding: 0 3px;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.format-search-results .format-search-layer[role="option"].active {
+  background: var(--panel);
+}
+.format-search-path {
+  color: var(--muted);
+}
+.format-search-label {
+  color: var(--text);
+  font-weight: 500;
+}
+.format-search-empty {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+/* The dialog's box sits at the right of its title bar. */
+.format-header .format-search {
+  margin: 0 0 0 auto;
+  width: min(280px, 40%);
+  flex-shrink: 0;
+}
+/* A field a search jumped to, highlighted for a moment. */
+.search-hit {
+  border-radius: 4px;
+  animation: search-hit 1.6s ease-out;
+}
+@keyframes search-hit {
+  0%,
+  40% {
+    background: var(--accent-soft);
+    box-shadow:
+      0 0 0 3px var(--accent-soft),
+      0 0 0 4px var(--accent);
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 3px transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-hit {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+}
+/* Dark (V9): the white paper of the dialog's preview gets an edge (its shadow doesn't show). */
+:root[data-theme="dark"] .format-preview svg.scene {
+  outline: 1px solid var(--border-strong);
+}
+
+/* A layout page's inspector under 1100 px (roadmap 46, P3): a strip at the right of the view
+   (36 px: its button, and folded, the inspector's heading down it); shown, the inspector is a
+   drawer over the page's right side beside the strip, below the toolbar and the format bar, so
+   the page keeps its width. */
+.inspector-dock {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  width: 36px;
+  min-height: 0;
+  border-left: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.inspector-dock-toggle {
+  position: absolute;
+  top: 6px;
+  left: 3px;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+.inspector-dock.folded .inspector {
+  width: 100%;
+  padding: 40px 0 8px;
+  overflow: hidden;
+  border-left: none;
+}
+.inspector-dock.folded .inspector > :not(.inspector-header),
+.inspector-dock.folded .inspector-header > :not(h2) {
+  display: none;
+}
+.inspector-dock.folded .inspector-header {
+  justify-content: center;
+}
+.inspector-dock.folded .inspector-header h2 {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--muted);
+}
+.inspector-dock.open .inspector {
+  position: absolute;
+  top: 74px;
+  right: 100%;
+  bottom: 0;
+  z-index: 20;
+  box-shadow: -6px 0 18px var(--shadow-soft);
+}
+
+/* ---------- Pop-up menus ---------- */
+
+.menu {
+  position: fixed;
+  z-index: 50;
+  min-width: 180px;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 24px var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+.menu :is([role="menuitem"], [role="menuitemcheckbox"]) {
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+.menu :is([role="menuitem"], [role="menuitemcheckbox"]):hover:not(:disabled),
+.menu :is([role="menuitem"], [role="menuitemcheckbox"]):focus-visible,
+.menu [role="menuitem"].open {
+  background: var(--accent-soft);
+  outline: none;
+}
+.menu [role="menuitem"].danger {
+  color: var(--danger);
+}
+.menu :is([role="menuitem"], [role="menuitemcheckbox"]).separated {
+  margin-top: 5px;
+  position: relative;
+}
+.menu :is([role="menuitem"], [role="menuitemcheckbox"]).separated::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: -3px;
+  border-top: 1px solid var(--border);
+}
+
+/* Examples dialog: cards with thumbnails (roadmap 47) */
+.examples-section h3 {
+  margin: 8px 0 4px;
+}
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+  margin: 8px 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.examples-grid > li {
+  display: flex;
+  min-width: 0;
+}
+.example-card {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 8px;
+  text-align: left;
+  white-space: normal;
+}
+.example-card:hover:not([aria-disabled="true"]) {
+  border-color: var(--accent);
+  background: var(--panel);
+}
+.example-card[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.6;
+}
+.example-card.start {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.example-thumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  /* The graphs are drawn on paper, in either colour scheme. */
+  background: #ffffff;
+}
+.example-thumb img {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+  object-fit: contain;
+}
+.example-thumb.none {
+  background: var(--panel-2);
+}
+.example-thumb-none {
+  padding: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+.example-busy {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 1px 6px;
+  border-radius: 9px;
+  background: var(--toast-bg);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+}
+.example-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+.example-start {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--accent-strong);
+  color: var(--on-accent);
+  font-size: 11px;
+  font-weight: 600;
+}
+.example-title {
+  font-weight: 600;
+}
+.example-summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+}
+.example-badge {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  font-size: 11px;
+}
+
+/* ---------- Menu bar, toolbar, palette (roadmap 21A) ---------- */
+
+.app-header {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Menu bar (web; the desktop app shows native menus instead) */
+.menubar {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  height: 28px;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--border);
+}
+.menubar-item > button[role="menuitem"] {
+  border: none;
+  background: none;
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+.menubar-item > button[role="menuitem"]:hover:not(:disabled),
+.menubar-item > button[role="menuitem"].open,
+.menubar-item > button[role="menuitem"]:focus-visible {
+  background: var(--accent-soft);
+  outline: none;
+}
+
+/* Pop-up menus: rows, ticks, shortcut hints, submenus (shared with the context menus) */
+.menu:focus {
+  outline: none;
+}
+.menu-row {
+  display: flex;
+  flex-direction: column;
+}
+.menu-row > button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.menu-check {
+  width: 12px;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.menu-label {
+  flex: 1;
+}
+.menu-shortcut {
+  margin-left: 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.menu-arrow {
+  margin-left: 16px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* Show navigator (View menu) hides it without unmounting it */
+.navigator-slot {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.navigator-slot[hidden] {
+  display: none;
+}
+.navigator-slot > .navigator {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Roadmap 47: the getting-started checklist, a card at the bottom of the navigator's column. */
+.getting-started {
+  flex: 0 0 auto;
+  width: 220px;
+  box-sizing: border-box;
+  padding: 8px 10px 10px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 12px;
+}
+.getting-started .gs-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.getting-started .gs-toggle {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 4px;
+  border: none;
+  background: none;
+  text-align: left;
+}
+.getting-started .gs-chevron {
+  width: 10px;
+  color: var(--muted);
+}
+.getting-started .gs-title {
+  font-weight: 600;
+}
+.getting-started .gs-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.getting-started .gs-close {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+}
+.getting-started .gs-close:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+.getting-started .gs-meter {
+  height: 3px;
+  margin: 4px 4px 2px;
+  border-radius: 2px;
+  background: var(--hover);
+  overflow: hidden;
+}
+.getting-started .gs-meter > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+.getting-started .gs-steps {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.getting-started .gs-steps li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 22px;
+  padding: 0 4px;
+}
+.getting-started .gs-check {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+}
+.getting-started li.done .gs-check {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.getting-started li.done .gs-step {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.getting-started .gs-step {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.getting-started .gs-show {
+  flex: 0 0 auto;
+  font-size: 11px;
+  /* Audit 3 (A12): WCAG 2.5.8's 24 px target. */
+  min-height: 24px;
+}
+.getting-started .gs-all {
+  margin: 6px 4px 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .getting-started .gs-meter > span {
+    transition: none;
+  }
+}
+
+/* Icon toolbar: labelled (an icon above a short label, roadmap 43) or icons only. It wraps
+   rather than overflow a narrow window. */
+.icon-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  min-height: 36px;
+  padding: 4px 8px;
+}
+.icon-toolbar.labelled {
+  min-height: 52px;
+  padding: 3px 8px;
+}
+.icon-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.icon-toolbar-divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 6px;
+  background: var(--border-strong);
+}
+.tool-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--text-2);
+}
+.tool-button:hover:not(:disabled) {
+  background: var(--panel-2);
+  border-color: var(--border);
+}
+.tool-button.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.icon-toolbar.labelled .tool-button {
+  flex-direction: column;
+  gap: 2px;
+  width: auto;
+  min-width: 40px;
+  height: 44px;
+  padding: 3px 5px 2px;
+}
+.tool-label {
+  font-size: 11px;
+  line-height: 13px;
+  white-space: nowrap;
+}
+/* A split button: the command, and ▾ for a menu of related ones. */
+.split-button {
+  display: inline-flex;
+  align-items: stretch;
+}
+.split-button > .tip-anchor:first-child .tool-button {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.icon-toolbar .tool-button.split-arrow {
+  /* Audit 3 (A12): WCAG 2.5.8's 24 px target (it was 14 px, against its command's button). */
+  width: 24px;
+  min-width: 24px;
+  padding: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.split-button:hover:not(.disabled) .tool-button {
+  border-color: var(--border);
+}
+.tool-button.split-arrow[aria-expanded="true"] {
+  background: var(--panel-2);
+  border-color: var(--border);
+}
+/* Narrow windows: icons only, so the toolbar stays one row as long as it can. */
+@media (max-width: 960px) {
+  .icon-toolbar.labelled .tool-label {
+    display: none;
+  }
+  .icon-toolbar.labelled .tool-button {
+    min-width: 32px;
+    height: 36px;
+  }
+}
+/* The app's tooltip (components/Tooltip.tsx). Disabled buttons take no pointer events, so their
+   wrapper hears the pointer and shows why they are disabled. */
+.tip-anchor {
+  display: inline-flex;
+}
+.tip-anchor > button:disabled {
+  pointer-events: none;
+}
+.tooltip {
+  position: fixed;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 320px;
+  padding: 5px 8px;
+  border-radius: var(--radius);
+  background: var(--toast-bg);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+.tooltip-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tooltip-name {
+  font-weight: 600;
+}
+.tooltip-key {
+  font: inherit;
+  white-space: nowrap;
+}
+.tooltip-reason {
+  font-style: italic;
+}
+.icon-toolbar-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding-left: 12px;
+}
+.file-title {
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.file-title .dirty {
+  color: var(--accent);
+}
+
+/* Command palette */
+dialog.palette {
+  margin: 12vh auto auto;
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px var(--shadow);
+  color: var(--text);
+  overflow: hidden;
+}
+dialog.palette::backdrop {
+  background: var(--backdrop);
+}
+.palette-input {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+}
+.palette-input:focus {
+  outline: none;
+}
+.palette-list {
+  max-height: min(420px, 60vh);
+  overflow-y: auto;
+  padding: 4px;
+}
+.palette-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.palette-row.active {
+  background: var(--accent-soft);
+}
+.palette-row.disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.palette-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.palette-section {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.palette-shortcut,
+.shortcut-sheet kbd {
+  padding: 0 5px;
+  font: 12px var(--font);
+  color: var(--muted);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.palette-empty {
+  padding: 10px;
+}
+
+/* Keyboard shortcut sheet */
+.shortcut-sheet {
+  columns: 2 300px;
+  column-gap: 28px;
+}
+.shortcut-sheet section {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+.shortcut-sheet h3 {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.shortcut-sheet dl {
+  margin: 0;
+}
+.shortcut-sheet dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border);
+}
+.shortcut-sheet dl > div.disabled dt {
+  color: var(--muted);
+}
+.shortcut-sheet dt,
+.shortcut-sheet dd {
+  margin: 0;
+}
+
+/* ---------- Export dialog ---------- */
+
+.export-options {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.export-options .inline input[type="text"] {
+  width: 90px;
+}
+.export-options select.unit {
+  width: auto;
+}
+.export-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.export-presets button {
+  font-size: 11px;
+  padding: 2px 6px;
+}
+.export-presets button.on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.export-summary {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.export-summary .warning {
+  color: var(--warn-text);
+}
+.export-summary .error {
+  color: var(--danger);
+}
+.export-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.export-progress progress {
+  flex: 1;
+}
+/* Roadmap 42: the summary while the export worker measures the size just set. */
+.export-summary.measuring {
+  opacity: 0.6;
+}
+/* Roadmap 42: an export, copy or print being made in the export worker (the window's status). */
+.export-status {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--toast-bg);
+  color: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 24px var(--shadow);
+  pointer-events: none;
+  font-size: 12px;
+}
+.export-status progress {
+  width: 120px;
+}
+
+/* ---------- Printing (File › Print…) ---------- */
+
+/* The graph or page to print, sized in points; only on paper. */
+.print-root {
+  display: none;
+}
+@media print {
+  html.printing,
+  html.printing body {
+    height: auto;
+    overflow: visible;
+    background: #ffffff;
+  }
+  html.printing body > :not(.print-root) {
+    display: none;
+  }
+  html.printing .print-root {
+    display: block;
+  }
+  html.printing .print-root svg {
+    display: block;
+  }
+}
+
+/* Roadmap 35: picking a value of an analysis' results (Format › result labels, lines, bands). */
+.value-picker {
+  max-height: 260px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  padding: 4px 6px;
+}
+.value-picker h4 {
+  margin: 6px 0 2px;
+  font-size: 12px;
+}
+.value-picker-block {
+  margin-bottom: 6px;
+}
+.value-picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.value-picker-cell {
+  font-variant-numeric: tabular-nums;
+  padding: 1px 6px;
+  min-width: 3em;
+}
+.result-field legend .muted {
+  font-weight: normal;
+  font-size: 11px;
+}
+
+/* Roadmap 36: the treatment grid editor and spans' category checklists. */
+.treatment-grid {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+}
+.treatment-grid th {
+  font-weight: 600;
+  padding: 0 0.25em;
+  white-space: nowrap;
+}
+/* Roadmap 41: long level names keep to their column (cut short; the whole name in a tooltip). */
+.treatment-grid th[scope="col"] {
+  max-width: 5.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.treatment-grid td {
+  padding: 0.125em 0.25em;
+}
+.treatment-grid input.treatment-cell {
+  width: 4.5em;
+  text-align: center;
+}
+.checklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1em;
+}
+
+/* Roadmap 37: Styles, the Style editor, Preferences. */
+.styles-dialog {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 2fr;
+  gap: 16px;
+  min-height: 320px;
+}
+.style-list {
+  padding: 0 8px 0 0;
+  border-right: 1px solid var(--border);
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.style-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.style-group {
+  margin: 8px 0 4px;
+  font-size: 0.85em;
+  color: var(--muted);
+}
+.style-item {
+  display: block;
+  width: 100%;
+  white-space: normal;
+  text-align: left;
+  border: 1px solid transparent;
+  background: none;
+  padding: 4px 6px;
+  border-radius: var(--radius);
+}
+.style-item.on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.style-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 60vh;
+  overflow: auto;
+}
+.style-detail h3 {
+  margin: 0;
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.style-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 0;
+  padding: 8px 0 0;
+  min-width: 0;
+}
+.style-editor textarea {
+  font: inherit;
+}
+.style-editor > legend {
+  font-weight: 600;
+  padding: 0 4px 0 0;
+}
+.style-table th,
+.style-table td {
+  text-align: left;
+  padding: 2px 6px 2px 0;
+  font-weight: normal;
+}
+.style-table input {
+  width: 5em;
+}
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 6px 12px;
+}
+.style-num input {
+  width: 6em;
+}
+.pref-heading {
+  margin: 8px 0 0;
+  font-size: 1em;
+}
+
+/* ---------- Roadmap 40: organising the project ---------- */
+
+.nav-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.nav-search {
+  width: 100%;
+  min-width: 0;
+  padding: 3px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 12px;
+}
+.nav-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  flex: 1;
+}
+.segmented button {
+  flex: 1;
+  border: none;
+  background: var(--panel);
+  font-size: 11px;
+  padding: 2px 4px;
+}
+.segmented button.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.nav-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 24px;
+  border: 1px solid var(--border-strong);
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 0;
+}
+.nav-tool.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.nav-folder {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 10px;
+  cursor: pointer;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+}
+.nav-folder:hover {
+  background: var(--hover);
+}
+.nav-folder .folder-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav-folder input {
+  flex: 1;
+  min-width: 0;
+}
+.folder-count {
+  color: var(--muted);
+  font-size: 11px;
+}
+.icon-folder {
+  border: 1px solid #b08a3e;
+  background:
+    linear-gradient(#e9c46a 0 0) 0 0 / 45% 30% no-repeat,
+    #f4d58d;
+  border-radius: 1px;
+}
+.chevron {
+  width: 10px;
+  flex-shrink: 0;
+  display: inline-block;
+  color: var(--muted);
+  font-size: 9px;
+  text-align: center;
+  cursor: pointer;
+}
+.chevron::before {
+  content: "▸";
+}
+.chevron.open::before {
+  content: "▾";
+}
+.chevron.none::before {
+  content: "";
+}
+.nav-set-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+.nav-item.link .name {
+  font-style: italic;
+  color: var(--muted);
+}
+.nav-item.dragging {
+  opacity: 0.5;
+}
+.nav-item.drop-before {
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+.nav-item.drop-after {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.nav-folder.drop-into,
+.nav-section.drop-into {
+  background: var(--accent-soft);
+  outline: 1px dashed var(--accent);
+  outline-offset: -1px;
+}
+.nav-thumb {
+  width: 44px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.nav-empty {
+  margin: 10px 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.nav-results {
+  padding: 0 0 8px;
+}
+.nav-results > .hint {
+  margin: 4px 14px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.result-sheet,
+.result-hit {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 8px 3px 14px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.result-sheet {
+  font-weight: 500;
+}
+.result-hit {
+  padding-left: 32px;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.result-sheet.active,
+.result-hit.active {
+  background: var(--accent-soft);
+  border-left-color: var(--accent);
+}
+.result-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+.snippet {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.snippet mark {
+  background: var(--match-current);
+  color: inherit;
+  border-radius: 2px;
+}
+.folder-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: none;
+  padding: 0;
+}
+
+/* Info sheets */
+.info-view {
+  padding: 0 0 24px;
+  overflow: auto;
+  flex: 1;
+}
+.info-fields {
+  border-collapse: collapse;
+  margin: 12px 16px;
+  min-width: 480px;
+}
+.info-fields th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 4px 6px;
+}
+.info-fields td {
+  padding: 2px 6px;
+  border-top: 1px solid var(--border);
+}
+.info-fields input {
+  width: 100%;
+  min-width: 160px;
+  border: 1px solid transparent;
+  padding: 3px 4px;
+  font: inherit;
+  background: transparent;
+}
+.info-fields input:hover {
+  border-color: var(--border);
+}
+.info-fields input:focus {
+  border-color: var(--accent);
+  background: var(--panel);
+}
+.info-actions {
+  white-space: nowrap;
+}
+.info-actions button {
+  border: none;
+  background: none;
+  color: var(--muted);
+}
+.info-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 4px 16px 12px;
+  flex-wrap: wrap;
+}
+.info-constants {
+  margin: 4px 16px;
+}
+.info-notes {
+  margin: 12px 16px;
+  max-width: 720px;
+}
+.info-notes h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+.info-notes [role="textbox"] {
+  min-height: 80px;
+  border: 1px solid var(--border);
+  padding: 6px;
+  background: var(--panel);
+}
+
+/* Gallery */
+.gallery-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+.gallery-tile {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.gallery-tile.chosen {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.gallery-open {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 6px;
+  gap: 4px;
+  cursor: pointer;
+}
+.gallery-thumb {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.gallery-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.gallery-name {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gallery-pick {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+.gallery-count {
+  margin-right: auto;
+}
+
+/* Import from project */
+.merge-list,
+.merge-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.merge-list {
+  max-height: 50vh;
+  overflow: auto;
+  border: 1px solid var(--border);
+  padding: 6px;
+  margin-top: 8px;
+}
+.merge-list label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 0;
+}
+.merge-list label.implied {
+  color: var(--muted);
+}
+.merge-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* Roadmap 47b: the legend's entries in the Format panel (Entries), in the legend's order. */
+.legend-entries {
+  list-style: none;
+  margin: 4px 0 6px;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.legend-entry-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 4px;
+  padding: 3px 6px;
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+}
+.legend-entry-row > .field:last-child {
+  grid-column: 2;
+  margin: 0;
+}
+/* (Its label is the field's name for screen readers; the entry's name is its placeholder.) */
+.legend-entry-row > .field:last-child > label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.legend-entry-row.hidden-entry .check {
+  color: var(--muted);
+}
+.legend-entry-row.drop-before {
+  border-top-color: var(--accent);
+}
+.legend-entry-row.drop-after {
+  border-bottom-color: var(--accent);
+}
+.inspector .legend-entry-row .grip {
+  width: auto;
+  /* Audit 3 (A12): WCAG 2.5.8's 24 px target; the checkbox beside it spaced as much. */
+  min-width: 24px;
+  min-height: 24px;
+  margin: 0;
+  padding: 0 4px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: grab;
+}
+.legend-entry-row .check {
+  margin: 0;
+  min-width: 0;
+}
+.legend-entry-row .check input {
+  margin: 0 4px;
+}
+.legend-entry-heading {
+  padding: 4px 6px 0;
+  font-size: 11px;
+}
+.legend-entry-actions {
+  flex-wrap: wrap;
+}
+.fb-columns {
+  min-width: 34px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}

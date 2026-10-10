@@ -1,0 +1,17 @@
+{
+  "name": "@ps/e2e",
+  "version": "0.0.0",
+  "license": "GPL-3.0-or-later",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^26.6.3",
+    "fflate": "^0.8.3"
+  }
+}

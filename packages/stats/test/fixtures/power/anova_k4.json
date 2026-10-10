@@ -1,0 +1,13 @@
+{
+  "name": "anova_k4",
+  "input": [],
+  "params": {"design":"anova","groups":4,"betweenVar":1,"withinVar":3,"alpha":0.05,"n":5,"target":0.8,"lo":2},
+  "expected": {
+    "power": 0.35355942372299332,
+    "nFor": 11.926111167789598
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "file": "synthetic_multi.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Column & exclusions",
+      "columns": [
+        {
+          "name": "Bold A",
+          "values": [1.5, 2.5, 3, null],
+          "excluded": [false, true, false, false]
+        },
+        {
+          "name": "B",
+          "values": [4, null, 6, -0.69999999999999996],
+          "excluded": [false, false, false, false]
+        }
+      ]
+    },
+    {
+      "title": "Grouped SDN",
+      "columns": [
+        {
+          "name": "ROWTITLE",
+          "values": ["Day 1", "Day 2"],
+          "excluded": [false, false]
+        },
+        {
+          "name": "Control_MEAN",
+          "values": [10, 11],
+          "excluded": [false, false]
+        },
+        {
+          "name": "Control_SD",
+          "values": [1, 1.5],
+          "excluded": [false, true]
+        },
+        {
+          "name": "Control_N",
+          "values": [3, 3],
+          "excluded": [false, false]
+        },
+        {
+          "name": "Treated_MEAN",
+          "values": [12, 13],
+          "excluded": [false, false]
+        },
+        {
+          "name": "Treated_SD",
+          "values": [2, 2],
+          "excluded": [false, false]
+        },
+        {
+          "name": "Treated_N",
+          "values": [4, 4],
+          "excluded": [false, false]
+        }
+      ]
+    },
+    {
+      "title": "XY SEN",
+      "columns": [
+        {
+          "name": "Dose",
+          "values": [0, 1, 2],
+          "excluded": [false, false, true]
+        },
+        {
+          "name": "Response_MEAN",
+          "values": [5, 6, 7],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Response_SEM",
+          "values": [0.5, 0.25, 0.125],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Response_N",
+          "values": [8, 8, 7],
+          "excluded": [false, false, false]
+        }
+      ]
+    },
+    {
+      "title": "Grouped CVN",
+      "columns": [
+        {
+          "name": "A_MEAN",
+          "values": [100, 50],
+          "excluded": [false, false]
+        },
+        {
+          "name": "A_CV",
+          "values": [10, 2.5],
+          "excluded": [false, false]
+        },
+        {
+          "name": "A_N",
+          "values": [5, 6],
+          "excluded": [false, false]
+        }
+      ]
+    },
+    {
+      "title": "Column SDN",
+      "columns": [
+        {
+          "name": "A_MEAN",
+          "values": [5],
+          "excluded": [false]
+        },
+        {
+          "name": "A_SD",
+          "values": [1],
+          "excluded": [false]
+        },
+        {
+          "name": "A_N",
+          "values": [3],
+          "excluded": [false]
+        },
+        {
+          "name": "B_MEAN",
+          "values": [6],
+          "excluded": [false]
+        },
+        {
+          "name": "B_SD",
+          "values": [2],
+          "excluded": [false]
+        },
+        {
+          "name": "B_N",
+          "values": [4],
+          "excluded": [false]
+        }
+      ]
+    },
+    {
+      "title": "Counts",
+      "columns": [
+        {
+          "name": "ROWTITLE",
+          "values": ["Exposed", "Unexposed"],
+          "excluded": [false, false]
+        },
+        {
+          "name": "Disease",
+          "values": [12, 5],
+          "excluded": [false, false]
+        },
+        {
+          "name": "No disease",
+          "values": [30, 41],
+          "excluded": [false, false]
+        }
+      ]
+    },
+    {
+      "title": "Nested",
+      "columns": [
+        {
+          "name": "A_1",
+          "values": [1, 2],
+          "excluded": [false, false]
+        },
+        {
+          "name": "A_2",
+          "values": [3, 4],
+          "excluded": [false, false]
+        }
+      ]
+    },
+    {
+      "title": "Text cell",
+      "columns": [
+        {
+          "name": "A",
+          "values": ["1", "abc", "3"],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

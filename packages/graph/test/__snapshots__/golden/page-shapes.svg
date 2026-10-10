@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300pt" height="200pt" viewBox="0 0 300 200">
+<g data-id="page">
+<g data-id="item/a">
+<rect x="20" y="20" width="100" height="60" fill="none" stroke="#000000" stroke-width="1"/>
+</g>
+<g data-id="item/b">
+<rect x="140" y="20" width="120" height="60" rx="12" fill="#0072b2" fill-opacity="0.3" stroke="none"/>
+</g>
+<g data-id="item/c">
+<ellipse cx="80" cy="135" rx="60" ry="35" fill="#eeeeee" stroke="#d55e00" stroke-width="2" stroke-dasharray="2 4"/>
+</g>
+<g data-id="item/d">
+<ellipse cx="210" cy="130" rx="30" ry="30" fill="none" stroke="#000000" stroke-width="1"/>
+</g>
+</g>
+</svg>

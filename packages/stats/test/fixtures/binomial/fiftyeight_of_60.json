@@ -1,0 +1,34 @@
+{
+  "name": "fiftyeight_of_60",
+  "input": {"k":58,"n":60,"p0":0.90000000000000002},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 0.12611059189969165,
+      "pLess": 0.98622292103398934,
+      "pGreater": 0.053045081815992615
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 0.96666666666666667,
+        "lower": 0.88636225725691409,
+        "upper": 0.99407730815502227
+      },
+      "wilson": {
+        "value": 0.96666666666666667,
+        "lower": 0.88636225725691409,
+        "upper": 0.99081068074380219
+      },
+      "clopperPearson": {
+        "value": 0.96666666666666667,
+        "lower": 0.88471895558074831,
+        "upper": 0.9959373753579065
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "n - x = 2: Poisson upper limit."
+}

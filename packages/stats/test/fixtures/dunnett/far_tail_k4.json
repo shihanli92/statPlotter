@@ -1,0 +1,22 @@
+{
+  "name": "far_tail_k4",
+  "input": {"n0":10,"n":[10,10,10,10],"df":36,"t":[7,10,15]},
+  "params": {"twoSided":true},
+  "expected": {
+    "p": [1.2944634483836765e-07, 2.469437027393382e-11, 1.8437935469945617e-16],
+    "pMvt": [7.9851134704433946e-08, 8.2711615334574162e-14, 0],
+    "pMvtErr": [9.0011025632226238e-09, 1.6184819053314181e-13, 0],
+    "q95": 2.5545115061544745,
+    "q99": 3.2086114184984553
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "mvtnorm": "1.4.2"
+    }
+  },
+  "tol": {
+    "rtol": 1.0000000000000001e-09
+  },
+  "note": "P down to ~1e-15; direct upper-tail integration. mvtnorm cannot resolve these (its absolute error is ~1e-9)."
+}

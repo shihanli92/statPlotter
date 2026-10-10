@@ -1,0 +1,47 @@
+{
+  "name": "separation",
+  "input": {"y":[0,0,0,0,0,1,1,1,1,1],"X":[[-3.1000000000000001],[-2.2000000000000002],[-1.7],[-1.1000000000000001],[-0.40000000000000002],[0.29999999999999999],[0.90000000000000002],[1.5],[2.3999999999999999],[3.2999999999999998]],"names":["X"]},
+  "params": {},
+  "expected": {
+    "coefficients": [
+      {
+        "name": "Intercept",
+        "estimate": "NaN",
+        "se": "NaN",
+        "lower": "NaN",
+        "upper": "NaN",
+        "stat": "NaN",
+        "p": "NaN",
+        "oddsRatio": "NaN",
+        "orLower": "NaN",
+        "orUpper": "NaN"
+      },
+      {
+        "name": "X",
+        "estimate": "NaN",
+        "se": "NaN",
+        "lower": "NaN",
+        "upper": "NaN",
+        "stat": "NaN",
+        "p": "NaN",
+        "oddsRatio": "NaN",
+        "orLower": "NaN",
+        "orUpper": "NaN"
+      }
+    ],
+    "n": 10,
+    "nEvents": 5,
+    "nullLogLik": -6.9314718055994531,
+    "status": "separation",
+    "logLik": -2.2204460492503131e-15
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "tol": {
+    "rtol": 1e-08,
+    "atol": 9.9999999999999995e-07
+  },
+  "note": "Complete separation: status only (logLik -> 0, compared loosely)."
+}

@@ -1,0 +1,27 @@
+{
+  "name": "summary_n2_greater_90",
+  "input": {"A":{"mean":1,"sd":0.5,"n":2},"B":{"mean":1.8,"sd":0.25,"n":2}},
+  "params": {"test":"summary","alternative":"greater","confLevel":0.9,"equalVariance":false},
+  "expected": {
+    "t": 2.0238577025077626,
+    "df": 1.470588235294118,
+    "p": 0.11206163192033791,
+    "meanA": 1,
+    "meanB": 1.8,
+    "sdA": 0.5,
+    "sdB": 0.25,
+    "nA": 2,
+    "nB": 2,
+    "diff": 0.80000000000000004,
+    "seDiff": 0.39528470752104744,
+    "ciLo": -0.079290432195807559,
+    "ciHi": "Inf",
+    "rSquared": 0.73581875052836243
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "BSDA": "1.2.2"
+    }
+  }
+}

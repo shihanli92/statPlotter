@@ -1,0 +1,418 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="283.928pt" height="262.48pt" viewBox="0 0 283.928 262.48">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="70.442" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample variables</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/box">
+<g data-id="series/lv_4c6f77/box/whiskerLo">
+<line x1="73.642" y1="141.985" x2="73.642" y2="143.785" stroke="#0072b2" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4c6f77/box/whiskerLoCap">
+<line x1="69.642" y1="143.785" x2="77.642" y2="143.785" stroke="#0072b2" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4c6f77/box/whiskerHi">
+<line x1="73.642" y1="123.985" x2="73.642" y2="122.185" stroke="#0072b2" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4c6f77/box/whiskerHiCap">
+<line x1="69.642" y1="122.185" x2="77.642" y2="122.185" stroke="#0072b2" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4c6f77/box">
+<rect x="57.442" y="123.985" width="32.4" height="18" fill="#0072b2" fill-opacity="0.25" stroke="#0072b2" stroke-width="1"/>
+</g>
+<g data-id="series/lv_4c6f77/center">
+<line x1="57.442" y1="132.985" x2="89.842" y2="132.985" stroke="#000000" stroke-width="1.25" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_48696768/box/whiskerLo">
+<line x1="127.642" y1="84.385" x2="127.642" y2="86.185" stroke="#d55e00" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_48696768/box/whiskerLoCap">
+<line x1="123.642" y1="86.185" x2="131.642" y2="86.185" stroke="#d55e00" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_48696768/box/whiskerHi">
+<line x1="127.642" y1="59.185" x2="127.642" y2="57.385" stroke="#d55e00" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_48696768/box/whiskerHiCap">
+<line x1="123.642" y1="57.385" x2="131.642" y2="57.385" stroke="#d55e00" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_48696768/box">
+<rect x="111.442" y="59.185" width="32.4" height="25.2" fill="#d55e00" fill-opacity="0.25" stroke="#d55e00" stroke-width="1"/>
+</g>
+<g data-id="series/lv_48696768/center">
+<line x1="111.442" y1="71.785" x2="143.842" y2="71.785" stroke="#000000" stroke-width="1.25" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d6964/box/whiskerLo">
+<line x1="181.642" y1="113.185" x2="181.642" y2="114.985" stroke="#009e73" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d6964/box/whiskerLoCap">
+<line x1="177.642" y1="114.985" x2="185.642" y2="114.985" stroke="#009e73" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d6964/box/whiskerHi">
+<line x1="181.642" y1="102.385" x2="181.642" y2="100.585" stroke="#009e73" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d6964/box/whiskerHiCap">
+<line x1="177.642" y1="100.585" x2="185.642" y2="100.585" stroke="#009e73" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="series/lv_4d6964/box">
+<rect x="165.442" y="102.385" width="32.4" height="10.8" fill="#009e73" fill-opacity="0.25" stroke="#009e73" stroke-width="1"/>
+</g>
+<g data-id="series/lv_4d6964/center">
+<line x1="165.442" y1="107.785" x2="197.842" y2="107.785" stroke="#000000" stroke-width="1.25" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="layer/points">
+<g data-id="series/lv_4c6f77/point/0">
+<path d="M71.142,129.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#46327e" stroke="#46327e" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4c6f77/point/3">
+<path d="M71.142,143.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#440154" stroke="#440154" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4c6f77/point/6">
+<path d="M71.142,122.185a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#3e4a89" stroke="#3e4a89" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4c6f77/point/9">
+<path d="M71.142,136.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#38598c" stroke="#38598c" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_48696768/point/1">
+<path d="M125.142,86.185a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#2c718e" stroke="#2c718e" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_48696768/point/4">
+<path d="M125.142,64.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#fde725" stroke="#fde725" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_48696768/point/7">
+<path d="M125.142,78.985a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#21918c" stroke="#21918c" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_48696768/point/10">
+<path d="M125.142,57.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#24a884" stroke="#24a884" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d6964/point/2">
+<path d="M179.142,107.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#44be71" stroke="#44be71" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d6964/point/5">
+<path d="M179.142,114.985a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#b4b4b4" stroke="#b4b4b4" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d6964/point/8">
+<path d="M179.142,100.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#8ed645" stroke="#8ed645" stroke-width="0.75"/>
+</g>
+<g data-id="series/lv_4d6964/point/11">
+<path d="M184.092,107.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#481e6f" stroke="#481e6f" stroke-width="0.75"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="46.642" y1="215.785" x2="46.642" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="46.642" y1="215.785" x2="42.642" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="219.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="46.642" y1="179.785" x2="42.642" y2="179.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="183.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="46.642" y1="143.785" x2="42.642" y2="143.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="147.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="46.642" y1="107.785" x2="42.642" y2="107.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="111.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="46.642" y1="71.785" x2="42.642" y2="71.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="75.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="46.642" y1="35.785" x2="42.642" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 125.785)" xml:space="preserve"><tspan x="-1.973" y="129.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Score</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="46.642" y1="215.785" x2="208.642" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="73.642" y1="215.785" x2="73.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="63.552" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Low</tspan></text>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="127.642" y1="215.785" x2="127.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="116.33" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">High</tspan></text>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="181.642" y1="215.785" x2="181.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="172.779" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Mid</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="109.645" y="251.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Group</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/aes/color">
+<g data-id="legend/aes/color/label">
+<text fill="#000000" xml:space="preserve"><tspan x="238.642" y="47.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">BMI</tspan></text>
+</g>
+</g>
+<g data-id="legend/aes/color/bar">
+<g data-id="legend/aes/color/bar/band/0">
+<rect x="220.642" y="149.785" width="10" height="2" fill="#450457" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/1">
+<rect x="220.642" y="148.285" width="10" height="2" fill="#460a5c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/2">
+<rect x="220.642" y="146.785" width="10" height="2" fill="#470f62" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/3">
+<rect x="220.642" y="145.285" width="10" height="2" fill="#481567" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/4">
+<rect x="220.642" y="143.785" width="10" height="2" fill="#481b6c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/5">
+<rect x="220.642" y="142.285" width="10" height="2" fill="#482070" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/6">
+<rect x="220.642" y="140.785" width="10" height="2" fill="#472575" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/7">
+<rect x="220.642" y="139.285" width="10" height="2" fill="#472a79" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/8">
+<rect x="220.642" y="137.785" width="10" height="2" fill="#462f7c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/9">
+<rect x="220.642" y="136.285" width="10" height="2" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/10">
+<rect x="220.642" y="134.785" width="10" height="2" fill="#443982" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/11">
+<rect x="220.642" y="133.285" width="10" height="2" fill="#433e85" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/12">
+<rect x="220.642" y="131.785" width="10" height="2" fill="#414287" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/13">
+<rect x="220.642" y="130.285" width="10" height="2" fill="#3f4788" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/14">
+<rect x="220.642" y="128.785" width="10" height="2" fill="#3e4b89" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/15">
+<rect x="220.642" y="127.285" width="10" height="2" fill="#3c508a" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/16">
+<rect x="220.642" y="125.785" width="10" height="2" fill="#3a548b" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/17">
+<rect x="220.642" y="124.285" width="10" height="2" fill="#38588c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/18">
+<rect x="220.642" y="122.785" width="10" height="2" fill="#365d8c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/19">
+<rect x="220.642" y="121.285" width="10" height="2" fill="#34618d" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/20">
+<rect x="220.642" y="119.785" width="10" height="2" fill="#32658d" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/21">
+<rect x="220.642" y="118.285" width="10" height="2" fill="#30698d" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/22">
+<rect x="220.642" y="116.785" width="10" height="2" fill="#2f6c8e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/23">
+<rect x="220.642" y="115.285" width="10" height="2" fill="#2d708e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/24">
+<rect x="220.642" y="113.785" width="10" height="2" fill="#2b748e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/25">
+<rect x="220.642" y="112.285" width="10" height="2" fill="#2a788e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/26">
+<rect x="220.642" y="110.785" width="10" height="2" fill="#287c8e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/27">
+<rect x="220.642" y="109.285" width="10" height="2" fill="#27808e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/28">
+<rect x="220.642" y="107.785" width="10" height="2" fill="#25848e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/29">
+<rect x="220.642" y="106.285" width="10" height="2" fill="#24878d" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/30">
+<rect x="220.642" y="104.785" width="10" height="2" fill="#238b8d" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/31">
+<rect x="220.642" y="103.285" width="10" height="2" fill="#228e8c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/32">
+<rect x="220.642" y="101.785" width="10" height="2" fill="#21928c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/33">
+<rect x="220.642" y="100.285" width="10" height="2" fill="#20968b" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/34">
+<rect x="220.642" y="98.785" width="10" height="2" fill="#20998a" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/35">
+<rect x="220.642" y="97.285" width="10" height="2" fill="#1f9d89" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/36">
+<rect x="220.642" y="95.785" width="10" height="2" fill="#20a187" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/37">
+<rect x="220.642" y="94.285" width="10" height="2" fill="#22a485" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/38">
+<rect x="220.642" y="92.785" width="10" height="2" fill="#24a884" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/39">
+<rect x="220.642" y="91.285" width="10" height="2" fill="#26ab82" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/40">
+<rect x="220.642" y="89.785" width="10" height="2" fill="#2aaf7f" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/41">
+<rect x="220.642" y="88.285" width="10" height="2" fill="#30b37c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/42">
+<rect x="220.642" y="86.785" width="10" height="2" fill="#35b679" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/43">
+<rect x="220.642" y="85.285" width="10" height="2" fill="#3bba76" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/44">
+<rect x="220.642" y="83.785" width="10" height="2" fill="#42bd72" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/45">
+<rect x="220.642" y="82.285" width="10" height="2" fill="#4ac16e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/46">
+<rect x="220.642" y="80.785" width="10" height="2" fill="#51c469" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/47">
+<rect x="220.642" y="79.285" width="10" height="2" fill="#59c765" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/48">
+<rect x="220.642" y="77.785" width="10" height="2" fill="#62c960" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/49">
+<rect x="220.642" y="76.285" width="10" height="2" fill="#6bcc5b" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/50">
+<rect x="220.642" y="74.785" width="10" height="2" fill="#74cf55" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/51">
+<rect x="220.642" y="73.285" width="10" height="2" fill="#7dd250" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/52">
+<rect x="220.642" y="71.785" width="10" height="2" fill="#87d44a" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/53">
+<rect x="220.642" y="70.285" width="10" height="2" fill="#91d643" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/54">
+<rect x="220.642" y="68.785" width="10" height="2" fill="#9bd93c" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/55">
+<rect x="220.642" y="67.285" width="10" height="2" fill="#a5db35" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/56">
+<rect x="220.642" y="65.785" width="10" height="2" fill="#afdd2f" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/57">
+<rect x="220.642" y="64.285" width="10" height="2" fill="#bade29" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/58">
+<rect x="220.642" y="62.785" width="10" height="2" fill="#c5e023" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/59">
+<rect x="220.642" y="61.285" width="10" height="2" fill="#d0e11d" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/60">
+<rect x="220.642" y="59.785" width="10" height="2" fill="#dae31b" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/61">
+<rect x="220.642" y="58.285" width="10" height="2" fill="#e4e41e" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/62">
+<rect x="220.642" y="56.785" width="10" height="2" fill="#eee521" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/band/63">
+<rect x="220.642" y="55.785" width="10" height="1.5" fill="#f8e624" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/bar/frame">
+<rect x="220.642" y="55.785" width="10" height="96" fill="none" stroke="#000000" stroke-width="0.5"/>
+</g>
+<g data-id="legend/aes/color/bar/tick/0">
+<line x1="230.642" y1="150.936" x2="233.642" y2="150.936" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/aes/color/bar/label/0">
+<text fill="#000000" xml:space="preserve"><tspan x="235.642" y="154.749" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20.0</tspan></text>
+</g>
+<g data-id="legend/aes/color/bar/tick/1">
+<line x1="230.642" y1="129.697" x2="233.642" y2="129.697" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/aes/color/bar/label/1">
+<text fill="#000000" xml:space="preserve"><tspan x="235.642" y="133.51" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">22.5</tspan></text>
+</g>
+<g data-id="legend/aes/color/bar/tick/2">
+<line x1="230.642" y1="108.458" x2="233.642" y2="108.458" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/aes/color/bar/label/2">
+<text fill="#000000" xml:space="preserve"><tspan x="235.642" y="112.271" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25.0</tspan></text>
+</g>
+<g data-id="legend/aes/color/bar/tick/3">
+<line x1="230.642" y1="87.219" x2="233.642" y2="87.219" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/aes/color/bar/label/3">
+<text fill="#000000" xml:space="preserve"><tspan x="235.642" y="91.032" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">27.5</tspan></text>
+</g>
+<g data-id="legend/aes/color/bar/tick/4">
+<line x1="230.642" y1="65.98" x2="233.642" y2="65.98" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/aes/color/bar/label/4">
+<text fill="#000000" xml:space="preserve"><tspan x="235.642" y="69.793" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30.0</tspan></text>
+</g>
+<g data-id="legend/aes/color/bar/label">
+<text fill="#000000" xml:space="preserve"></text>
+</g>
+</g>
+<g data-id="legend/aes/color/missing">
+<g data-id="legend/aes/color/missing/swatch">
+<rect x="220.642" y="158.785" width="14" height="10" fill="#b4b4b4" stroke="none"/>
+</g>
+<g data-id="legend/aes/color/missing/label">
+<text fill="#000000" xml:space="preserve"><tspan x="238.642" y="167.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Missing</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

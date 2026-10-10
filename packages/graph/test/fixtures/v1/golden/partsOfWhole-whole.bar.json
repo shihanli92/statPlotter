@@ -1,0 +1,133 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Untitled",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "t1": {
+   "kind": "table",
+   "id": "t1",
+   "name": "Sample partsOfWhole",
+   "tableKind": "partsOfWhole",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 4,
+   "rowTitles": [
+    "Rent",
+    "Food",
+    "Travel",
+    "Other"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "a",
+     "title": "2024",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        40,
+        25,
+        20,
+        15
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b",
+     "title": "2025",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        30,
+        30,
+        25,
+        15
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "g1": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample partsOfWhole",
+   "graphType": "whole.bar",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 120,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Percent of total"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 100
+     },
+     "ticks": {
+      "interval": 25,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample partsOfWhole"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "t1",
+  "g1"
+ ]
+}

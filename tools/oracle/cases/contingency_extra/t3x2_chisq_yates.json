@@ -1,0 +1,14 @@
+{
+  "input": {
+    "table": [
+      [12, 18],
+      [20, 10],
+      [28, 4]
+    ]
+  },
+  "params": {
+    "test": "chiSquare",
+    "yates": true,
+    "method": "sidak"
+  }
+}

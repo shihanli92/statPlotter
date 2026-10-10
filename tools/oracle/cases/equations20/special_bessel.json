@@ -1,0 +1,76 @@
+{
+  "input": {
+    "calls": [
+      {
+        "fn": "besselj",
+        "args": [0, 1]
+      },
+      {
+        "fn": "besselj",
+        "args": [1, 10]
+      },
+      {
+        "fn": "besselj",
+        "args": [5, 1]
+      },
+      {
+        "fn": "besselj",
+        "args": [30, 10]
+      },
+      {
+        "fn": "besselj",
+        "args": [2, 57.299999999999997]
+      },
+      {
+        "fn": "besselj",
+        "args": [-3, 4.0999999999999996]
+      },
+      {
+        "fn": "bessely",
+        "args": [0, 1]
+      },
+      {
+        "fn": "bessely",
+        "args": [1, 0.10000000000000001]
+      },
+      {
+        "fn": "bessely",
+        "args": [3, 50.700000000000003]
+      },
+      {
+        "fn": "bessely",
+        "args": [7, 2.2000000000000002]
+      },
+      {
+        "fn": "besseli",
+        "args": [0, 0.5]
+      },
+      {
+        "fn": "besseli",
+        "args": [2, 3]
+      },
+      {
+        "fn": "besseli",
+        "args": [10, 40]
+      },
+      {
+        "fn": "besselk",
+        "args": [0, 0.5]
+      },
+      {
+        "fn": "besselk",
+        "args": [3, 2]
+      },
+      {
+        "fn": "besselk",
+        "args": [1, 30]
+      },
+      {
+        "fn": "besselk",
+        "args": [6, 0.29999999999999999]
+      }
+    ]
+  },
+  "params": {"task":"special"},
+  "note": "Arguments away from the zeros of J and Y, where only absolute accuracy is meaningful."
+}

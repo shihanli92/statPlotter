@@ -1,0 +1,93 @@
+{
+  "name": "t2x2_zero_row",
+  "input": {"table":[[0,0],[3,4]]},
+  "params": {},
+  "expected": {
+    "chiSquare": {
+      "chiSq": "NaN",
+      "df": 1,
+      "p": "NaN",
+      "expected": [
+        [0, 0],
+        [3, 4]
+      ]
+    },
+    "fisher": {
+      "p": 1,
+      "pLess": 1,
+      "pGreater": 1
+    },
+    "chiSquareYates": {
+      "chiSq": "Inf",
+      "df": 1,
+      "p": 0,
+      "expected": [
+        [0, 0],
+        [3, 4]
+      ]
+    },
+    "trend": {
+      "chiSq": "NaN",
+      "df": 1,
+      "p": "NaN"
+    },
+    "twoByTwo": {
+      "relativeRisk": {
+        "value": "NaN",
+        "lower": "NaN",
+        "upper": "NaN"
+      },
+      "riskDifference": {
+        "value": "NaN",
+        "lower": "NaN",
+        "upper": "NaN"
+      },
+      "riskDifferenceNoCC": {
+        "value": "NaN",
+        "lower": "NaN",
+        "upper": "NaN"
+      },
+      "nnt": null,
+      "oddsRatio": {
+        "value": "NaN",
+        "lower": 0,
+        "upper": "Inf"
+      },
+      "sensitivity": {
+        "value": "NaN",
+        "lower": "NaN",
+        "upper": "NaN"
+      },
+      "specificity": {
+        "value": 0.5714285714285714,
+        "lower": 0.25045836452765724,
+        "upper": 0.84178014474853025
+      },
+      "ppv": {
+        "value": 0,
+        "lower": 0,
+        "upper": 0.56149703175504539
+      },
+      "npv": {
+        "value": 1,
+        "lower": 0.5101091635454027,
+        "upper": 1
+      },
+      "likelihoodRatio": "NaN"
+    },
+    "mcNemar": {
+      "chiSq": 1.3333333333333333,
+      "p": 0.24821307898992362,
+      "pExact": 0.25000000000000006
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "PropCIs": "0.3.0",
+      "exact2x2": "1.7.0",
+      "contingencytables": "3.1.0"
+    }
+  },
+  "note": "Empty first row: its proportions and the RR, difference and OR are NaN."
+}

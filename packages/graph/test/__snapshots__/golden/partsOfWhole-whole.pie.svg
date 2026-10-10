@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396.153pt" height="197.641pt" viewBox="0 0 396.153 197.641">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="95.266" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample partsOfWhole</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="series/a">
+<g data-id="series/a/slice/0">
+<polygon points="88,100.841 88,32.489 90.385,32.53 92.768,32.655 95.145,32.863 97.513,33.154 99.869,33.527 102.211,33.982 104.536,34.519 106.84,35.136 109.122,35.834 111.378,36.611 113.605,37.466 115.801,38.398 117.964,39.406 120.089,40.489 122.176,41.646 124.221,42.875 126.222,44.174 128.176,45.543 130.082,46.979 131.936,48.48 133.736,50.045 135.481,51.672 137.168,53.359 138.795,55.104 140.361,56.905 141.862,58.759 143.298,60.664 144.666,62.619 145.966,64.62 147.195,66.665 148.351,68.751 149.434,70.877 150.443,73.039 151.375,75.236 152.23,77.463 153.007,79.719 153.704,82 154.322,84.305 154.858,86.629 155.314,88.971 155.687,91.328 155.978,93.696 156.185,96.073 156.31,98.455 156.352,100.841 156.31,103.226 156.185,105.609 155.978,107.985 155.687,110.353 155.314,112.71 154.858,115.052 154.322,117.376 153.704,119.681 153.007,121.963 152.23,124.218 151.375,126.446 150.443,128.642 149.434,130.804 148.351,132.93 147.195,135.017 145.966,137.062 144.666,139.063 143.298,141.017 141.862,142.922 140.361,144.776 138.795,146.577 137.168,148.322 135.481,150.009 133.736,151.636 131.936,153.201 130.082,154.703 128.176,156.139" fill="#0072b2" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/a/slice/1">
+<polygon points="88,100.841 128.176,156.139 126.222,157.507 124.221,158.806 122.176,160.035 120.089,161.192 117.964,162.275 115.801,163.283 113.605,164.215 111.378,165.07 109.122,165.847 106.84,166.545 104.536,167.162 102.211,167.699 99.869,168.154 97.513,168.527 95.145,168.818 92.768,169.026 90.385,169.151 88,169.193 85.615,169.151 83.232,169.026 80.855,168.818 78.487,168.527 76.131,168.154 73.789,167.699 71.464,167.162 69.16,166.545 66.878,165.847 64.622,165.07 62.395,164.215 60.199,163.283 58.036,162.275 55.911,161.192 53.824,160.035 51.779,158.806 49.778,157.507 47.824,156.139 45.918,154.703 44.064,153.201 42.264,151.636 40.519,150.009 38.832,148.322 37.205,146.577 35.639,144.776 34.138,142.922 32.702,141.017" fill="#d55e00" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/a/slice/2">
+<polygon points="88,100.841 32.702,141.017 31.334,139.063 30.034,137.062 28.805,135.017 27.649,132.93 26.566,130.804 25.557,128.642 24.625,126.446 23.77,124.218 22.993,121.963 22.296,119.681 21.678,117.376 21.142,115.052 20.686,112.71 20.313,110.353 20.022,107.985 19.815,105.609 19.69,103.226 19.648,100.841 19.69,98.455 19.815,96.073 20.022,93.696 20.313,91.328 20.686,88.971 21.142,86.629 21.678,84.305 22.296,82 22.993,79.719 23.77,77.463 24.625,75.236 25.557,73.039 26.566,70.877 27.649,68.751 28.805,66.665 30.034,64.62 31.334,62.619 32.702,60.664" fill="#009e73" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/a/slice/3">
+<polygon points="88,100.841 32.702,60.664 34.138,58.759 35.639,56.905 37.205,55.104 38.832,53.359 40.519,51.672 42.264,50.045 44.064,48.48 45.918,46.979 47.824,45.543 49.778,44.174 51.779,42.875 53.824,41.646 55.911,40.489 58.036,39.406 60.199,38.398 62.395,37.466 64.622,36.611 66.878,35.834 69.16,35.136 71.464,34.519 73.789,33.982 76.131,33.527 78.487,33.154 80.855,32.863 83.232,32.655 85.615,32.53 88,32.489" fill="#cc79a7" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/a/sliceLabel/0">
+<text fill="#ffffff" xml:space="preserve"><tspan x="117.296" y="91.559" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">40%</tspan></text>
+</g>
+<g data-id="series/a/sliceLabel/1">
+<text fill="#ffffff" xml:space="preserve"><tspan x="70.363" y="146.511" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25%</tspan></text>
+</g>
+<g data-id="series/a/sliceLabel/2">
+<text fill="#ffffff" xml:space="preserve"><tspan x="34.614" y="104.654" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20%</tspan></text>
+</g>
+<g data-id="series/a/sliceLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="57.753" y="66.895" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15%</tspan></text>
+</g>
+<g data-id="series/a/title">
+<text fill="#000000" xml:space="preserve"><tspan x="75.765" y="184.654" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">2024</tspan></text>
+</g>
+</g>
+<g data-id="series/b">
+<g data-id="series/b/slice/0">
+<polygon points="248,100.841 248,32.489 250.385,32.53 252.768,32.655 255.145,32.863 257.513,33.154 259.869,33.527 262.211,33.982 264.536,34.519 266.84,35.136 269.122,35.834 271.378,36.611 273.605,37.466 275.801,38.398 277.964,39.406 280.089,40.489 282.176,41.646 284.221,42.875 286.222,44.174 288.176,45.543 290.082,46.979 291.936,48.48 293.736,50.045 295.481,51.672 297.168,53.359 298.795,55.104 300.361,56.905 301.862,58.759 303.298,60.664 304.666,62.619 305.966,64.62 307.195,66.665 308.351,68.751 309.434,70.877 310.443,73.039 311.375,75.236 312.23,77.463 313.007,79.719 313.704,82 314.322,84.305 314.858,86.629 315.314,88.971 315.687,91.328 315.978,93.696 316.185,96.073 316.31,98.455 316.352,100.841 316.31,103.226 316.185,105.609 315.978,107.985 315.687,110.353 315.314,112.71 314.858,115.052 314.322,117.376 313.704,119.681 313.007,121.963" fill="#0072b2" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/b/slice/1">
+<polygon points="248,100.841 313.007,121.963 312.23,124.218 311.375,126.446 310.443,128.642 309.434,130.804 308.351,132.93 307.195,135.017 305.966,137.062 304.666,139.063 303.298,141.017 301.862,142.922 300.361,144.776 298.795,146.577 297.168,148.322 295.481,150.009 293.736,151.636 291.936,153.201 290.082,154.703 288.176,156.139 286.222,157.507 284.221,158.806 282.176,160.035 280.089,161.192 277.964,162.275 275.801,163.283 273.605,164.215 271.378,165.07 269.122,165.847 266.84,166.545 264.536,167.162 262.211,167.699 259.869,168.154 257.513,168.527 255.145,168.818 252.768,169.026 250.385,169.151 248,169.193 245.615,169.151 243.232,169.026 240.855,168.818 238.487,168.527 236.131,168.154 233.789,167.699 231.464,167.162 229.16,166.545 226.878,165.847 224.622,165.07 222.395,164.215 220.199,163.283 218.036,162.275 215.911,161.192 213.824,160.035 211.779,158.806 209.778,157.507 207.824,156.139" fill="#d55e00" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/b/slice/2">
+<polygon points="248,100.841 207.824,156.139 205.918,154.703 204.064,153.201 202.264,151.636 200.519,150.009 198.832,148.322 197.205,146.577 195.639,144.776 194.138,142.922 192.702,141.017 191.334,139.063 190.034,137.062 188.805,135.017 187.649,132.93 186.566,130.804 185.557,128.642 184.625,126.446 183.77,124.218 182.993,121.963 182.296,119.681 181.678,117.376 181.142,115.052 180.686,112.71 180.313,110.353 180.022,107.985 179.815,105.609 179.69,103.226 179.648,100.841 179.69,98.455 179.815,96.073 180.022,93.696 180.313,91.328 180.686,88.971 181.142,86.629 181.678,84.305 182.296,82 182.993,79.719 183.77,77.463 184.625,75.236 185.557,73.039 186.566,70.877 187.649,68.751 188.805,66.665 190.034,64.62 191.334,62.619 192.702,60.664" fill="#009e73" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/b/slice/3">
+<polygon points="248,100.841 192.702,60.664 194.138,58.759 195.639,56.905 197.205,55.104 198.832,53.359 200.519,51.672 202.264,50.045 204.064,48.48 205.918,46.979 207.824,45.543 209.778,44.174 211.779,42.875 213.824,41.646 215.911,40.489 218.036,39.406 220.199,38.398 222.395,37.466 224.622,36.611 226.878,35.834 229.16,35.136 231.464,34.519 233.789,33.982 236.131,33.527 238.487,33.154 240.855,32.863 243.232,32.655 245.615,32.53 248,32.489" fill="#cc79a7" stroke="#ffffff" stroke-width="1"/>
+</g>
+<g data-id="series/b/sliceLabel/0">
+<text fill="#ffffff" xml:space="preserve"><tspan x="271.277" y="79.745" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30%</tspan></text>
+</g>
+<g data-id="series/b/sliceLabel/1">
+<text fill="#ffffff" xml:space="preserve"><tspan x="250.088" y="144.958" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30%</tspan></text>
+</g>
+<g data-id="series/b/sliceLabel/2">
+<text fill="#ffffff" xml:space="preserve"><tspan x="195.135" y="111.284" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25%</tspan></text>
+</g>
+<g data-id="series/b/sliceLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="217.753" y="66.895" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15%</tspan></text>
+</g>
+<g data-id="series/b/title">
+<text fill="#000000" xml:space="preserve"><tspan x="235.765" y="184.654" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">2025</tspan></text>
+</g>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/category/0">
+<g data-id="legend/category/0/swatch">
+<rect x="340" y="32.641" width="14" height="10" fill="#0072b2" stroke="#808080" stroke-width="0.5"/>
+</g>
+<g data-id="legend/category/0/label">
+<text fill="#000000" xml:space="preserve"><tspan x="358" y="41.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Rent</tspan></text>
+</g>
+</g>
+<g data-id="legend/category/1">
+<g data-id="legend/category/1/swatch">
+<rect x="340" y="48.641" width="14" height="10" fill="#d55e00" stroke="#808080" stroke-width="0.5"/>
+</g>
+<g data-id="legend/category/1/label">
+<text fill="#000000" xml:space="preserve"><tspan x="358" y="57.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Food</tspan></text>
+</g>
+</g>
+<g data-id="legend/category/2">
+<g data-id="legend/category/2/swatch">
+<rect x="340" y="64.641" width="14" height="10" fill="#009e73" stroke="#808080" stroke-width="0.5"/>
+</g>
+<g data-id="legend/category/2/label">
+<text fill="#000000" xml:space="preserve"><tspan x="358" y="73.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Travel</tspan></text>
+</g>
+</g>
+<g data-id="legend/category/3">
+<g data-id="legend/category/3/swatch">
+<rect x="340" y="80.641" width="14" height="10" fill="#cc79a7" stroke="#808080" stroke-width="0.5"/>
+</g>
+<g data-id="legend/category/3/label">
+<text fill="#000000" xml:space="preserve"><tspan x="358" y="89.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Other</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

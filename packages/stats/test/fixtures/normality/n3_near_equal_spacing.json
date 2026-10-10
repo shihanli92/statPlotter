@@ -1,0 +1,36 @@
+{
+  "name": "n3_near_equal_spacing",
+  "input": {"x":[1,2,3.0001000000000002]},
+  "params": {},
+  "expected": {
+    "dagostino": {
+      "stat": "NaN",
+      "p": "NaN",
+      "skewness": "NaN",
+      "kurtosis": "NaN",
+      "zSkewness": "NaN",
+      "zKurtosis": "NaN"
+    },
+    "shapiroWilk": {
+      "stat": 0.99999999916675009,
+      "p": 0.99994486987002396
+    },
+    "andersonDarling": {
+      "stat": "NaN",
+      "p": "NaN",
+      "a2": "NaN"
+    },
+    "ks": {
+      "stat": "NaN",
+      "p": "NaN",
+      "pAbove010": false
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "nortest": "1.0.4",
+      "moments": "0.14.1"
+    }
+  }
+}

@@ -1,0 +1,1749 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Formatting and figure layout",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Temperature and heart rate",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 13,
+   "rowTitles": null,
+   "x": {
+    "title": "Time (h)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       4,
+       8,
+       12,
+       16,
+       20,
+       24,
+       28,
+       32,
+       36,
+       40,
+       44,
+       48
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Temperature",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        36.99,
+        37.91,
+        38.2,
+        38.64,
+        38.9,
+        38.65,
+        38.16,
+        37.65,
+        37.19,
+        37.14,
+        36.94,
+        37.03,
+        36.87
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Heart rate",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        80,
+        87,
+        107,
+        115,
+        124,
+        120,
+        105,
+        88,
+        83,
+        76,
+        70,
+        65,
+        74
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Body temperature (left axis) and heart rate (right axis) during a fever, every 4 hours. Simulated data. Heart rate is moved to a right Y axis with its own range and title (Format graph › data set › “Plot on the right Y axis”)."
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Temperature and heart rate",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "zid000002": {
+     "color": {
+      "rgb": "#0072b2"
+     },
+     "line": {
+      "show": true
+     }
+    },
+    "zid000003": {
+     "color": {
+      "rgb": "#d55e00"
+     },
+     "yAxis": "right",
+     "line": {
+      "show": true,
+      "stroke": {
+       "color": {
+        "rgb": "#d55e00"
+       },
+       "width": 1,
+       "dash": "dash"
+      }
+     },
+     "points": {
+      "shape": "square",
+      "fill": {
+       "type": "solid",
+       "color": {
+        "rgb": "#ffffff"
+       },
+       "opacity": 1
+      }
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 220,
+    "plotHeight": 160
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time (h)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Temperature (°C)"
+       }
+      ],
+      "style": {
+       "color": {
+        "rgb": "#0072b2"
+       }
+      }
+     },
+     "scale": "linear",
+     "range": {
+      "min": 36.5,
+      "max": 39.5
+     },
+     "ticks": {
+      "interval": 0.5,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "tickLabels": {
+      "color": {
+       "rgb": "#0072b2"
+      }
+     },
+     "line": {
+      "color": {
+       "rgb": "#0072b2"
+      }
+     }
+    },
+    "y2": {
+     "type": "continuous",
+     "scale": "linear",
+     "range": {
+      "min": 50,
+      "max": 130
+     },
+     "ticks": {
+      "interval": 20,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "title": {
+      "content": [
+       {
+        "text": "Heart rate (bpm)"
+       }
+      ],
+      "style": {
+       "color": {
+        "rgb": "#d55e00"
+       }
+      }
+     },
+     "tickLabels": {
+      "color": {
+       "rgb": "#d55e00"
+      }
+     },
+     "line": {
+      "color": {
+       "rgb": "#d55e00"
+      }
+     }
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "top"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Two Y axes"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000005": {
+   "kind": "table",
+   "id": "zid000005",
+   "name": "Drawing order",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000006",
+     "title": "Sham",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        27.9,
+        30.3,
+        35.9,
+        28.3,
+        31.5,
+        32.1,
+        22.2,
+        29
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000007",
+     "title": "Injury",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        49.1,
+        45.2,
+        50.4,
+        47.6,
+        39.8,
+        45.2,
+        43.9,
+        36.7
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000008",
+     "title": "Injury + drug",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        29.9,
+        41.1,
+        35.4,
+        36.1,
+        42.2,
+        38.9,
+        34.7,
+        40.8
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Grip strength (N) of 8 mice per group. Simulated data. The graph puts the error bars and the mean line behind the points (Format graph › Appearance › drawing order), with large points with a white border and heavy grey error bars."
+  },
+  "zid000009": {
+   "kind": "graph",
+   "id": "zid000009",
+   "name": "Drawing order",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000005",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 210,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Grip strength (N)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Error bars behind points"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto",
+      "size": 9,
+      "border": {
+       "color": {
+        "rgb": "#ffffff"
+       },
+       "width": 1,
+       "dash": "solid"
+      }
+     },
+     "center": {
+      "stat": "mean",
+      "width": 0.55,
+      "line": {
+       "color": {
+        "rgb": "#9a9a9a"
+       },
+       "width": 3,
+       "dash": "solid"
+      }
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both",
+      "capWidth": 14,
+      "line": {
+       "color": {
+        "rgb": "#9a9a9a"
+       },
+       "width": 3,
+       "dash": "solid"
+      }
+     },
+     "markOrder": [
+      "points",
+      "center",
+      "error"
+     ]
+    }
+   }
+  },
+  "zid000010": {
+   "kind": "table",
+   "id": "zid000010",
+   "name": "Single bar formats",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 5
+   },
+   "rowCount": 3,
+   "rowTitles": [
+    "Day 1",
+    "Day 3",
+    "Day 7"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000011",
+     "title": "Vehicle",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        15.3,
+        17.9,
+        20.1
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        18.2,
+        17.5,
+        24.3
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        13.9,
+        26.9,
+        20.6
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        15.5,
+        18.5,
+        20
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        16.5,
+        20.3,
+        17.3
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000012",
+     "title": "Drug",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        13.6,
+        22.9,
+        38.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        23.7,
+        27.6,
+        38.8
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        20.8,
+        25.5,
+        42.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        19.3,
+        24.6,
+        43
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        23.1,
+        26.2,
+        39.1
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Wound closure (%) on three days, 5 mice per cell. Simulated data. White and black bars, with the Day 7 drug bar singled out in its own colour (click a data set, then one of its bars, to format that bar alone)."
+  },
+  "zid000013": {
+   "kind": "graph",
+   "id": "zid000013",
+   "name": "Single bar formats",
+   "graphType": "grouped.bar",
+   "seriesSource": {
+    "table": "zid000010",
+    "include": "all"
+   },
+   "seriesOverrides": {
+    "zid000011": {
+     "color": {
+      "rgb": "#000000"
+     },
+     "bar": {
+      "fill": {
+       "type": "solid",
+       "color": {
+        "rgb": "#ffffff"
+       },
+       "opacity": 1
+      }
+     },
+     "points": {
+      "fill": {
+       "type": "solid",
+       "color": {
+        "rgb": "#ffffff"
+       },
+       "opacity": 1
+      }
+     }
+    },
+    "zid000012": {
+     "color": {
+      "rgb": "#000000"
+     },
+     "bar": {
+      "fill": {
+       "type": "solid",
+       "color": {
+        "rgb": "#404040"
+       },
+       "opacity": 1
+      }
+     },
+     "points": {
+      "fill": {
+       "type": "solid",
+       "color": {
+        "rgb": "#ffffff"
+       },
+       "opacity": 1
+      }
+     }
+    }
+   },
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 200,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Wound closure (%)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [
+    {
+     "type": "bracket",
+     "id": "zid000015",
+     "a": "zid000011",
+     "b": "zid000012",
+     "rowA": 0,
+     "rowB": 0,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000014",
+      "comparison": "row0:zid000011|zid000012",
+      "show": "stars"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000016",
+     "a": "zid000011",
+     "b": "zid000012",
+     "rowA": 1,
+     "rowB": 1,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000014",
+      "comparison": "row1:zid000011|zid000012",
+      "show": "stars"
+     },
+     "level": "auto"
+    },
+    {
+     "type": "bracket",
+     "id": "zid000017",
+     "a": "zid000011",
+     "b": "zid000012",
+     "rowA": 2,
+     "rowB": 2,
+     "label": {
+      "source": "analysis",
+      "analysis": "zid000014",
+      "comparison": "row2:zid000011|zid000012",
+      "show": "stars"
+     },
+     "level": "auto"
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "inside",
+    "inside": {
+     "x": 0.03,
+     "y": 0.02
+    }
+   },
+   "title": {
+    "content": [
+     {
+      "text": "One bar highlighted"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "jitter": "auto"
+     },
+     "center": {
+      "stat": "mean"
+     },
+     "error": {
+      "stat": "SD",
+      "direction": "both"
+     }
+    }
+   },
+   "pointOverrides": {
+    "zid000012": {
+     "r2": {
+      "bar": {
+       "fill": {
+        "type": "solid",
+        "color": {
+         "rgb": "#cc3311"
+        },
+        "opacity": 1
+       },
+       "border": {
+        "color": {
+         "rgb": "#000000"
+        },
+        "width": 1,
+        "dash": "solid"
+       }
+      }
+     }
+    }
+   }
+  },
+  "zid000014": {
+   "kind": "analysis",
+   "id": "zid000014",
+   "name": "Two-way ANOVA",
+   "analysisId": "twoWayAnova",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000010",
+    "dataSets": [
+     "zid000011",
+     "zid000012"
+    ]
+   },
+   "params": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "withinRows",
+    "kind": "allPairs",
+    "family": "perBlock",
+    "allPairsMethod": "sidak",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000018": {
+   "kind": "table",
+   "id": "zid000018",
+   "name": "Viral load",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 4
+   },
+   "rowCount": 8,
+   "rowTitles": null,
+   "x": {
+    "title": "Days after infection",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       2,
+       4,
+       6,
+       8,
+       10,
+       12,
+       14
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000019",
+     "title": "Untreated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        7.33,
+        8.36,
+        7.32,
+        5,
+        5,
+        5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        6.94,
+        8.95,
+        7.52,
+        5,
+        5,
+        5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        7.59,
+        8.89,
+        6.76,
+        5,
+        5,
+        5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        6.53,
+        8.49,
+        7.22,
+        5,
+        5,
+        5
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000020",
+     "title": "Treated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        6.09,
+        5.01,
+        5,
+        5,
+        5,
+        5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        6.33,
+        5,
+        5,
+        5,
+        5,
+        5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        6.53,
+        5,
+        5,
+        5,
+        5,
+        5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        5,
+        5,
+        6.54,
+        5,
+        5,
+        5,
+        5,
+        5
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "log10 viral copies per mL, 4 animals per time point. Simulated; values below the limit of detection (5) are entered at the limit. The dashed limit line and its label are annotations drawn behind the data; the graph uses a serif font, its own colour palette, a boxed frame and grid lines."
+  },
+  "zid000022": {
+   "kind": "graph",
+   "id": "zid000022",
+   "name": "Viral load",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000018",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 220,
+    "plotHeight": 160
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Days after infection"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": -0.5,
+      "max": 14.5
+     },
+     "ticks": {
+      "interval": 2,
+      "minor": 1
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "grid": {
+      "major": {
+       "color": {
+        "rgb": "#e6e6e6"
+       },
+       "width": 0.75,
+       "dash": "solid"
+      }
+     }
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "log"
+       },
+       {
+        "text": "10",
+        "sub": true
+       },
+       {
+        "text": " copies/mL"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 4,
+      "max": 10
+     },
+     "ticks": {
+      "interval": 1,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "grid": {
+      "major": {
+       "color": {
+        "rgb": "#e6e6e6"
+       },
+       "width": 0.75,
+       "dash": "solid"
+      }
+     }
+    }
+   },
+   "annotations": [
+    {
+     "type": "line",
+     "id": "zid000021",
+     "space": "data",
+     "from": {
+      "x": -0.5,
+      "y": 5
+     },
+     "to": {
+      "x": 14.5,
+      "y": 5
+     },
+     "stroke": {
+      "color": {
+       "rgb": "#888888"
+      },
+      "width": 1.25,
+      "dash": "dash"
+     },
+     "arrow": "none",
+     "behind": true
+    },
+    {
+     "type": "text",
+     "id": "zid000023",
+     "anchor": {
+      "space": "data",
+      "x": 8.5,
+      "y": 4.55
+     },
+     "content": {
+      "content": [
+       {
+        "text": "Limit of detection"
+       }
+      ],
+      "style": {
+       "size": 10,
+       "italic": true,
+       "color": {
+        "rgb": "#666666"
+       }
+      }
+     },
+     "behind": true
+    }
+   ],
+   "legend": {
+    "show": true,
+    "position": "inside",
+    "inside": {
+     "x": 0.62,
+     "y": 0.04
+    }
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Serif font, custom palette"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "points": {
+      "show": true,
+      "replicates": "mean"
+     },
+     "error": {
+      "stat": "SEM",
+      "direction": "both"
+     },
+     "line": {
+      "show": true,
+      "stroke": {
+       "color": {
+        "series": true
+       },
+       "width": 1.5,
+       "dash": "solid"
+      }
+     }
+    },
+    "text": {
+     "font": "serif"
+    },
+    "palette": [
+     "#7b3294",
+     "#008837",
+     "#c2a5cf",
+     "#a6dba0"
+    ],
+    "frame": "box"
+   }
+  },
+  "zid000024": {
+   "kind": "table",
+   "id": "zid000024",
+   "name": "Tumour cohort",
+   "tableKind": "multipleVariables",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 30,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000025",
+     "title": "Age",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        66,
+        62,
+        65,
+        66,
+        81,
+        63,
+        52,
+        57,
+        61,
+        62,
+        71,
+        54,
+        55,
+        61,
+        56,
+        52,
+        62,
+        69,
+        57,
+        48,
+        72,
+        43,
+        35,
+        66,
+        44,
+        42,
+        47,
+        67,
+        60,
+        46
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000026",
+     "title": "Tumour volume (cm³)",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2.96,
+        1.65,
+        3.41,
+        2.47,
+        3.15,
+        2.17,
+        1.93,
+        3.19,
+        5.12,
+        1.95,
+        4.34,
+        1.89,
+        2.75,
+        2.78,
+        0.51,
+        2.39,
+        3.08,
+        2.65,
+        3.24,
+        2.73,
+        2.82,
+        0.45,
+        0.2,
+        4,
+        2.6,
+        1.29,
+        2.29,
+        1.88,
+        2.81,
+        1.9
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000027",
+     "title": "Nodes involved",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2,
+        1,
+        8,
+        2,
+        3,
+        2,
+        1,
+        2,
+        10,
+        2,
+        5,
+        0,
+        2,
+        2,
+        1,
+        0,
+        3,
+        0,
+        3,
+        5,
+        3,
+        0,
+        0,
+        7,
+        6,
+        1,
+        4,
+        0,
+        1,
+        2
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000028",
+     "title": "Marker (ng/mL)",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.24,
+        1.4,
+        1.15,
+        1.64,
+        2.01,
+        1.28,
+        0.97,
+        0.83,
+        0.96,
+        1.13,
+        1.67,
+        0.72,
+        0.8,
+        1.66,
+        0.42,
+        1.08,
+        0.78,
+        1.69,
+        0.62,
+        0.69,
+        1.7,
+        0.62,
+        -0.19,
+        1.34,
+        0.09,
+        0.5,
+        0.57,
+        1.31,
+        0.57,
+        0.73
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Age, tumour volume, number of lymph nodes involved and a serum marker in 30 patients. Simulated data. The bubble plot shows all four variables: X = age, Y = tumour volume, bubble area = nodes involved, colour = marker (Format graph › Graph settings › Bubble plot)."
+  },
+  "zid000029": {
+   "kind": "graph",
+   "id": "zid000029",
+   "name": "Tumour cohort (bubble plot)",
+   "graphType": "bubble.scatter",
+   "seriesSource": {
+    "table": "zid000024",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Age"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Tumour volume (cm³)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Bubble plot"
+     }
+    ]
+   },
+   "style": {
+    "bubble": {
+     "x": "zid000025",
+     "y": "zid000026",
+     "size": "zid000027",
+     "color": "zid000028"
+    }
+   }
+  },
+  "zid000030": {
+   "kind": "table",
+   "id": "zid000030",
+   "name": "Enzyme velocity",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 7,
+   "rowTitles": null,
+   "x": {
+    "title": "[Substrate] (mM)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0.25,
+       0.5,
+       1,
+       2,
+       4,
+       8,
+       16
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000031",
+     "title": "Velocity",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        11.9,
+        17.2,
+        36.1,
+        51.9,
+        74.5,
+        84,
+        86.5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        13,
+        17.1,
+        33.4,
+        48.3,
+        62.1,
+        78.2,
+        90.2
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "Initial velocity at seven substrate concentrations, in duplicate. Simulated data (Vmax = 100, Km = 2 mM). The dashed curve is not a fit: it is the Michaelis-Menten equation plotted at the known Vmax and Km (a function on the graph; double-click it to change the parameters)."
+  },
+  "zid000032": {
+   "kind": "graph",
+   "id": "zid000032",
+   "name": "Enzyme velocity with theory",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000030",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "[Substrate] (mM)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Velocity (nmol/min)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Data with a function"
+     }
+    ]
+   },
+   "style": {},
+   "functions": [
+    {
+     "id": "zid000033",
+     "equation": "michaelis-menten",
+     "params": {
+      "Vmax": 100,
+      "Km": 2
+     },
+     "from": 0,
+     "to": 16,
+     "title": "Theory (Vmax 100, Km 2 mM)",
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#555555"
+        },
+        "width": 1.25,
+        "dash": "dash"
+       }
+      }
+     }
+    }
+   ]
+  },
+  "zid000034": {
+   "kind": "table",
+   "id": "zid000034",
+   "name": "Damped oscillation",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 0,
+   "rowTitles": null,
+   "x": {
+    "title": "Time (s)",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": []
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000035",
+     "title": "Data",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": []
+      }
+     ]
+    }
+   ],
+   "notes": "No data: the graph plots a user-defined function (Prism’s “Plot a function”), Y = A·exp(−X/Tau)·cos(2π·X/Period), and its envelope."
+  },
+  "zid000036": {
+   "kind": "graph",
+   "id": "zid000036",
+   "name": "Damped oscillation (function)",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000034",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Time (s)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Displacement (mm)"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right",
+    "hidden": [
+     "zid000035"
+    ]
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Plot a function"
+     }
+    ]
+   },
+   "style": {},
+   "functions": [
+    {
+     "id": "zid000037",
+     "equation": "user",
+     "userEquation": "Y = A*exp(-X/Tau)*cos(2*pi*X/Period)",
+     "params": {
+      "A": 10,
+      "Tau": 4,
+      "Period": 1.5
+     },
+     "from": 0,
+     "to": 12,
+     "points": 400,
+     "title": "A·e^(−X/τ)·cos(2πX/P)"
+    },
+    {
+     "id": "zid000038",
+     "equation": "user",
+     "userEquation": "Y = A*exp(-X/Tau)",
+     "params": {
+      "A": 10,
+      "Tau": 4
+     },
+     "from": 0,
+     "to": 12,
+     "title": "Envelope",
+     "style": {
+      "line": {
+       "stroke": {
+        "color": {
+         "rgb": "#999999"
+        },
+        "width": 1,
+        "dash": "dot"
+       }
+      }
+     }
+    }
+   ]
+  },
+  "zid000045": {
+   "kind": "layout",
+   "id": "zid000045",
+   "name": "Figure (formatting)",
+   "page": {
+    "width": 612,
+    "height": 792
+   },
+   "items": [
+    {
+     "type": "text",
+     "id": "zid000043",
+     "x": 54,
+     "y": 34,
+     "content": {
+      "content": [
+       {
+        "text": "Figure 1. Formatting examples"
+       }
+      ],
+      "style": {
+       "size": 16,
+       "bold": true
+      }
+     }
+    },
+    {
+     "type": "text",
+     "id": "zid000044",
+     "x": 54,
+     "y": 56,
+     "content": {
+      "content": [
+       {
+        "text": "(a) right Y axis; (b) error bars behind points; (c) one bar formatted on its own; (d) annotations behind the data."
+       }
+      ],
+      "style": {
+       "size": 10
+      }
+     }
+    },
+    {
+     "type": "graph",
+     "id": "zid000039",
+     "graph": "zid000004",
+     "x": 36,
+     "y": 84,
+     "scale": 0.8575423274035797
+    },
+    {
+     "type": "graph",
+     "id": "zid000040",
+     "graph": "zid000009",
+     "x": 335.7667189935275,
+     "y": 104.58101585768591,
+     "scale": 0.8575423274035797
+    },
+    {
+     "type": "graph",
+     "id": "zid000041",
+     "graph": "zid000013",
+     "x": 43.866945921512915,
+     "y": 331.02744713636775,
+     "scale": 0.8575423274035797
+    },
+    {
+     "type": "graph",
+     "id": "zid000042",
+     "graph": "zid000022",
+     "x": 335.9478748101915,
+     "y": 331.19074865379326,
+     "scale": 0.8575423274035797
+    }
+   ],
+   "panelLabels": {
+    "show": true,
+    "style": "(a)",
+    "size": 14
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000009",
+  "zid000010",
+  "zid000013",
+  "zid000014",
+  "zid000018",
+  "zid000022",
+  "zid000024",
+  "zid000029",
+  "zid000030",
+  "zid000032",
+  "zid000034",
+  "zid000036",
+  "zid000045"
+ ]
+}

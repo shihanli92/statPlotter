@@ -1,0 +1,832 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "More options",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Nested",
+   "tableKind": "nested",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 3,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Control",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5,
+        6,
+        5.5
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        7,
+        7.5,
+        6.8
+       ]
+      }
+     ],
+     "subcolumnTitles": [
+      "m1",
+      "m2"
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Treated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        8,
+        8.6,
+        9.1
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        9.5,
+        10.1,
+        9.8
+       ]
+      }
+     ],
+     "subcolumnTitles": [
+      "m3",
+      "m4"
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000004": {
+   "kind": "graph",
+   "id": "zid000004",
+   "name": "Nested subjects",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 108,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Nested"
+     }
+    ]
+   },
+   "style": {
+    "nested": {
+     "layout": "subjects",
+     "mark": "shape",
+     "subjectMeans": true
+    }
+   }
+  },
+  "zid000005": {
+   "kind": "table",
+   "id": "zid000005",
+   "name": "Groups",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 4,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000006",
+     "title": "A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        3,
+        4,
+        5,
+        4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000007",
+     "title": "B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        6,
+        7,
+        5,
+        8
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000008",
+     "title": "C",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        2,
+        3,
+        2,
+        4
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000009": {
+   "kind": "graph",
+   "id": "zid000009",
+   "name": "Estimation, Welch",
+   "graphType": "column.estimation",
+   "seriesSource": {
+    "table": "zid000005",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y2": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Difference between means"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Groups"
+     }
+    ]
+   },
+   "style": {
+    "estimation": {
+     "ci": "welch",
+     "guides": false
+    }
+   }
+  },
+  "zid000010": {
+   "kind": "graph",
+   "id": "zid000010",
+   "name": "Grand mean, right axis ignored",
+   "graphType": "column.scatter",
+   "seriesSource": {
+    "table": "zid000005",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 162,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y2": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Groups"
+     }
+    ]
+   },
+   "style": {
+    "grandMean": {
+     "show": true,
+     "line": {
+      "color": {
+       "rgb": "#888888"
+      },
+      "width": 1,
+      "dash": "solid"
+     }
+    }
+   },
+   "pointOverrides": {
+    "zid000006": {
+     "r1": {
+      "color": {
+       "rgb": "#ff0000"
+      },
+      "size": 9
+     }
+    }
+   }
+  },
+  "zid000011": {
+   "kind": "table",
+   "id": "zid000011",
+   "name": "Survival",
+   "tableKind": "survival",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 6,
+   "rowTitles": null,
+   "x": {
+    "title": "Days",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       3,
+       5,
+       8,
+       4,
+       9,
+       12
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000012",
+     "title": "A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        0,
+        1,
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000013",
+     "title": "B",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        1,
+        1,
+        0
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000014": {
+   "kind": "graph",
+   "id": "zid000014",
+   "name": "Survival with bands",
+   "graphType": "survival.step",
+   "seriesSource": {
+    "table": "zid000011",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Days"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Percent survival"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": {
+      "interval": 25,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Survival"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "band": {
+      "show": true,
+      "opacity": 0.2
+     },
+     "points": {
+      "size": 8
+     }
+    }
+   }
+  },
+  "zid000015": {
+   "kind": "table",
+   "id": "zid000015",
+   "name": "Budget",
+   "tableKind": "partsOfWhole",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 4,
+   "rowTitles": [
+    "Rent",
+    "Food",
+    "Travel",
+    "Other"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000016",
+     "title": "Y2024",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        40,
+        25,
+        20,
+        15
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000017",
+     "title": "Y2025",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        30,
+        30,
+        25,
+        15
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000018": {
+   "kind": "graph",
+   "id": "zid000018",
+   "name": "Donut",
+   "graphType": "whole.donut",
+   "seriesSource": {
+    "table": "zid000015",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 320,
+    "plotHeight": 160
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "show": false
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": [],
+     "show": false
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Budget"
+     }
+    ]
+   },
+   "style": {
+    "pie": {
+     "hole": 0.4,
+     "startAngle": 90,
+     "clockwise": false,
+     "labels": "categoryPercent",
+     "digits": 1
+    }
+   },
+   "pointOverrides": {
+    "zid000016": {
+     "r1": {
+      "explode": 0.2
+     }
+    }
+   }
+  },
+  "zid000019": {
+   "kind": "graph",
+   "id": "zid000019",
+   "name": "100% bars with values",
+   "graphType": "whole.bar",
+   "seriesSource": {
+    "table": "zid000015",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 120,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Percent of total"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 100
+     },
+     "ticks": {
+      "interval": 25,
+      "minor": 0
+     },
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Budget"
+     }
+    ]
+   },
+   "style": {
+    "pie": {
+     "labels": "value"
+    }
+   }
+  },
+  "zid000020": {
+   "kind": "table",
+   "id": "zid000020",
+   "name": "Time course",
+   "tableKind": "xy",
+   "yFormat": {
+    "type": "replicates",
+    "count": 2
+   },
+   "rowCount": 4,
+   "rowTitles": null,
+   "x": {
+    "title": "Day",
+    "xFormat": "numbers",
+    "subcolumns": [
+     {
+      "type": "number",
+      "values": [
+       0,
+       1,
+       2,
+       3
+      ]
+     }
+    ]
+   },
+   "dataSets": [
+    {
+     "id": "zid000021",
+     "title": "A",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1,
+        2,
+        null,
+        4
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        2,
+        3,
+        null,
+        5
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000022": {
+   "kind": "graph",
+   "id": "zid000022",
+   "name": "Area and envelope",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000020",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Day"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Time course"
+     }
+    ]
+   },
+   "style": {
+    "seriesDefaults": {
+     "line": {
+      "show": true,
+      "gaps": true
+     },
+     "area": {
+      "show": true,
+      "opacity": 0.3,
+      "baseline": 1
+     },
+     "envelope": {
+      "show": true,
+      "opacity": 0.2
+     },
+     "box": {
+      "show": true,
+      "whiskers": "minmax"
+     }
+    }
+   }
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000009",
+  "zid000010",
+  "zid000011",
+  "zid000014",
+  "zid000015",
+  "zid000018",
+  "zid000019",
+  "zid000020",
+  "zid000022"
+ ]
+}

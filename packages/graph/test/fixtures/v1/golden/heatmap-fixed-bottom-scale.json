@@ -1,0 +1,212 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Untitled",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "t1": {
+   "kind": "table",
+   "id": "t1",
+   "name": "Sample grouped",
+   "tableKind": "grouped",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 8,
+   "rowTitles": [
+    "Actb",
+    "Gapdh",
+    "Il6",
+    "Tnf",
+    "Cxcl10",
+    "Ifng",
+    "Il10",
+    "Foxp3"
+   ],
+   "x": null,
+   "dataSets": [
+    {
+     "id": "a",
+     "title": "WT 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0,
+        4.2,
+        1.8,
+        6,
+        3.6,
+        1.2,
+        5.4,
+        3
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b",
+     "title": "WT 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        1.8,
+        6.1,
+        3.8,
+        1.5,
+        null,
+        3.5,
+        1.2,
+        5.5
+       ]
+      }
+     ]
+    },
+    {
+     "id": "c",
+     "title": "KO 1",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        3.6,
+        1.4,
+        5.8,
+        3.6,
+        1.4,
+        5.8,
+        3.6,
+        1.4
+       ]
+      }
+     ]
+    },
+    {
+     "id": "d",
+     "title": "KO 2",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5.4,
+        3.3,
+        1.2,
+        5.7,
+        3.6,
+        1.5,
+        6,
+        3.9
+       ]
+      }
+     ]
+    },
+    {
+     "id": "e",
+     "title": "KO 3",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        0.6,
+        5.2,
+        3.2,
+        1.2,
+        5.8,
+        3.8,
+        8.4,
+        6.4
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "g1": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample grouped",
+   "graphType": "heatmap.cells",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 120,
+    "plotHeight": 192
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    },
+    "y": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample grouped"
+     }
+    ]
+   },
+   "style": {
+    "heatmap": {
+     "colors": "magma",
+     "reverse": true,
+     "min": -2,
+     "max": 6,
+     "missing": "#ffffff",
+     "border": {
+      "color": {
+       "rgb": "#ffffff"
+      },
+      "width": 1,
+      "dash": "solid"
+     },
+     "colorBar": {
+      "position": "bottom",
+      "title": "log₂ expression"
+     },
+     "clusterRows": true,
+     "distance": "pearson",
+     "linkage": "ward"
+    }
+   }
+  }
+ },
+ "order": [
+  "t1",
+  "g1"
+ ]
+}

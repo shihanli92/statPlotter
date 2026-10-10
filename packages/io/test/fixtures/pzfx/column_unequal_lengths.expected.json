@@ -1,0 +1,24 @@
+{
+  "file": "column_unequal_lengths.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "A",
+          "values": [1, 2, null],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "B",
+          "values": [10, 20, 30],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

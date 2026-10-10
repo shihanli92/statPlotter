@@ -1,0 +1,26 @@
+{
+  "name": "zeros_ties_exact_wilcoxon_less",
+  "input": {"a":[5,7,6,9,4,8,7,6,5,10,3],"b":[5,9,8,9,7,7,10,8,4,13,6]},
+  "params": {"exact":true,"alternative":"less"},
+  "expected": {
+    "wPlus": 42,
+    "wMinus": 3,
+    "W": 39,
+    "n": 11,
+    "nNonZero": 9,
+    "nZero": 2,
+    "p": 0.994140625,
+    "method": "exact",
+    "ties": true,
+    "medianDiff": 2,
+    "hlEstimate": 2.0000463718559782,
+    "hlLo": "-Inf",
+    "hlHi": 2.5000245033894317
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{ "input": { "a": [5, 5, 5], "b": [7, 7, 7, 7] }, "params": { "equalVariance": false }, "note": "SD = 0 in both groups: Welch df = 0/0 = NaN, so P and CI are NaN." }

@@ -1,0 +1,12 @@
+{
+  "input": {
+    "grid": [
+      [0, 0, "NA"],
+      [1, 3, 4]
+    ]
+  },
+  "params": {
+    "divideBy": "row"
+  },
+  "note": "A row totalling 0 gives empty (NaN) fractions."
+}

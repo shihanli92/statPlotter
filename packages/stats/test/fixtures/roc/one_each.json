@@ -1,0 +1,35 @@
+{
+  "name": "one_each",
+  "input": {"controls":[3],"patients":[4]},
+  "params": {},
+  "expected": {
+    "points": [
+      {
+        "threshold": 3.5,
+        "sensitivity": 1,
+        "sensLower": 0.025000000000000022,
+        "sensUpper": 1,
+        "specificity": 1,
+        "specLower": 0.025000000000000022,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      }
+    ],
+    "auc": 1,
+    "se": 0,
+    "lower": 1,
+    "upper": 1,
+    "p": 0.31731050786291409,
+    "se0": 0.5,
+    "z": 1,
+    "direction": "higher",
+    "nControls": 1,
+    "nPatients": 1
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pROC": "1.19.1"
+    }
+  }
+}

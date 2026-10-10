@@ -1,0 +1,9 @@
+{
+  "input": {
+    "table": [
+      [13, 25],
+      [4, 92]
+    ]
+  },
+  "note": "Prism's McNemar example."
+}

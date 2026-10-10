@@ -1,0 +1,22 @@
+{
+  "input": {
+    "x": [
+      0,
+      1
+    ],
+    "y": [
+      0,
+      2
+    ],
+    "z": [
+      1,
+      0,
+      0.1,
+      0.9
+    ],
+    "levels": [
+      0.45
+    ]
+  },
+  "note": "one saddle cell, the mean of its corners (0.5) above the level"
+}

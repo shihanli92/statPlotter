@@ -1,0 +1,33 @@
+{
+  "name": "p0_one",
+  "input": {"k":8,"n":8,"p0":1},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 1,
+      "pLess": 1,
+      "pGreater": 1
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 1,
+        "lower": 0.67559243511611977,
+        "upper": 1
+      },
+      "wilson": {
+        "value": 1,
+        "lower": 0.67559243511611977,
+        "upper": 1
+      },
+      "clopperPearson": {
+        "value": 1,
+        "lower": 0.63058335244718078,
+        "upper": 1
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

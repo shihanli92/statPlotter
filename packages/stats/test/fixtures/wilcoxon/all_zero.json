@@ -1,0 +1,27 @@
+{
+  "name": "all_zero",
+  "input": {"a":[1,2,3],"b":[1,2,3]},
+  "params": {"exact":true},
+  "expected": {
+    "wPlus": 0,
+    "wMinus": 0,
+    "W": 0,
+    "n": 3,
+    "nNonZero": 0,
+    "nZero": 3,
+    "p": "NaN",
+    "method": "exact",
+    "ties": false,
+    "medianDiff": 0,
+    "hlEstimate": "NaN",
+    "hlLo": "NaN",
+    "hlHi": "NaN"
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  },
+  "note": "All differences zero: no test; P and HL are NaN."
+}

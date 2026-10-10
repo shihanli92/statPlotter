@@ -1,0 +1,35 @@
+{
+  "name": "single",
+  "input": {"values":[7.25]},
+  "params": {},
+  "expected": {
+    "n": 1,
+    "mean": 7.25,
+    "sd": "NA",
+    "sem": "NA",
+    "min": 7.25,
+    "q1": 7.25,
+    "median": 7.25,
+    "q3": 7.25,
+    "max": 7.25,
+    "range": 0,
+    "ciLo": "NaN",
+    "ciHi": "NaN",
+    "cv": "NA",
+    "skewness": "NaN",
+    "kurtosis": "NaN",
+    "sum": 7.25,
+    "geoMean": 7.25,
+    "geoSdFactor": "NA",
+    "geoCiLo": "NaN",
+    "geoCiHi": "NaN",
+    "probs": [0, 0.01, 0.10000000000000001, 0.25, 0.29999999999999999, 0.5, 0.75, 0.90000000000000002, 0.98999999999999999, 1],
+    "quantiles": [7.25, 7.25, 7.25, 7.25, 7.25, 7.25, 7.25, 7.25, 7.25, 7.25]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "e1071": "1.7.17"
+    }
+  }
+}

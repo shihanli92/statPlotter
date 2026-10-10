@@ -1,0 +1,50 @@
+{
+  "name": "BoxBOD",
+  "input": {
+    "y": [
+      109,
+      149,
+      149,
+      191,
+      213,
+      224
+    ],
+    "x": [
+      1,
+      2,
+      3,
+      5,
+      7,
+      10
+    ]
+  },
+  "params": {
+    "model": "y = b1*(1-exp[-b2*x]) + e",
+    "start1": [
+      1,
+      1
+    ],
+    "start2": [
+      100,
+      0.75
+    ]
+  },
+  "expected": {
+    "n": 6,
+    "params": [
+      213.80940889,
+      0.54723748542
+    ],
+    "se": [
+      12.354515176,
+      0.10455993237
+    ],
+    "ssResidual": 1168.0088766,
+    "residualSD": 17.088072423,
+    "df": 4
+  },
+  "source": {
+    "nist": "https://www.itl.nist.gov/div898/strd/nls/data/LINKS/DATA/BoxBOD.dat",
+    "difficulty": "higher"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "input": [],
+  "params": {
+    "design": "ttest",
+    "type": "two.sample",
+    "delta": 5,
+    "sd": 8,
+    "alpha": 0.050000000000000003,
+    "n": 20,
+    "target": 0.80000000000000004,
+    "lo": 2
+  }
+}

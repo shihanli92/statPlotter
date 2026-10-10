@@ -1,0 +1,37 @@
+{
+  "name": "one_variable",
+  "input": {"X":[[3],[1],[4],[1],[5],[9],[2],[6]]},
+  "params": {"standardize":true,"select":{"method":"kaiser"}},
+  "expected": {
+    "eigenvalues": [1],
+    "proportion": [1],
+    "cumulative": [1],
+    "eigenvectors": [
+      [1]
+    ],
+    "loadings": [
+      [1]
+    ],
+    "scores": [
+      [-0.31836981336405895],
+      [-1.0460722439104793],
+      [0.04548140190915128],
+      [-1.0460722439104793],
+      [0.40933261718236147],
+      [1.8647374782752024],
+      [-0.68222102863726919],
+      [0.77318383245557165]
+    ],
+    "selected": 0,
+    "rank": 1,
+    "means": [3.875],
+    "sds": [2.7483761439387129],
+    "n": 8,
+    "standardized": true,
+    "vectorsK": 1
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

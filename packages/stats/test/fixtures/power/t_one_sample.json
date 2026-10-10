@@ -1,0 +1,13 @@
+{
+  "name": "t_one_sample",
+  "input": [],
+  "params": {"design":"ttest","type":"one.sample","delta":0.4,"sd":1,"alpha":0.05,"n":30,"target":0.8,"lo":2},
+  "expected": {
+    "power": 0.56281360714120665,
+    "nFor": 51.009448144460364
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

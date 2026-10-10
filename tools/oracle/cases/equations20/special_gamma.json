@@ -1,0 +1,88 @@
+{
+  "input": {
+    "calls": [
+      {
+        "fn": "gamma",
+        "args": [0.29999999999999999]
+      },
+      {
+        "fn": "gamma",
+        "args": [5.5]
+      },
+      {
+        "fn": "gamma",
+        "args": [17.25]
+      },
+      {
+        "fn": "gamma",
+        "args": [-1.5]
+      },
+      {
+        "fn": "gamma",
+        "args": [-0.25]
+      },
+      {
+        "fn": "gamma",
+        "args": [120.5]
+      },
+      {
+        "fn": "gammaln",
+        "args": [0.001]
+      },
+      {
+        "fn": "gammaln",
+        "args": [7.2999999999999998]
+      },
+      {
+        "fn": "gammaln",
+        "args": [1500]
+      },
+      {
+        "fn": "beta",
+        "args": [2.5, 3.5]
+      },
+      {
+        "fn": "beta",
+        "args": [0.20000000000000001, 40]
+      },
+      {
+        "fn": "psi",
+        "args": [0.10000000000000001]
+      },
+      {
+        "fn": "psi",
+        "args": [1.4616321449683622]
+      },
+      {
+        "fn": "psi",
+        "args": [3.7000000000000002]
+      },
+      {
+        "fn": "psi",
+        "args": [250]
+      },
+      {
+        "fn": "psi",
+        "args": [-2.5]
+      },
+      {
+        "fn": "fact",
+        "args": [0]
+      },
+      {
+        "fn": "fact",
+        "args": [12]
+      },
+      {
+        "fn": "fact",
+        "args": [25]
+      }
+    ]
+  },
+  "params": {"task":"special"},
+  "tol": {
+    "rtol": 1e-10,
+    "atol": 1.0000000000000001e-15
+  },
+  "note": "psi at its root 1.46163<e2><80><a6> is absolute-accuracy only (tol atol)"
+}

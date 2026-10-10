@@ -1,0 +1,9 @@
+{
+  "input": {
+    "observed": [7, 93],
+    "expected": [20, 80]
+  },
+  "params": {
+    "fn": "gof"
+  }
+}

@@ -1,0 +1,1 @@
+{ "input": { "a": [5, 7, 6, 9, 4, 8, 7, 6, 5, 10, 3], "b": [5, 9, 8, 9, 7, 7, 10, 8, 4, 13, 6] }, "params": { "exact": true, "zeroMethod": "wilcoxon" }, "note": "Two zero differences and tied |d|: exact P from the permutation distribution of the mid-rank sums." }

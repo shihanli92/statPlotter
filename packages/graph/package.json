@@ -1,0 +1,26 @@
+{
+  "name": "@ps/graph",
+  "version": "0.0.0",
+  "license": "GPL-3.0-or-later",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./image": "./src/image.ts",
+    "./node": "./src/node.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@ps/model": "workspace:*",
+    "@ps/stats": "workspace:*",
+    "fflate": "^0.8.3",
+    "fontkit": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/fontkit": "^2.0.9",
+    "pdfjs-dist": "^6.3.289"
+  }
+}

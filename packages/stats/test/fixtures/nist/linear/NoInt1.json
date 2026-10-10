@@ -1,0 +1,61 @@
+{
+  "name": "NoInt1",
+  "input": {
+    "y": [
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140
+    ],
+    "x": [
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70
+    ]
+  },
+  "params": {
+    "model": "y = B1*x + e",
+    "intercept": false,
+    "degree": 1,
+    "predictors": [
+      "x"
+    ]
+  },
+  "expected": {
+    "n": 11,
+    "coef": [
+      2.07438016528926
+    ],
+    "se": [
+      0.0165289256198347
+    ],
+    "residualSD": 3.56753034006338,
+    "r2": 0.999365492298663,
+    "dfRegression": 1,
+    "ssRegression": 200457.727272727,
+    "msRegression": 200457.727272727,
+    "F": 15750.25,
+    "dfResidual": 10,
+    "ssResidual": 127.272727272727,
+    "msResidual": 12.7272727272727
+  },
+  "source": {
+    "nist": "https://www.itl.nist.gov/div898/strd/lls/data/LINKS/DATA/NoInt1.dat",
+    "difficulty": "average"
+  }
+}

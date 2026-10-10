@@ -1,0 +1,17 @@
+{
+  "input": {
+    "x": [
+      -2.5,
+      -2.5,
+      -2.5
+    ],
+    "n": [
+      2
+    ]
+  },
+  "params": {
+    "kind": "cutwidth",
+    "right": true
+  },
+  "note": "constant negative data"
+}

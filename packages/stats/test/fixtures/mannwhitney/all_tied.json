@@ -1,0 +1,27 @@
+{
+  "name": "all_tied",
+  "input": {"a":[5,5,5],"b":[5,5,5,5]},
+  "params": {"exact":true},
+  "expected": {
+    "uA": 6,
+    "uB": 6,
+    "U": 6,
+    "sumRanksA": 12,
+    "sumRanksB": 16,
+    "medianA": 5,
+    "medianB": 5,
+    "p": 1,
+    "method": "exact",
+    "ties": true,
+    "hlEstimate": "NaN",
+    "hlLo": "NaN",
+    "hlHi": "NaN"
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  },
+  "note": "All values tied: exact P = 1; HL undefined (R refuses)."
+}

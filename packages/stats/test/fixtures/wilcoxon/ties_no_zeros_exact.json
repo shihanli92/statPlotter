@@ -1,0 +1,26 @@
+{
+  "name": "ties_no_zeros_exact",
+  "input": {"a":[1,2,3,4,5,6,7,8],"b":[2,4,2,6,7,7,10,7]},
+  "params": {"exact":true},
+  "expected": {
+    "wPlus": 31,
+    "wMinus": 5,
+    "W": 26,
+    "n": 8,
+    "nNonZero": 8,
+    "nZero": 0,
+    "p": 0.0859375,
+    "method": "exact",
+    "ties": true,
+    "medianDiff": 1.5,
+    "hlEstimate": 1.2439363326454518,
+    "hlLo": -2.2729560594532904e-05,
+    "hlHi": 2.4999906534380454
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

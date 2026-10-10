@@ -1,0 +1,27 @@
+{
+  "name": "small_peak_filtered",
+  "input": {"x":[1,2,3,4,5,6,7,8,9,10,11,12],"rows":[[0],[5],[10],[5],[0],[0.29999999999999999],[0.80000000000000004],[0.20000000000000001],[0],[2],[6],[1]]},
+  "params": {"baseline":0,"minHeight":0.1,"minPoints":1,"direction":"above"},
+  "expected": {
+    "totalArea": 29.800000000000001,
+    "totalPeakArea": 28.5,
+    "netArea": "NA",
+    "nPeaks": 2,
+    "se": "NA",
+    "lo": "NA",
+    "hi": "NA",
+    "regions": {
+      "sign": [1, 1, 1],
+      "startX": [1, 5, 9],
+      "endX": [5, 9, 12],
+      "peakX": [3, 7, 11],
+      "peakY": [10, 0.80000000000000004, 6],
+      "area": [20, 1.3000000000000003, 8.5],
+      "counted": [true, false, true]
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

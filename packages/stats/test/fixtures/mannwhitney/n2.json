@@ -1,0 +1,26 @@
+{
+  "name": "n2",
+  "input": {"a":[1,2],"b":[3,4]},
+  "params": {"exact":true},
+  "expected": {
+    "uA": 0,
+    "uB": 4,
+    "U": 0,
+    "sumRanksA": 3,
+    "sumRanksB": 7,
+    "medianA": 1.5,
+    "medianB": 3.5,
+    "p": 0.33333333333333331,
+    "method": "exact",
+    "ties": false,
+    "hlEstimate": 2,
+    "hlLo": 1,
+    "hlHi": 3
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

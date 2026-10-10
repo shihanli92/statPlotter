@@ -1,0 +1,23 @@
+{
+  "name": "spearman_n9_ties_greater",
+  "input": {"x":[0,2,0,-1,0,-2,-1,-1,0],"y":[1,3,0,-1,1,-1,1,-2,-1]},
+  "params": {"method":"spearman","alternative":"greater"},
+  "expected": {
+    "r": 0.64244521093755824,
+    "lower": 0.070846998901932204,
+    "upper": 1,
+    "r2": 0.41273584905660371,
+    "p": 0.035317460317460317,
+    "n": 9,
+    "t": 2.2180348768356724,
+    "df": 7,
+    "exact": true,
+    "ciValid": false
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pspearman": "0.3.1"
+    }
+  }
+}

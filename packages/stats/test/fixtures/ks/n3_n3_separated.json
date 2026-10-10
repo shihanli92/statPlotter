@@ -1,0 +1,17 @@
+{
+  "name": "n3_n3_separated",
+  "input": {"a":[1,2,3],"b":[4,5,6]},
+  "params": {},
+  "expected": {
+    "d": 1,
+    "p": 0.10000000000000001,
+    "exact": true,
+    "nA": 3,
+    "nB": 3
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "D = 1; exact P = 2/choose(6, 3)."
+}

@@ -1,0 +1,105 @@
+{
+  "name": "perfect_separation",
+  "input": {"controls":[1,2,3,4,5],"patients":[6,7,8.5,9]},
+  "params": {},
+  "expected": {
+    "points": [
+      {
+        "threshold": 1.5,
+        "sensitivity": 1,
+        "sensLower": 0.39763536438352542,
+        "sensUpper": 1,
+        "specificity": 0.20000000000000001,
+        "specLower": 0.0050507633794680609,
+        "specUpper": 0.71641793611808935,
+        "likelihoodRatio": 1.25
+      },
+      {
+        "threshold": 2.5,
+        "sensitivity": 1,
+        "sensLower": 0.39763536438352542,
+        "sensUpper": 1,
+        "specificity": 0.40000000000000002,
+        "specLower": 0.052744950526316912,
+        "specUpper": 0.85336720036532676,
+        "likelihoodRatio": 1.6666666666666667
+      },
+      {
+        "threshold": 3.5,
+        "sensitivity": 1,
+        "sensLower": 0.39763536438352542,
+        "sensUpper": 1,
+        "specificity": 0.59999999999999998,
+        "specLower": 0.14663279963467321,
+        "specUpper": 0.94725504947368311,
+        "likelihoodRatio": 2.5
+      },
+      {
+        "threshold": 4.5,
+        "sensitivity": 1,
+        "sensLower": 0.39763536438352542,
+        "sensUpper": 1,
+        "specificity": 0.80000000000000004,
+        "specLower": 0.2835820638819106,
+        "specUpper": 0.99494923662053192,
+        "likelihoodRatio": 5.0000000000000009
+      },
+      {
+        "threshold": 5.5,
+        "sensitivity": 1,
+        "sensLower": 0.39763536438352542,
+        "sensUpper": 1,
+        "specificity": 1,
+        "specLower": 0.47817624989501861,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 6.5,
+        "sensitivity": 0.75,
+        "sensLower": 0.19412044968324341,
+        "sensUpper": 0.99369053679029018,
+        "specificity": 1,
+        "specLower": 0.47817624989501861,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 7.75,
+        "sensitivity": 0.5,
+        "sensLower": 0.067585986488542998,
+        "sensUpper": 0.93241401351145703,
+        "specificity": 1,
+        "specLower": 0.47817624989501861,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 8.75,
+        "sensitivity": 0.25,
+        "sensLower": 0.0063094632097098697,
+        "sensUpper": 0.80587955031675662,
+        "specificity": 1,
+        "specLower": 0.47817624989501861,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      }
+    ],
+    "auc": 1,
+    "se": 0,
+    "lower": 1,
+    "upper": 1,
+    "p": 0.01430587843542965,
+    "se0": 0.20412414523193151,
+    "z": 2.4494897427831779,
+    "direction": "higher",
+    "nControls": 5,
+    "nPatients": 4
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pROC": "1.19.1"
+    }
+  }
+}

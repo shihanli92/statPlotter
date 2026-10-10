@@ -1,0 +1,39 @@
+{
+  "file": "survival.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Three groups",
+      "columns": [
+        {
+          "name": "ROWTITLE",
+          "values": ["CO", "NT", "RO", "LT", "RE", "AT", "ME", "NT", "WO", "RK", "PL", "AC", "EB", "OT", "RE", "AT", "ME", "NT", "XX", "XY", "BO", "OW", "HO", "TO", "YO", "UT", "OO"],
+          "excluded": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        },
+        {
+          "name": "Days",
+          "values": [78, 34, 123, 45, 234, 345, 123, 211, 356, 378, 88, 321, 211, 111, 156, 178, 236, 198, 211, 234, 257, 322, 344, 365, 245, 299, 351],
+          "excluded": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        },
+        {
+          "name": "Control",
+          "values": [1, 1, 0, 1, 1, 1, 1, 1, 1, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+          "excluded": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        },
+        {
+          "name": "Treatment A",
+          "values": [null, null, null, null, null, null, null, null, null, null, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, null, null, null, null, null, null, null],
+          "excluded": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        },
+        {
+          "name": "Treatment B",
+          "values": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, 1, 1, 1, 0, 1, 1],
+          "excluded": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "input": {
+    "table": [
+      [76, 399],
+      [129, 332]
+    ]
+  },
+  "note": "Prism's relative-risk example; phi only."
+}

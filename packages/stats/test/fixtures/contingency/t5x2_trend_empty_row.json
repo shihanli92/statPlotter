@@ -1,0 +1,36 @@
+{
+  "name": "t5x2_trend_empty_row",
+  "input": {"table":[[3,12],[0,0],[6,9],[8,6],[11,4]]},
+  "params": {},
+  "expected": {
+    "chiSquare": {
+      "chiSq": "NaN",
+      "df": 4,
+      "p": "NaN",
+      "expected": [
+        [7.1186440677966099, 7.8813559322033901],
+        [0, 0],
+        [7.1186440677966099, 7.8813559322033901],
+        [6.6440677966101696, 7.3559322033898304],
+        [7.1186440677966099, 7.8813559322033901]
+      ]
+    },
+    "fisher": {
+      "p": 0.025837074495544916
+    },
+    "trend": {
+      "chiSq": 9.2443806893913649,
+      "df": 1,
+      "p": 0.0023621917173278825
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "PropCIs": "0.3.0",
+      "exact2x2": "1.7.0",
+      "contingencytables": "3.1.0"
+    }
+  },
+  "note": "An empty row contributes nothing to the trend test (and makes chi-square NaN)."
+}

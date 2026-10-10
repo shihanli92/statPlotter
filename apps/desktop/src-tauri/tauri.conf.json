@@ -1,0 +1,93 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "statPlotter",
+  "version": "0.3.1",
+  "identifier": "dev.statplotter.app",
+  "build": {
+    "beforeDevCommand": "pnpm --filter @ps/web dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm --filter @ps/web build",
+    "frontendDist": "../../web/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "statPlotter",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 800,
+        "minHeight": 600,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "devCsp": null,
+      "dangerousDisableAssetCspModification": ["style-src"],
+      "freezePrototype": true
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "fileAssociations": [
+      {
+        "ext": [
+          "psproj"
+        ],
+        "name": "statPlotter Project",
+        "description": "statPlotter project",
+        "role": "Editor",
+        "rank": "Owner",
+        "mimeType": "application/x-plotting-software-project",
+        "exportedType": {
+          "identifier": "dev.statplotter.project",
+          "conformsTo": [
+            "public.data"
+          ]
+        }
+      },
+      {
+        "ext": [
+          "pspreset"
+        ],
+        "name": "statPlotter Graph Preset",
+        "description": "statPlotter graph preset",
+        "role": "Editor",
+        "rank": "Owner",
+        "mimeType": "application/x-plotting-software-preset",
+        "exportedType": {
+          "identifier": "dev.statplotter.preset",
+          "conformsTo": [
+            "public.json"
+          ]
+        }
+      },
+      {
+        "ext": [
+          "psstyle"
+        ],
+        "name": "statPlotter Style",
+        "description": "statPlotter figure style",
+        "role": "Editor",
+        "rank": "Owner",
+        "mimeType": "application/x-plotting-software-style",
+        "exportedType": {
+          "identifier": "dev.statplotter.style",
+          "conformsTo": [
+            "public.json"
+          ]
+        }
+      }
+    ],
+    "shortDescription": "Analysis and graphing for lab data"
+  }
+}

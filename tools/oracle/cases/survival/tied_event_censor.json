@@ -1,0 +1,13 @@
+{
+  "input": {
+    "time": [
+      [3, 3, 3, 5, 5, 8, 8, 10],
+      [2, 3, 3, 4, 5, 5, 6, 6]
+    ],
+    "event": [
+      [1, 0, 0, 1, 0, 1, 0, 0],
+      [1, 1, 0, 1, 1, 0, 1, 0]
+    ]
+  },
+  "note": "Events and censorings at the same times: events first, censored still at risk."
+}

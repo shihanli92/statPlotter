@@ -1,0 +1,11 @@
+{
+  "input": {
+    "k": 1,
+    "n": 1,
+    "p0": 0.5
+  },
+  "params": {
+    "fn": "binomial"
+  },
+  "note": "x = n = 1: upper 1, lower by Wilson (x = n takes precedence)."
+}

@@ -1,0 +1,33 @@
+{
+  "name": "zero_of_10",
+  "input": {"k":0,"n":10,"p0":0.5},
+  "params": {"fn":"binomial"},
+  "expected": {
+    "binomialTest": {
+      "p": 0.0019531250000000004,
+      "pLess": 0.00097656250000000022,
+      "pGreater": 1
+    },
+    "proportionCI": {
+      "wilsonBrown": {
+        "value": 0,
+        "lower": 0,
+        "upper": 0.27753279986288915
+      },
+      "wilson": {
+        "value": 0,
+        "lower": 0,
+        "upper": 0.27753279986288915
+      },
+      "clopperPearson": {
+        "value": 0,
+        "lower": 0,
+        "upper": 0.30849710781876083
+      }
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "anova_k3_large_effect",
+  "input": [],
+  "params": {"design":"anova","groups":3,"betweenVar":25,"withinVar":20,"alpha":0.01,"n":8,"target":0.95,"lo":2},
+  "expected": {
+    "power": 0.86376097380123995,
+    "nFor": 9.8970948796099218
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

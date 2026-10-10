@@ -1,0 +1,414 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Output graphs",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "zid000001": {
+   "kind": "table",
+   "id": "zid000001",
+   "name": "Biomarker",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 20,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000002",
+     "title": "Controls",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        12.8,
+        8.1,
+        7.6,
+        12.4,
+        11.2,
+        14.6,
+        5.6,
+        9.8,
+        8.3,
+        17.4,
+        15.3,
+        14.4,
+        11.2,
+        12.5,
+        14,
+        7.9,
+        23.3,
+        20.9,
+        27.2,
+        10.1
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000003",
+     "title": "Patients",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        38.4,
+        24.5,
+        16.3,
+        38.7,
+        18.4,
+        18.7,
+        28.3,
+        15.5,
+        19.7,
+        35.5,
+        43.8,
+        31.2,
+        42.7,
+        19.2,
+        39.8,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000004": {
+   "kind": "analysis",
+   "id": "zid000004",
+   "name": "ROC curve",
+   "analysisId": "roc",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000001",
+    "dataSets": [
+     "zid000002",
+     "zid000003"
+    ]
+   },
+   "params": {
+    "direction": "auto",
+    "ciMethod": "clopperPearson",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000005": {
+   "kind": "graph",
+   "id": "zid000005",
+   "name": "ROC curve",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000001",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000006",
+     "ref": {
+      "node": "zid000004",
+      "key": "roc"
+     }
+    },
+    {
+     "id": "zid000007",
+     "ref": {
+      "node": "zid000004",
+      "key": "identity"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 180,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "100% − Specificity%"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 100
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Sensitivity%"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": {
+      "min": 0,
+      "max": 100
+     },
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "ROC curve"
+     }
+    ]
+   },
+   "style": {}
+  },
+  "zid000008": {
+   "kind": "table",
+   "id": "zid000008",
+   "name": "Methods",
+   "tableKind": "column",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 20,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "zid000009",
+     "title": "Lab",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        149,
+        150.8,
+        58.6,
+        165.5,
+        111.7,
+        81.3,
+        151.6,
+        131.7,
+        107.7,
+        78.7,
+        117.3,
+        123.4,
+        145.7,
+        157.6,
+        93.7,
+        161.1,
+        150.7,
+        130.2,
+        136.4,
+        131.2
+       ]
+      }
+     ]
+    },
+    {
+     "id": "zid000010",
+     "title": "POC",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        157.8,
+        150.5,
+        53.7,
+        171.4,
+        112,
+        86.2,
+        172.7,
+        132.4,
+        112.6,
+        83.2,
+        130.2,
+        134.1,
+        150.6,
+        157.4,
+        99.1,
+        173,
+        136.7,
+        136.5,
+        132,
+        143.5
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "zid000011": {
+   "kind": "analysis",
+   "id": "zid000011",
+   "name": "Bland-Altman",
+   "analysisId": "blandAltman",
+   "pluginVersion": 1,
+   "input": {
+    "source": "zid000008",
+    "dataSets": [
+     "zid000009",
+     "zid000010"
+    ]
+   },
+   "params": {
+    "measure": "difference",
+    "order": "aMinusB",
+    "confidenceLevel": 0.95
+   }
+  },
+  "zid000012": {
+   "kind": "graph",
+   "id": "zid000012",
+   "name": "Bland-Altman plot",
+   "graphType": "xy.scatter",
+   "seriesSource": {
+    "table": "zid000008",
+    "include": []
+   },
+   "seriesOverrides": {},
+   "extraSeries": [
+    {
+     "id": "zid000013",
+     "ref": {
+      "node": "zid000011",
+      "key": "pairs"
+     },
+     "style": {
+      "points": {
+       "show": true
+      },
+      "line": {
+       "show": false
+      },
+      "band": {
+       "show": false
+      }
+     }
+    },
+    {
+     "id": "zid000014",
+     "ref": {
+      "node": "zid000011",
+      "key": "bias"
+     }
+    },
+    {
+     "id": "zid000015",
+     "ref": {
+      "node": "zid000011",
+      "key": "upper"
+     }
+    },
+    {
+     "id": "zid000016",
+     "ref": {
+      "node": "zid000011",
+      "key": "lower"
+     }
+    }
+   ],
+   "size": {
+    "plotWidth": 216,
+    "plotHeight": 162
+   },
+   "axes": {
+    "x": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Average"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    },
+    "y": {
+     "type": "continuous",
+     "title": {
+      "content": [
+       {
+        "text": "Difference"
+       }
+      ]
+     },
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Bland-Altman plot"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "zid000001",
+  "zid000004",
+  "zid000005",
+  "zid000008",
+  "zid000011",
+  "zid000012"
+ ]
+}

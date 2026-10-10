@@ -1,0 +1,59 @@
+{
+  "file": "x_error_y_sdn.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "ROWTITLE",
+          "values": ["A", "B", "C"],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "XX_X",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "XX_ERROR",
+          "values": [2, 3, 4],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Ya_MEAN",
+          "values": [100, 90, 80],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Ya_SD",
+          "values": [50, 60, 70],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Ya_N",
+          "values": [5, 6, 7],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Yb_MEAN",
+          "values": [1, 2, 3],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Yb_SD",
+          "values": [10, 9, 8],
+          "excluded": [false, false, false]
+        },
+        {
+          "name": "Yb_N",
+          "values": [4, 3, 2],
+          "excluded": [false, false, false]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@ps/desktop",
+  "version": "0.3.1",
+  "license": "GPL-3.0-or-later",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri",
+    "typecheck": "true"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.0"
+  }
+}

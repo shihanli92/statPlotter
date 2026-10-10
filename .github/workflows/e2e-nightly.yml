@@ -1,0 +1,56 @@
+name: E2E nightly
+
+# The end-to-end tests in all three browser engines, every night and on demand: WebKit (the
+# macOS desktop app's engine) and Firefox don't run on every push (ci.yml runs Chromium), so a
+# browser-specific break shows here within a day. GitHub emails a failed scheduled run.
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+# Read-only token (code audit 2, decision 651).
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    # Only in the project's own repository (audit 3, T11): a copy elsewhere has no secrets.
+    if: github.repository == 'shihanli92/plottingTool'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit, firefox]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(pnpm --filter @ps/e2e exec playwright --version | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: pw-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-${{ matrix.browser }}
+      - if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @ps/e2e exec playwright install --with-deps ${{ matrix.browser }}
+      - if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @ps/e2e exec playwright install-deps ${{ matrix.browser }}
+      - run: pnpm e2e --project=${{ matrix.browser }}
+        env:
+          CI: 'true'
+      - if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: |
+            apps/e2e/playwright-report
+            apps/e2e/test-results
+          retention-days: 14

@@ -1,0 +1,27 @@
+{
+  "name": "exact_ties_asymmetric",
+  "input": {"a":[1,1,1,1,2,3,5],"b":[1,1,4,6,7,8]},
+  "params": {"exact":true},
+  "expected": {
+    "uA": 11,
+    "uB": 31,
+    "U": 11,
+    "sumRanksA": 39,
+    "sumRanksB": 52,
+    "medianA": 1,
+    "medianB": 5,
+    "p": 0.15151515151515149,
+    "method": "exact",
+    "ties": true,
+    "hlEstimate": 2.9999745868404402,
+    "hlLo": -0.99999819193052275,
+    "hlHi": 5.9999622492741018
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  },
+  "note": "Ties only at the bottom: the null distribution of the rank sum is asymmetric, so the two-sided P is not twice a one-sided P."
+}

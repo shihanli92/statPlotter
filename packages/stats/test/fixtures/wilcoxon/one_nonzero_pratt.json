@@ -1,0 +1,26 @@
+{
+  "name": "one_nonzero_pratt",
+  "input": {"a":[1,2,3,4],"b":[1,2,3,6]},
+  "params": {"exact":true,"zeroMethod":"pratt"},
+  "expected": {
+    "wPlus": 4,
+    "wMinus": 0,
+    "W": 4,
+    "n": 4,
+    "nNonZero": 1,
+    "nZero": 3,
+    "p": 1,
+    "method": "exact",
+    "ties": false,
+    "medianDiff": 0,
+    "hlEstimate": 2,
+    "hlLo": "NaN",
+    "hlHi": "NaN"
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

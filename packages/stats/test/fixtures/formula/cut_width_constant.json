@@ -1,0 +1,14 @@
+{
+  "name": "cut_width_constant",
+  "input": {"x":[5,5,null,5,5,5],"n":[3]},
+  "params": {"kind":"cutwidth","right":true},
+  "expected": {
+    "code": [2, 2, "NA", 2, 2, 2],
+    "labels": ["[4.995, 4.998]", "(4.998, 5.002]", "(5.002, 5.005]"]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "constant data: R widens the range by |x|/1000 each side (cut.default), and the labels take more digits until they differ"
+}

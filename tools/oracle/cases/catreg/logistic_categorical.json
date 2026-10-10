@@ -1,0 +1,14 @@
+{
+  "input": {
+    "columns": {
+      "Response": [1, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+      "Age": [53, 60, 41, 77, 79, 49, 43, 32, 41, 32, 30, 37, 77, 71, 65, 76, 69, 70, 27, 79, 78, 43, 41, 40, 68, 29, 71, 74, 54, 46, 39, 43, 78, 28, 41, 36, 44, 70, 68, 72, 78, 78, 44, 67, 43, 50, 49, 60, 28, 57, 33, 55, 63, 62, 41, 70, 30, 66, 80, 43, 37, 49, 44, 32, 36, 77, 79, 60, 31, 28, 55, 54, 69, 36, 49, 53, 79, 76, 27, 60, 28, 78, 27, 70, 70, 55, 27, 40, 26, 59],
+      "Arm": ["Placebo", "Drug A", "Drug B", "Drug A", "Drug A", "Drug A", "Placebo", "Drug B", "Placebo", "Placebo", "Drug B", "Placebo", "Drug B", "Drug B", "Placebo", "Placebo", "Drug B", "Drug B", "Drug A", "Drug B", "Placebo", "Drug B", "Drug A", "Drug A", "Drug B", "Drug B", "Drug A", "Placebo", "Drug B", "Drug A", "Drug B", "Drug B", "Drug A", "Drug A", "Placebo", "Drug A", "Drug B", "Drug A", "Drug A", "Placebo", "Drug A", "Drug B", "Drug A", "Drug B", "Drug B", "Drug B", "Drug B", "Drug A", "Drug A", "Placebo", "Placebo", "Drug A", "Placebo", "Drug A", "Drug A", "Placebo", "Placebo", "Drug A", "Placebo", "Drug A", "Drug A", "Placebo", "Drug B", "Placebo", "Placebo", "Drug B", "Placebo", "Drug A", "Drug A", "Placebo", "Placebo", "Drug B", "Drug A", "Drug B", "Drug A", "Placebo", "Drug A", "Drug B", "Drug A", "Placebo", "Placebo", "Drug B", "Drug A", "Drug B", "Placebo", "Drug B", "Placebo", "Placebo", "Drug A", "Placebo"],
+      "Sex": ["F", "F", "F", "F", "M", "F", "M", "F", "F", "M", "M", "M", "M", "M", "M", "M", "F", "M", "M", "F", "F", "M", "F", "M", "M", "F", "F", "F", "F", "M", "M", "M", "M", "M", "F", "F", "F", "M", "M", "M", "M", "F", "F", "M", "F", "F", "F", "M", "F", "M", "M", "M", "M", "M", "M", "F", "M", "F", "F", "F", "F", "M", "F", "F", "M", "F", "M", "M", "M", "M", "F", "M", "F", "M", "F", "F", "M", "M", "M", "M", "F", "M", "M", "F", "M", "F", "M", "F", "M", "M"]
+    }
+  },
+  "params": {"model": "logistic", "y": "Response", "ciMethod": "wald", "interactions": [["Age", "Arm"]],
+      "referenceLevels": {"Arm": "Placebo"}, "interpolate": true,
+      "predictions": [{"Age": 40, "Arm": "Drug B", "Sex": "F"}]},
+  "note": "Text levels with a space; Placebo chosen as reference; row 3 has no outcome (predicted probability)."
+}

@@ -1,0 +1,12 @@
+{
+  "input": {
+    "columns": {
+      "Months": [22, 62, 2, 9, 7, 13, 38, 2, 66, 24, 2, 37, 45, 102, 45, 114, 1, 15, 22, 3, 103, 3, 58, 63, 7, 89, 56, 1, 8, 62, 60, 6, 6, 23, 3, 66, 10, 13, 99, 53, 3, 84, 86, 65, 17, 50, 66, 5, 9, 33, 24, 63, 7, 65, 35, 10, 88, 8, 87, 4],
+      "Outcome": ["Alive", "Died", "Died", "Died", "Died", "Died", null, "Died", "Died", "Alive", "Died", "Died", "Alive", "Alive", "Died", "Alive", "Died", "Died", "Died", "Died", "Alive", "Died", "Died", "Alive", "Died", "Died", "Died", "Died", "Died", "Died", "Alive", "Died", "Died", "Died", "Died", "Alive", "Died", "Died", "Alive", "Alive", "Died", "Alive", "Died", "Alive", "Died", "Died", "Alive", "Died", "Died", "Died", "Died", "Died", "Died", "Alive", "Alive", "Died", "Alive", "Died", "Died", "Died"],
+      "Treatment": ["New", "New", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "New", "New", "New", "New", "New", "Standard", "New", "Standard", "Standard", "New", "New", "Standard", "New", "Standard", "New", "Standard", "New", "New", "New", "New", "Standard", "Standard", "New", "Standard", "Standard", "Standard", "New", "Standard", "New", "Standard", "New", "New", "Standard", "Standard", "New", "New", "New", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "New", "New", "Standard", "New"],
+      "Stage": ["II", "II", "I", "I", "II", "II", "II", "II", "II", "I", "II", "II", "II", "I", "II", "II", "II", "II", "II", "II", "I", "II", "I", "I", "II", "II", "I", "I", "II", "II", "II", "II", "II", "I", "I", "I", "II", "I", "I", "II", "II", "I", "II", "II", "I", "I", "I", "II", "II", "I", "I", "II", "II", "I", "II", "II", "I", "II", "II", "I"]
+    }
+  },
+  "params": {"time": "Months", "status": "Outcome", "groups": ["Treatment", "Stage"], "eventLevel": "Died"},
+  "note": "Text status (Died = event, any other = censored), one curve per Treatment x Stage combination; row 7 has no status."
+}

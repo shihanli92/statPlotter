@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "test"],
+  "compilerOptions": {
+    // Node types for the tests (roadmap 34e's CPU-time guards). src/ must stay platform-free;
+    // tools/check-deps.mjs rejects node: imports there.
+    "types": ["node"]
+  }
+}

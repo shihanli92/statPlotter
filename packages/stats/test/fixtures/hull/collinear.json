@@ -1,0 +1,13 @@
+{
+  "name": "collinear",
+  "input": {"x":[1,2,3,4],"y":[2,4,6,8]},
+  "params": {},
+  "expected": {
+    "hull": [1, 4]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "a line: its two ends"
+}

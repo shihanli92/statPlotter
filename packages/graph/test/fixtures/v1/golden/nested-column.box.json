@@ -1,0 +1,158 @@
+{
+ "schemaVersion": 1,
+ "meta": {
+  "title": "Untitled",
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-01-01T00:00:00.000Z",
+  "appVersion": "0.1.11"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "t1": {
+   "kind": "table",
+   "id": "t1",
+   "name": "Sample nested",
+   "tableKind": "nested",
+   "yFormat": {
+    "type": "replicates",
+    "count": 3
+   },
+   "rowCount": 4,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "a",
+     "title": "Control",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        5,
+        6,
+        5.5,
+        6.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        7,
+        7.5,
+        6.8,
+        7.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        4.5,
+        5.2,
+        4.9,
+        5.1
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b",
+     "title": "Treated",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        8,
+        8.6,
+        9.1,
+        8.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        9.5,
+        10.1,
+        9.8,
+        9.2
+       ]
+      },
+      {
+       "type": "number",
+       "values": [
+        7.4,
+        7.9,
+        8.3,
+        7.7
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "g1": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample nested",
+   "graphType": "column.box",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "extraSeries": [],
+   "size": {
+    "plotWidth": 144,
+    "plotHeight": 180
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0
+    },
+    "y": {
+     "type": "continuous",
+     "title": null,
+     "scale": "linear",
+     "range": "auto",
+     "ticks": "auto",
+     "format": {
+      "mode": "auto"
+     },
+     "frame": "plain",
+     "breaks": []
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": false,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample nested"
+     }
+    ]
+   },
+   "style": {
+    "nested": {
+     "layout": "subjects",
+     "mark": "shade",
+     "subjectMeans": false
+    }
+   }
+  }
+ },
+ "order": [
+  "t1",
+  "g1"
+ ]
+}

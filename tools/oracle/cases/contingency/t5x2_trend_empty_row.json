@@ -1,0 +1,12 @@
+{
+  "input": {
+    "table": [
+      [3, 12],
+      [0, 0],
+      [6, 9],
+      [8, 6],
+      [11, 4]
+    ]
+  },
+  "note": "An empty row contributes nothing to the trend test (and makes chi-square NaN)."
+}

@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="276.759pt" height="262.48pt" viewBox="0 0 276.759 262.48">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="97.442" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample variables</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/bubbles">
+<g data-id="series/d/point/0">
+<path d="M63.242,128.357a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/1">
+<path d="M128.042,100.071a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/2">
+<path d="M95.642,82.071a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/3">
+<path d="M41.642,58.928a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/4">
+<path d="M160.442,141.214a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/5">
+<path d="M84.842,94.928a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/6">
+<path d="M74.042,74.357a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/7">
+<path d="M138.842,118.071a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/8">
+<path d="M106.442,110.357a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/9">
+<path d="M52.442,87.214a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/10">
+<path d="M171.242,130.928a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/11">
+<path d="M95.642,66.642a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/point/12">
+<path d="M257.642,102.642a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" fill="#cc79a7" fill-opacity="0.55" stroke="#cc79a7" stroke-width="0.75"/>
+</g>
+</g>
+</g>
+<g data-id="pointLabels">
+<g data-id="pointLabel/d/r3">
+<text fill="#000000" xml:space="preserve"><tspan x="54.642" y="62.048" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Low</tspan></text>
+</g>
+<g data-id="pointLabel/d/r9">
+<text fill="#000000" xml:space="preserve"><tspan x="65.442" y="90.334" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Low</tspan></text>
+</g>
+<g data-id="pointLabel/d/r6">
+<text fill="#000000" xml:space="preserve"><tspan x="54.531" y="77.477" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Low</tspan></text>
+</g>
+<g data-id="pointLabel/d/r11">
+<text fill="#000000" xml:space="preserve"><tspan x="108.642" y="69.762" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Mid</tspan></text>
+</g>
+<g data-id="pointLabel/d/r0">
+<text fill="#000000" xml:space="preserve"><tspan x="76.242" y="131.477" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Low</tspan></text>
+</g>
+<g data-id="pointLabel/d/r2">
+<text fill="#000000" xml:space="preserve"><tspan x="108.642" y="85.191" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Mid</tspan></text>
+</g>
+<g data-id="pointLabel/d/r5">
+<text fill="#000000" xml:space="preserve"><tspan x="97.842" y="98.048" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Mid</tspan></text>
+</g>
+<g data-id="pointLabel/d/r8">
+<text fill="#000000" xml:space="preserve"><tspan x="88.94" y="113.477" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Mid</tspan></text>
+</g>
+<g data-id="pointLabel/d/r1">
+<text fill="#000000" xml:space="preserve"><tspan x="141.042" y="103.191" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">High</tspan></text>
+</g>
+<g data-id="pointLabel/d/r10">
+<text fill="#000000" xml:space="preserve"><tspan x="184.242" y="134.048" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">High</tspan></text>
+</g>
+<g data-id="pointLabel/d/r4">
+<text fill="#000000" xml:space="preserve"><tspan x="138.932" y="144.334" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">High</tspan></text>
+</g>
+<g data-id="pointLabel/d/r7">
+<text fill="#000000" xml:space="preserve"><tspan x="151.842" y="121.191" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">High</tspan></text>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="46.642" y1="215.785" x2="46.642" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="46.642" y1="215.785" x2="42.642" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="219.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="46.642" y1="190.071" x2="42.642" y2="190.071" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="193.884" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="46.642" y1="164.357" x2="42.642" y2="164.357" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="168.17" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="46.642" y1="138.642" x2="42.642" y2="138.642" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="142.456" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="46.642" y1="112.928" x2="42.642" y2="112.928" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="116.741" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">40</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="46.642" y1="87.214" x2="42.642" y2="87.214" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="91.027" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">50</tspan></text>
+</g>
+<g data-id="axis/y/tick/6">
+<line x1="46.642" y1="61.499" x2="42.642" y2="61.499" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="65.313" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">60</tspan></text>
+</g>
+<g data-id="axis/y/tick/7">
+<line x1="46.642" y1="35.785" x2="42.642" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">70</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 125.785)" xml:space="preserve"><tspan x="3.368" y="129.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Age</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="46.642" y1="215.785" x2="262.642" y2="215.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="46.642" y1="215.785" x2="46.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="40.524" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="100.642" y1="215.785" x2="100.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="94.524" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15</tspan></text>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="154.642" y1="215.785" x2="154.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="148.524" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="208.642" y1="215.785" x2="208.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="202.524" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25</tspan></text>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="262.642" y1="215.785" x2="262.642" y2="219.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="256.524" y="232.743" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30</tspan></text>
+</g>
+<g data-id="axis/x/title">
+<text fill="#000000" xml:space="preserve"><tspan x="137.966" y="251.938" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Score</tspan></text>
+</g>
+</g>
+</g>
+</svg>

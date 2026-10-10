@@ -1,0 +1,19 @@
+{
+  "file": "comma_decimal.pzfx",
+  "source": {
+    "r": "4.4.3",
+    "pzfx": "0.3.1"
+  },
+  "tables": [
+    {
+      "title": "Data 1",
+      "columns": [
+        {
+          "name": "CommaDecimal",
+          "values": [3.5],
+          "excluded": [false]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "cut_width_constant_zero_left",
+  "input": {"x":[0,0,0,null],"n":[4]},
+  "params": {"kind":"cutwidth","right":false},
+  "expected": {
+    "code": [3, 3, 3, "NA"],
+    "labels": ["[-0.001, -0.0005)", "[-0.0005, 0)", "[0, 0.0005)", "[0.0005, 0.001]"]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "constant zero: R widens the range by 1/1000 each side"
+}

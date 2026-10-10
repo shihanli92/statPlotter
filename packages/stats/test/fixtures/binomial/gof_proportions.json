@@ -1,0 +1,14 @@
+{
+  "name": "gof_proportions",
+  "input": {"observed":[18,55,27],"expected":[0.25,0.5,0.25]},
+  "params": {"fn":"gof"},
+  "expected": {
+    "chiSq": 2.6200000000000001,
+    "df": 2,
+    "p": 0.26982005638468681
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "input": {
+    "values": [0, 1.5, 2, 3.5, 8]
+  },
+  "note": "A value of 0: geometric statistics are undefined (NaN)"
+}

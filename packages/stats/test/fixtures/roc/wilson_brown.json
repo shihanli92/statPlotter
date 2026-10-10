@@ -1,0 +1,395 @@
+{
+  "name": "wilson_brown",
+  "input": {"controls":[10,8.8000000000000007,7.7999999999999998,9.6999999999999993,7.5999999999999996,9.3000000000000007,6.2000000000000002,6.7999999999999998,10,8.1999999999999993,13.6,9.9000000000000004,10.4,8.9000000000000004,8.5,8.3000000000000007,9,7.7000000000000002,9.0999999999999996,13.800000000000001,11.1,11.6,8.1999999999999993,10.5,8.0999999999999996],"patients":[13.800000000000001,13,9.1999999999999993,11.699999999999999,11.699999999999999,14.4,9.6999999999999993,8.4000000000000004,11.199999999999999,10.699999999999999,10,14.6,11.199999999999999,12.9,14.1,10.1,12.300000000000001,16.300000000000001,7.2999999999999998,14.800000000000001]},
+  "params": {"ciMethod":"wilsonBrown"},
+  "expected": {
+    "points": [
+      {
+        "threshold": 6.5,
+        "sensitivity": 1,
+        "sensLower": 0.83887484194718076,
+        "sensUpper": 1,
+        "specificity": 0.040000000000000001,
+        "specLower": 0.0020517317755020231,
+        "specUpper": 0.19544063736193729,
+        "likelihoodRatio": 1.0416666666666667
+      },
+      {
+        "threshold": 7.0499999999999998,
+        "sensitivity": 1,
+        "sensLower": 0.83887484194718076,
+        "sensUpper": 1,
+        "specificity": 0.080000000000000002,
+        "specLower": 0.014214460427946487,
+        "specUpper": 0.2496610895039531,
+        "likelihoodRatio": 1.0869565217391304
+      },
+      {
+        "threshold": 7.4499999999999993,
+        "sensitivity": 0.94999999999999996,
+        "sensLower": 0.76386880655325795,
+        "sensUpper": 0.99743533528062245,
+        "specificity": 0.080000000000000002,
+        "specLower": 0.014214460427946487,
+        "specUpper": 0.2496610895039531,
+        "likelihoodRatio": 1.0326086956521738
+      },
+      {
+        "threshold": 7.6500000000000004,
+        "sensitivity": 0.94999999999999996,
+        "sensLower": 0.76386880655325795,
+        "sensUpper": 0.99743533528062245,
+        "specificity": 0.12,
+        "specLower": 0.041668171504403578,
+        "specUpper": 0.29955793920927321,
+        "likelihoodRatio": 1.0795454545454546
+      },
+      {
+        "threshold": 7.75,
+        "sensitivity": 0.94999999999999996,
+        "sensLower": 0.76386880655325795,
+        "sensUpper": 0.99743533528062245,
+        "specificity": 0.16,
+        "specLower": 0.064034514566764428,
+        "specUpper": 0.34653621607178853,
+        "likelihoodRatio": 1.1309523809523809
+      },
+      {
+        "threshold": 7.9499999999999993,
+        "sensitivity": 0.94999999999999996,
+        "sensLower": 0.76386880655325795,
+        "sensUpper": 0.99743533528062245,
+        "specificity": 0.20000000000000001,
+        "specLower": 0.08860584686802575,
+        "specUpper": 0.39130950369540335,
+        "likelihoodRatio": 1.1874999999999998
+      },
+      {
+        "threshold": 8.1499999999999986,
+        "sensitivity": 0.94999999999999996,
+        "sensLower": 0.76386880655325795,
+        "sensUpper": 0.99743533528062245,
+        "specificity": 0.23999999999999999,
+        "specLower": 0.11496313693401447,
+        "specUpper": 0.43429683355429072,
+        "likelihoodRatio": 1.25
+      },
+      {
+        "threshold": 8.25,
+        "sensitivity": 0.94999999999999996,
+        "sensLower": 0.76386880655325795,
+        "sensUpper": 0.99743533528062245,
+        "specificity": 0.32000000000000001,
+        "specLower": 0.17205190306907989,
+        "specUpper": 0.51589730726897753,
+        "likelihoodRatio": 1.3970588235294119
+      },
+      {
+        "threshold": 8.3500000000000014,
+        "sensitivity": 0.94999999999999996,
+        "sensLower": 0.76386880655325795,
+        "sensUpper": 0.99743533528062245,
+        "specificity": 0.35999999999999999,
+        "specLower": 0.20247880774458221,
+        "specUpper": 0.55481502251835124,
+        "likelihoodRatio": 1.484375
+      },
+      {
+        "threshold": 8.4499999999999993,
+        "sensitivity": 0.90000000000000002,
+        "sensLower": 0.69896635477151281,
+        "sensUpper": 0.98223192446506691,
+        "specificity": 0.35999999999999999,
+        "specLower": 0.20247880774458221,
+        "specUpper": 0.55481502251835124,
+        "likelihoodRatio": 1.40625
+      },
+      {
+        "threshold": 8.6500000000000004,
+        "sensitivity": 0.90000000000000002,
+        "sensLower": 0.69896635477151281,
+        "sensUpper": 0.98223192446506691,
+        "specificity": 0.40000000000000002,
+        "specLower": 0.2340330237774797,
+        "specUpper": 0.59260542641032998,
+        "likelihoodRatio": 1.5
+      },
+      {
+        "threshold": 8.8500000000000014,
+        "sensitivity": 0.90000000000000002,
+        "sensLower": 0.69896635477151281,
+        "sensUpper": 0.98223192446506691,
+        "specificity": 0.44,
+        "specLower": 0.26665638881067355,
+        "specUpper": 0.6293266813020123,
+        "likelihoodRatio": 1.607142857142857
+      },
+      {
+        "threshold": 8.9499999999999993,
+        "sensitivity": 0.90000000000000002,
+        "sensLower": 0.69896635477151281,
+        "sensUpper": 0.98223192446506691,
+        "specificity": 0.47999999999999998,
+        "specLower": 0.30031285954112974,
+        "specUpper": 0.66501483049643217,
+        "likelihoodRatio": 1.7307692307692308
+      },
+      {
+        "threshold": 9.0500000000000007,
+        "sensitivity": 0.90000000000000002,
+        "sensLower": 0.69896635477151281,
+        "sensUpper": 0.98223192446506691,
+        "specificity": 0.52000000000000002,
+        "specLower": 0.33498516950356771,
+        "specUpper": 0.69968714045887026,
+        "likelihoodRatio": 1.8750000000000002
+      },
+      {
+        "threshold": 9.1499999999999986,
+        "sensitivity": 0.90000000000000002,
+        "sensLower": 0.69896635477151281,
+        "sensUpper": 0.98223192446506691,
+        "specificity": 0.56000000000000005,
+        "specLower": 0.37067331869798775,
+        "specUpper": 0.73334361118932634,
+        "likelihoodRatio": 2.0454545454545459
+      },
+      {
+        "threshold": 9.25,
+        "sensitivity": 0.84999999999999998,
+        "sensLower": 0.63958113525924309,
+        "sensUpper": 0.94763125410378346,
+        "specificity": 0.56000000000000005,
+        "specLower": 0.37067331869798775,
+        "specUpper": 0.73334361118932634,
+        "likelihoodRatio": 1.9318181818181821
+      },
+      {
+        "threshold": 9.5,
+        "sensitivity": 0.84999999999999998,
+        "sensLower": 0.63958113525924309,
+        "sensUpper": 0.94763125410378346,
+        "specificity": 0.59999999999999998,
+        "specLower": 0.40739457358967002,
+        "specUpper": 0.7659669762225203,
+        "likelihoodRatio": 2.125
+      },
+      {
+        "threshold": 9.8000000000000007,
+        "sensitivity": 0.80000000000000004,
+        "sensLower": 0.58398256774810642,
+        "sensUpper": 0.91934233742020199,
+        "specificity": 0.64000000000000001,
+        "specLower": 0.4451849774816487,
+        "specUpper": 0.79752119225541773,
+        "likelihoodRatio": 2.2222222222222223
+      },
+      {
+        "threshold": 9.9499999999999993,
+        "sensitivity": 0.80000000000000004,
+        "sensLower": 0.58398256774810642,
+        "sensUpper": 0.91934233742020199,
+        "specificity": 0.68000000000000005,
+        "specLower": 0.48410269273102247,
+        "specUpper": 0.8279480969309202,
+        "likelihoodRatio": 2.5000000000000004
+      },
+      {
+        "threshold": 10.050000000000001,
+        "sensitivity": 0.75,
+        "sensLower": 0.53129912238125598,
+        "sensUpper": 0.88813829859233429,
+        "specificity": 0.76000000000000001,
+        "specLower": 0.56570316644570928,
+        "specUpper": 0.8850368630659855,
+        "likelihoodRatio": 3.125
+      },
+      {
+        "threshold": 10.25,
+        "sensitivity": 0.69999999999999996,
+        "sensLower": 0.48102718164647662,
+        "sensUpper": 0.85452275513239573,
+        "specificity": 0.76000000000000001,
+        "specLower": 0.56570316644570928,
+        "specUpper": 0.8850368630659855,
+        "likelihoodRatio": 2.9166666666666665
+      },
+      {
+        "threshold": 10.449999999999999,
+        "sensitivity": 0.69999999999999996,
+        "sensLower": 0.48102718164647662,
+        "sensUpper": 0.85452275513239573,
+        "specificity": 0.80000000000000004,
+        "specLower": 0.60869049630459671,
+        "specUpper": 0.91139415313197425,
+        "likelihoodRatio": 3.5000000000000004
+      },
+      {
+        "threshold": 10.6,
+        "sensitivity": 0.69999999999999996,
+        "sensLower": 0.48102718164647662,
+        "sensUpper": 0.85452275513239573,
+        "specificity": 0.83999999999999997,
+        "specLower": 0.65346378392821147,
+        "specUpper": 0.93596548543323566,
+        "likelihoodRatio": 4.3749999999999991
+      },
+      {
+        "threshold": 10.899999999999999,
+        "sensitivity": 0.65000000000000002,
+        "sensLower": 0.43285427668523629,
+        "sensUpper": 0.81880817589891786,
+        "specificity": 0.83999999999999997,
+        "specLower": 0.65346378392821147,
+        "specUpper": 0.93596548543323566,
+        "likelihoodRatio": 4.0624999999999991
+      },
+      {
+        "threshold": 11.149999999999999,
+        "sensitivity": 0.65000000000000002,
+        "sensLower": 0.43285427668523629,
+        "sensUpper": 0.81880817589891786,
+        "specificity": 0.88,
+        "specLower": 0.70044206079072679,
+        "specUpper": 0.9583318284955965,
+        "likelihoodRatio": 5.416666666666667
+      },
+      {
+        "threshold": 11.399999999999999,
+        "sensitivity": 0.55000000000000004,
+        "sensLower": 0.34208534245034233,
+        "sensUpper": 0.74180214174437586,
+        "specificity": 0.88,
+        "specLower": 0.70044206079072679,
+        "specUpper": 0.9583318284955965,
+        "likelihoodRatio": 4.5833333333333339
+      },
+      {
+        "threshold": 11.649999999999999,
+        "sensitivity": 0.55000000000000004,
+        "sensLower": 0.34208534245034233,
+        "sensUpper": 0.74180214174437586,
+        "specificity": 0.92000000000000004,
+        "specLower": 0.75033891049604695,
+        "specUpper": 0.9857855395720535,
+        "likelihoodRatio": 6.8750000000000036
+      },
+      {
+        "threshold": 12,
+        "sensitivity": 0.45000000000000001,
+        "sensLower": 0.25819785825562425,
+        "sensUpper": 0.65791465754965772,
+        "specificity": 0.92000000000000004,
+        "specLower": 0.75033891049604695,
+        "specUpper": 0.9857855395720535,
+        "likelihoodRatio": 5.6250000000000027
+      },
+      {
+        "threshold": 12.600000000000001,
+        "sensitivity": 0.40000000000000002,
+        "sensLower": 0.21880653237281703,
+        "sensUpper": 0.61341849923774683,
+        "specificity": 0.92000000000000004,
+        "specLower": 0.75033891049604695,
+        "specUpper": 0.9857855395720535,
+        "likelihoodRatio": 5.0000000000000027
+      },
+      {
+        "threshold": 12.949999999999999,
+        "sensitivity": 0.34999999999999998,
+        "sensLower": 0.18119182410108209,
+        "sensUpper": 0.56714572331476365,
+        "specificity": 0.92000000000000004,
+        "specLower": 0.75033891049604695,
+        "specUpper": 0.9857855395720535,
+        "likelihoodRatio": 4.3750000000000018
+      },
+      {
+        "threshold": 13.300000000000001,
+        "sensitivity": 0.29999999999999999,
+        "sensLower": 0.14547724486760433,
+        "sensUpper": 0.51897281835352338,
+        "specificity": 0.92000000000000004,
+        "specLower": 0.75033891049604695,
+        "specUpper": 0.9857855395720535,
+        "likelihoodRatio": 3.7500000000000018
+      },
+      {
+        "threshold": 13.699999999999999,
+        "sensitivity": 0.29999999999999999,
+        "sensLower": 0.14547724486760433,
+        "sensUpper": 0.51897281835352338,
+        "specificity": 0.95999999999999996,
+        "specLower": 0.80455936263806271,
+        "specUpper": 0.997948268224498,
+        "likelihoodRatio": 7.4999999999999929
+      },
+      {
+        "threshold": 13.949999999999999,
+        "sensitivity": 0.25,
+        "sensLower": 0.11186170140766569,
+        "sensUpper": 0.46870087761874402,
+        "specificity": 1,
+        "specLower": 0.86680774906095159,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 14.25,
+        "sensitivity": 0.20000000000000001,
+        "sensLower": 0.080657662579798062,
+        "sensUpper": 0.41601743225189358,
+        "specificity": 1,
+        "specLower": 0.86680774906095159,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 14.5,
+        "sensitivity": 0.14999999999999999,
+        "sensLower": 0.052368745896216623,
+        "sensUpper": 0.36041886474075691,
+        "specificity": 1,
+        "specLower": 0.86680774906095159,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 14.699999999999999,
+        "sensitivity": 0.10000000000000001,
+        "sensLower": 0.017768075534933109,
+        "sensUpper": 0.3010336452284873,
+        "specificity": 1,
+        "specLower": 0.86680774906095159,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      },
+      {
+        "threshold": 15.550000000000001,
+        "sensitivity": 0.050000000000000003,
+        "sensLower": 0.0025646647193775288,
+        "sensUpper": 0.23613119344674199,
+        "specificity": 1,
+        "specLower": 0.86680774906095159,
+        "specUpper": 1,
+        "likelihoodRatio": "Inf"
+      }
+    ],
+    "auc": 0.81399999999999995,
+    "se": 0.066335953047097065,
+    "lower": 0.68398392114754969,
+    "upper": 0.9440160788524502,
+    "p": 0.00033561820580625109,
+    "se0": 0.087559503577091316,
+    "z": 3.5861327117226089,
+    "direction": "higher",
+    "nControls": 25,
+    "nPatients": 20
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "pROC": "1.19.1"
+    }
+  }
+}

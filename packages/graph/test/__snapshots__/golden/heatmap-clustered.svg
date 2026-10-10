@@ -1,0 +1,556 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="263.338pt" height="301.769pt" viewBox="0 0 263.338 301.769">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="49.782" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample grouped</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="series/c/cell/6">
+<rect x="44.623" y="71.641" width="24.5" height="24.5" fill="#a6cfe4" stroke="none"/>
+</g>
+<g data-id="series/a/cell/6">
+<rect x="68.623" y="71.641" width="24.5" height="24.5" fill="#fbe6da" stroke="none"/>
+</g>
+<g data-id="series/d/cell/6">
+<rect x="92.623" y="71.641" width="24.5" height="24.5" fill="#fac7ad" stroke="none"/>
+</g>
+<g data-id="series/b/cell/6">
+<rect x="116.623" y="71.641" width="24.5" height="24.5" fill="#0d3f76" stroke="none"/>
+</g>
+<g data-id="series/e/cell/6">
+<rect x="140.623" y="71.641" width="24" height="24.5" fill="#930e26" stroke="none"/>
+</g>
+<g data-id="series/c/cell/1">
+<rect x="44.623" y="95.641" width="24.5" height="24.5" fill="#053162" stroke="none"/>
+</g>
+<g data-id="series/a/cell/1">
+<rect x="68.623" y="95.641" width="24.5" height="24.5" fill="#f9efe8" stroke="none"/>
+</g>
+<g data-id="series/d/cell/1">
+<rect x="92.623" y="95.641" width="24.5" height="24.5" fill="#b8d8e9" stroke="none"/>
+</g>
+<g data-id="series/b/cell/1">
+<rect x="116.623" y="95.641" width="24.5" height="24.5" fill="#b6202f" stroke="none"/>
+</g>
+<g data-id="series/e/cell/1">
+<rect x="140.623" y="95.641" width="24" height="24.5" fill="#ee9878" stroke="none"/>
+</g>
+<g data-id="series/c/cell/4">
+<rect x="44.623" y="119.641" width="24.5" height="24.5" fill="#1c5c9e" stroke="none"/>
+</g>
+<g data-id="series/a/cell/4">
+<rect x="68.623" y="119.641" width="24.5" height="24.5" fill="#f7f7f7" stroke="none"/>
+</g>
+<g data-id="series/d/cell/4">
+<rect x="92.623" y="119.641" width="24.5" height="24.5" fill="#f7f7f7" stroke="none"/>
+</g>
+<g data-id="series/b/cell/4">
+<rect x="116.623" y="119.641" width="24.5" height="24.5" fill="#e0e0e0" stroke="none"/>
+</g>
+<g data-id="series/e/cell/4">
+<rect x="140.623" y="119.641" width="24" height="24.5" fill="#a41329" stroke="none"/>
+</g>
+<g data-id="series/c/cell/7">
+<rect x="44.623" y="143.641" width="24.5" height="24.5" fill="#124883" stroke="none"/>
+</g>
+<g data-id="series/a/cell/7">
+<rect x="68.623" y="143.641" width="24.5" height="24.5" fill="#9fcce2" stroke="none"/>
+</g>
+<g data-id="series/d/cell/7">
+<rect x="92.623" y="143.641" width="24.5" height="24.5" fill="#eef3f5" stroke="none"/>
+</g>
+<g data-id="series/b/cell/7">
+<rect x="116.623" y="143.641" width="24.5" height="24.5" fill="#e48167" stroke="none"/>
+</g>
+<g data-id="series/e/cell/7">
+<rect x="140.623" y="143.641" width="24" height="24.5" fill="#ad162a" stroke="none"/>
+</g>
+<g data-id="series/c/cell/2">
+<rect x="44.623" y="167.641" width="24.5" height="24.5" fill="#67001f" stroke="none"/>
+</g>
+<g data-id="series/a/cell/2">
+<rect x="68.623" y="167.641" width="24.5" height="24.5" fill="#65a8ce" stroke="none"/>
+</g>
+<g data-id="series/d/cell/2">
+<rect x="92.623" y="167.641" width="24.5" height="24.5" fill="#2b73b3" stroke="none"/>
+</g>
+<g data-id="series/b/cell/2">
+<rect x="116.623" y="167.641" width="24.5" height="24.5" fill="#fbd0b8" stroke="none"/>
+</g>
+<g data-id="series/e/cell/2">
+<rect x="140.623" y="167.641" width="24" height="24.5" fill="#f7f5f3" stroke="none"/>
+</g>
+<g data-id="series/c/cell/5">
+<rect x="44.623" y="191.641" width="24.5" height="24.5" fill="#750421" stroke="none"/>
+</g>
+<g data-id="series/a/cell/5">
+<rect x="68.623" y="191.641" width="24.5" height="24.5" fill="#2f79b6" stroke="none"/>
+</g>
+<g data-id="series/d/cell/5">
+<rect x="92.623" y="191.641" width="24.5" height="24.5" fill="#4292c2" stroke="none"/>
+</g>
+<g data-id="series/b/cell/5">
+<rect x="116.623" y="191.641" width="24.5" height="24.5" fill="#fbe6d9" stroke="none"/>
+</g>
+<g data-id="series/e/cell/5">
+<rect x="140.623" y="191.641" width="24" height="24.5" fill="#fbd2bb" stroke="none"/>
+</g>
+<g data-id="series/c/cell/0">
+<rect x="44.623" y="215.641" width="24.5" height="24.5" fill="#f3a380" stroke="none"/>
+</g>
+<g data-id="series/a/cell/0">
+<rect x="68.623" y="215.641" width="24.5" height="24.5" fill="#317cb7" stroke="none"/>
+</g>
+<g data-id="series/d/cell/0">
+<rect x="92.623" y="215.641" width="24.5" height="24.5" fill="#750521" stroke="none"/>
+</g>
+<g data-id="series/b/cell/0">
+<rect x="116.623" y="215.641" width="24.5" height="24.5" fill="#dbeaf2" stroke="none"/>
+</g>
+<g data-id="series/e/cell/0">
+<rect x="140.623" y="215.641" width="24" height="24.5" fill="#63a7ce" stroke="none"/>
+</g>
+<g data-id="series/c/cell/3">
+<rect x="44.623" y="239.641" width="24.5" height="24" fill="#f7f7f7" stroke="none"/>
+</g>
+<g data-id="series/a/cell/3">
+<rect x="68.623" y="239.641" width="24.5" height="24" fill="#bf3237" stroke="none"/>
+</g>
+<g data-id="series/d/cell/3">
+<rect x="92.623" y="239.641" width="24.5" height="24" fill="#cf5247" stroke="none"/>
+</g>
+<g data-id="series/b/cell/3">
+<rect x="116.623" y="239.641" width="24.5" height="24" fill="#3d8bbf" stroke="none"/>
+</g>
+<g data-id="series/e/cell/3">
+<rect x="140.623" y="239.641" width="24" height="24" fill="#2d76b4" stroke="none"/>
+</g>
+</g>
+<g data-id="cellLabels">
+<g data-id="series/c/cellLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="47.74" y="86.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.5</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="74.367" y="86.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.2</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="98.367" y="86.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.4</tspan></text>
+</g>
+<g data-id="series/b/cellLabel/6">
+<text fill="#ffffff" xml:space="preserve"><tspan x="119.74" y="86.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.4</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/6">
+<text fill="#ffffff" xml:space="preserve"><tspan x="146.367" y="86.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.3</tspan></text>
+</g>
+<g data-id="series/c/cellLabel/1">
+<text fill="#ffffff" xml:space="preserve"><tspan x="47.74" y="110.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.5</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="74.367" y="110.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.1</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="95.74" y="110.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.4</tspan></text>
+</g>
+<g data-id="series/b/cellLabel/1">
+<text fill="#ffffff" xml:space="preserve"><tspan x="122.367" y="110.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.1</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="146.367" y="110.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.6</tspan></text>
+</g>
+<g data-id="series/c/cellLabel/4">
+<text fill="#ffffff" xml:space="preserve"><tspan x="47.74" y="134.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.2</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="74.367" y="134.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.0</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="98.367" y="134.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.0</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/4">
+<text fill="#ffffff" xml:space="preserve"><tspan x="146.367" y="134.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.2</tspan></text>
+</g>
+<g data-id="series/c/cellLabel/7">
+<text fill="#ffffff" xml:space="preserve"><tspan x="47.74" y="158.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.3</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="71.74" y="158.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.5</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="95.74" y="158.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.1</tspan></text>
+</g>
+<g data-id="series/b/cellLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="122.367" y="158.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.7</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/7">
+<text fill="#ffffff" xml:space="preserve"><tspan x="146.367" y="158.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.2</tspan></text>
+</g>
+<g data-id="series/c/cellLabel/2">
+<text fill="#ffffff" xml:space="preserve"><tspan x="50.367" y="182.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.5</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="71.74" y="182.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.8</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/2">
+<text fill="#ffffff" xml:space="preserve"><tspan x="95.74" y="182.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.1</tspan></text>
+</g>
+<g data-id="series/b/cellLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="122.367" y="182.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.4</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="146.367" y="182.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.0</tspan></text>
+</g>
+<g data-id="series/c/cellLabel/5">
+<text fill="#ffffff" xml:space="preserve"><tspan x="50.367" y="206.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.4</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/5">
+<text fill="#ffffff" xml:space="preserve"><tspan x="71.74" y="206.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.0</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="95.74" y="206.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.9</tspan></text>
+</g>
+<g data-id="series/b/cellLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="122.367" y="206.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.2</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="146.367" y="206.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.3</tspan></text>
+</g>
+<g data-id="series/c/cellLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="50.367" y="230.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.6</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="71.74" y="230.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.0</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/0">
+<text fill="#ffffff" xml:space="preserve"><tspan x="98.367" y="230.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.4</tspan></text>
+</g>
+<g data-id="series/b/cellLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="119.74" y="230.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.2</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="143.74" y="230.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.8</tspan></text>
+</g>
+<g data-id="series/c/cellLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="50.367" y="254.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.0</tspan></text>
+</g>
+<g data-id="series/a/cellLabel/3">
+<text fill="#ffffff" xml:space="preserve"><tspan x="74.367" y="254.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">1.1</tspan></text>
+</g>
+<g data-id="series/d/cellLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="98.367" y="254.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">0.9</tspan></text>
+</g>
+<g data-id="series/b/cellLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="119.74" y="254.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−0.9</tspan></text>
+</g>
+<g data-id="series/e/cellLabel/3">
+<text fill="#ffffff" xml:space="preserve"><tspan x="143.74" y="254.761" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">−1.1</tspan></text>
+</g>
+</g>
+<g data-id="dendrograms">
+<g data-id="dendrogram/rows/0">
+<polyline points="170.623,179.641 176.165,179.641 176.165,203.641 170.623,203.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/1">
+<polyline points="170.623,131.641 177.189,131.641 177.189,155.641 170.623,155.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/2">
+<polyline points="170.623,107.641 180.562,107.641 180.562,143.641 177.189,143.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/3">
+<polyline points="170.623,83.641 193.39,83.641 193.39,125.641 180.562,125.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/4">
+<polyline points="170.623,227.641 196.26,227.641 196.26,251.641 170.623,251.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/5">
+<polyline points="176.165,191.641 204.944,191.641 204.944,239.641 196.26,239.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/6">
+<polyline points="193.39,104.641 206.623,104.641 206.623,215.641 204.944,215.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/columns/0">
+<polyline points="80.623,65.641 80.623,45.238 104.623,45.238 104.623,65.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/columns/1">
+<polyline points="128.623,65.641 128.623,41.529 152.623,41.529 152.623,65.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/columns/2">
+<polyline points="92.623,45.238 92.623,34.495 140.623,34.495 140.623,41.529" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/columns/3">
+<polyline points="56.623,65.641 56.623,29.641 116.623,29.641 116.623,34.495" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+<g data-id="colorScale">
+<g data-id="colorScale/band/0">
+<rect x="218.623" y="228.641" width="10" height="3" fill="#083568" stroke="none"/>
+</g>
+<g data-id="colorScale/band/1">
+<rect x="218.623" y="226.141" width="10" height="3" fill="#0c3d73" stroke="none"/>
+</g>
+<g data-id="colorScale/band/2">
+<rect x="218.623" y="223.641" width="10" height="3" fill="#10467f" stroke="none"/>
+</g>
+<g data-id="colorScale/band/3">
+<rect x="218.623" y="221.141" width="10" height="3" fill="#154e8b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/4">
+<rect x="218.623" y="218.641" width="10" height="3" fill="#195797" stroke="none"/>
+</g>
+<g data-id="colorScale/band/5">
+<rect x="218.623" y="216.141" width="10" height="3" fill="#1d5fa2" stroke="none"/>
+</g>
+<g data-id="colorScale/band/6">
+<rect x="218.623" y="213.641" width="10" height="3" fill="#2267ad" stroke="none"/>
+</g>
+<g data-id="colorScale/band/7">
+<rect x="218.623" y="211.141" width="10" height="3" fill="#276eb0" stroke="none"/>
+</g>
+<g data-id="colorScale/band/8">
+<rect x="218.623" y="208.641" width="10" height="3" fill="#2c75b4" stroke="none"/>
+</g>
+<g data-id="colorScale/band/9">
+<rect x="218.623" y="206.141" width="10" height="3" fill="#327cb7" stroke="none"/>
+</g>
+<g data-id="colorScale/band/10">
+<rect x="218.623" y="203.641" width="10" height="3" fill="#3783bb" stroke="none"/>
+</g>
+<g data-id="colorScale/band/11">
+<rect x="218.623" y="201.141" width="10" height="3" fill="#3c8abf" stroke="none"/>
+</g>
+<g data-id="colorScale/band/12">
+<rect x="218.623" y="198.641" width="10" height="3" fill="#4291c2" stroke="none"/>
+</g>
+<g data-id="colorScale/band/13">
+<rect x="218.623" y="196.141" width="10" height="3" fill="#4c99c6" stroke="none"/>
+</g>
+<g data-id="colorScale/band/14">
+<rect x="218.623" y="193.641" width="10" height="3" fill="#59a1ca" stroke="none"/>
+</g>
+<g data-id="colorScale/band/15">
+<rect x="218.623" y="191.141" width="10" height="3" fill="#65a9cf" stroke="none"/>
+</g>
+<g data-id="colorScale/band/16">
+<rect x="218.623" y="188.641" width="10" height="3" fill="#71b0d3" stroke="none"/>
+</g>
+<g data-id="colorScale/band/17">
+<rect x="218.623" y="186.141" width="10" height="3" fill="#7eb8d7" stroke="none"/>
+</g>
+<g data-id="colorScale/band/18">
+<rect x="218.623" y="183.641" width="10" height="3" fill="#8ac0db" stroke="none"/>
+</g>
+<g data-id="colorScale/band/19">
+<rect x="218.623" y="181.141" width="10" height="3" fill="#95c7df" stroke="none"/>
+</g>
+<g data-id="colorScale/band/20">
+<rect x="218.623" y="178.641" width="10" height="3" fill="#9fcce2" stroke="none"/>
+</g>
+<g data-id="colorScale/band/21">
+<rect x="218.623" y="176.141" width="10" height="3" fill="#a9d1e5" stroke="none"/>
+</g>
+<g data-id="colorScale/band/22">
+<rect x="218.623" y="173.641" width="10" height="3" fill="#b3d6e7" stroke="none"/>
+</g>
+<g data-id="colorScale/band/23">
+<rect x="218.623" y="171.141" width="10" height="3" fill="#bddbea" stroke="none"/>
+</g>
+<g data-id="colorScale/band/24">
+<rect x="218.623" y="168.641" width="10" height="3" fill="#c7e0ed" stroke="none"/>
+</g>
+<g data-id="colorScale/band/25">
+<rect x="218.623" y="166.141" width="10" height="3" fill="#d0e5f0" stroke="none"/>
+</g>
+<g data-id="colorScale/band/26">
+<rect x="218.623" y="163.641" width="10" height="3" fill="#d7e8f1" stroke="none"/>
+</g>
+<g data-id="colorScale/band/27">
+<rect x="218.623" y="161.141" width="10" height="3" fill="#ddeaf2" stroke="none"/>
+</g>
+<g data-id="colorScale/band/28">
+<rect x="218.623" y="158.641" width="10" height="3" fill="#e2edf3" stroke="none"/>
+</g>
+<g data-id="colorScale/band/29">
+<rect x="218.623" y="156.141" width="10" height="3" fill="#e8f0f4" stroke="none"/>
+</g>
+<g data-id="colorScale/band/30">
+<rect x="218.623" y="153.641" width="10" height="3" fill="#eef3f5" stroke="none"/>
+</g>
+<g data-id="colorScale/band/31">
+<rect x="218.623" y="151.141" width="10" height="3" fill="#f4f6f6" stroke="none"/>
+</g>
+<g data-id="colorScale/band/32">
+<rect x="218.623" y="148.641" width="10" height="3" fill="#f8f5f3" stroke="none"/>
+</g>
+<g data-id="colorScale/band/33">
+<rect x="218.623" y="146.141" width="10" height="3" fill="#f8f0eb" stroke="none"/>
+</g>
+<g data-id="colorScale/band/34">
+<rect x="218.623" y="143.641" width="10" height="3" fill="#f9ece4" stroke="none"/>
+</g>
+<g data-id="colorScale/band/35">
+<rect x="218.623" y="141.141" width="10" height="3" fill="#fae8dd" stroke="none"/>
+</g>
+<g data-id="colorScale/band/36">
+<rect x="218.623" y="138.641" width="10" height="3" fill="#fbe3d5" stroke="none"/>
+</g>
+<g data-id="colorScale/band/37">
+<rect x="218.623" y="136.141" width="10" height="3" fill="#fcdfce" stroke="none"/>
+</g>
+<g data-id="colorScale/band/38">
+<rect x="218.623" y="133.641" width="10" height="3" fill="#fddac6" stroke="none"/>
+</g>
+<g data-id="colorScale/band/39">
+<rect x="218.623" y="131.141" width="10" height="3" fill="#fbd1bb" stroke="none"/>
+</g>
+<g data-id="colorScale/band/40">
+<rect x="218.623" y="128.641" width="10" height="3" fill="#fac9b0" stroke="none"/>
+</g>
+<g data-id="colorScale/band/41">
+<rect x="218.623" y="126.141" width="10" height="3" fill="#f9c1a5" stroke="none"/>
+</g>
+<g data-id="colorScale/band/42">
+<rect x="218.623" y="123.641" width="10" height="3" fill="#f7b89b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/43">
+<rect x="218.623" y="121.141" width="10" height="3" fill="#f6b090" stroke="none"/>
+</g>
+<g data-id="colorScale/band/44">
+<rect x="218.623" y="118.641" width="10" height="3" fill="#f4a785" stroke="none"/>
+</g>
+<g data-id="colorScale/band/45">
+<rect x="218.623" y="116.141" width="10" height="3" fill="#f19d7c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/46">
+<rect x="218.623" y="113.641" width="10" height="3" fill="#ec9274" stroke="none"/>
+</g>
+<g data-id="colorScale/band/47">
+<rect x="218.623" y="111.141" width="10" height="3" fill="#e7886b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/48">
+<rect x="218.623" y="108.641" width="10" height="3" fill="#e37d63" stroke="none"/>
+</g>
+<g data-id="colorScale/band/49">
+<rect x="218.623" y="106.141" width="10" height="3" fill="#de725b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/50">
+<rect x="218.623" y="103.641" width="10" height="3" fill="#d96753" stroke="none"/>
+</g>
+<g data-id="colorScale/band/51">
+<rect x="218.623" y="101.141" width="10" height="3" fill="#d45c4b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/52">
+<rect x="218.623" y="98.641" width="10" height="3" fill="#cf5146" stroke="none"/>
+</g>
+<g data-id="colorScale/band/53">
+<rect x="218.623" y="96.141" width="10" height="3" fill="#c94641" stroke="none"/>
+</g>
+<g data-id="colorScale/band/54">
+<rect x="218.623" y="93.641" width="10" height="3" fill="#c33b3b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/55">
+<rect x="218.623" y="91.141" width="10" height="3" fill="#be3036" stroke="none"/>
+</g>
+<g data-id="colorScale/band/56">
+<rect x="218.623" y="88.641" width="10" height="3" fill="#b82431" stroke="none"/>
+</g>
+<g data-id="colorScale/band/57">
+<rect x="218.623" y="86.141" width="10" height="3" fill="#b3192b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/58">
+<rect x="218.623" y="83.641" width="10" height="3" fill="#a71529" stroke="none"/>
+</g>
+<g data-id="colorScale/band/59">
+<rect x="218.623" y="81.141" width="10" height="3" fill="#9c1127" stroke="none"/>
+</g>
+<g data-id="colorScale/band/60">
+<rect x="218.623" y="78.641" width="10" height="3" fill="#900d26" stroke="none"/>
+</g>
+<g data-id="colorScale/band/61">
+<rect x="218.623" y="76.141" width="10" height="3" fill="#840924" stroke="none"/>
+</g>
+<g data-id="colorScale/band/62">
+<rect x="218.623" y="73.641" width="10" height="3" fill="#790622" stroke="none"/>
+</g>
+<g data-id="colorScale/band/63">
+<rect x="218.623" y="71.641" width="10" height="2.5" fill="#6d0220" stroke="none"/>
+</g>
+<g data-id="colorScale/frame">
+<rect x="218.623" y="71.641" width="10" height="160" fill="none" stroke="#000000" stroke-width="0.5"/>
+</g>
+<g data-id="colorScale/tick/0">
+<line x1="228.623" y1="206.576" x2="231.623" y2="206.576" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/0">
+<text fill="#000000" xml:space="preserve"><tspan x="233.623" y="210.389" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−1.0</tspan></text>
+</g>
+<g data-id="colorScale/tick/1">
+<line x1="228.623" y1="179.154" x2="231.623" y2="179.154" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/1">
+<text fill="#000000" xml:space="preserve"><tspan x="233.623" y="182.967" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−0.5</tspan></text>
+</g>
+<g data-id="colorScale/tick/2">
+<line x1="228.623" y1="151.732" x2="231.623" y2="151.732" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/2">
+<text fill="#000000" xml:space="preserve"><tspan x="233.623" y="155.546" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0.0</tspan></text>
+</g>
+<g data-id="colorScale/tick/3">
+<line x1="228.623" y1="124.311" x2="231.623" y2="124.311" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/3">
+<text fill="#000000" xml:space="preserve"><tspan x="233.623" y="128.124" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0.5</tspan></text>
+</g>
+<g data-id="colorScale/tick/4">
+<line x1="228.623" y1="96.889" x2="231.623" y2="96.889" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/4">
+<text fill="#000000" xml:space="preserve"><tspan x="233.623" y="100.702" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">1.0</tspan></text>
+</g>
+<g data-id="colorScale/title">
+<text fill="#000000" xml:space="preserve"><tspan x="218.623" y="65.31" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">z-score</tspan></text>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="23.888" y="87.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Il10</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="8.596" y="111.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gapdh</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="8" y="135.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Cxcl10</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="11.051" y="159.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Foxp3</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="30.005" y="183.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Il6</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="23.275" y="207.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Ifng</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="19.612" y="231.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Actb</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/7">
+<text fill="#000000" xml:space="preserve"><tspan x="25.73" y="255.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Tnf</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" transform="rotate(-45 56.623 266.641)" xml:space="preserve"><tspan x="31.556" y="270.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">KO 1</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" transform="rotate(-45 80.623 266.641)" xml:space="preserve"><tspan x="54.546" y="270.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">WT 1</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" transform="rotate(-45 104.623 266.641)" xml:space="preserve"><tspan x="79.556" y="270.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">KO 2</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" transform="rotate(-45 128.623 266.641)" xml:space="preserve"><tspan x="102.546" y="270.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">WT 2</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" transform="rotate(-45 152.623 266.641)" xml:space="preserve"><tspan x="127.556" y="270.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">KO 3</tspan></text>
+</g>
+</g>
+</g>
+</svg>

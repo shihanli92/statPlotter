@@ -1,0 +1,26 @@
+{
+  "name": "unequal_n_1_vs_5",
+  "input": {"a":[3.2999999999999998],"b":[1.2,4.5,2.2000000000000002,6.0999999999999996,5]},
+  "params": {"exact":true},
+  "expected": {
+    "uA": 2,
+    "uB": 3,
+    "U": 2,
+    "sumRanksA": 3,
+    "sumRanksB": 18,
+    "medianA": 3.2999999999999998,
+    "medianB": 4.5,
+    "p": 1,
+    "method": "exact",
+    "ties": false,
+    "hlEstimate": 1.2000000000000002,
+    "hlLo": -2.0999999999999996,
+    "hlHi": 2.7999999999999998
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  }
+}

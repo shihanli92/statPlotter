@@ -1,0 +1,15 @@
+{
+  "name": "gof_counts_rescaled",
+  "input": {"observed":[12,30,25,13],"expected":[20,40,30,10]},
+  "params": {"fn":"gof"},
+  "expected": {
+    "chiSq": 4.291666666666667,
+    "df": 3,
+    "p": 0.2316430597982288
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Expected counts summing to 100 against 80 observed: rescaled."
+}

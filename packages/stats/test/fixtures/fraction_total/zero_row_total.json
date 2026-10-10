@@ -1,0 +1,17 @@
+{
+  "name": "zero_row_total",
+  "input": {"grid":[[0,0,"NA"],[1,3,4]]},
+  "params": {"divideBy":"row"},
+  "expected": {
+    "fractions": [
+      ["NaN", "NaN", "NaN"],
+      [0.125, 0.375, 0.5]
+    ],
+    "totals": [0, 8]
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "A row totalling 0 gives empty (NaN) fractions."
+}
