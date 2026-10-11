@@ -76,6 +76,9 @@ export interface BuilderState {
   /** A user preset's drawing order and scales (applied with its layers). */
   drawOrder?: 'series'
   scales?: GraphNode['scales']
+  /** Roadmap 49a: a user preset's cycles of symbols and line patterns (the graph's style's). */
+  shapes?: NonNullable<GraphNode['style']['shapes']>
+  dashes?: NonNullable<GraphNode['style']['dashes']>
   /**
    * Multiple variables (roadmap 34a): the variables on a category, grouped or matrix graph's axes
    * (a text variable among them); absent for the variables as columns or mapped on XY points.
@@ -279,7 +282,15 @@ export function builderReducer(table: DataTable, s: BuilderState, a: BuilderActi
         presetLayers(a.id, table, { ...nested, ...(s.mapping ? { mapping: s.mapping } : {}) }) ??
         (s.mapping ? presetLayers(a.id, table, nested) : undefined)
       if (!spec) return s
-      const { note: _, drawOrder: _d, scales: _s, mapping: _m, ...rest } = s
+      const {
+        note: _,
+        drawOrder: _d,
+        scales: _s,
+        mapping: _m,
+        shapes: _sh,
+        dashes: _da,
+        ...rest
+      } = s
       const turned = turnedBy(table, spec.mapping)
       return {
         ...rest,
@@ -294,7 +305,15 @@ export function builderReducer(table: DataTable, s: BuilderState, a: BuilderActi
       }
     }
     case 'recipe': {
-      const { note: _n, drawOrder: _d, scales: _s, mapping: _m, ...rest } = s
+      const {
+        note: _n,
+        drawOrder: _d,
+        scales: _s,
+        mapping: _m,
+        shapes: _sh,
+        dashes: _da,
+        ...rest
+      } = s
       const { spec } = a
       return {
         ...rest,
@@ -310,6 +329,8 @@ export function builderReducer(table: DataTable, s: BuilderState, a: BuilderActi
         ...(s.nested ? { nested: nestedOf(spec.layers) } : {}),
         ...(spec.drawOrder ? { drawOrder: spec.drawOrder } : {}),
         ...(spec.scales ? { scales: spec.scales } : {}),
+        ...(spec.shapes ? { shapes: spec.shapes } : {}),
+        ...(spec.dashes ? { dashes: spec.dashes } : {}),
         ...(spec.mapping ? { mapping: spec.mapping } : {}),
       }
     }

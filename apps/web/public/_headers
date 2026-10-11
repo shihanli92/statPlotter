@@ -1,4 +1,5 @@
-# Cloudflare Pages response headers for every file of the web app (code audit 2, decision 653).
+# Response headers for every file of the web app (code audit 2, decision 653), served by
+# Cloudflare Pages (the private deployment) and Netlify (the public demo, decision 1225).
 # The same Content-Security-Policy as the desktop app's (apps/desktop/src-tauri/tauri.conf.json,
 # which adds Tauri's IPC to connect-src). 'unsafe-inline' in style-src only: React and the graph
 # SVGs set style attributes. data: and blob: for the images, fonts and workers the app makes

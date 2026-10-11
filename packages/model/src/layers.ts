@@ -21,11 +21,14 @@ import { DataSetKey, NodeId } from './ids.ts'
 import { ResultStat } from './results.ts'
 import {
   ArrowHead,
+  BySeries,
   ColorRef,
+  Dash,
   FillStyle,
   NumberDisplay,
   Pt,
   RGB,
+  SeriesStroke,
   StrokeStyle,
   TextStyle,
 } from './style.ts'
@@ -362,12 +365,19 @@ export type VariableMapping = z.infer<typeof VariableMapping>
 
 // --- Per-geom styles (sparse): the v1 `SeriesStyle` sections, moved --------------------------
 
+/**
+ * Roadmap 49a: a symbol's shape, fixed or the data set's (`{ series: true }`: the graph's shapes
+ * in turn, `GraphStyle.shapes`), as a colour is fixed or the data set's.
+ */
+export const ShapeRef = z.union([SymbolShape, BySeries])
+export type ShapeRef = z.infer<typeof ShapeRef>
+
 /** How a nested group's subjects are told apart. */
 const SubjectMark = z.enum(['shape', 'shade', 'none'])
 
 export const PointsStyle = z
   .object({
-    shape: SymbolShape,
+    shape: ShapeRef,
     size: Pt,
     fill: FillStyle,
     border: StrokeStyle,
@@ -411,9 +421,10 @@ export const BarStyle = z
     baseline: z.number(),
   })
   .partial()
-export const ErrorBarStyle = ErrorSpec.omit({ stat: true }).partial()
+/** Roadmap 49a: the bars' line may be dashed by data set (`SeriesStroke`). */
+export const ErrorBarStyle = ErrorSpec.omit({ stat: true }).extend({ line: SeriesStroke }).partial()
 export const CenterStyle = z
-  .object({ line: StrokeStyle, width: z.number().min(0).max(1), subjects: SubjectMark })
+  .object({ line: SeriesStroke, width: z.number().min(0).max(1), subjects: SubjectMark })
   .partial()
 /** Boxes and floating bars: the box, its width, whisker caps, centre line and outliers. */
 export const BoxStyle = z
@@ -423,7 +434,7 @@ export const BoxStyle = z
     width: z.number().min(0).max(1),
     capWidth: Pt,
     centerLine: StrokeStyle,
-    outlierShape: SymbolShape,
+    outlierShape: ShapeRef,
     outlierSize: Pt,
     outlierFill: FillStyle,
     outlierBorder: StrokeStyle,
@@ -439,9 +450,12 @@ export const ViolinStyle = z
     centerLine: StrokeStyle,
   })
   .partial()
-/** Lines and staircases; `fade` (lines through each replicate) towards white. */
+/**
+ * Lines and staircases; `fade` (lines through each replicate) towards white. Roadmap 49a: the
+ * stroke's pattern may be the data set's (`SeriesStroke`).
+ */
 export const LineStyle = z
-  .object({ stroke: StrokeStyle, gaps: z.boolean(), fade: z.number().min(0).max(0.95) })
+  .object({ stroke: SeriesStroke, gaps: z.boolean(), fade: z.number().min(0).max(0.95) })
   .partial()
 export const CensorStyle = z.object({ size: Pt, border: StrokeStyle }).partial()
 export const AreaStyle = z
@@ -463,7 +477,7 @@ export const DifferenceStyle = z
     guides: z.boolean(),
     line: StrokeStyle,
     capWidth: Pt,
-    shape: SymbolShape,
+    shape: ShapeRef,
     size: Pt,
     fill: FillStyle,
     border: StrokeStyle,
@@ -732,6 +746,17 @@ export const GraphStyle = z.object({
   /** Base text style for everything (font family, size, colour); elements refine it. */
   text: TextStyle.partial().optional(),
   palette: z.array(RGB).optional(),
+  /**
+   * Roadmap 49a: the symbols data sets take in turn where a layer's shape is the data set's
+   * (`{ series: true }`), as their colours take the palette's (absent: the style's, else circle,
+   * square, triangle, diamond, cross, plus).
+   */
+  shapes: z.array(SymbolShape).min(1).max(24).optional(),
+  /**
+   * Roadmap 49a: the line patterns data sets take in turn where a layer's dash is the data set's
+   * (absent: the style's, else solid, dashed, dotted).
+   */
+  dashes: z.array(Dash).min(1).max(12).optional(),
   /**
    * 'axes' (default): the X and Y axes; 'box': a full frame round the plot; 'none': no axis
    * lines; 'arrows' (roadmap 36): short arrows from a corner with the axis titles beside them, no

@@ -12,7 +12,7 @@
 //    the test fixtures, absolute home paths, private words, secrets, any excluded file, files
 //    over 5 MB, the source files of the papers left out (read from their specs before removal).
 // 4. Verifies the snapshot on its own: pnpm install --frozen-lockfile, pnpm check, the web build;
-//    then, in a fresh copy, the public demo's build command on Cloudflare Pages, whose output
+//    then, in a fresh copy, the public demo's install and build as Netlify runs them, whose output
 //    must hold the deployment's _headers (the Content-Security-Policy).
 // 5. Clones the public repository (or starts one when it can't be reached), replaces its tree
 //    with the snapshot and commits "statPlotter <version>" as the GitHub noreply identity.
@@ -79,16 +79,15 @@ export const PZFX_FIXTURES = ['packages/io/test/fixtures/', 'apps/e2e/fixtures/'
 export const MAX_FILE_BYTES = 5 * 1024 * 1024
 
 /**
- * The public demo's build: Cloudflare Pages builds the public repository's main branch itself
- * (connected to it; docs/PUBLISHING.md lists these settings). pnpm at the repository's own
- * version through npx, so the build doesn't depend on the pnpm of Cloudflare's build image, whose
- * own install step is skipped.
+ * The public demo's build: Netlify builds the public repository's main branch itself (connected
+ * to it; `netlify.toml` at the root holds these settings, docs/PUBLISHING.md the rest). Netlify
+ * installs with the pnpm `packageManager` pins (Corepack) under `NODE_VERSION`, then runs
+ * `command`; the script does the same with that pnpm through npx.
  */
-export const CLOUDFLARE_BUILD = {
-  command:
-    'npx --yes pnpm@11.9.0 install --frozen-lockfile && npx --yes pnpm@11.9.0 --filter @ps/web build',
+export const DEMO_BUILD = {
+  command: 'pnpm --filter @ps/web build',
   output: 'apps/web/dist',
-  env: { NODE_VERSION: '24', SKIP_DEPENDENCY_INSTALL: 'true' },
+  env: { NODE_VERSION: '24' },
 }
 
 /**
@@ -539,31 +538,39 @@ async function main(argv) {
     }
     rmSync(verify, { recursive: true, force: true })
 
-    step('The demo’s build on Cloudflare Pages, in a fresh copy')
+    step('The demo’s build as Netlify runs it, in a fresh copy')
     const demo = join(work, 'demo')
     cpSync(tree, demo, { recursive: true, verbatimSymlinks: true })
     const major = process.versions.node.split('.')[0]
-    if (major !== CLOUDFLARE_BUILD.env.NODE_VERSION) {
-      console.warn(`  warning: Node ${process.versions.node} here; Cloudflare builds with Node 24`)
+    if (major !== DEMO_BUILD.env.NODE_VERSION) {
+      console.warn(`  warning: Node ${process.versions.node} here; Netlify builds with Node 24`)
     }
-    console.log(`  ${CLOUDFLARE_BUILD.command}`)
-    const built = spawnSync('sh', ['-c', CLOUDFLARE_BUILD.command], {
-      cwd: demo,
-      stdio: 'inherit',
-      env: { ...process.env, ...CLOUDFLARE_BUILD.env, CI: 'true' },
-    })
-    if (built.status !== 0) fail(`the Cloudflare build command failed in the snapshot (${demo})`)
-    const out = join(demo, CLOUDFLARE_BUILD.output)
+    // Netlify's install (Corepack's pnpm at the `packageManager` version), then the command.
+    const pm = JSON.parse(readFileSync(join(demo, 'package.json'), 'utf8')).packageManager
+    const pnpm = `npx --yes ${pm}`
+    const commands = [
+      `${pnpm} install --frozen-lockfile`,
+      DEMO_BUILD.command.replace(/^pnpm /, `${pnpm} `),
+    ]
+    for (const command of commands) {
+      console.log(`  ${command}`)
+      const built = spawnSync('sh', ['-c', command], {
+        cwd: demo,
+        stdio: 'inherit',
+        env: { ...process.env, ...DEMO_BUILD.env, CI: 'true' },
+      })
+      if (built.status !== 0) fail(`the demo's build failed in the snapshot (${command}; ${demo})`)
+    }
+    const out = join(demo, DEMO_BUILD.output)
     const headers = join(out, '_headers')
-    if (!existsSync(join(out, 'index.html')))
-      fail(`${CLOUDFLARE_BUILD.output}/index.html is missing`)
+    if (!existsSync(join(out, 'index.html'))) fail(`${DEMO_BUILD.output}/index.html is missing`)
     if (
       !existsSync(headers) ||
       readFileSync(headers, 'utf8') !== readFileSync(join(demo, 'apps/web/public/_headers'), 'utf8')
     ) {
-      fail(`${CLOUDFLARE_BUILD.output}/_headers is missing or not apps/web/public/_headers`)
+      fail(`${DEMO_BUILD.output}/_headers is missing or not apps/web/public/_headers`)
     }
-    console.log(`  ${CLOUDFLARE_BUILD.output}: index.html and _headers (Content-Security-Policy)`)
+    console.log(`  ${DEMO_BUILD.output}: index.html and _headers (Content-Security-Policy)`)
     rmSync(demo, { recursive: true, force: true })
   } else {
     console.warn('\n  warning: --skip-verify: the snapshot was not installed, checked or built')

@@ -1,0 +1,13 @@
+# The public demo on Netlify (docs/PUBLISHING.md, decision 1225): Netlify builds the public
+# repository's main branch. It installs the dependencies itself with the pnpm `packageManager`
+# pins (through Corepack), under the Node of `.nvmrc`; the build makes apps/web/dist, whose
+# `_headers` (the Content-Security-Policy) Netlify serves as Cloudflare did.
+# tools/publish-public.mjs runs the same install and build in a fresh copy before publishing
+# (`DEMO_BUILD`; ui/test/publishPublic.test.ts checks that this file says the same).
+
+[build]
+  command = "pnpm --filter @ps/web build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "24"

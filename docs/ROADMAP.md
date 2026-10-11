@@ -61,6 +61,7 @@ the merge commit. Phases count in the order they reached main.
 | **0.3.0** | **Code audit 3** (six reviews and six paper reproductions; steps 1–4: bugs, speed and memory, keyboard and screen readers, tests, docs and licence; decisions 1000–1164) | (not tagged: no release yet) |
 | 0.3.1 | 48 | merge of 48, open source as statPlotter (not tagged) |
 | 0.3.2 | 48b | merge of 48b, the commercial product's name removed (not tagged) |
+| 0.3.3 | 49a | merge of 49a, aesthetics by data set or fixed (not tagged) |
 
 ## Phases
 
@@ -1859,3 +1860,35 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     place on an XY, a column scatter, a grouped bar and a multiple-variables graph; the list of
     layers, + Add ▾, the dialogs over it, Match format). UI only: every golden and v1 fixture
     byte-identical, the example fingerprints and `ANALYSES_VERSION` unchanged.
+
+49a. ✅ **Aesthetics by data set or fixed** — decisions 1213–1224 (the user's request: ggplot's
+    `aes(fill = group)` beside `geom_point(shape = 21, colour = 'black')`). **The Appearance
+    table**: a layer's Format place (docked and in its window; a data set's part too) shows a row
+    per aesthetic its geom draws — fill, fill opacity, outline, outline width, shape, size for
+    points; fill and outline for bars, boxes, violins, ellipses; line colour, width and style for
+    lines, steps, error bars, centre lines, paths, vectors, connecting lines — each **By data set**
+    (the group's colour, the graph's shapes or line styles in turn), **Fixed** (one colour, shape,
+    pattern or size for every data set), **None**, or on multiple-variables tables **By variable**
+    (the existing colour, shape and size mappings). It replaces Hollow, the symbol Border, the
+    bars' Border and Fill opacity and the scattered line fields. A data set set by hand still wins:
+    the table says "2 data sets set by hand · Reset". **Recipes**, one step each: Filled by group,
+    black outline; Outlined by group, white fill; Solid by group. **Model** (optional fields and
+    union members, no schema change): a shape or line pattern may be `{ series: true }` as colours
+    are; the graph's orders of shapes (circle, square, triangle, diamond, cross, plus) and line
+    styles (solid, dashed, dotted) are `style.shapes` / `style.dashes`, edited like the palette
+    (in the graph's place and under the row), kept by styles (`.psstyle`), user presets and Match
+    format; the format painter copies a shape by data set as such. Resolved by the style resolver
+    at each series' colour index, so legends draw what layers draw. New goldens only
+    (`bygroup-points-filled-black-outline`, `-points-outlined-white-fill`, `-shapes-cycled`,
+    `-shapes-custom-cycle`, `-dashes-cycled`, `-bars-fixed-fill`, `-boxes-fixed-fill`); every
+    existing golden, v1 fixture and example fingerprint byte-identical, `ANALYSES_VERSION`
+    unchanged. Tests: the resolution (cycling, wrapping, lists' precedence, overrides, places of
+    outputs and functions), legend glyphs, styles, presets, Match format and the format painter
+    (unit); the table's rows, modes, recipes, Reset, mixed values, one data set, By variable and
+    the lists (happy-dom); Playwright `byGroup.spec.ts` (new: docked panel and window) in
+    Chromium, WebKit and Firefox. Left for 49b: fill and outline mapped separately (a second
+    colour channel with its own palette), ggplot-style merged or split legends.
+    **After 0.3.3 (no version change; decision 1225).** The public demo moves to Netlify
+    (`statplotter.netlify.app`, the README's "Try it"): `netlify.toml` holds its build, the publish
+    script's demo build matches it (`DEMO_BUILD`), `wrangler.jsonc` is gone, and
+    docs/PUBLISHING.md says how the Netlify site is set up (previews off).

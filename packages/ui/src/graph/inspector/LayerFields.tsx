@@ -35,13 +35,9 @@ import type { ReactNode } from 'react'
 import { ARROW_SHAPES } from '../../components/arrowFields.tsx'
 import { ColorField } from '../../components/ColorPicker.tsx'
 import { Checkbox, NumberInput, Section, Select, TextInput } from '../../components/fields.tsx'
-import {
-  ColorRefField,
-  LineWidthStyle,
-  SHAPES,
-  StrokeFields,
-} from '../../components/formatFields.tsx'
+import { SHAPES, StrokeFields } from '../../components/formatFields.tsx'
 import { ResultLayerPanel } from '../results/ResultPanels.tsx'
+import { AppearanceSection, appearanceRows } from './AppearanceTable.tsx'
 import { TypedValuesPanel } from './AxisExtras.tsx'
 import type { PanelContext } from './context.ts'
 import {
@@ -723,47 +719,56 @@ function SymbolsSection({ e, bubbles = false }: { e: LayerEdit; bubbles?: boolea
   const { style, ctx } = e
   const frame = ctx.graph.frame
   const each = e.stat.kind === 'identity'
+  // Roadmap 49a: shape, size, fill and outline are the Appearance table's (dot plots' and
+  // Significance classes' symbols keep their own fields: their colours are the statistics').
+  const table = appearanceRows(ctx.graph, e.layer).length > 0
+  const arranged = each && (frame === 'category' || frame === 'grouped')
+  if (table && !arranged) return null
   return (
     <Section title={bubbles ? 'Bubbles' : 'Symbols'}>
-      <div className="field-row">
-        <Select
-          label="Shape"
-          value={style.points.shape}
-          mixed={e.differs((x) => x.points.shape)}
-          options={SHAPES}
-          onChange={(v) => e.set('shape', v)}
-        />
-        {!bubbles && (
-          <NumberInput
-            label="Size (pt)"
-            value={style.points.size}
-            mixed={e.differs((x) => x.points.size)}
-            min={1}
-            max={30}
-            step={0.5}
-            onChange={(v) => e.set('size', v)}
+      {!table && (
+        <>
+          <div className="field-row">
+            <Select
+              label="Shape"
+              value={style.points.shape}
+              mixed={e.differs((x) => x.points.shape)}
+              options={SHAPES}
+              onChange={(v) => e.set('shape', v)}
+            />
+            {!bubbles && (
+              <NumberInput
+                label="Size (pt)"
+                value={style.points.size}
+                mixed={e.differs((x) => x.points.size)}
+                min={1}
+                max={30}
+                step={0.5}
+                onChange={(v) => e.set('size', v)}
+              />
+            )}
+          </div>
+          <Checkbox
+            label="Hollow"
+            checked={style.points.fill.type === 'none'}
+            mixed={e.differs((x) => x.points.fill.type === 'none')}
+            // Explicit values (not deletion) so they also override the layer's own.
+            onChange={(v) =>
+              e.set(
+                'fill',
+                v ? { type: 'none' } : { type: 'solid', color: { series: true }, opacity: 1 },
+              )
+            }
           />
-        )}
-      </div>
-      <Checkbox
-        label="Hollow"
-        checked={style.points.fill.type === 'none'}
-        mixed={e.differs((x) => x.points.fill.type === 'none')}
-        // Explicit values (not deletion) so they also override the layer's own.
-        onChange={(v) =>
-          e.set(
-            'fill',
-            v ? { type: 'none' } : { type: 'solid', color: { series: true }, opacity: 1 },
-          )
-        }
-      />
-      <PointBorder
-        border={style.points.border}
-        mixed={e.differs((x) => JSON.stringify(x.points.border))}
-        palette={ctx.palette}
-        onChange={(v) => e.set('border', v, 'Symbol border')}
-      />
-      {each && (frame === 'category' || frame === 'grouped') && (
+          <PointBorder
+            border={style.points.border}
+            mixed={e.differs((x) => JSON.stringify(x.points.border))}
+            palette={ctx.palette}
+            onChange={(v) => e.set('border', v, 'Symbol border')}
+          />
+        </>
+      )}
+      {arranged && (
         <div className="field-row">
           <Select
             label="Arrangement"
@@ -866,21 +871,25 @@ function BarsSection({ e }: { e: LayerEdit }) {
   const xy = ctx.graph.frame === 'xy'
   const stackedBars = layer.position?.kind === 'stack'
   const b = style.bar.baseline
+  // Roadmap 49a: fill and outline are the Appearance table's (100% bars keep theirs).
+  const table = appearanceRows(ctx.graph, layer).length > 0
   return (
     <Section title="Bars">
       <div className="field-row">
-        <FillOpacity e={e} part="bar" />
+        {!table && <FillOpacity e={e} part="bar" />}
         <WidthField e={e} of={xy ? 'bin' : 'category'} value={(s) => s.bar.width} />
       </div>
-      <NumberInput
-        label="Border (pt)"
-        value={style.bar.border.width}
-        mixed={e.differs((s) => s.bar.border.width)}
-        min={0}
-        max={10}
-        step={0.25}
-        onChange={(v) => e.set('border', { ...style.bar.border, width: v }, 'Bar border')}
-      />
+      {!table && (
+        <NumberInput
+          label="Border (pt)"
+          value={style.bar.border.width}
+          mixed={e.differs((s) => s.bar.border.width)}
+          min={0}
+          max={10}
+          step={0.25}
+          onChange={(v) => e.set('border', { ...style.bar.border, width: v }, 'Bar border')}
+        />
+      )}
       {xy && (
         <NumberInput
           label="Bin width (X units, 0 = spacing of the X values)"
@@ -946,13 +955,6 @@ function ErrorBarsFields({ e }: { e: LayerEdit }) {
         />
         {!e.common && <CapWidth e={e} />}
       </div>
-      <StrokeFields
-        label="Line"
-        value={style.error.line}
-        palette={ctx.palette}
-        allowSeries
-        onChange={(v) => e.set('line', v, 'Error bar line')}
-      />
       {xErrors && (
         <Checkbox
           label="Error bars along X (the table’s X errors)"
@@ -980,13 +982,6 @@ function CenterFields({ e }: { e: LayerEdit }) {
           onChange={(v) => e.set('width', v / 100, 'Centre line length')}
         />
       )}
-      <StrokeFields
-        label="Line"
-        value={style.center.line}
-        palette={ctx.palette}
-        allowSeries
-        onChange={(v) => e.set('line', v, 'Centre line')}
-      />
     </Section>
   )
 }
@@ -995,7 +990,6 @@ function BoxFields({ e }: { e: LayerEdit }) {
   return (
     <Section title="Box">
       <div className="field-row">
-        <FillOpacity e={e} part="box" />
         <WidthField e={e} of="category" value={(s) => s.bar.width} />
       </div>
       <NumberInput
@@ -1014,7 +1008,6 @@ function ViolinFields({ e }: { e: LayerEdit }) {
   return (
     <Section title="Violin">
       <div className="field-row">
-        <FillOpacity e={e} part="box" />
         <WidthField e={e} of="category" value={(s) => s.bar.width} />
       </div>
       <Checkbox
@@ -1035,24 +1028,13 @@ function lineStroke(e: LayerEdit) {
 }
 
 function LineFields({ e }: { e: LayerEdit }) {
-  const { style, ctx, layer } = e
-  const { spaghetti, stroke } = lineStroke(e)
-  const field = 'stroke'
+  const { style, layer } = e
+  const { spaghetti } = lineStroke(e)
+  // Roadmap 49a: its colour, width and style are the Appearance table's.
+  if (!spaghetti && !(layer.geom === 'line' && (!layer.data || layer.data.from === 'table')))
+    return null
   return (
     <Section title={layer.geom === 'step' ? 'Survival curve' : 'Line'}>
-      {!e.common && (
-        <div className="field-row">
-          <LineWidthStyle stroke={stroke} onChange={(s) => e.set(field, s, 'Line style')} />
-        </div>
-      )}
-      <ColorRefField
-        label="Line colour"
-        value={stroke.color}
-        palette={ctx.palette}
-        fallback={ctx.palette[0]!}
-        allowSeries
-        onChange={(c) => e.set(field, { ...stroke, color: c }, 'Line colour')}
-      />
       {spaghetti && (
         <NumberInput
           label="Fade (0–0.95 towards white)"
@@ -1451,26 +1433,11 @@ function ReflineFields({ e }: { e: LayerEdit }) {
   )
 }
 
-/** Before-after lines. */
-function ConnectorFields({ e }: { e: LayerEdit }) {
-  return (
-    <Section title="Connecting lines">
-      <StrokeFields
-        label="Line"
-        value={e.style.error.line}
-        palette={e.ctx.palette}
-        onChange={(v) => e.set('line', v, 'Before–after lines')}
-      />
-    </Section>
-  )
-}
-
 /** Roadmap 34c: ellipses and hulls — outline, fill or both, the fill's opacity, the outline. */
 function PolygonFields({ e }: { e: LayerEdit }) {
   const { ctx, layer } = e
   if (layer.geom !== 'polygon') return null
   const style = overlayStyle(layer, e.key ?? '', ctx.theme)
-  const opacity = style.fill.type === 'solid' ? style.fill.opacity : 0
   return (
     <Section title={layer.stat.kind === 'hull' ? 'Hulls' : 'Ellipses'}>
       <Select
@@ -1483,35 +1450,6 @@ function PolygonFields({ e }: { e: LayerEdit }) {
         ]}
         onChange={(v) => e.set('draw', v, 'Ellipse fill and outline')}
       />
-      {style.draw !== 'outline' && (
-        <NumberInput
-          label="Fill opacity"
-          value={opacity}
-          min={0}
-          max={1}
-          step={0.05}
-          onChange={(v) =>
-            e.set(
-              'fill',
-              {
-                type: 'solid',
-                color: style.fill.type === 'solid' ? style.fill.color : { series: true },
-                opacity: v,
-              },
-              'Fill opacity',
-            )
-          }
-        />
-      )}
-      {style.draw !== 'fill' && (
-        <StrokeFields
-          label="Outline"
-          value={style.border}
-          palette={ctx.palette}
-          allowSeries
-          onChange={(v) => v && e.set('border', v, 'Outline')}
-        />
-      )}
     </Section>
   )
 }
@@ -1557,17 +1495,6 @@ function ArrowLineFields({ e }: { e: LayerEdit }) {
           onChange={(v) => setAes('group', v, 'Path groups')}
         />
       )}
-      <div className="field-row">
-        <LineWidthStyle stroke={style.stroke} onChange={(s) => e.set('stroke', s, 'Line style')} />
-      </div>
-      <ColorRefField
-        label="Line colour"
-        value={style.stroke.color}
-        palette={ctx.palette}
-        fallback={ctx.palette[0]!}
-        allowSeries
-        onChange={(c) => e.set('stroke', { ...style.stroke, color: c }, 'Line colour')}
-      />
       <div className="field-row">
         <Select
           label="Arrowheads"
@@ -2035,7 +1962,8 @@ function GeomSections({ e }: { e: LayerEdit }) {
     case 'censor':
       return <CensorFields e={e} />
     case 'connector':
-      return <ConnectorFields e={e} />
+      // Roadmap 49a: its line is the Appearance table's.
+      return null
     case 'refline':
       return <ReflineFields e={e} />
     case 'difference':
@@ -2145,15 +2073,9 @@ export function CommonLayerFields({
   const e = layerEdit(ctx, layer, items, seriesKey, true)
   // Roadmap 46b: the Significance layer's Common settings are the graph's cut-offs.
   if (layer.stat.kind === 'threshold') return <CutoffFields ctx={ctx} />
+  // Roadmap 49a: the Appearance table's line width and style (by data set or fixed).
   if (layer.geom === 'line' || layer.geom === 'step')
-    return (
-      <div className="field-row">
-        <LineWidthStyle
-          stroke={lineStroke(e).stroke}
-          onChange={(s) => e.set('stroke', s, 'Line style')}
-        />
-      </div>
-    )
+    return <AppearanceSection e={e} only={['lineWidth', 'dash']} bare />
   if (layer.geom === 'errorbar')
     return (
       <div className="field-row">
@@ -2274,6 +2196,12 @@ export function LayerFields({
     <>
       <StatRow e={e} />
       <PositionRow e={e} />
+      <AppearanceSection
+        e={e}
+        omit={
+          common && (layer.geom === 'line' || layer.geom === 'step') ? ['lineWidth', 'dash'] : []
+        }
+      />
       <GeomSections e={e} />
     </>
   )

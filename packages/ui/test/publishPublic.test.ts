@@ -34,7 +34,7 @@ interface PublishTool {
     exists: (path: string) => boolean,
   ): { file: string; line: number; target: string }[]
   versionNotes(roadmap: string, version: string): string[]
-  CLOUDFLARE_BUILD: { command: string; output: string; env: Record<string, string> }
+  DEMO_BUILD: { command: string; output: string; env: Record<string, string> }
 }
 const root = new URL('../../../', import.meta.url)
 const tool = (): Promise<PublishTool> =>
@@ -283,20 +283,19 @@ describe('publish-public: the commit message', () => {
 })
 
 describe('publish-public: the demo build', () => {
-  it('builds with the repository’s pnpm and Node, as docs/PUBLISHING.md tells Cloudflare', async () => {
-    const { CLOUDFLARE_BUILD } = await tool()
+  it('builds as netlify.toml tells Netlify, with the repository’s pnpm and Node', async () => {
+    const { DEMO_BUILD } = await tool()
     const read = (path: string) => readFileSync(new URL(path, root), 'utf8')
-    const pnpm = JSON.parse(read('package.json')).packageManager as string
-    const versions = [...CLOUDFLARE_BUILD.command.matchAll(/pnpm@(\S+)/g)].map((m) => m[1])
-    expect(versions).toEqual([pnpm.replace(/^pnpm@/, ''), pnpm.replace(/^pnpm@/, '')])
-    expect(CLOUDFLARE_BUILD.command).toContain('install --frozen-lockfile')
-    expect(CLOUDFLARE_BUILD.env.NODE_VERSION).toBe(read('.nvmrc').trim())
-    expect(CLOUDFLARE_BUILD.output).toBe('apps/web/dist')
-    const doc = read('docs/PUBLISHING.md')
-    expect(doc).toContain(`| Build command | \`${CLOUDFLARE_BUILD.command}\` |`)
-    expect(doc).toContain(`| Build output directory | \`${CLOUDFLARE_BUILD.output}\` |`)
-    for (const [k, v] of Object.entries(CLOUDFLARE_BUILD.env))
-      expect(doc).toContain(`\`${k}\` = \`${v}\``)
+    // Netlify installs with the `packageManager` pin (Corepack) itself; the command builds.
+    expect(JSON.parse(read('package.json')).packageManager).toMatch(/^pnpm@\d+\.\d+\.\d+$/)
+    expect(DEMO_BUILD.command).toBe('pnpm --filter @ps/web build')
+    expect(DEMO_BUILD.env.NODE_VERSION).toBe(read('.nvmrc').trim())
+    expect(DEMO_BUILD.output).toBe('apps/web/dist')
+    const toml = read('netlify.toml')
+    expect(toml).toContain(`command = "${DEMO_BUILD.command}"`)
+    expect(toml).toContain(`publish = "${DEMO_BUILD.output}"`)
+    for (const [k, v] of Object.entries(DEMO_BUILD.env)) expect(toml).toContain(`${k} = "${v}"`)
+    expect(read('docs/PUBLISHING.md')).toContain('netlify.toml')
     // The deployment's headers (the Content-Security-Policy) are copied into the output.
     expect(existsSync(new URL('apps/web/public/_headers', root))).toBe(true)
   })

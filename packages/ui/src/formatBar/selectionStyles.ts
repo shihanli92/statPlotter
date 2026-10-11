@@ -13,6 +13,7 @@ import {
   resultLineBase,
   type StylePath,
   seriesColor,
+  seriesPlaces,
   TABLE_TEXT_SIZE,
   type Theme,
 } from '@ps/graph'
@@ -361,7 +362,9 @@ export function elementTarget(
           t.fill = identityFill(project, graph, theme, k, lookup)
       }
       if (layer.geom === 'points') {
-        const s = layerStyle(theme, graph, layer, k ?? '', statOf(layer, k ?? ''))
+        // Roadmap 49a: a data set's shape by data set is its place's in the graph's cycle.
+        const place = () => (k === null ? 0 : (seriesPlaces(project, graph, lookup).get(k) ?? 0))
+        const s = layerStyle(theme, graph, layer, k ?? '', statOf(layer, k ?? ''), place)
         t.mark = {
           node,
           graph,
@@ -485,7 +488,16 @@ function pointSlots(
   const geoms: readonly Layer['geom'][] =
     kind === 'bar' ? ['bar'] : kind === 'box' ? ['box', 'violin'] : ['points']
   const layer = graph.layers.find((l) => geoms.includes(l.geom) && l.visible !== false)
-  const style = layer ? layerStyle(theme, graph, layer, key, statOf(layer, key)) : null
+  const style = layer
+    ? layerStyle(
+        theme,
+        graph,
+        layer,
+        key,
+        statOf(layer, key),
+        () => seriesPlaces(project, graph, lookup).get(key) ?? 0,
+      )
+    : null
   const dataSet = identityFill(project, graph, theme, key, lookup).shown ?? '#000000'
   const base = !style || 'series' in style.color ? dataSet : resolveColor(style.color, palette)
   const shown = own.color ? resolveColor(own.color, palette, base) : base

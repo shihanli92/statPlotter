@@ -3,7 +3,7 @@
 Roadmap 48. Development happens in the private repository `shihanli92/plottingTool`, which keeps
 the whole history. The public repository [`shihanli92/statPlotter`](https://github.com/shihanli92/statPlotter)
 receives **one squashed commit per published version**, made by `tools/publish-public.mjs`, and
-the public demo is built from it by Cloudflare Pages.
+the public demo is built from it by Netlify.
 
 ## What is published
 
@@ -34,45 +34,42 @@ repository)").
   any secret; deploys, releases and the nightly runs are guarded to the private repository, and
   no workflow uses `pull_request_target` (`ui/test/publication.test.ts` checks all of this).
 
-## Once: the demo on Cloudflare
+## Once: the demo on Netlify
 
-The demo project (a Worker serving static assets, or a Pages project) is connected to `shihanli92/statPlotter` (Git integration): Cloudflare builds
-and deploys `main` on each push. Its settings (Workers & Pages › the project › Settings):
+The demo is a Netlify site (free plan) connected to `shihanli92/statPlotter`: Netlify builds and
+deploys `main` on each push, at <https://statplotter.netlify.app>. Its build settings are in
+`netlify.toml` at the root, so the site needs no build settings of its own:
 
 | Setting | Value |
 |---|---|
-| Production branch | `main` |
-| Framework preset | None |
-| Build command | `npx --yes pnpm@11.9.0 install --frozen-lockfile && npx --yes pnpm@11.9.0 --filter @ps/web build` |
-| Build output directory | `apps/web/dist` |
-| Deploy command (Worker projects) | `npx wrangler deploy` (reads `wrangler.jsonc` at the root) |
-| Root directory | `/` (empty) |
-| Build system version | the latest (v3) |
-| Environment variables (production) | `NODE_VERSION` = `24`, `SKIP_DEPENDENCY_INSTALL` = `true` |
-| Preview deployments (Builds › Branch control) | **None** |
-| Access policy | none: the demo is public |
+| Build command | `pnpm --filter @ps/web build` (`netlify.toml`) |
+| Publish directory | `apps/web/dist` (`netlify.toml`) |
+| Node | `NODE_VERSION` = `24` (`netlify.toml`; `.nvmrc` says the same) |
+| pnpm | 11.9.0, from `packageManager` in `package.json` (Netlify installs it with Corepack) |
 
-- **Why npx:** the repository pins pnpm 11.9.0 (`packageManager` in `package.json`) and its
-  lockfile is pnpm 11's. The build image's own pnpm may be older, so the command runs pnpm 11.9.0
-  itself, and `SKIP_DEPENDENCY_INSTALL` skips the image's install step. If a build log shows the
-  image installing anyway and failing, add `PNPM_VERSION` = `11.9.0`.
-- **A Worker project** (the dashboard's default) runs a deploy command after the build. Without
-  `wrangler.jsonc`, `npx wrangler deploy` stops at the workspace root ("application detection
-  logic has been run in the root of a workspace"); the file names the Worker and its assets
-  folder. Workers' static assets honour `_headers` as Pages does. Turn off its non-production
-  branch builds as below.
-- **Preview deployments off:** with them on, every branch (and pull request) pushed to the public
-  repository would be built and served at a public URL. Only `main`, which only the publish
-  script writes, is deployed.
-- **The first build fails** until the first snapshot is pushed: the repository is empty until
-  then. Retry the deployment (or push) after the first `--push`.
-- `apps/web/public/_headers` is copied into `apps/web/dist/`, so the demo is served with the
-  app's Content-Security-Policy. After the first deployment, check that a response carries it
-  (the browser's network panel, or `curl -I https://<project>.pages.dev/`).
+Creating it (Netlify › Add new project › Import an existing project › GitHub):
 
-The publish script runs exactly this build command, in a fresh copy of the snapshot, before it
-commits (`CLOUDFLARE_BUILD` in the script; `ui/test/publishPublic.test.ts` checks that this table
+1. Pick `shihanli92/statPlotter` (grant Netlify's GitHub app access to that repository only).
+2. Project name `statplotter` (the address `statplotter.netlify.app`; if the name is taken, pick
+   another and change the README's "Try it" link). Branch to deploy: `main`. Leave the build
+   fields as `netlify.toml` fills them in, with no environment variables, and deploy.
+3. Project configuration › Build & deploy › Continuous deployment › Branches and deploy contexts:
+   **Deploy Previews: Don't deploy pull requests**, **Branch deploys: Deploy only the production
+   branch**. With previews on, every pull request to the public repository would be built (its
+   code run in Netlify's build) and served at a public URL; only `main`, which only the publish
+   script writes, is deployed.
+4. After the first deploy, check that a response carries the Content-Security-Policy
+   (`apps/web/public/_headers`, copied into `apps/web/dist/`, which Netlify serves as Cloudflare
+   did): `curl -I https://statplotter.netlify.app/`.
+
+The publish script runs the same install and build in a fresh copy of the snapshot before it
+commits (`DEMO_BUILD` in the script; `ui/test/publishPublic.test.ts` checks that `netlify.toml`
 says the same).
+
+**The earlier demo on Cloudflare** (the Worker `statplotter` at `*.workers.dev`): once the Netlify
+site serves the app, delete that Worker (Workers & Pages › `statplotter` › Settings › Delete), so
+the public repository isn't deployed in two places. `wrangler.jsonc` was its configuration and is
+gone.
 
 **The private deployment** (project `plotter`, deployed by `ci.yml`) stays behind Cloudflare
 Access. Extend its Access policy to the preview deployments too (Workers & Pages › `plotter` ›
@@ -103,7 +100,7 @@ Settings › General › Access policy for preview deployments, or an Access app
      they are removed).
 
    Then it verifies the snapshot on its own (`pnpm install --frozen-lockfile`, `pnpm check`, the
-   web build, and the Cloudflare build command above in a fresh copy, whose output must hold
+   web build, and the demo's install and build above in a fresh copy, whose output must hold
    `_headers`), clones the public repository, replaces its tree with the snapshot and commits
    "statPlotter 0.3.1" as `60378562+shihanli92@users.noreply.github.com` (author and committer).
    It prints the commit, its file count and size, the top-level folders, and the paths of the
@@ -113,7 +110,7 @@ Settings › General › Access policy for preview deployments, or an Access app
    (`git -C <folder>/public show --stat HEAD`).
 4. **Push**: run the same command with `--push`; it repeats every check, then asks you to type
    `yes` (`--yes` skips the question). It pushes `main` only and tags nothing.
-5. Cloudflare builds and deploys the demo from the new commit (check the deployment's log the
+5. Netlify builds and deploys the demo from the new commit (check the deployment's log the
    first time); the public CI and CodeQL run on the push.
 
 `--remote <url>` publishes elsewhere (e.g. a scratch repository to try the script);

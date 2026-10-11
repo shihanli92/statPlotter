@@ -2219,6 +2219,51 @@ fieldset.constraints input[type="number"] {
   flex: 1;
   min-width: 0;
 }
+/* Roadmap 49a: a layer's Appearance table — a row per aesthetic: its mode, then its value. */
+.appearance-table {
+  display: flex;
+  flex-direction: column;
+}
+.inspector .appearance-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  align-items: end;
+}
+.appearance-label {
+  font-size: 12px;
+}
+.appearance-note {
+  margin: -6px 0 8px;
+  font-size: 12px;
+}
+.appearance-recipes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.inspector .appearance-recipes > button {
+  width: auto;
+  flex: 1 1 auto;
+}
+.appearance-recipes > legend {
+  margin-bottom: 4px;
+}
+.appearance-cycle {
+  margin-bottom: 10px;
+  align-self: center;
+}
+.appearance-cycle > summary {
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+.cycle-list .field-row.wrap {
+  flex-wrap: wrap;
+}
+.inspector .cycle-list .field-row.wrap > * {
+  flex: 1 1 64px;
+}
 .palette-preview {
   display: flex;
   gap: 2px;

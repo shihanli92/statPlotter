@@ -1,3 +1,4 @@
+import type { Command } from '@ps/engine'
 import {
   type Aesthetic,
   ARCSINH_COFACTOR,
@@ -49,64 +50,99 @@ const LABELS: Record<Aesthetic, string> = {
 const variableLabel = (d: DataTable['dataSets'][number]) =>
   `${d.title || d.id} (${d.text ? 'text' : d.formula !== undefined ? 'number, calculated' : 'number'})`
 
-export function AppearanceByVariableSection({ ctx }: { ctx: PanelContext }) {
-  const { graph, project, palette } = ctx
+/**
+ * Roadmap 49a: where a graph maps variables to appearance — its mapped points layer (an XY graph
+ * of variables: `aes`) or its mapping (category and grouped graphs) — and its table; undefined
+ * when it maps none.
+ */
+export function variableTarget(ctx: PanelContext) {
+  const { graph, project } = ctx
   const table = sourceTable(project, graph.seriesSource.table, ctx.lookup)
   const points = graph.frame === 'xy' ? mappedPointsLayer(graph) : undefined
   const mapped =
     !!points || (!!graph.mapping && (graph.frame === 'category' || graph.frame === 'grouped'))
-  if (table?.kind !== 'table' || !mapped) return null
+  if (table?.kind !== 'table' || !mapped) return undefined
+  return { table, points }
+}
+
+/** The path a variable mapped to an aesthetic is written at. */
+const variablePath = (points: { id: string } | undefined, field: Aesthetic): GraphPathSegment[] =>
+  points ? layerPath(points.id, 'aes', field) : ['mapping', field]
+
+/**
+ * Roadmap 49a (shared with the Appearance table): the commands mapping a variable to an
+ * aesthetic (none: unmapping it); a new legend of it shows the legend if it was hidden, and a
+ * number colour starts on viridis with a colour bar, as in the builder (decision 303).
+ */
+export function variableCommands(ctx: PanelContext, field: Aesthetic, key: string): Command[] {
+  const { graph } = ctx
+  const target = variableTarget(ctx)
+  if (!target) return []
+  const { table, points } = target
+  return [
+    { type: 'node.set', id: graph.id, path: variablePath(points, field), value: key || undefined },
+    ...(key && field !== 'label' && !graph.legend.show
+      ? [{ type: 'node.set' as const, id: graph.id, path: ['legend', 'show'], value: true }]
+      : []),
+    ...(key &&
+    field === 'color' &&
+    !graph.scales?.color &&
+    !table.dataSets.find((d) => d.id === key)?.text
+      ? [
+          {
+            type: 'node.set' as const,
+            id: graph.id,
+            path: ['scales', 'color'],
+            value: { colors: 'viridis', bar: { show: true } },
+          },
+        ]
+      : []),
+  ]
+}
+
+/** Roadmap 49a (shared with the Appearance table): the variables an aesthetic can be mapped to. */
+export function variableOptions(
+  ctx: PanelContext,
+  field: Aesthetic,
+): { value: string; label: string }[] {
+  const target = variableTarget(ctx)
+  if (!target) return []
+  const { table, points } = target
+  const { graph } = ctx
+  const vars = aesVariables(graph)
+  const fits = table.dataSets.filter((d) =>
+    field === 'shape'
+      ? !!d.text
+      : field === 'size'
+        ? !d.text
+        : field === 'color' && !points
+          ? !d.text && d.id !== graph.mapping?.y && d.id !== graph.mapping?.x
+          : true,
+  )
+  // Roadmap 34e: text variables of more than 1,000 levels are no colour or shape (they stay
+  // listed while chosen); many levels are counted in the label.
+  return [
+    { value: '', label: 'None' },
+    ...fits
+      .filter(
+        (d) => field === 'label' || field === 'size' || d.id === vars[field] || !tooManyLevels(d),
+      )
+      .map((d) => ({ value: d.id, label: `${variableLabel(d)}${levelsNote(d)}` })),
+  ]
+}
+
+export function AppearanceByVariableSection({ ctx }: { ctx: PanelContext }) {
+  const { graph, palette } = ctx
+  const target = variableTarget(ctx)
+  if (!target) return null
+  const { table, points } = target
   const vars = aesVariables(graph)
   const rows = graphRows(graph, table)
-  const pathOf = (field: Aesthetic): GraphPathSegment[] =>
-    points ? layerPath(points.id, 'aes', field) : ['mapping', field]
   /** Maps a variable (none: unmaps); a new legend of it shows the legend if it was hidden. */
   const choose = (field: Aesthetic, key: string) =>
-    ctx.dispatch(
-      [
-        { type: 'node.set', id: graph.id, path: pathOf(field), value: key || undefined },
-        ...(key && field !== 'label' && !graph.legend.show
-          ? [{ type: 'node.set' as const, id: graph.id, path: ['legend', 'show'], value: true }]
-          : []),
-        // A number colour starts on viridis with a colour bar, as in the builder (decision 303).
-        ...(key &&
-        field === 'color' &&
-        !graph.scales?.color &&
-        !table.dataSets.find((d) => d.id === key)?.text
-          ? [
-              {
-                type: 'node.set' as const,
-                id: graph.id,
-                path: ['scales', 'color'],
-                value: { colors: 'viridis', bar: { show: true } },
-              },
-            ]
-          : []),
-      ],
-      `${LABELS[field]} by variable`,
-    )
+    ctx.dispatch(variableCommands(ctx, field, key), `${LABELS[field]} by variable`)
   const textColor = !points && !!table.dataSets.find((d) => d.id === vars.color)?.text
-  const options = (field: Aesthetic) => {
-    const fits = table.dataSets.filter((d) =>
-      field === 'shape'
-        ? !!d.text
-        : field === 'size'
-          ? !d.text
-          : field === 'color' && !points
-            ? !d.text && d.id !== graph.mapping?.y && d.id !== graph.mapping?.x
-            : true,
-    )
-    // Roadmap 34e: text variables of more than 1,000 levels are no colour or shape (they stay
-    // listed while chosen); many levels are counted in the label.
-    return [
-      { value: '', label: 'None' },
-      ...fits
-        .filter(
-          (d) => field === 'label' || field === 'size' || d.id === vars[field] || !tooManyLevels(d),
-        )
-        .map((d) => ({ value: d.id, label: `${variableLabel(d)}${levelsNote(d)}` })),
-    ]
-  }
+  const options = (field: Aesthetic) => variableOptions(ctx, field)
   const picker = (field: Aesthetic) => (
     <Select
       label={`${LABELS[field]} by`}

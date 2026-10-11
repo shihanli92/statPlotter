@@ -183,7 +183,7 @@ test('double-clicking a data set formats that data set', async ({ page }) => {
   await expect(d.getByLabel('Drawing order')).toHaveCount(0)
   await expect(d.getByText('This point only')).toHaveCount(0)
   const symbols = section(d, 'Symbols')
-  await symbols.getByLabel('Shape').selectOption('diamond')
+  await symbols.getByLabel('Fixed shape').selectOption('diamond')
   // Only the chosen data set's points change in the preview.
   const pv = preview(page)
   await expect

@@ -103,13 +103,16 @@ function fields(project: Project, graph: GraphNode, geom: string) {
 describe('the inspector under a graph’s style', () => {
   it('shows an ellipse’s outline at the style’s data line width', () => {
     const { graph, plain, styled } = setup(small(), [{ type: 'preset', id: 'scatterEllipses' }])
-    expect(fields(plain, graph, 'polygon')('Ellipses').input('Width (pt)').value).toBe('1')
-    expect(fields(styled, graph, 'polygon')('Ellipses').input('Width (pt)').value).toBe('2.5')
+    // Roadmap 49a: the outline is the Appearance table's.
+    const width = (p: Project) =>
+      fields(p, graph, 'polygon')('Appearance').input('Outline width (pt)').value
+    expect(width(plain)).toBe('1')
+    expect(width(styled)).toBe('2.5')
   })
 
   it('shows a path’s line at the style’s width', () => {
     const { graph, styled } = setup(small(), [{ type: 'preset', id: 'trajectories' }])
-    expect(fields(styled, graph, 'path')('Paths').input('Line width (pt)').value).toBe('2.5')
+    expect(fields(styled, graph, 'path')('Appearance').input('Line width (pt)').value).toBe('2.5')
   })
 
   it('shows contour lines at the style’s width and density colours on its colour map', () => {

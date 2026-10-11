@@ -531,6 +531,32 @@ describe('the format painter', () => {
     expect(f.g().seriesOverrides[f.ds[1]!]?.color).toEqual({ rgb: '#aa0000' })
   })
 
+  it('roadmap 49a: a shape by data set is copied as such; the bar shows the data set’s', () => {
+    const f = fixture()
+    const one = ['layers', f.points.id, 'series', f.ds[0]!] as StylePath
+    const two = ['layers', f.points.id, 'series', f.ds[1]!] as StylePath
+    f.store.dispatch({
+      type: 'node.set',
+      id: f.graph.id,
+      path: ['layers', { id: f.points.id }, 'series', f.ds[0]!, 'style', 'shape'],
+      value: { series: true },
+    })
+    // As drawn: the second data set's place in the default order is a square.
+    expect(f.targetOf(two).mark?.shape).toBe('circle')
+    f.store.dispatch({
+      type: 'node.set',
+      id: f.graph.id,
+      path: ['layers', { id: f.points.id }, 'style', 'shape'],
+      value: { series: true },
+    })
+    expect(f.targetOf(two).mark?.shape).toBe('square')
+    const copied = copyFormat(f.targetOf(one), graphsOf(f))!
+    expect(copied.dataSet?.styles.points?.shape).toEqual({ series: true })
+    f.store.dispatch(pasteCommands(copied, [f.targetOf(two)]).commands)
+    const layer = () => f.g().layers.find((l) => l.id === f.points.id)!
+    expect(layer().series?.[f.ds[1]!]?.style).toMatchObject({ shape: { series: true } })
+  })
+
   it('across graphs: a title’s format onto another graph’s axis title on a page', () => {
     const f = fixture()
     const L = f.layout.id

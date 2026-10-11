@@ -9,7 +9,7 @@ It runs in the browser and as a desktop app (macOS and Windows) from one TypeScr
 
 ![statPlotter showing a figure page with four graphs: grouped bars with significance brackets, a time course, a volcano plot and cytokine bars](docs/images/statplotter.png)
 
-**Try it:** <https://statplotter.pages.dev> (nothing to install; your data never leaves your
+**Try it:** <https://statplotter.netlify.app> (nothing to install; your data never leaves your
 computer, see [Privacy](#privacy)).
 
 ## Features

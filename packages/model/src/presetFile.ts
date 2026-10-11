@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { APP_VERSION } from './factory.ts'
+import { SymbolShape } from './graph.ts'
 import {
   ColorScale,
   Frame,
@@ -11,6 +12,7 @@ import {
   MAX_LAYERS,
   SizeScale,
 } from './layers.ts'
+import { Dash } from './style.ts'
 import { type DataTable, TableKind } from './table.ts'
 
 /** A variable's type, as a preset of a graph of variables keeps it. */
@@ -39,6 +41,12 @@ export const PresetRecipe = z
     layers: z.array(Layer).min(1).max(MAX_LAYERS),
     orientation: z.literal('horizontal').optional(),
     drawOrder: z.literal('series').optional(),
+    /**
+     * Roadmap 49a: the graph's cycles of symbols and line patterns (data sets take them in turn
+     * where a layer's shape or dash is the data set's).
+     */
+    shapes: z.array(SymbolShape).min(1).max(24).optional(),
+    dashes: z.array(Dash).min(1).max(12).optional(),
     /** Colour maps and bubble sizes (no value ranges). */
     scales: z.object({ color: ColorScale, size: SizeScale }).partial().optional(),
     /**
@@ -218,6 +226,8 @@ export function presetRecipe(
     layers,
     ...(graph.style.orientation === 'horizontal' ? { orientation: 'horizontal' } : {}),
     ...(graph.drawOrder === 'series' ? { drawOrder: 'series' } : {}),
+    ...(graph.style.shapes ? { shapes: graph.style.shapes } : {}),
+    ...(graph.style.dashes ? { dashes: graph.style.dashes } : {}),
     ...(Object.keys(scales).length ? { scales } : {}),
     ...(variables ? { variables } : {}),
   })

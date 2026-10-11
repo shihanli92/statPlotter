@@ -1,13 +1,14 @@
 import type { Command } from '@ps/engine'
 import { resolveColor } from '@ps/graph'
-import type {
-  ColorRef,
-  FillStyle,
-  GraphNode,
-  NodeId,
-  StrokeStyle,
-  SymbolShape,
-  TextStyle,
+import {
+  type ColorRef,
+  type FillStyle,
+  type GraphNode,
+  isBySeries,
+  type NodeId,
+  type StrokeStyle,
+  type SymbolShape,
+  type TextStyle,
 } from '@ps/model'
 import { styleCommands } from '../graph/inspector/layers.ts'
 import {
@@ -65,7 +66,12 @@ export function copyFormat(t: Target | null, graphs: (id: NodeId) => GraphNode |
       const drawn = !l.data || l.data.from === 'table' || !!l.series?.[key]
       if (drawn && !styles[l.geom]) styles[l.geom] = { ...(l.style ?? {}), ...(own ?? {}) }
     }
-    if (out.mark) styles.points = { ...styles.points, ...out.mark }
+    // The symbol as drawn, unless its shape is the data set's (roadmap 49a): that is pasted as
+    // such, so the data set pasted on takes its own place's shape.
+    if (out.mark) {
+      const raw = styles.points?.shape
+      styles.points = { ...styles.points, ...out.mark, ...(isBySeries(raw) ? { shape: raw } : {}) }
+    }
     out.dataSet = { styles, color: t.fill.value ?? { rgb: t.fill.shown } }
   }
   return Object.keys(out).length ? out : null

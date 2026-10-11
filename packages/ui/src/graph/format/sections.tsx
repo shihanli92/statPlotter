@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { GroupSection, Section, SectionScopeContext, Select } from '../../components/fields.tsx'
 import { AnnotationPanel } from '../inspector/AnnotationPanel.tsx'
 import { AppearanceByVariableSection } from '../inspector/AppearanceByVariable.tsx'
+import { CycleListsSection } from '../inspector/AppearanceTable.tsx'
 import {
   AxisCommon,
   AxisExtra,
@@ -169,6 +170,8 @@ export const FORMAT_SECTIONS: Readonly<Record<PlaceKind, readonly FormatSection[
     section('arrangement', ({ ctx }) => <ArrangementSection ctx={ctx} />),
     section('levels', ({ ctx }) => <LevelsSection ctx={ctx} />),
     section('dataSets', ({ ctx }) => <DataSetsSection ctx={ctx} />),
+    // Roadmap 49a: the orders of shapes and line styles data sets take in turn.
+    section('cycles', ({ ctx }) => <CycleListsSection ctx={ctx} />),
     section('rows', ({ ctx }) => <RowsSection ctx={ctx} />),
     section('curves', ({ ctx }) => <CurvesSection ctx={ctx} />),
     section('functions', ({ ctx }) => <FunctionsSection ctx={ctx} />),

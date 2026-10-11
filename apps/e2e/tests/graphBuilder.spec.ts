@@ -333,14 +333,14 @@ test('Change layers… keeps the formats of the layers that stay', async ({ page
   // Diamonds for the points.
   const d = await appearance(page)
   await selectLayer(d, /^Points/)
-  await section(d, 'Symbols').getByLabel('Shape').selectOption('diamond')
+  await section(d, 'Symbols').getByLabel('Fixed shape').selectOption('diamond')
   await d.getByRole('button', { name: 'OK' }).click()
   await expect(d).toBeHidden()
   /** The points' shape, as Format graph shows it. */
   const shape = async () => {
     const f = await appearance(page)
     await selectLayer(f, /^Points/)
-    const value = await section(f, 'Symbols').getByLabel('Shape').inputValue()
+    const value = await section(f, 'Symbols').getByLabel('Fixed shape').inputValue()
     await f.getByRole('button', { name: 'Cancel' }).click()
     await expect(f).toBeHidden()
     return value

@@ -42,6 +42,7 @@ export {
 } from './layers/geoms/threshold.ts'
 export * from './layers/geoms/tile.ts'
 export * from './layers/geoms/wedge.ts'
+export { seriesPlaces } from './layers/kit.ts'
 export * from './layers/links.ts'
 export * from './layers/looks.ts'
 export * from './layers/matrix.ts'

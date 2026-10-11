@@ -1,6 +1,7 @@
 import {
   type ColorMapName,
   type ColorRef,
+  type Dash,
   type ErrorSpec,
   effectiveStyle,
   type FigureStyle,
@@ -17,6 +18,7 @@ import {
   type SeriesStyle,
   type StrokeStyle,
   type StyleText,
+  type SymbolShape,
   type TextStyle,
 } from '@ps/model'
 import type { Fill, Stroke } from './scene.ts'
@@ -30,6 +32,12 @@ export interface Theme {
    * wraps): `palette` followed by more distinct colours. Absent: the palette wraps.
    */
   categorical?: readonly string[]
+  /**
+   * Roadmap 49a: the symbols and line patterns data sets take in turn where a layer's shape or
+   * dash is the data set's (a style's; absent: `DEFAULT_SHAPES`, `DEFAULT_DASHES`).
+   */
+  shapes?: readonly SymbolShape[]
+  dashes?: readonly Dash[]
   text: TextStyle
   tickLabel: TextStyle
   axisTitle: TextStyle
@@ -491,6 +499,8 @@ export function themeOf(style: FigureStyle | undefined): Theme {
     id: 'style',
     palette: style.palette ?? d.palette,
     categorical: style.palette ? categoricalOf(style.palette) : d.categorical,
+    ...(style.shapes ? { shapes: style.shapes } : {}),
+    ...(style.dashes ? { dashes: style.dashes } : {}),
     text: roleText(d.text, f, t.annotation),
     tickLabel: roleText(d.tickLabel, f, t.tickLabel),
     axisTitle: roleText(d.axisTitle, f, t.axisTitle),
@@ -606,6 +616,35 @@ export const graphText = (
  */
 export const graphPalette = (graph: Pick<GraphNode, 'style'>, theme: Theme): readonly string[] =>
   graph.style.palette ?? theme.categorical ?? theme.palette
+
+/**
+ * Roadmap 49a: the symbols data sets take in turn where a layer's shape is the data set's
+ * (`{ series: true }`): circle, square, triangle, diamond, cross, plus (the nested subjects'
+ * sequence and ggplot's first shapes).
+ */
+export const DEFAULT_SHAPES: readonly SymbolShape[] = [
+  'circle',
+  'square',
+  'triangle',
+  'diamond',
+  'cross',
+  'plus',
+]
+
+/** Roadmap 49a: the line patterns data sets take in turn: solid, dashed, dotted. */
+export const DEFAULT_DASHES: readonly Dash[] = ['solid', 'dash', 'dot']
+
+/** Roadmap 49a: a graph's cycle of symbols — its own, else its style's, else the default. */
+export const graphShapes = (
+  graph: Pick<GraphNode, 'style'>,
+  theme: Pick<Theme, 'shapes'>,
+): readonly SymbolShape[] => graph.style.shapes ?? theme.shapes ?? DEFAULT_SHAPES
+
+/** Roadmap 49a: a graph's cycle of line patterns — its own, else its style's, else the default. */
+export const graphDashes = (
+  graph: Pick<GraphNode, 'style'>,
+  theme: Pick<Theme, 'dashes'>,
+): readonly Dash[] => graph.style.dashes ?? theme.dashes ?? DEFAULT_DASHES
 
 /** A data set's colour: its own, else the palette's `index`th (wrapping around). */
 export const seriesColor = (color: ColorRef, palette: readonly string[], index: number): string =>

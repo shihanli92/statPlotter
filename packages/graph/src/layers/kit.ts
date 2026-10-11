@@ -4,13 +4,15 @@ import {
   type Layer,
   type LayerData,
   type LayerOf,
+  type Project,
+  type ResultLookup,
   type Stat,
   seriesShown,
   sourceTable,
   statOf,
 } from '@ps/model'
 import { aesVariables } from '../aesthetics.ts'
-import { graphRows } from '../data.ts'
+import { graphRows, resolveSeries } from '../data.ts'
 import { cloudsOfRuns, drawsCloud, isLoneSymbol, isRowSymbol } from '../layout/cloud.ts'
 import { type GraphContext, layoutBasics } from '../layout/common.ts'
 import { evenSample, type SampledPoints, type SampleUnit } from '../layout/screen.ts'
@@ -26,6 +28,31 @@ import { dataOf, identityStyle, layerStyle, pointsOption } from './theme.ts'
 const ROW_SYMBOLS: Partial<Record<Geom, (n: SceneNode) => boolean>> = {
   points: isRowSymbol,
   box: isLoneSymbol,
+}
+
+/**
+ * Roadmap 49a: each series' place in a graph, as its default colour counts it (`seriesColor`'s
+ * indices): a data set's (level's) index, then the analysis outputs after the data sets, then the
+ * functions after them.
+ */
+export function seriesPlaces(
+  project: Project,
+  graph: GraphNode,
+  result?: ResultLookup,
+): ReadonlyMap<string, number> {
+  const places = new Map<string, number>()
+  const series = resolveSeries(project, graph, result)
+  for (const s of series) places.set(s.key, s.index)
+  let n = series.length
+  const add = (id: string) => {
+    if (!places.has(id)) places.set(id, n)
+    n++
+  }
+  for (const l of graph.layers)
+    if (l.data?.from === 'outputs') for (const o of l.data.series) add(o.id)
+  for (const l of graph.layers)
+    if (l.data?.from === 'functions') for (const f of l.data.functions) add(f.id)
+  return places
 }
 
 /** A frame's own plane drawn by data set: its layers, and its marks of some of them. */
@@ -117,10 +144,24 @@ export class LayerKit {
     }
     let s = byKey.get(key)
     if (!s) {
-      s = layerStyle(this.theme, this.graph, layer, key, this.stat(layer, key))
+      s = layerStyle(this.theme, this.graph, layer, key, this.stat(layer, key), () =>
+        this.cycleIndex(key),
+      )
       byKey.set(key, s)
     }
     return s
+  }
+
+  private places: ReadonlyMap<string, number> | undefined
+
+  /**
+   * Roadmap 49a: a series' place in the graph (`seriesPlaces`), at which its shape and line
+   * pattern by data set are the graph's cycles' entries. Worked out only when a layer asks (a
+   * shape or dash by data set); 0 for a key not drawn.
+   */
+  cycleIndex(key: string): number {
+    this.places ??= seriesPlaces(this.ctx.project, this.graph, this.ctx.result)
+    return this.places.get(key) ?? 0
   }
 
   private readonly memos = new Map<string, unknown>()

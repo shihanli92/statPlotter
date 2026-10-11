@@ -2,6 +2,7 @@ import { GraphNode, parseProject } from '@ps/model'
 import { describe, expect, it } from 'vitest'
 import { layoutGraph, layoutLayers, pointsAsImages, type Scene, sceneToSvg } from '../src/index.ts'
 import { axisExtrasCases } from './axisExtrasCases.ts'
+import { byGroupCases } from './byGroupCases.ts'
 import { cutoffCases } from './cutoffCases.ts'
 import {
   appearanceCases,
@@ -132,6 +133,14 @@ describe('golden SVGs: legends edited (roadmap 47b)', () => {
 describe('golden SVGs: lines at ± a value and volcano thresholds (roadmap 46b)', () => {
   it.each(cutoffCases())('%s', async (name, table, graph) => {
     const scene = layoutLayers({ project: projectOf(table), graph, fonts })
+    expect(scene.warnings).toEqual([])
+    await expect(svgOf(scene)).toMatchFileSnapshot(golden(name))
+  })
+})
+
+describe('golden SVGs: aesthetics by data set or fixed (roadmap 49a)', () => {
+  it.each(byGroupCases())('%s', async (name, table, graph) => {
+    const scene = layoutGraph({ project: projectOf(table), graph, fonts })
     expect(scene.warnings).toEqual([])
     await expect(svgOf(scene)).toMatchFileSnapshot(golden(name))
   })

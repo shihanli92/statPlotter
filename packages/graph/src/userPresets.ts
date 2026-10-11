@@ -130,6 +130,9 @@ export interface RecipeExtras {
   orientation?: 'horizontal'
   drawOrder?: 'series'
   scales?: GraphNode['scales']
+  /** Roadmap 49a: the graph's cycles of symbols and line patterns. */
+  shapes?: NonNullable<GraphNode['style']['shapes']>
+  dashes?: NonNullable<GraphNode['style']['dashes']>
 }
 
 /**
@@ -184,5 +187,7 @@ export function recipeLayers(
     ...(recipe.orientation ? { orientation: recipe.orientation } : {}),
     ...(recipe.drawOrder ? { drawOrder: recipe.drawOrder } : {}),
     ...(recipe.scales ? { scales: recipe.scales } : {}),
+    ...(recipe.shapes ? { shapes: recipe.shapes } : {}),
+    ...(recipe.dashes ? { dashes: recipe.dashes } : {}),
   }
 }

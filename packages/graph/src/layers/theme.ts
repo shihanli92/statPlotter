@@ -1,12 +1,21 @@
 import {
   type GraphNode,
+  isBySeries,
   type Layer,
   type LayerData,
   type Stat,
+  type StrokeStyle,
   type StyleSection,
   styleSections,
 } from '@ps/model'
-import { DEFAULT_THEME, markDefaults, type ResolvedSeriesStyle, type Theme } from '../theme.ts'
+import {
+  DEFAULT_THEME,
+  graphDashes,
+  graphShapes,
+  markDefaults,
+  type ResolvedSeriesStyle,
+  type Theme,
+} from '../theme.ts'
 
 // The theme for layers: a layer's style for one data set is the per-geom defaults of the graph's
 // context under its style (`markDefaults`, roadmap 37), then the layer's style, the data set's
@@ -69,6 +78,8 @@ export function identityStyle(
  * A data set's (or output's, or function's) look in one layer, as the drawing code reads it:
  * theme → identity (colour, Y axis, point labels) → the layer's style → the data set's own →
  * the stat. Outputs and functions take the theme's curve defaults and their identity alone.
+ * Roadmap 49a: a shape or line pattern that is the data set's (`{ series: true }`) is the graph's
+ * cycle's entry at the data set's place, `index` (its colour's; a function asked only then).
  */
 export function layerStyle(
   theme: Theme,
@@ -76,6 +87,7 @@ export function layerStyle(
   layer: Layer,
   key: string,
   stat: Stat,
+  index: number | (() => number) = 0,
 ): ResolvedSeriesStyle {
   const table = dataOf(graph, layer).from === 'table'
   const out = identityStyle(theme, graph, key, !table)
@@ -124,6 +136,47 @@ export function layerStyle(
   const shown = showSection(layer, stat, table)
   if (shown) set(shown, 'show', true)
   for (const [section, p] of patch) out[section] = { ...out[section], ...p } as never
+  return cycled(out, graph, theme, index)
+}
+
+/** Roadmap 49a: the lines whose pattern may be the data set's (`SeriesStroke`), by section. */
+const CYCLED_STROKES = [
+  ['line', 'stroke'],
+  ['spaghetti', 'stroke'],
+  ['error', 'line'],
+  ['center', 'line'],
+] as const
+
+/**
+ * Roadmap 49a: a resolved style with the data set's shape and line patterns (`{ series: true }`)
+ * replaced by the graph's cycles' entries at `index` (wrapping, as colours do). Anything else is
+ * returned as it is (the same object), so graphs without them draw exactly as before.
+ */
+function cycled(
+  out: ResolvedSeriesStyle,
+  graph: GraphNode,
+  theme: Theme,
+  index: number | (() => number),
+): ResolvedSeriesStyle {
+  let at: number | undefined
+  const place = () => {
+    at ??= Math.max(0, typeof index === 'function' ? index() : index)
+    return at
+  }
+  if (isBySeries(out.points.shape as unknown)) {
+    const shapes = graphShapes(graph, theme)
+    out.points = { ...out.points, shape: shapes[place() % shapes.length]! }
+  }
+  for (const [section, field] of CYCLED_STROKES) {
+    const part = out[section] as Record<string, unknown>
+    const stroke = part[field] as StrokeStyle | undefined
+    if (!stroke || !isBySeries(stroke.dash as unknown)) continue
+    const dashes = graphDashes(graph, theme)
+    out[section] = {
+      ...part,
+      [field]: { ...stroke, dash: dashes[place() % dashes.length]! },
+    } as never
+  }
   return out
 }
 

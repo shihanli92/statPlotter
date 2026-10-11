@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { ColorMapName } from './graph.ts'
-import { FontId, Pt, RGB, TextStyle } from './style.ts'
+import { ColorMapName, SymbolShape } from './graph.ts'
+import { Dash, FontId, Pt, RGB, TextStyle } from './style.ts'
 
 // Styles (roadmap 37): a named set of graph defaults — fonts and sizes per role, line weights,
 // symbol size, bar fill, palettes, axis look, P values, legend placement and figure column widths
@@ -82,6 +82,12 @@ export const FigureStyle = z.object({
   barFillOpacity: z.number().min(0).max(1).optional(),
   /** The categorical colours, in order (data sets and levels take them in turn). */
   palette: z.array(RGB).min(1).max(64).optional(),
+  /**
+   * Roadmap 49a: the symbols and line patterns data sets take in turn where a layer's shape or
+   * dash is the data set's (as their colours take the palette's), each list as a whole.
+   */
+  shapes: z.array(SymbolShape).min(1).max(24).optional(),
+  dashes: z.array(Dash).min(1).max(12).optional(),
   /** The default colour map of continuous colour (heat maps, densities, colour by a number). */
   colorMap: ColorMapName.optional(),
   /** Axis look: continuous axes touching or offset at the origin; tick marks. */

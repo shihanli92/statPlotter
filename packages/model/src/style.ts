@@ -28,12 +28,37 @@ export const ColorRef = z.union([
 ])
 export type ColorRef = z.infer<typeof ColorRef>
 
+/** A line's pattern. */
+export const Dash = z.enum(['solid', 'dash', 'dot'])
+export type Dash = z.infer<typeof Dash>
+
 export const StrokeStyle = z.object({
   color: ColorRef,
   width: Pt,
-  dash: z.enum(['solid', 'dash', 'dot']),
+  dash: Dash,
 })
 export type StrokeStyle = z.infer<typeof StrokeStyle>
+
+/**
+ * Roadmap 49a: "the data set's" for an aesthetic besides colour (a symbol's shape, a line's
+ * pattern) — as `{ series: true }` is for a colour: each data set takes the entry of the graph's
+ * cycle list (`GraphStyle.shapes`, `.dashes`) at its place in the graph, as its colour takes the
+ * palette's.
+ */
+export const BySeries = z.object({ series: z.literal(true) })
+export type BySeries = z.infer<typeof BySeries>
+
+/** Whether a value is "the data set's" (`{ series: true }`): a colour, a shape or a dash. */
+export const isBySeries = (v: unknown): v is BySeries =>
+  typeof v === 'object' && v !== null && (v as { series?: unknown }).series === true
+
+/** Roadmap 49a: a line's pattern, fixed or the data set's (the graph's line styles in turn). */
+export const DashRef = z.union([Dash, BySeries])
+export type DashRef = z.infer<typeof DashRef>
+
+/** Roadmap 49a: a layer's line whose pattern may be the data set's (lines, error bars, centres). */
+export const SeriesStroke = StrokeStyle.extend({ dash: DashRef })
+export type SeriesStroke = z.infer<typeof SeriesStroke>
 
 export const FillStyle = z.union([
   z.object({ type: z.literal('none') }),

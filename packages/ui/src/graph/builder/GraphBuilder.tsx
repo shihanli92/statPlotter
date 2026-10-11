@@ -327,6 +327,9 @@ function BuilderForm({
     }
     if (s.drawOrder) g = { ...g, drawOrder: s.drawOrder }
     if (s.scales) g = { ...g, scales: { ...g.scales, ...s.scales } }
+    // Roadmap 49a: a user preset's cycles of symbols and line patterns.
+    if (s.shapes) g = { ...g, style: { ...g.style, shapes: s.shapes } }
+    if (s.dashes) g = { ...g, style: { ...g.style, dashes: s.dashes } }
     g = withBuilderLevels(g, s, graph)
     return forPreview ? { ...g, id: (graph?.id ?? 'builderPreview') as NodeId } : g
   }
@@ -486,7 +489,15 @@ function BuilderForm({
           frame: s.frame,
           look: s.look,
           layers: s.layers,
-          style: turnable && s.horizontal ? { orientation: 'horizontal' } : {},
+          style: {
+            ...(turnable && s.horizontal ? { orientation: 'horizontal' as const } : {}),
+            ...((s.shapes ?? graph?.style.shapes)
+              ? { shapes: s.shapes ?? graph?.style.shapes }
+              : {}),
+            ...((s.dashes ?? graph?.style.dashes)
+              ? { dashes: s.dashes ?? graph?.style.dashes }
+              : {}),
+          },
           drawOrder: s.drawOrder ?? graph?.drawOrder,
           scales: s.scales ?? graph?.scales,
           ...(s.mapping ? { mapping: s.mapping } : {}),

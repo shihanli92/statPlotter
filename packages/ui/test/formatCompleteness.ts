@@ -61,6 +61,40 @@ const RENAMED: Record<string, readonly string[]> = {
   'Entries per row (0 = all in one row)': ['Columns'],
   // Audit 3 (A10): Delete, the one verb for taking layers off a graph.
   Remove: ['Delete'],
+  // Roadmap 49a (decision 1219): fills, outlines and lines in the Appearance table, by aesthetic.
+  Border: ['Outline'],
+  'Border width (pt)': ['Outline width (pt)'],
+  'Border (pt)': ['Outline width (pt)'],
+  'Width (pt)': ['Line width (pt)', 'Outline width (pt)'],
+  Style: ['Line style'],
+  // Graphs of variables' points: the Shape row's mode is Fixed or By variable.
+  Shape: ['Fixed shape'],
+}
+
+/**
+ * Roadmap 49a (decision 1219): controls that became another kind of control writing the same
+ * field — points' Hollow checkbox is the Fill row's mode (By data set, Fixed, None).
+ */
+const REKINDED: Record<string, readonly { kind: string; label: string }[]> = {
+  'check\u0000Hollow': [{ kind: 'select', label: 'Fill' }],
+}
+
+/**
+ * Roadmap 49a (decision 1218): the Appearance table sets a field for every data set on the layer
+ * alone, keeping each data set's own value (counted under the row, with a Reset) where stage 1's
+ * fields also cleared them: an old field's writes compare without those clearings.
+ */
+function withoutClearings(writes: string): string {
+  const paths = writes.split('|')
+  const layers = new Set(
+    paths.flatMap((p) => /^set:layers\/(\{[^}]*\})\/style\//.exec(p)?.[1] ?? []),
+  )
+  return paths
+    .filter((p) => {
+      const m = /^set:layers\/(\{[^}]*\})\/series\//.exec(p)
+      return !m || !layers.has(m[1]!)
+    })
+    .join('|')
 }
 
 /** Old labels that became one per element (matched by their start). */
@@ -71,7 +105,14 @@ const RENAMED_PATTERNS: readonly [string, RegExp][] = [
 ]
 
 function sameField(old: FieldEntry, now: FieldEntry): boolean {
-  if (old.kind !== now.kind || old.writes !== now.writes) return false
+  if (old.writes !== now.writes && withoutClearings(old.writes) !== now.writes) return false
+  if (
+    REKINDED[`${old.kind}\u0000${old.label}`]?.some(
+      (r) => r.kind === now.kind && r.label === now.label,
+    )
+  )
+    return true
+  if (old.kind !== now.kind) return false
   if (old.label === now.label) return true
   if (RENAMED[old.label]?.includes(now.label)) return true
   return RENAMED_PATTERNS.some(

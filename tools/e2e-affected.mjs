@@ -19,6 +19,8 @@ const SPECS = join(ROOT, 'apps', 'e2e', 'tests')
 const GRAPH = [
   'appearance',
   'axisExtras',
+  // Roadmap 49a: aesthetics by data set or fixed (the Appearance table, recipes, cycles).
+  'byGroup',
   'canvas',
   'cellsTables',
   'combinations',

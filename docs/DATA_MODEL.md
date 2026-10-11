@@ -1970,6 +1970,50 @@ interface LegendSpec {
   `legendEntry: { key, group }`; the scene lists every entry (`Scene.legend`: key, group, own
   label, hidden, fixed), hidden ones too and when the legend is off, for the editors.
 
+### 6.1o Aesthetics by data set or fixed (roadmap 49a)
+
+As ggplot's `aes(fill = group)` beside `geom_point(shape = 21, colour = 'black')`: every
+aesthetic of a layer is the data set's (by group), one value for every data set (fixed), none,
+or — on multiple-variables tables — a variable's (`aes`, `mapping`: §6.1d). Optional fields and
+union members only, no schema version change (decisions 1213–1216); absent, a graph draws as
+before (every golden, v1 fixture and example fingerprint unchanged). An app older than 0.3.3
+refuses a file holding the new values as invalid, as with every union member added since v2.
+
+```ts
+type BySeries = { series: true }                        // "the data set's", as in ColorRef
+type ShapeRef = SymbolShape | BySeries                  // PointsStyle.shape, BoxStyle.outlierShape, DifferenceStyle.shape
+type DashRef = 'solid' | 'dash' | 'dot' | BySeries
+type SeriesStroke = StrokeStyle & { dash: DashRef }    // LineStyle.stroke (lines, steps), ErrorBarStyle.line, CenterStyle.line
+GraphStyle.shapes?: SymbolShape[]                       // 1–24; absent: the style's, else DEFAULT_SHAPES
+GraphStyle.dashes?: ('solid' | 'dash' | 'dot')[]        // 1–12; absent: the style's, else DEFAULT_DASHES
+FigureStyle.shapes?, FigureStyle.dashes?                // a style's (§6.2b), a list as a whole
+PresetRecipe.shapes?, PresetRecipe.dashes?              // a preset's (§9.4)
+```
+
+- **Colours** were already either: `{ series: true }` (the data set's colour, the default of
+  fills, outlines and lines) or `{ rgb }` / `{ palette }` (fixed). A fill can be none
+  (`{ type: 'none' }`), an outline none (width 0). Fill opacity is `FillStyle.opacity` (points
+  too).
+- **Shapes and line patterns by data set** cycle as colours do: data set *i* (its place,
+  `seriesPlaces`: the data sets' indices, then analysis outputs after them, then functions —
+  `seriesColor`'s indices) takes `shapes[i mod n]` and `dashes[i mod n]` of the graph's lists,
+  `graphShapes` / `graphDashes`: the graph's own, else its style's (`Theme.shapes`, `.dashes`),
+  else circle, square, triangle, diamond, cross, plus and solid, dashed, dotted. Resolved by the
+  style resolver (`layerStyle`, its `index` asked only when a value is by data set; `LayerKit.
+  cycleIndex`), so drawing code, legends and the format bar see concrete shapes and dashes and
+  never branch on table kind, preset or look. Legend glyphs draw what the layer draws (a group's
+  fill with a black outline, cycled shapes and patterns).
+- **Precedence**: a data set's own value (`layer.series[k].style`, "set by hand") wins over the
+  layer's, as before; it may itself be by data set.
+- **Which lines** may be dashed by data set: those the style resolver resolves per data set —
+  lines and steps, error bars, centre lines. Ellipses' and hulls' outlines, paths, vectors and
+  contours take a fixed pattern (their own resolver, `overlayStyle`); connecting lines and the
+  grand mean are one line, not a data set's (decision 1214).
+- **Carried by**: styles (`styleFromGraph` saves the lists the graph or its style has; Reset to
+  style clears them with the palette), user presets (the recipe's `shapes`, `dashes`; the layers
+  keep their by-data-set values), Match format (`style` whole), the format painter (a data set's
+  shape by data set is copied as such) and Change layers (layers kept keep their styles).
+
 ### 6.2 Style cascade
 
 ```
@@ -1999,6 +2043,7 @@ before — draw as they did; the synthetic examples are built with the theme's l
 interface GraphStyle {                                  // graph-wide (v2)
   seriesDefaults?: { color?; yAxis?; pointLabels? }     // every data set's identity defaults
   text?: Partial<TextStyle>; palette?: RGB[]; frame?: 'axes' | 'box' | 'none' | 'arrows'  // arrows: roadmap 36 (§6.1k)
+  shapes?: SymbolShape[]; dashes?: Dash[]               // roadmap 49a: data sets' shapes and line patterns in turn (§6.1o)
   arrows?: CornerArrows                                 // roadmap 36: the corner arrows' length, corner and line
   background?: FillStyle; plotBackground?: FillStyle; bracket?: BracketStyle
   categoryGap?: number; orientation?: 'vertical' | 'horizontal'   // category and grouped frames
@@ -2012,7 +2057,9 @@ baseline), errorbar (direction, capWidth, line, x), center (line, width), box (f
 width, capWidth, centerLine, outlier symbol), violin (fill, border, width, quartiles,
 quartileLine, centerLine), line (stroke, gaps, fade), area / band (opacity, baseline, gaps),
 connector and refline (line), difference (guides, symbol, line, capWidth), tile (missing, border,
-cluster), wedge (fill, border), label (value, position, format, text, content, digits).
+cluster), wedge (fill, border), label (value, position, format, text, content, digits). Roadmap
+49a: a points', box outliers' or difference's shape and a line's, error bar's or centre line's
+dash may be the data set's (`{ series: true }`, §6.1o).
 
 The v1 series style, which v1 files hold (read only by the migration, §6.1b; no view reads it
 since 33c):
@@ -2071,6 +2118,7 @@ interface FigureStyle {                                 // every field optional
   lines?: Partial<Record<'axis' | 'tick' | 'errorBar' | 'dataLine' | 'barOutline' | 'bracket', Pt>>
   symbolSize?: Pt; barFillOpacity?: number              // 0–1: translucent bars and boxes
   palette?: RGB[]                                       // categorical colours, in order
+  shapes?: SymbolShape[]; dashes?: Dash[]               // roadmap 49a: data sets' symbols and line patterns in turn (§6.1o)
   colorMap?: ColorMapName                               // default continuous colour (heat maps, densities)
   axes?: { frame?: 'plain' | 'offset'; tickDirection?; tickLength?: Pt; minorTickLength?: Pt }
   pValue?: { style?: 'GP' | 'APA' | 'NEJM'; digits?: number }
@@ -3596,6 +3644,7 @@ A user preset (`.pspreset`, JSON; `model/src/presetFile.ts`) is a graph's layers
     layers: Layer[],              // 1–32, back to front; no `series`, `seriesHidden` or outputs;
                                   // `aes: {}` where the layer maps variables (the table's defaults)
     orientation?: 'horizontal', drawOrder?: 'series',
+    shapes?, dashes?,             // roadmap 49a: the graph's cycles of symbols and line patterns
     scales?: { color?, size? },   // colour maps and sizes, no value ranges (nor levels' symbols)
     variables?: { x, y: 'number' | 'text'; color?: 'number' | 'text'; measure?;  // a graph of variables (34a)
                   shape?: 'text'; size?: 'number'; label?: 'number' | 'text' } },  // 34b; XY graphs too
