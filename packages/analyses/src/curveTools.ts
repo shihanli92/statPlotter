@@ -69,8 +69,8 @@ export function xyPointRows(ds: NormalizedDataSet): XYPoint[] {
 }
 
 /**
- * One point per row: the mean of the row's replicate Y values that are present (Prism's "only
- * consider the mean Y value of each point"); summary data give their entered means, as always.
+ * One point per row: the mean of the row's replicate Y values that are present ("only consider
+ * the mean Y value of each point"); summary data give their entered means, as always.
  */
 export function meanPointRows(ds: NormalizedDataSet): XYPoint[] {
   const out: XYPoint[] = []
@@ -103,7 +103,7 @@ export const INTERPOLATE_FIELD = {
 } as const
 
 /**
- * Unknowns, as Prism defines them: the rows below every row that has both an X and a Y (in any
+ * Unknowns: the rows below every row that has both an X and a Y (in any
  * analyzed data set). Among them, rows with Y values but no X are interpolated for X, rows with
  * an X but no Y in any data set for Y. Rows higher up with a missing X or Y are ignored.
  */
@@ -396,7 +396,7 @@ export function diagnosticBlocks(
   const NONE = text('—')
   if (opts.runsTest) {
     const runs = sets.map((s) => {
-      // Prism: only with one Y per X (points in X order).
+      // Only with one Y per X (points in X order).
       if (new Set(s.points.map((p) => p.x)).size !== s.points.length) return null
       const order = s.points.map((_, i) => i).sort((a, b) => s.points[a]!.x - s.points[b]!.x)
       return runsTest(order.map((i) => s.residuals[i]!))

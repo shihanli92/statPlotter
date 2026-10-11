@@ -1,5 +1,5 @@
-# Frequency distribution (Prism: "How to: Frequency distribution"; FAQ 1660 for the automatic
-# bin width). input$dataSets: one vector of values per data set. params (optional): binWidth,
+# Frequency distribution (with the usual rule for the automatic bin width).
+# input$dataSets: one vector of values per data set. params (optional): binWidth,
 # firstCenter, upperLimit.
 #
 # Automatic width: per data set (max - min)/(1 + log2 n), averaged, rounded down to a "nice"

@@ -20,7 +20,7 @@ import { TRANSFORM_FIELDS } from './transformFields.tsx'
 
 // Custom form editors of roadmap 20 (equations and simulation):
 //
-// - `nlfit.initialRules`: Prism's rules for initial values of a user-defined equation (a number
+// - `nlfit.initialRules`: the rules for initial values of a user-defined equation (a number
 //   and a multiplier per parameter).
 // - `dataset.pickNone`: an optional analyzed data set (the grouping variable of nonlinear
 //   regression from a multiple-variables table).

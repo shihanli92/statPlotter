@@ -58,7 +58,7 @@ describe('simple logistic regression (XY)', () => {
     const curve = r.outputs[`curve:${t.dataSets[0]!.id}`]!
     expect(curve.x[0]).toBe(0.5)
     expect(curve.x.at(-1)).toBe(4.25)
-    // Row prediction includes the X-only row (Prism predicts it).
+    // Row prediction includes the X-only row.
     const rows = tableBlock(r, 'rows')
     expect(rows.rows).toHaveLength(17)
     expect(v(rows.rows[16]![3])).toBeCloseTo(1 / (1 + Math.exp(-(b0 + b1 * 5.7))), 14)

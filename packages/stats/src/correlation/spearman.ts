@@ -9,26 +9,25 @@ import {
   pearsonR,
 } from './pearson.ts'
 
-/** Prism computes an exact P for Spearman's r_s with this many pairs or fewer. */
+/** The exact P for Spearman's r_s is computed with this many pairs or fewer. */
 const SPEARMAN_EXACT_MAX_N = 17
 
-/** Prism reports the CI of r_s only for n above this (Zar's condition for the approximation). */
+/** The CI of r_s is reported only for n above this (Zar's condition for the approximation). */
 const SPEARMAN_CI_MIN_N = 10
 
 export interface SpearmanOptions extends CorrelationOptions {
-  /** 'auto' (default): exact when n ≤ 17, as Prism. */
+  /** 'auto' (default): exact when n ≤ 17. */
   exact?: 'auto' | boolean
 }
 
 export interface SpearmanResult extends CorrelationResult {
   exact: boolean
-  /** n > 10: Prism shows the CI only then (the approximation is poor for small n). */
+  /** n > 10: the CI is shown only then (the approximation is poor for small n). */
   ciValid: boolean
 }
 
 /**
- * Spearman rank correlation as the Prism Statistics Guide ("Interpreting results: Correlation")
- * describes it:
+ * Spearman rank correlation:
  *
  * - r_s = Pearson correlation of the mid-ranks (as R's cor.test(method = "spearman")).
  * - n ≤ 17: exact P over all n! pairings of the ranks, ties included ("Exact calculations
@@ -38,7 +37,7 @@ export interface SpearmanResult extends CorrelationResult {
  *   t = r_s √((n − 2)/(1 − r_s²)) on n − 2 df, as cor.test(exact = FALSE).
  * - CI: Fisher's z with the Fieller, Hartley & Pearson (1957) variance 1.060/(n − 3), the
  *   approximation Zar (Biostatistical Analysis, §19.9) gives and says to use only for n > 10;
- *   Prism shows no CI for n ≤ 10 (`ciValid`). Computed for any n > 3 here.
+ *   no CI is shown for n ≤ 10 (`ciValid`). Computed for any n > 3 here.
  *
  * 'greater' means a positive correlation. n < 2 gives NaN; a constant x or y gives r = NaN,
  * P = NaN.

@@ -16,7 +16,7 @@ import {
 import { buildTable, sourceKind, stableId } from './resultTable.ts'
 
 // ---------------------------------------------------------------------------------------------
-// Identify outliers (Statistics Guide, "How to: Identify outliers"): ROUT (Q, default 1%),
+// Identify outliers: ROUT (Q, default 1%),
 // Grubbs' test ("can only identify one outlier in each data set") or iterative Grubbs', each
 // data set (column) on its own. Results: a summary per data set, the outliers, and the test
 // details; the plugin also produces the cleaned data (outliers removed: their cells left empty,

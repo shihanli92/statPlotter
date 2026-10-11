@@ -46,7 +46,7 @@ describe('Friedman invariants', () => {
     expectClose(r.pExact!, (2 * 9) / 256, { rtol: 1e-15 }, 'pExact')
   })
 
-  it("Prism's (k!)^n ≤ 1e9 rule", () => {
+  it('the (k!)^n ≤ 1e9 rule', () => {
     const rows = (n: number, k: number) =>
       Array.from({ length: n }, (_, i) => Array.from({ length: k }, (_, j) => (i * 7 + j * 3) % 5))
     expect(friedmanTest(rows(11, 3)).pExact).not.toBeNull()

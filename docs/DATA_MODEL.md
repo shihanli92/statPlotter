@@ -128,7 +128,7 @@ and New graph like this copy (parts of) a family; see §8.1 "Reuse".
 
 ### 3.1 One grid shape for all table kinds
 
-Every Prism table kind is the same grid: an optional X column, an optional row-title column, and
+Every table kind is the same grid: an optional X column, an optional row-title column, and
 an ordered list of *data set columns*, each with N subcolumns. Table kinds differ in what X means,
 which formats are allowed, and which analyses/graphs apply.
 
@@ -148,7 +148,7 @@ interface DataTable {
   rowTitlesRich?: (RichText | null)[]     // formatted row titles (roadmap 28), spliced with the rows
   x: XColumn | null                       // XY and survival tables only; every other kind: null
   dataSets: DataSetColumn[]               // ordered; order = default graph/analysis order
-  notes: string                           // free text (Prism's "info" per table), default ''; edited above the grid (roadmap 31)
+  notes: string                           // free text (an "info" per table), default ''; edited above the grid (roadmap 31)
   columnWidths?: Record<string, number>   // grid widths in CSS px (24–1200; roadmap 29), by columnWidthKey
   cellsTable?: boolean                    // multiple variables: a cells table or not (roadmap 34f, §6.1h); absent = by its rows
   limits?: LimitRule                      // how cells at a detection limit are substituted (roadmap 39, §3.3a)
@@ -314,7 +314,7 @@ Both use the same grid with one value per cell (`replicates`, count 1):
 - **Contingency**: rows are groups (row titles shown by default), data sets are outcomes, cells
   are counts (non-negative integers). Analyses use every row with at least one value; a partly
   filled row is an error. `contingencyCounts(input)` in `model/normalize.ts` builds the matrix.
-- **Survival**: one subject per row, as Prism lays it out. X is the elapsed time (title
+- **Survival**: one subject per row, the usual layout. X is the elapsed time (title
   "Days elapsed"); the subject's code goes in its group's column, all other groups blank.
   1 = event, 0 = censored by default (the analysis can use other codes). `survivalData(ds)`
   returns the subjects plus counts of rows with no usable time or an unknown code.
@@ -554,7 +554,7 @@ The plugin contract (`AnalysisDef` in `model/src/analysis.ts`) also carries `cat
 addressed by path into the params, with optional `showIf`). The UI renders every analysis dialog
 from it.
 
-One plugin per *dialog*, not per test variant. Mirrors Prism's dialog structure.
+One plugin per *dialog*, not per test variant: the dialog structure lab users know.
 
 Phase 13 adds result tables and a run context. `run(input, params, context)` receives
 `RunContext` (`tableKind` of the source, `xTitle`), so a plugin can build an output of the right
@@ -627,7 +627,7 @@ Phase 11 plugins and options (grouped-table statistics):
 
 | Plugin id | Tables | Reports |
 |---|---|---|
-| `multipleT` | grouped (2 data sets) | one test per row: Welch (default), Student t with each row's pooled SD, t with one SD pooled over all rows ("consistent SD", = the two-way ANOVA MSE), paired, lognormal (t on log10; ratio paired t; values ≤ 0 left out of their row with a note, the row tested when two per group remain), Mann-Whitney, Kolmogorov-Smirnov, Wilcoxon; means / geometric means / medians, difference (first − second by default), SE, t, df, P, q value (two-stage step-up: Prism's, BH-adjusted P × (1 + Q)·m̂₀/m) or adjusted P, discovery / below threshold; summary, discoveries sheet; volcano plot (`volcano:flagged`, `volcano:other`) |
+| `multipleT` | grouped (2 data sets) | one test per row: Welch (default), Student t with each row's pooled SD, t with one SD pooled over all rows ("consistent SD", = the two-way ANOVA MSE), paired, lognormal (t on log10; ratio paired t; values ≤ 0 left out of their row with a note, the row tested when two per group remain), Mann-Whitney, Kolmogorov-Smirnov, Wilcoxon; means / geometric means / medians, difference (first − second by default), SE, t, df, P, q value (the two-stage step-up of Benjamini, Krieger & Yekutieli: BH-adjusted P × (1 + Q)·m̂₀/m, m̂₀ from the first stage) or adjusted P, discovery / below threshold; summary, discoveries sheet; volcano plot (`volcano:flagged`, `volcano:other`) |
 | `multipleOneWay` | grouped (≥ 3 data sets) | one ordinary / Welch / Brown-Forsythe ANOVA or Kruskal-Wallis test per row; comparisons within each row (each row a family) with the one-way methods (Tukey … Dunn) |
 | `threeWayAnova` | grouped (4 data sets) | 2 × 2 × k ordinary ANOVA (rows; A, B vs. C, D; A, C vs. B, D), Type III; seven effects, % of total variation, effect sizes; comparisons of all cells, each vs. the first cell, or cells differing by one factor |
 | `pStack` | column (1 data set) | a stack of P values: discoveries (BKY, BH, BY at Q) or below threshold (Holm-Šídák, Šídák, Bonferroni), q / adjusted P, BKY's estimated true nulls; ranked-P graph (`ranked`) |
@@ -644,7 +644,7 @@ Phase 13 plugins, statistics half (data processing, outliers, nested tables):
 
 | Plugin id | Tables | Reports / produces |
 |---|---|---|
-| `transform` | XY, column, grouped, nested | table: Y (and, on XY tables, X) through Prism's standard functions (Y × K, Y + K, powers, logs, 10^Y, e^Y, 1/Y, √Y, \|Y\|, trig in radians, logit, probit (+5), arcsin √Y, rank, z score, K − Y, K / Y, rounding, and Y with X); one K or a K per data set (`kByDataSet`) |
+| `transform` | XY, column, grouped, nested | table: Y (and, on XY tables, X) through the standard functions (Y × K, Y + K, powers, logs, 10^Y, e^Y, 1/Y, √Y, \|Y\|, trig in radians, logit, probit (+5), arcsin √Y, rank, z score, K − Y, K / Y, rounding, and Y with X); one K or a K per data set (`kByDataSet`) |
 | `normalize` | XY, column, grouped, nested | table: (Y − 0%) / (100% − 0%) as % or fraction; 0% = smallest, first or entered; 100% = largest, last, entered, sum or mean (of the row means) |
 | `removeBaseline` | XY, column, grouped, nested | table: difference, ratio, % difference or sum against a baseline data set, the first / last row(s), or pairs of data sets (A with B, C with D) |
 | `frequencyDistribution` | column, grouped, XY, nested | XY table of bin centres: counts, relative % / fractions, cumulative; automatic or set width and first centre, upper limit, replicates each or averaged |
@@ -711,14 +711,14 @@ interface NonlinearParams {
 - **User-defined equations** (`parseEquation` in `@ps/stats`, re-exported by `@ps/analyses`):
   `parseEquation(text)` → `{ ok: true, parameters, variables, program }` (parameters in order of
   first appearance, `program.f`/`program.grad`) or `{ ok: false, message, position, line,
-  column }`. Prism's syntax: one `name = expression` per line, `;` comments, `\` continuation,
+  column }`. The equation syntax: one `name = expression` per line, `;` comments, `\` continuation,
   intermediate variables, case-insensitive names, `IF`, comparisons, `AND`/`OR`/`NOT`, `MOD`,
-  Prism's elementary functions (`log` is base 10, `ln` natural). The parser compiles to a tape
+  the usual elementary functions (`log` is base 10, `ln` natural). The parser compiles to a tape
   evaluated with forward-mode automatic differentiation (exact gradients, no `eval`).
   `resolveEquation(params)` gives the model the analysis fits (built-in or user). The form
   declares custom fields `nlfit.userEquation`, `nlfit.initialValues`, `nlfit.limits` for a
   future editor (unknown custom components render nothing today).
-- **Built-in equations** (48): the new ones are written in GraphPad's own form through the same
+- **Built-in equations** (48): the new ones are written in their published form through the same
   language (`labEquations.ts`), so their gradients are exact too. A `ParamInfo.defaultConstraint`
   may now be `'shared'` or `'dataSetConstant'` (enzyme inhibition: `I` from the column titles,
   Vmax/Km/Ki shared); `CurveModel.initial(x, y, fixed)` receives the values of constant
@@ -769,14 +769,14 @@ unchanged, plugin versions stay 1; `ANALYSES_VERSION` 1.3.0 because fits gained 
 
 | Plugin id | Tables | Reports / params |
 |---|---|---|
-| `nonlinearFit` + | XY | user equations with Prism's special and distribution functions, lines for particular data sets, implicit and differential equations (below); `initialRules` {name → {value, rule}} (custom field `nlfit.initialRules`); constraint kind `meanX` ("Data set constant (= mean X)"); 77 more built-in equations (126 in all); values `<param>:<key>:se`, `:lo`, `:hi` for fitted parameters |
+| `nonlinearFit` + | XY | user equations with special and distribution functions, lines for particular data sets, implicit and differential equations (below); `initialRules` {name → {value, rule}} (custom field `nlfit.initialRules`); constraint kind `meanX` ("Data set constant (= mean X)"); 77 more built-in equations (126 in all); values `<param>:<key>:se`, `:lo`, `:hi` for fitted parameters |
 | `nonlinearFitMV` | multiple variables | the XY analysis' options with `x`, `y` and an optional `group` variable (data set keys; custom fields `dataset.pick`, `dataset.pickNone`): one fit per distinct group value (numbers ascending, text in order of appearance), group values as data set titles (so a numeric one can be a data set constant); outputs `mv:points:<i>`, `mv:curve:<i>` for the first 12 groups on output graph `mvfit` |
 | `simulateXY` | every kind, 0–64 data sets | table: X arithmetic / geometric (`xStart`, `xStep`, stop at `xEnd` inclusive) or the analyzed X; Y from `equation` / `userEquation` with `dataSets` [{title, values}] (custom field `sim.dataSets`) or the analyzed Y; `replicates`; random error (below); `seed` (custom field `sim.seed`, "New seed") |
 | `simulateColumn` | every kind | table: `columns` [{title, n, mean}] (custom field `sim.columns`), `meanMode` entered / random (`meanOfMeans`, `sdOfMeans`), random error, `seed` |
 | `simulateContingency` | every kind | 2 × 2 table: `total`, `design` crossSectional (multinomial) / prospective, experimental (row totals fixed) / caseControl (column totals fixed), `rowTitles`, `columnTitles` (custom field `sim.titles2x2`), `pRow1`, `pOutcome1`, `pOutcome2` / `pCases`, `pExposedCases`, `pExposedControls`, `seed` |
 | `monteCarlo` | every kind | table: one row per simulation, one column per `tabulate`d result value (and "Hit"); `simulation` {analysisId, params} and `analysis` {analysisId, params, dataSets} (custom fields `mc.simulation`, `mc.analysis`: each edited with its own form), `simulations`, `seed`, `tabulate` (the result picker `mc.tabulate`, from a trial run), `hits` {combine both / either, ≤ 2 conditions value op number} (`mc.hits`), `hitDenominator` all / determined, `alpha`, `confidenceLevel`; values `hitFraction`, `hits`, `mean:<key>`, `sd:<key>` |
 
-Random error (XY and column simulations, Prism's list): `error` none / gaussian (`sd`) /
+Random error (XY and column simulations, the usual list): `error` none / gaussian (`sd`) /
 relative (`percent` of Y) / doubleGaussian (`doublePercent` of the points with `sd`, the rest
 `sd2`) / poisson (Y the mean; blank below 0) / t (`df`, scaled by `sd`) / lorentzian (Cauchy
 scaled by `sd`); then `outliers` randomly chosen values get a uniform amount between
@@ -791,7 +791,7 @@ scaled by `sd`); then `outliers` randomly chosen values get a uniform amount bet
     "two") for zdist, zinv, normdist, norminv, tdist. Partial derivatives are analytic where
     cheap, else central differences (shape arguments only).
   - Lines for particular data sets: `<C>`, `<~B>`, `<A:D>`, `<~A:D>`, `<A:J,3>`, `<~A:J,3>`,
-    and lists `<A,C>`. Letters are positions among the analyzed data sets (Prism's rule). Each
+    and lists `<A,C>`. Letters are positions among the analyzed data sets (the usual rule). Each
     data set has its own program (`program.forDataSet(k)`, `CurveModel.forDataSet`); the
     parameters are the union, in order of first appearance. `uses(j)` is whether that data set's
     Y depends on parameter j (a parameter only other data sets use is held at its initial value
@@ -833,11 +833,11 @@ Conventions:
 
 - **Levels.** Text is trimmed; empty text is missing. A numeric variable used as a factor has a
   level per distinct value, labelled `String(value)`. Levels are ordered by first appearance in
-  the table (Prism's default "visual" order), keeping those present in the analyzed rows
+  the table (the default "visual" order), keeping those present in the analyzed rows
   (complete cases over outcome(s) and predictors). A categorical predictor with one level is left
   out with a warning (a factor with one level is an error in multifactor ANOVA).
 - **Reference level / coding.** Dummy (treatment) coding: L − 1 indicator columns, none for the
-  reference level; Prism's automatic rules (first level by default, last, most or least frequent;
+  reference level; automatic rules (first level by default, last, most or least frequent;
   ties to the earlier level) or a chosen level (a missing chosen level falls back with a
   warning). Interaction columns are products of the variables' columns (first variable slowest).
   Without an intercept the reference column is still dropped (R's `~ 0 + …` would give the first
@@ -994,7 +994,7 @@ picks which context rules adjust the per-geom defaults (roadmap 37, §6.2b; read
 resolver `markDefaults`, never by drawing code); `preset` only records where the layers came from. Where marks overlap, a graph
 draws **by layer** (`drawOrder: 'layer'`, the default: every data set's bars, then every data set's
 points, as ggplot) or **by data set** (`'series'`: each data set's layers together in its `order`,
-else the list's: v1 and Prism); migrated graphs, and the examples, draw by data set so they look
+else the list's: as v1 drew them); migrated graphs, and the examples, draw by data set so they look
 exactly as before (decision 231). The Format panel’s Drawing order (the graph’s list of layers) chooses between them.
 
 ### 6.1a Layers
@@ -1127,7 +1127,7 @@ builder (roadmap 33c) use the same ids, so a migrated graph and a new one of a p
 by layer; the formatting panels read and write layers (no v1 view since 33c).
 
 **Series follow the table by default** (`include: 'all'`): add a column to the table and it
-appears on the graph, as in Prism. Series order is table column order. Removing a series from a
+appears on the graph. Series order is table column order. Removing a series from a
 graph switches `include` to an explicit list.
 
 **Graphs of result tables** (Phase 13): `seriesSource.table` may be an analysis node whose result
@@ -2472,7 +2472,7 @@ Immunology 2026; see `packages/ui/src/paperExample.ts`).
 - **Axis label power:** continuous axes' `labelPower` n labels ticks with value ÷ 10ⁿ (axes titled
   "(×10⁴)"); ticks, ranges and data stay in data units. The X / Y axis tab can append "(×10ⁿ)" to the
   axis title.
-- **P values that round to 1** read ">0.9999" (GP), ">.999" (APA), ">0.99" (NEJM), as in Prism.
+- **P values that round to 1** read ">0.9999" (GP), ">.999" (APA), ">0.99" (NEJM).
 
 ### 6.4d Formatting follow-ups (Phase 15)
 
@@ -3321,8 +3321,8 @@ imported imperfectly is reported in `warnings` rather than silently changed.
 |---|---|---|
 | `.csv` `.txt` `.tsv` | `readCsv` (RFC 4180; BOM; UTF-8/UTF-16/Windows-1252; sniffs tab, `;`, `,`, or one column) | one `Sheet` |
 | `.xlsx` `.xlsm` | `readXlsx` (fflate + in-house XML parser) | one `Sheet` per worksheet |
-| `.pzfx` (Prism XML) | `readPzfx` | finished `DataTable`s |
-| `.xls`, `.prism`, `.pzf` | — | `ImportError` saying how to re-save |
+| `.pzfx` (XML project) | `readPzfx` | finished `DataTable`s |
+| `.xls`; binary projects (`.pzf` and the like) | — | `ImportError` saying how to re-save |
 
 A `Sheet` is a rectangular grid of `number | string | boolean | null`. XLSX cells keep cached
 values (formulas → their last result, errors → `null`); date-formatted numbers stay serial day
@@ -3473,10 +3473,10 @@ otherwise. A table that repeats the previous one's data sets unnamed takes their
 (a binary section in the file) and info sheets are not imported (one warning each); graphs are,
 when asked for (below).
 
-| Prism | Here |
+| .pzfx | Here |
 |---|---|
 | `XY`, `OneWay`, `TwoWay`, `Contingency`, `Survival`, `Nested` | `xy`, `column`, `grouped`, `contingency`, `survival`, `nested` |
-| `MultipleVariables` | `multipleVariables`; a Y column whose cells are mostly words becomes a text variable (not yet checked on a Prism-made file) |
+| `MultipleVariables` | `multipleVariables`; a Y column whose cells are mostly words becomes a text variable (not yet checked on a real .pzfx file) |
 | `PartsOfWhole` | skipped (warning) |
 | `SubColumnTitles` of a nested Y column | `subcolumnTitles` (subject names) |
 | formatted titles: `<B>`/`<Bold>`, `<I>`, `<U>`, `<Sup>`, `<Sub>` (any case), `<Font Face="Symbol">` letters, `<BR/>` | `titleRich` / `rowTitlesRich` / `subcolumnTitlesRich` runs (Symbol letters as Greek, in the plain title too; breaks as spaces in titles); sizes, colours and faces dropped |
@@ -3487,7 +3487,7 @@ when asked for (below).
 | `upper-lower-limits` | `meanUpperLower` |
 | CV values (percent) | divided by 100 (a fraction here) |
 | X `numbers` / `error` | `numbers` / `numbersWithError` |
-| X `date` | Prism's numeric X (time since the first date, in the table's units); the dates become row titles when there are none (warning) |
+| X `date` | the file's numeric X (time since the first date, in the table's units); the dates become row titles when there are none (warning) |
 | `<d Excluded="1">` | value kept, `excluded` mask set |
 | `<d/>`, text in a number cell | `null` (text: counted warning) |
 | `3,5` (decimal comma), `1.` | 3.5, 1 |
@@ -3496,32 +3496,32 @@ when asked for (below).
 A column table with side-by-side replicates or several rows of summary data (which the model
 doesn't allow) becomes a grouped table (warning). The row count is the longest column. Display
 decimals (`Decimals`) are not imported. Tests compare every table of the `pzfx` R package's
-Prism-generated example files cell by cell against `pzfx::read_pzfx`
+example .pzfx files cell by cell against `pzfx::read_pzfx`
 (`tools/oracle/pzfx_fixtures.R` → `packages/io/test/fixtures/pzfx/*.expected.json`).
 
 ---
 
-**Prism graphs (roadmap 39, decisions 570–573).** `readPzfx(xml, { graphs: true })` (and
+**Graphs in .pzfx files (roadmap 39, decisions 570–573).** `readPzfx(xml, { graphs: true })` (and
 `importFile(name, bytes, { graphs: true })`) also reads the `<Template>` section: base64 of zlib
-data, `PCFFGRA4` then tagged records (u16 tag, u32 length, payload; bit 15 opens a container,
-bit 14 closes it; `io/src/import/pcff.ts`). What decodes reliably is used (`pzfxGraphs.ts`, the
-evidence in [design/PZFX_GRAPHS.md](design/PZFX_GRAPHS.md)): each graph's name, its data sets
-(their column ids, unique across the file, give the table and column) in Prism's order, the
-graph title and axis titles with Prism's hidden flag, the axis ranges, whether X is numeric, each
-data set's colour and its symbol (circle, square, triangle). `graphsFromPrism` (`pzfxGraphMap.ts`)
-makes each a native graph: the table's default graph (`createGraphFor`) with those set (titles
-hidden in Prism removed; X's range only when both X axes are numeric) and validated. Not
-decoded, so left to the defaults and listed in the report: the kind of marks (bars, points,
-lines), error bars, log scales, fonts, sizes, ticks and the legend. Binary tables are paired with
-the XML's by name and Y column titles; a graph of an analysis's results or of several tables is
-not imported (reported); a section that can't be read gives every table its default graph and
-says why. The result (`PzfxGraphImport`): the graphs with their tables, a report line per Prism
-graph (`decoded` with what was matched and what is the default, `default`, `skipped`), counts and
-layouts. The tables are exactly what `readPzfx` reads without graphs.
+data, `PCFFGRA4` then tagged records (u16 tag, u32 length, payload; bit 15 opens a container, bit 14
+closes it; `io/src/import/pcff.ts`). What decodes reliably is used (`pzfxGraphs.ts`, the evidence in
+[design/PZFX_GRAPHS.md](design/PZFX_GRAPHS.md)): each graph's name, its data sets (their column ids,
+unique across the file, give the table and column) in the file's order, the graph title and axis
+titles with their hidden flag, the axis ranges, whether X is numeric, each data set's colour and its
+symbol (circle, square, triangle). `graphsFromPzfx` (`pzfxGraphMap.ts`) makes each a native graph:
+the table's default graph (`createGraphFor`) with those set (titles hidden in the file removed; X's
+range only when both X axes are numeric) and validated. Not decoded, so left to the defaults and
+listed in the report: the kind of marks (bars, points, lines), error bars, log scales, fonts, sizes,
+ticks and the legend. Binary tables are paired with the XML's by name and Y column titles; a graph
+of an analysis's results or of several tables is not imported (reported); a section that can't be
+read gives every table its default graph and says why. The result (`PzfxGraphImport`): the graphs
+with their tables, a report line per graph in the file (`decoded` with what was matched and what is
+the default, `default`, `skipped`), counts and layouts. The tables are exactly what `readPzfx` reads
+without graphs.
 
 The import dialog for .pzfx files (`PzfxImportDialog`) shows the tables and graphs found; "Import
-graphs" is ticked when at least one decoded. Ticked, Prism's graphs are made (and no others), then
-the report; unticked, every table gets its default graph and the warnings are as before.
+graphs" is ticked when at least one decoded. Ticked, the file's graphs are made (and no others),
+then the report; unticked, every table gets its default graph and the warnings are as before.
 
 **Missing codes and detection limits (roadmap 39, decisions 574–575).** The import dialog's
 "Missing values and detection limits": missing-value codes besides `MISSING` ("-999, ND, not
@@ -3542,12 +3542,12 @@ same either way (audit 2, decision 692); pzfx text cells don't take them yet.
 **Dropping files (roadmap 39, decisions 579–580).** Files dropped on the window are handled one
 after another by their extension (`ui/src/drop/`): a project (.psproj) opens as File › Open does
 (asking about unsaved changes; only the first of several, after the others); CSV, TSV, TXT, XLSX,
-XLSM and ZIP open the import dialog (large CSV files their own, with the 5,000-row cells prompt
-as from the menu); .pzfx the Prism dialog; images dropped on a layout page are placed where they
+XLSM and ZIP open the import dialog (large CSV files their own, with the 5,000-row cells prompt as
+from the menu); .pzfx the .pzfx import dialog; images dropped on a layout page are placed where they
 fall (roadmap 32), elsewhere a prompt puts them on a page (one of the project's or a new one) or
 ignores them; .pspreset and .psstyle files go into the user's library. A file that opens a dialog
-waits for it to close; several files end with a summary. An overlay names what the drop will do
-(by the items' MIME types when known, and by where it is).
+waits for it to close; several files end with a summary. An overlay names what the drop will do (by
+the items' MIME types when known, and by where it is).
 
 ### 9.2 Templates (roadmap 31)
 
@@ -3673,8 +3673,8 @@ forms, 1e-8 for special-function P values, and exact for exact permutation P val
 | Quantity | R reference | Notes |
 |---|---|---|
 | Mean, SD, SEM, CI of mean | `mean`, `sd`, `t.test()$conf.int` | |
-| Quartiles / percentiles | `quantile(type = 6)` | **Verify** Prism's definition |
-| Skewness, kurtosis | `e1071::skewness/kurtosis(type = 2)` | **Verify** against Prism |
+| Quartiles / percentiles | `quantile(type = 6)` | **Verify** against reference software |
+| Skewness, kurtosis | `e1071::skewness/kurtosis(type = 2)` | **Verify** against reference software |
 | Geometric mean & CI | via `log` + `t.test` | |
 | Unpaired t / Welch | `t.test(var.equal = TRUE/FALSE)` | |
 | F test for variances | `var.test` | |
@@ -3725,36 +3725,38 @@ with ties (shift algorithm).
   the sheets selected in the navigator (several, beside the open one) are the navigator's state
   only, never in the document or the file (decision 950).
 
-- **Verify against real Prism output** (run a handful of datasets through Prism once and commit
-  them as `fixtures/prism/`). Current choices, all matching R unless noted:
+- **Verify against real output of established lab software** (run a handful of datasets through
+  it once and commit them as `fixtures/reference/`; "the reference software" below is that
+  software, "the guide" its documentation). Current choices, all matching R unless noted:
   - Quartiles: R type 6. Skewness/kurtosis: e1071 type 2 (G1, excess G2). Geometric stats: natural log.
   - Exact P for rank tests when nA + nB ≤ 100 (Mann-Whitney) / ≤ 100 non-zero pairs (Wilcoxon);
     two-sided exact P with ties uses coin's |S − E| rule, which isn't always 2× one-sided.
   - Hodges–Lehmann CI follows `wilcox.test` (its root-finder gives e.g. 1.99997 rather than 2 with
-    ties); Prism may report a different interval.
+    ties); other software may report a different interval.
   - Mann-Whitney U reported as min(uA, uB); Wilcoxon W = Σ positive ranks − Σ negative ranks.
   - One-tailed P assumes the observed direction was predicted (decision 18).
   - With a one-tailed P, the CI (and Hodges-Lehmann estimate) stays the usual two-sided one (t
-    tests, Mann-Whitney, Wilcoxon, one-sample tests), which we take to be what Prism reports; R's
-    one-sided run would give [x, ∞). Correlation still reports R's one-sided CI.
+    tests, Mann-Whitney, Wilcoxon, one-sample tests), which we take to be what lab software reports;
+    R's one-sided run would give [x, ∞). Correlation still reports R's one-sided CI.
   - F test for variances: F = larger / smaller variance; P = 2·min(cdf, sf).
   - Degenerate data: SD = 0 gives t = ±∞, P = 0; all-zero Wilcoxon differences give P = NaN.
-- **Regression conventions to verify against Prism** (Phase 2):
+- **Regression conventions to verify against reference software** (Phase 2):
   - Relative (1/Y²) and Poisson (1/Y) weights use the curve's Y, not the data's; weighted R² is
     1 − SS_w / Σw(y − ȳ_w)² with weights at the curve.
   - R² through the origin is centred (can be negative); NIST/R use the uncentred form. Linear
-    regression no longer shows R² for constrained lines (roadmap 18, as Prism).
+    regression no longer shows R² for constrained lines (roadmap 18).
   - A parameter that ends on a bound is treated as fixed (no SE/CI; excluded from df and AICc).
-  - Inhibition variable-slope curves use Prism's form (LogIC50 − X)·HillSlope, so falling curves
+  - Inhibition variable-slope curves use the form (LogIC50 − X)·HillSlope, so falling curves
     have HillSlope < 0.
   - Global fits: per-data-set df counts a shared parameter fully.
-  - "Ambiguous" = condition number of the scaled Jacobian > 1e10 (Prism uses dependency > 0.9999).
+  - "Ambiguous" = condition number of the scaled Jacobian > 1e10 (the guide uses dependency >
+    0.9999).
   - Fieller X-intercept CI is undefined (—) when the slope isn't significant, and through the origin.
   - Prediction bands add s²/w(ŷ) for nonlinear fits; linear fits assume unit weight.
   - Profile CI endpoints that never cross the threshold report the bound or ±∞.
   - Intercepts are compared only when slopes don't differ (P ≥ 0.05).
-- **Curve-fitting conventions to verify against Prism** (Phase 14):
-  - Interpolation: unknowns are the rows below the last X–Y row (Prism's rule); Y-only rows
+- **Curve-fitting conventions to verify against reference software** (Phase 14):
+  - Interpolation: unknowns are the rows below the last X–Y row (the guide's rule); Y-only rows
     higher up are ignored as before. The curve is searched from the smallest to the largest X of
     the standards (first crossing, so the lower X of a bell), then below, then above, up to half
     the standards' X range beyond each end (our reading of "half the length of the X axis"). CI
@@ -3777,35 +3779,36 @@ with ties (shift algorithm).
     column ROUT.
   - Bell-shaped dose-response: with both Hill slopes positive (our initial values) Plateau2 is
     the plateau at low X and Plateau1 at high X; the guide's recommended signs differ.
-  - Two sites — Fit logIC50 follows the Prism 6 guide (the current page prints the Fit Ki model);
-    FractionHi, PercentFast, Frac are not bounded by default (PercentFast is 0–100 as for two
-    phase decay). Default constants the user must set: F = 50 (ECanything), HotNM = HotKdNM = 1
+  - Two sites — Fit logIC50 follows an older edition of the guide (the current page prints the Fit
+    Ki model); FractionHi, PercentFast, Frac are not bounded by default (PercentFast is 0–100 as for
+    two phase decay). Default constants the user must set: F = 50 (ECanything), HotNM = HotKdNM = 1
     (Fit Ki), HotNM = 1 and Koff = 0.1 (association), Et = 1 (kcat).
-  - User equations: `pi` is a constant (undocumented in Prism); operator precedence is the usual
-    one (GraphPad publishes none). Roadmap 20 added the rest (below).
+  - User equations: `pi` is a constant (undocumented in the guide); operator precedence is the
+    usual one (the guide publishes none). Roadmap 20 added the rest (below).
   - Initial values: our own rules per built-in equation; user equations start at the entered
     values, else their rules (roadmap 20), else 1.
-- **Equation and simulation conventions to verify against Prism** (roadmap 20):
-  - Tails: zdist is the standard normal CDF (the guide's Excel equivalent NORMSDIST, Prism 11's
-    "cumulative probability", and Prism's cumulative-Gaussian equations need it), zinv its
+- **Equation and simulation conventions to verify against reference software** (roadmap 20):
+  - Tails: zdist is the standard normal CDF (the guide's Excel equivalent NORMSDIST, its function
+    reference's "cumulative probability", and its cumulative-Gaussian equations need it), zinv its
     inverse, normdist the CDF, norminv the lower-tail quantile; tdist, fdist, chidist are upper
     tails, chisqc the lower, tinv two-tailed, finv and chiinv upper. The guide's "P value
     (one-tailed)" wording for zdist/normdist would suggest the upper tail instead.
-  - arctan2 keeps its (y, x) order (Prism 11's function reference: ARCTAN2(1, 0) = π/2); the
-    Curve Fitting Guide's table writes arctan2(x, y) with Excel's ATAN2(x, y).
+  - arctan2 keeps its (y, x) order (the function reference: ARCTAN2(1, 0) = π/2); the
+    guide's table writes arctan2(x, y) with Excel's ATAN2(x, y).
   - ibeta(a, b, x) = I_x(a, b), igamma(a, x) = P(a, x) (the guide gives no argument meanings
     beyond Excel's GAMMADIST(x, a, 1, TRUE)); Bessel orders must be integers (NaN otherwise);
     hypgeometricu is defined for x > 0, hypgeometricf for x ≤ 1.
-  - Implicit equations: Newton from the previous solution at the same X, else from Y = 0, g(X,
-    0), 1, then bracketing; with several roots, the one continuation keeps. How Prism solves them
-    is undocumented.
-  - Differential equations: Dormand–Prince 5(4) at rtol 1e−12 (Prism's integrator is
-    undocumented); X[0] as an equation line (Prism sets X0 in the equation definition); `dY/dX
-    =` is accepted though Prism refuses it; systems of ODEs are not supported (neither in Prism).
+  - Implicit equations: Newton from the previous solution at the same X, else from Y = 0, g(X, 0),
+    1, then bracketing; with several roots, the one continuation keeps. How the reference software
+    solves them is undocumented.
+  - Differential equations: Dormand–Prince 5(4) at rtol 1e−12 (the reference software's
+    integrator is undocumented); X[0] as an equation line (the guide sets X0 in the equation
+    definition); `dY/dX =` is accepted though the guide's syntax refuses it; systems of ODEs are
+    not supported (nor in the reference software).
   - Per-data-set lines: a parameter that a data set's Y doesn't use is held at its initial value
-    for that data set; Prism's handling isn't documented.
-  - Rule vocabulary: the guide never publishes the whole list; we offer the documented rules
-    (and Prism 3's YMAX − YMIN, XMAX − XMIN) plus division; "Mean of column titles" is left out.
+    for that data set; the reference software's handling isn't documented.
+  - Rule vocabulary: the guide never publishes the whole list; we offer the documented rules (and an
+    early version's YMAX − YMIN, XMAX − XMIN) plus division; "Mean of column titles" is left out.
     Slope rules use one mean Y per distinct X as "points".
   - Built-in equations: "EC50 shift, X is concentration" uses EC50Control·EC50Ratio (the guide
     prints +); the damped sine's missing parenthesis is closed; "Two sites — Fit logIC50" as in
@@ -3820,14 +3823,14 @@ with ties (shift algorithm).
     equation printed in the guide) are left out.
   - Operational model partial agonist: KA and tau fit per partial agonist, EC50 for data set A
     only; Effectmax, Basal, n shared.
-  - Simulations: Prism's random numbers (Numerical Recipes RAN3/GASDEV) aren't reproduced — ours
-    follow the same distributions; the arithmetic series includes the first X ≥ the end; a
-    geometric series needs a first X > 0 and a ratio > 1; outliers are drawn among values that
-    aren't blank; the t and Lorentzian errors are scaled by the SD entered; contingency designs
-    fix margins as described (Prism's dialog wording is our only source).
-  - Monte Carlo: summaries (mean, SD, SEM, 2.5th/50th/97.5th percentiles by R type 6, fraction
-    of P values below α) are ours — Prism leaves them to further analyses of the table; the CI of
-    the fraction of hits is Wilson/Brown.
+  - Simulations: the reference software's random numbers (Numerical Recipes RAN3/GASDEV) aren't
+    reproduced — ours follow the same distributions; the arithmetic series includes the first X ≥
+    the end; a geometric series needs a first X > 0 and a ratio > 1; outliers are drawn among values
+    that aren't blank; the t and Lorentzian errors are scaled by the SD entered; contingency designs
+    fix margins as described (its dialog wording is our only source).
+  - Monte Carlo: summaries (mean, SD, SEM, 2.5th/50th/97.5th percentiles by R type 6, fraction of P
+    values below α) are ours — the reference software leaves them to further analyses of the table;
+    the CI of the fraction of hits is Wilson/Brown.
 
 - **Checked against a published paper** (Phase 9): `packages/analyses/test/published.test.ts`
   reproduces P values printed in Stucchi et al., Nature Immunology 2026 (CC BY source data)
@@ -3839,55 +3842,57 @@ with ties (shift algorithm).
   importer: of 68 printed values 40 match the legend's test, 6 match another standard test, and 22
   none (spot checks in R agree with us); its weight curves are analysed in a way the legend doesn't
   state.
-- **ANOVA conventions to verify against Prism** (Phase 3):
-  - Two-way "compare every cell with every other" (Prism's "regardless of rows and columns"):
+- **ANOVA conventions to verify against reference software** (Phase 3):
+  - Two-way "compare every cell with every other" ("regardless of rows and columns"):
     one family of all R×C cells, Tukey's k = R·C, Šídák over R·C(R·C − 1)/2 comparisons;
     Dunnett's control is the first cell. Not offered with repeated measures.
-  - Two-way comparisons: family = each row (column) by default, per the Prism 8+ guide
-    ("one family per row … recommended"); "one family for all comparisons" widens Šidák/
-    Bonferroni/Holm/Fisher/FDR only — Tukey/Dunnett stay per row because Prism's pooling of their
-    distributions across rows is undocumented.
+  - Two-way comparisons: family = each row (column) by default, per the guide (version 8 on) ("one
+    family per row … recommended"); "one family for all comparisons" widens Šidák/
+    Bonferroni/Holm/Fisher/FDR only — Tukey/Dunnett stay per row because the reference software's
+    pooling of their distributions across rows is undocumented.
   - Main-effect comparisons use least-squares marginal means with n_eff = k² / Σ 1/n.
   - Additive-model (no interaction) comparisons: fitted vs observed cell means (oracle covers only
     the interaction model).
-  - Games-Howell / T3 / T2 report t (Prism's guide); Tukey reports q.
+  - Games-Howell / T3 / T2 report t (as the guide does); Tukey reports q.
   - Brown-Forsythe ANOVA denominator df: original formula, not Mehrotra's.
-  - Kruskal-Wallis P from chi-square (Prism may give exact P for small samples).
+  - Kruskal-Wallis P from chi-square (other software may give exact P for small samples).
   - BKY q-value capping at 1; significance is `p < alpha`.
-- **Grouped-table conventions to verify against Prism** (Phase 11):
-  - Multiple t tests: rows whose test can't be computed (too few values, SD 0 — "Prism counts
-    only rows where t tests could be computed") are listed as not analyzed and left out of the
+- **Grouped-table conventions to verify against reference software** (Phase 11):
+  - Multiple t tests: rows whose test can't be computed (too few values, SD 0 — the guide counts
+    "only rows where t tests could be computed") are listed as not analyzed and left out of the
     family; with the consistent SD a row with one value per group is still tested. Which rows
-    enter Prism's pooled SD is not documented (here: every row with a value in each group).
-  - Default order of subtraction (first − second) and whether Prism's multiple Mann-Whitney
-    reports the difference of medians (as here) or the Hodges-Lehmann estimate.
+    enter the guide's pooled SD is not documented (here: every row with a value in each group).
+  - Default order of subtraction (first − second) and whether the reference software's multiple
+    Mann-Whitney reports the difference of medians (as here) or the Hodges-Lehmann estimate.
   - Discoveries: the FDR procedure at Q, so p on the boundary counts (≤); significance: adjusted
     P < α. BKY's estimated true nulls = m − r₁ at Q/(1 + Q).
   - Multiple one-way ANOVAs: each row is its own family; a row missing a data set is skipped.
-  - Three-way ANOVA: factor names, the order Prism lists the seven effects, and Tukey's k for
-    "all cells" (here k = 4·rows). The "each mean in row 1 vs. the one below" family is missing.
-  - Effect sizes: partial ω² (Olejnik & Algina) is ours (Prism 11 lists η², partial η², f); Cohen's
+  - Three-way ANOVA: factor names, the order the reference software lists the seven effects, and
+    Tukey's k for "all cells" (here k = 4·rows). The "each mean in row 1 vs. the one below" family
+    is missing.
+  - Effect sizes: partial ω² (Olejnik & Algina) is ours (the guide lists η², partial η², f); Cohen's
     d with Welch's test uses the pooled SD; Hedges' J exact; Glass's Δ uses column A as control;
     paired d uses the SD of the differences (d_z).
-  - Newman-Keuls: our step-down P (Prism reports none) and q = √2·diff/SE.
+  - Newman-Keuls: our step-down P (the reference software reports none) and q = √2·diff/SE.
   - Test for trend: slope unweighted, SS/P weighted by n (per the guide's wording); nonlinear
     variation shown from four groups.
   - Row statistics from summary data combine cells into the statistics of the pooled values;
     fraction of total treats each replicate subcolumn as a column and uses entered means for
     summary data.
-- **Data processing, outliers and nested conventions to verify against Prism** (Phase 13):
+- **Data processing, outliers and nested conventions to verify against reference software** (Phase
+  13):
   - Transform: X is transformed with the original (not transformed) X used by Y = f(X, Y)
     functions; rank ties get the average rank, rank and z score use all values of the data set
     (every replicate); rounding K is truncated to an integer and rounds half away from zero on
     the number as written in decimal, as spreadsheets (round(1.005, 2) = 1.01; audit 2);
-    arcsin √Y is ours (not in Prism's list); Y + random, user-defined equations, X ↔ Y
+    arcsin √Y is ours (not in the guide's list); Y + random, user-defined equations, X ↔ Y
     interchange and the linearizing plots (Scatchard, Lineweaver-Burk …) are not offered.
   - Summary data: SD/SEM scaled for linear transforms; other transforms keep the means only
-    (Prism can also convert to an asymmetric CI and transform its ends).
+    (the reference software can also convert to an asymmetric CI and transform its ends).
   - Normalize: with replicates, 0% / 100% come from the row means (as the guide says); "sum"
     and "mean" are of the row means; the entered 0% / 100% apply to every data set.
   - Remove baseline: replicate handling (baseline row mean vs. the matching replicate) and the
-    exact list of column-math operations Prism offers.
+    exact list of column-math operations the reference software offers.
   - Frequency distribution: our reading of FAQ 1660's "nice" width (6.24 → 6.2, 3.7 → 3.5) and
     the automatic first bin centre (not documented); relative frequencies divide by the values
     tabulated, not by all values; no exact (unbinned) cumulative distribution yet.
@@ -3900,18 +3905,18 @@ with ties (shift algorithm).
     gives only critical values); the tested value is the one farthest from the mean; default
     α 0.05.
   - ROUT on column data: the robust fit is started at the median; the RSDR percentile is type 6;
-    "the 30% largest residuals" is ⌊0.3N⌋ (at least one); P < Q·j/N (strict). GraphPad publishes
+    "the 30% largest residuals" is ⌊0.3N⌋ (at least one); P < Q·j/N (strict). The guide publishes
     no numeric worked example, so these are checked only against our own R reimplementation
     (`tools/oracle/r/outliers.R`) and on clear-cut data (masking pair found, none in Gaussian data).
-  - Nested: containment df (subcolumns − groups; SAS's default for FAQ 2105's code); which test
-    of the nested factor Prism shows (here both the classical F test of subcolumns within groups
-    and the REML likelihood-ratio χ², df 1); ICC = σ²_sub / (σ²_sub + σ²_res); no R² reported;
-    one value per subcolumn is fitted without the random effect.
-- **Survival and contingency conventions to verify against Prism** (Phase 4):
-  - Kaplan-Meier: Greenwood SE; asymmetric CI = log-log (as the guide says); at S = 0 we report
-    SE 0 and CI [0, 0] (R gives NA). Median CI: Brookmeyer-Crowley with the complementary log-log
-    transform (Prism 10.5+), whatever the curve's CI method; check curves that reach 0 or sit flat
-    at ½ on a CI curve.
+  - Nested: containment df (subcolumns − groups; SAS's default for FAQ 2105's code); which test of
+    the nested factor the reference software shows (here both the classical F test of subcolumns
+    within groups and the REML likelihood-ratio χ², df 1); ICC = σ²_sub / (σ²_sub + σ²_res); no R²
+    reported; one value per subcolumn is fitted without the random effect.
+- **Survival and contingency conventions to verify against reference software** (Phase 4):
+  - Kaplan-Meier: Greenwood SE; asymmetric CI = log-log (as the guide says); at S = 0 we report SE 0
+    and CI [0, 0] (R gives NA). Median CI: Brookmeyer-Crowley with the complementary log-log
+    transform (as the guide does from version 10.5), whatever the curve's CI method; check curves
+    that reach 0 or sit flat at ½ on a CI curve.
   - Gehan-Breslow-Wilcoxon: weight = number at risk, hypergeometric covariance (SAS "Wilcoxon");
     the guide only cites Machin eq. 10.2. Check 3+ groups, and the trend test ((c'U)²/c'Vc, scores
     1..k).
@@ -3919,11 +3924,12 @@ with ties (shift algorithm).
   - Yates' correction is not capped at |O − E| (the guide says so; R caps it).
   - Odds-ratio CI: Baptista-Pike taken as the interval matching Fisher's sum-of-small-P test
     (limits on a jump, e.g. [[7,3],[2,8]] gives 0.99999998). RR: Koopman score; difference:
-    Newcombe hybrid score *with* continuity correction (Prism's recommendation).
+    Newcombe hybrid score *with* continuity correction (the guide's recommendation).
   - Wilson/Brown proportion CIs: Poisson lower bound for x = 1, 2 (x = 3 when n > 50); check n = 50
     and x = n ≤ 2.
   - NNT when its CI passes through infinity (shown as two open ranges).
-- **Normality / nonparametric / correlation conventions to verify against Prism** (Phase 4):
+- **Normality / nonparametric / correlation conventions to verify against reference software**
+  (Phase 4):
   - Spearman CI: Fisher z with SE √(1.06/(n − 3)) (Zar); no CI for n ≤ 10. Exact P for n ≤ 17
     (all n! pairings, ties included), t approximation above; one-sided exact P.
   - Two-sample KS: exact when C(n₁+n₂, n₁) < 60 000 (the guide's size list says (2, 346), the
@@ -3932,39 +3938,41 @@ with ties (shift algorithm).
   - Friedman statistic is tie-corrected (as `friedman.test`); exact P when (k!)ⁿ ≤ 1e9. Dunn after
     Friedman: z on mean ranks, SE √(k(k+1)/(6n)), no tie correction, P × number of comparisons.
   - Anderson-Darling P formula (D'Agostino & Stephens 1986, as nortest); reports A²*.
-  - D'Agostino-Pearson: which skewness/kurtosis Prism shows beside K² (we keep √b1 and b2 − 3).
+  - D'Agostino-Pearson: which skewness/kurtosis the reference software shows beside K² (we keep √b1
+    and b2 − 3).
   - KS normality: P above 0.10 is shown as "> 0.10"; Shapiro-Wilk P for n = 4–11.
-- **Repeated measures / mixed-effects conventions to verify against Prism** (Phase 6):
-  - Mixed-model F-test denominator df: we use containment (SAS PROC MIXED's default for the code
-    GraphPad publishes); Satterthwaite is available in the stats API. The key open item.
-  - Geisser-Greenhouse for mixed fits: Prism applies it but doesn't say how ε is estimated with
+- **Repeated measures / mixed-effects conventions to verify against reference software** (Phase
+  6):
+  - Mixed-model F-test denominator df: we use containment (SAS PROC MIXED's default for the
+    published SAS code); Satterthwaite is available in the stats API. The key open item.
+  - Geisser-Greenhouse for mixed fits: the guide applies it but doesn't say how ε is estimated with
     missing values; we report uncorrected mixed-model F tests.
   - Random effects when both factors are repeated: subject, subject × row, subject × column
-    (Prism's published SAS/R code).
+    (the published SAS/R code).
   - Comparisons: pooled MS_residual when sphericity is assumed, paired t (df n − 1) per comparison
     with GG (one-way); pooled error terms (two-way); df for comparing groups at one time point;
     Dunnett after the paired option and after mixed fits (approximate correlation structure).
   - Two-way Subjects F (MS_subjects / MS_residual); mixed-model "matching effective?" χ² df;
     whether ε is shown when sphericity is assumed; main-effects-only RM designs are fit as mixed
     models.
-- **Regression conventions to verify against Prism** (Phase 6):
+- **Regression conventions to verify against reference software** (Phase 6):
   - Logistic: Hosmer-Lemeshow with 10 equal-size groups (boundaries ⌊g·n/10⌋, ties in row order),
     df = 8; AUC SE (Hanley-McNeil with data Q1/Q2) and CI (± z·SE, clipped to [0, 1]); AICc; VIF;
     models without an intercept (null model p = ½).
-  - Profile-likelihood CIs (logistic and Cox) on the same data as Prism.
-  - Cox ties: Prism uses the exact method and switches to Efron when ties are many (threshold
+  - Profile-likelihood CIs (logistic and Cox) on the same data as the reference software.
+  - Cox ties: the guide uses the exact method and switches to Efron when ties are many (threshold
     undocumented); we offer Efron (default) and Breslow. Cox pseudo R² is not reported.
   - Multiple linear without an intercept: centred R², F test against Y = 0.
-  - What Prism shows for separation, divergent Cox fits, and collinear designs.
-- **PCA / ROC / Bland-Altman conventions to verify against Prism** (Phase 6):
+  - What the reference software shows for separation, divergent Cox fits, and collinear designs.
+- **PCA / ROC / Bland-Altman conventions to verify against reference software** (Phase 6):
   - ROC: area CI truncated at 1; which threshold rows appear with ties, and their order; SE with
     heavy ties.
   - Bland-Altman: ratio and % difference limits computed without logs; limits use 1.96 exactly
-    (as Prism's sample output shows).
+    (as the guide's sample output shows).
   - PCA: eigenvector signs (we make each eigenvector sum positive); parallel-analysis percentile
     definition (type 6) and whether components are kept past the first that fails.
-- **Statistics additions to verify against Prism** (roadmap 18):
-  - Contingency: Prism's guide documents no comparisons within larger tables; ours test each
+- **Statistics additions to verify against reference software** (roadmap 18):
+  - Contingency: the guide documents no comparisons within larger tables; ours test each
     pair of rows on its own 2 × c table with the main test and correct with Bonferroni (default),
     Holm-Šídák or Šídák; the control is a chosen row. Phi is unsigned (|ad − bc|/√…) and uses the
     uncorrected χ²; Cramér's V likewise.
@@ -3975,46 +3983,47 @@ with ties (shift algorithm).
     from that SE (equal to the correlation's); λ = (SD_X/SD_Y)²; no R².
   - Simple logistic: CIs profile likelihood by default (as multiple logistic); X at 50% without
     a CI; ROC from the fitted probabilities.
-  - Poisson: which CIs Prism uses (Wald here), and its dispersion φ (Pearson χ²/(n − k) here);
-    AICc from the full likelihood (with −log y!).
+  - Poisson: which CIs the reference software uses (Wald here), and its dispersion φ (Pearson χ²/(n
+    − k) here); AICc from the full likelihood (with −log y!).
   - Linear regression through a point: the intercept is y₀ − slope·x₀ (no SE), the X intercept
-    x₀ − y₀/slope; no R² for any constrained line (Prism's linear regression reports none).
-  - Nonlinear: 1/X and 1/X² use the X of the point; with 1/SD² each replicate takes its row's SD
-    (a row with fewer than two different values is an error), summary data their entered SD; the
-    prediction band with 1/X, 1/X² uses the weight at the band's X and is replaced by the
-    confidence band with 1/SD²; Hougaard's skewness of weighted fits holds the weights at the
-    solution (Prism 8 computes it, method undocumented); the weighting test uses Spearman's P
-    (exact for n ≤ 17); "compare one parameter" shares it (global fit) in the null model;
-    different equations per data set are separate fits (no parameter shared across equations).
+    x₀ − y₀/slope; no R² for any constrained line (as the guide's linear regression).
+  - Nonlinear: 1/X and 1/X² use the X of the point; with 1/SD² each replicate takes its row's SD (a
+    row with fewer than two different values is an error), summary data their entered SD; the
+    prediction band with 1/X, 1/X² uses the weight at the band's X and is replaced by the confidence
+    band with 1/SD²; Hougaard's skewness of weighted fits holds the weights at the solution (the
+    guide computes it from version 8, method undocumented); the weighting test uses Spearman's P
+    (exact for n ≤ 17); "compare one parameter" shares it (global fit) in the null model; different
+    equations per data set are separate fits (no parameter shared across equations).
   - Two intersecting lines: initial values ours (crossing at the middle of the X and Y ranges,
     each data set's own slope).
   - QQ plot: percentiles (i − 0.5)/n, the data's mean and SD; lognormal when only lognormality is
     tested.
   - PCA: biplot scaling ("the loadings are scaled to 90% of the PC scores") read as the largest
     loading coordinate becoming 90% of the largest absolute score on PC1/PC2; PCR's
-    back-converted coefficients get SEs from the linear map (Prism shows estimates).
-  - Fit spline/LOWESS: Prism's coarse / medium / fine spans (ours 2/3, 1/3, 0.1), its knot
+    back-converted coefficients get SEs from the linear map (the guide shows estimates).
+  - Fit spline/LOWESS: the guide's coarse / medium / fine spans (ours 2/3, 1/3, 0.1), its knot
     placement for smoothing splines (ours: equally spaced, natural cubic, least squares),
     robustness iterations of LOWESS (3, as R), and the curve of interpolating splines through the
     mean Y at each X.
-- **Multiple-variables statistics to verify against Prism** (roadmap 19):
-  - Regression ANOVA table: Type III by dropping a term's dummy columns (treatment coding), so
-    main effects involved in an interaction are tested at the reference level (or at 0 for a
-    continuous partner); Prism may code or centre differently. Whether Prism shows a Regression
+- **Multiple-variables statistics to verify against reference software** (roadmap 19):
+  - Regression ANOVA table: Type III by dropping a term's dummy columns (treatment coding), so main
+    effects involved in an interaction are tested at the reference level (or at 0 for a continuous
+    partner); the reference software may code or centre differently. Whether it shows a Regression
     row, and which per-variable test logistic / Poisson / Cox report (ours: likelihood ratio).
   - Level order and labels of numeric variables used as factors (`String(value)`, first
     appearance); frequency ties in the most/least-frequent rules (earlier level); models without
     an intercept keep dropping the reference column.
-  - Prediction: CIs of predicted probabilities and counts on the link scale (Wald); blank
-    numeric predictors of a point take the mean (Prism's Interpolation tab offers other choices).
+  - Prediction: CIs of predicted probabilities and counts on the link scale (Wald); blank numeric
+    predictors of a point take the mean (the reference software's Interpolation tab offers other
+    choices).
   - Multifactor ANOVA: default terms (every two- and three-way interaction, as the guide lists
     what is tested); Tukey's k for simple effects as one family (LA·LB) and for cells; EMM
     weighting (equal); no Dunnett or Newman-Keuls; which of η², partial η², Cohen's f, % of total
-    Prism shows per term.
+    the reference software shows per term.
   - Survival from variables: group titles (levels joined by ", ") and order (levels in table
     order, first variable slowest); a text status with no censored value chosen counts every other
-    value as censored; one status variable only (Prism allows several).
-  - Cox curves: the Kalbfleisch–Prentice baseline at predictors 0 matches Prism's description
+    value as censored; one status variable only (the reference software allows several).
+  - Cox curves: the Kalbfleisch–Prentice baseline at predictors 0 matches the guide's description
     ("the product of alpha values"); Breslow-type baselines would differ with ties.
   - Three-way RM: effect names and order; containment df with missing values (sequential rank
     contribution); GG ε per stratum; no multiple comparisons yet.

@@ -18,7 +18,7 @@ whether it affects the web app, the desktop app or both (with your browser or op
 ## What's in scope
 
 - **Malicious files:** a project, preset, style, method or template file, or an imported data
-  file (CSV, TSV, Excel, Prism `.pzfx`), that runs code, reads or changes files it shouldn't, sends
+  file (CSV, TSV, Excel, `.pzfx`), that runs code, reads or changes files it shouldn't, sends
   data anywhere, or crashes or hangs the app in a way that loses work.
 - **Bypassing the security policy:** any way to make the app load scripts or connect to another
   site despite its Content-Security-Policy (for example through text, labels, images or SVG in a

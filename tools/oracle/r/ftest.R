@@ -1,4 +1,4 @@
-# F test for equality of two variances. Prism's convention: F = larger variance / smaller,
+# F test for equality of two variances. Convention: F = larger variance / smaller,
 # DFn from the group with the larger variance, two-sided P. R's var.test(a, b) uses
 # var(a)/var(b); its two-sided P, 2 * min(P(F' <= F), P(F' >= F)), is the same either way
 # round, which the oracle asserts.

@@ -18,8 +18,8 @@ import { TAWK_FILES } from './tawkData.ts'
  * (`tawkData.ts`, the source-data sheets' cells as CSV), so the example is part of every build,
  * loaded when first opened. It is built as the local papers are (`buildPaper`): each panel's table
  * imported from its file as a user would, the analyses the legends name (or the ones the source
- * data's Prism results show were run), and a page per figure. Besides the stars in the figures,
- * the P values in the source data (Prism's results pasted beside the values) are checked against
+ * data's pasted results show were run), and a page per figure. Besides the stars in the figures,
+ * the P values in the source data (results pasted beside the values) are checked against
  * the app's.
  */
 
@@ -168,7 +168,7 @@ function barPlot(
 
 const range = (from: number, n: number) => Array.from({ length: n }, (_, i) => from + i)
 
-/** Rows in reverse order (Prism draws a horizontal graph's first row at the bottom). */
+/** Rows in reverse order (the figures draw a horizontal graph's first row at the bottom). */
 const reversedRows = (why: string): NonNullable<Panel['edit']> => ({
   describe: `Rows in reverse order, so that ${why}.`,
   apply: (t) => {
@@ -286,7 +286,7 @@ function perRow(o: {
 }
 
 const LOG_WHY =
-  'the legend names unpaired two-sided t tests; the P values in the source data are Prism’s lognormal multiple t tests (t tests of log10 values, an SD per row): R’s t.test of log10 values reproduces them, with Prism leaving zeros out of the test.'
+  'the legend names unpaired two-sided t tests; the P values in the source data are lognormal multiple t tests (t tests of log10 values, an SD per row): R’s t.test of log10 values reproduces them, with zeros left out of the test.'
 
 /** Figures 1b and 1e: counts printed in the figure (not in the source data). */
 const PRINTED_FILES: Record<string, string> = {
@@ -579,7 +579,7 @@ export const TAWK: PaperSpec = {
           test: 'Welch’s t test of the sheet’s logFC',
           params: { unpaired: { assumeEqualSD: false } },
           dataSets: ['WT logFC (sheet)', 'ΔsusC1Ara logFC (sheet)'],
-          why: 'the source data’s Prism result (Welch’s test, P = 0.0043) is of the sheet’s logFC columns; with the log10 of the deposited fold changes Welch’s test gives 0.0085.',
+          why: 'the source data’s pasted result (Welch’s test, P = 0.0043) is of the sheet’s logFC columns; with the log10 of the deposited fold changes Welch’s test gives 0.0085.',
           brackets: 'none',
           printed: [{ a: 'WT logFC (sheet)', b: 'ΔsusC1Ara logFC (sheet)', p: '0.0043' }],
         },
@@ -738,7 +738,7 @@ export const TAWK: PaperSpec = {
         differs: {
           p: {
             '+Collinsella':
-              'Welch’s test of the deposited values gives 0.014967 (R’s t.test as well): the values Prism tested differ slightly from the deposited ones (the other rows agree to six digits).',
+              'Welch’s test of the deposited values gives 0.014967 (R’s t.test as well): the values the source data tested differ slightly from the deposited ones (the other rows agree to six digits).',
           },
           adjusted: {
             '+Collinsella':
@@ -819,14 +819,14 @@ export const TAWK: PaperSpec = {
       file: 'Fig3G.csv',
       sheet: 'Fig3G',
       legend:
-        'S. copri relative abundance in competitions with the 6 Bacteroidaceae with or without E. coli Nissle, in mGAM with the different sugars (n = 3); *P < 0.0001 by two-way ANOVA with Dunnett’s correction. The source data’s Prism results are Šídák’s comparisons.',
+        'S. copri relative abundance in competitions with the 6 Bacteroidaceae with or without E. coli Nissle, in mGAM with the different sugars (n = 3); *P < 0.0001 by two-way ANOVA with Dunnett’s correction. The source data’s pasted results are Šídák’s comparisons.',
       edit: reversedRows('mGAM is the first (control) row and on top, as the figure'),
       analyses: [
         {
           analysis: 'twoWayAnova',
           test: 'Two-way ANOVA, Šídák vs mGAM within each column',
           params: vsFirstRow('sidak'),
-          why: 'the source data’s Prism results are Šídák’s comparisons (the legend says Dunnett’s).',
+          why: 'the source data’s pasted results are Šídák’s comparisons (the legend says Dunnett’s).',
           brackets: 'none',
           printed: [
             ...againstControl(
@@ -1093,7 +1093,7 @@ export const TAWK: PaperSpec = {
         sheet: 'Fig4C',
         block: block === 0 ? 0 : 'With E. coli MR102',
         legend:
-          'relative abundance of Segatella spp. in the competitions with Bacteroidaceae with or without E. coli MR102, with or without arabinan; *P < 0.05 from unpaired two-sided t tests with correction for multiple comparisons, n = 3. Rows with a zero (sanihominis; sinensis with E. coli) are tested without it, as Prism (P = 0.696518; 0.120095 and 0.000365). With E. coli the figure marks sinensis (Prism q = 0.0018) but not hominis (q = 0.0040).',
+          'relative abundance of Segatella spp. in the competitions with Bacteroidaceae with or without E. coli MR102, with or without arabinan; *P < 0.05 from unpaired two-sided t tests with correction for multiple comparisons, n = 3. Rows with a zero (sanihominis; sinensis with E. coli) are tested without it, as in the source data (P = 0.696518; 0.120095 and 0.000365). With E. coli the figure marks sinensis (source data q = 0.0018) but not hominis (q = 0.0040).',
         edit: reversedRows('S. copri HDD04 is on top, as the figure'),
         analyses: perRow({
           test: 'Multiple t tests (lognormal)',

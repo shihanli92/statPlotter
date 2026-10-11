@@ -369,7 +369,7 @@ export function createFormattingExample(fonts: FontRegistry): Project {
       'Time (s)',
       [],
       { Data: [] },
-      'No data: the graph plots a user-defined function (Prism’s “Plot a function”), Y = A·exp(−X/Tau)·cos(2π·X/Period), and its envelope.',
+      'No data: the graph plots a user-defined function (“Plot a function”), Y = A·exp(−X/Tau)·cos(2π·X/Period), and its envelope.',
     ),
   )
   b.graph(functionTable, {

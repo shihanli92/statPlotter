@@ -19,11 +19,11 @@ import { exclusionNotes, failure, int, labelTable, missingXNote, num, result } f
 import { xyPointRows } from './curveTools.ts'
 import { buildTable, stableId } from './resultTable.ts'
 
-// "Fit spline/LOWESS" (Prism's Curve Fitting Guide, "Spline and Lowess curves"): a curve without
+// "Fit spline/LOWESS": a curve without
 // a model through or near each data set, drawn on graphs of the table like a fitted curve. There
 // are no parameters to report; an optional table holds the curve's XY coordinates.
 
-/** Share of the points in each local fit for Prism's three LOWESS choices (our values). */
+/** Share of the points in each local fit for the three LOWESS choices (our values). */
 export const LOWESS_SPAN = { coarse: 2 / 3, medium: 1 / 3, fine: 0.1 } as const
 
 const Params = z.object({
@@ -33,7 +33,7 @@ const Params = z.object({
   lowess: z.enum(['coarse', 'medium', 'fine']).default('medium'),
   /** Knots of the smoothing spline, the two ends included. */
   knots: z.number().int().min(2).max(50).default(5),
-  /** Line segments of the curve (at least 4 per data point, as Prism). */
+  /** Line segments of the curve (at least 4 per data point). */
   segments: z.number().int().min(10).max(10000).default(200),
   /** A result table with the XY coordinates of each curve. */
   table: z.boolean().default(false),
@@ -184,7 +184,7 @@ export const smoothingDef: AnalysisDef<Params> = {
     if (params.method === 'lowess' && curves.some((c) => c.n < 20))
       diagnostics.push({
         level: 'info',
-        message: 'LOWESS curves are only meaningful with well over twenty points (Prism’s advice).',
+        message: 'LOWESS curves are only meaningful with well over twenty points.',
       })
     const outputs: AnalysisResult['outputs'] = {}
     for (const c of curves)

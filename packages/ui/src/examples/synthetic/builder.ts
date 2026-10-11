@@ -260,7 +260,7 @@ export function flatTable(
 }
 
 /**
- * A survival table in Prism's layout: one subject per row, the time in X and the subject's code
+ * A survival table in the usual layout: one subject per row, the time in X and the subject's code
  * (1 = event, 0 = censored) in its group's column.
  */
 export function survivalTable(

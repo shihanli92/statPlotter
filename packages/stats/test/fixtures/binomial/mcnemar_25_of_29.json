@@ -1,5 +1,5 @@
 {
-  "name": "mcnemar_prism",
+  "name": "mcnemar_25_of_29",
   "input": {"k":25,"n":29,"p0":0.5},
   "params": {"fn":"binomial"},
   "expected": {

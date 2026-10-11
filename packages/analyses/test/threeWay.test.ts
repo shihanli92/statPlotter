@@ -14,7 +14,7 @@ interface Expected {
   vsControl?: Cmp
 }
 
-/** Prism's layout: row = factor A level; data set = 2·B + C. */
+/** The 2 × 2 × k layout: row = factor A level; data set = 2·B + C. */
 function tableOf(cells: Cells) {
   const R = Math.max(...cells.map((c) => c.levels[0]!)) + 1
   const grid: number[][][] = Array.from({ length: R }, () => [[], [], [], []])

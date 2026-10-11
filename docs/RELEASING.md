@@ -210,7 +210,7 @@ After installing from the first release on each system:
 2. Double-click a `.psproj` in the Finder / Explorer with the app closed: it opens that project
    (not the last one). With the app open and unsaved changes: it asks first.
 3. Right-click a `.csv` › Open With › statPlotter: the import dialog. Same for `.xlsx` and
-   a `.pzfx` (the Prism dialog). The `.csv`'s default app is unchanged.
+   a `.pzfx` (the .pzfx import dialog). The `.csv`'s default app is unchanged.
 4. Double-click a `.psstyle` / `.pspreset`: "added to your styles / presets".
 5. Preferences › Colours › Dark: the window's title bar turns dark too (macOS, Windows 11).
 6. Preferences › Updates: "Updates aren't set up for this build" until the key is set up; after,

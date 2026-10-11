@@ -3369,7 +3369,7 @@
      ]
     }
    ],
-   "notes": "Indicator concentration after a bolus, every 1.5 s. The gamma-variate model is a user-defined equation using Prism’s gamma() function: Y = A·X^(B−1)·exp(−X/C)/(gamma(B)·C^B), with A the area under the curve. Simulated with A = 800, B = 3.5, C = 3 s."
+   "notes": "Indicator concentration after a bolus, every 1.5 s. The gamma-variate model is a user-defined equation using the gamma() function: Y = A·X^(B−1)·exp(−X/C)/(gamma(B)·C^B), with A the area under the curve. Simulated with A = 800, B = 3.5, C = 3 s."
   },
   "zid000087": {
    "kind": "graph",

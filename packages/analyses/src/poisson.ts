@@ -27,7 +27,7 @@ import {
 } from './mvVariables.ts'
 import { coefColumns, coefRows, hasTerms, lrTermBlock, model, roles, subset } from './regression.ts'
 
-// Poisson regression on a multiple-variables table (Prism's multiple regression dialog with
+// Poisson regression on a multiple-variables table (the multiple regression dialog with
 // "Poisson" chosen): Y is a count, log E[Y] = β0 + Σβⱼ Xⱼ, fit by maximum likelihood.
 
 const Params = z.object({

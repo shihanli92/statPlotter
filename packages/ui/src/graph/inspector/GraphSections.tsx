@@ -147,7 +147,7 @@ export function ArrangementSection({ ctx }: { ctx: PanelContext }) {
   )
 }
 
-/** Plot-area size (Prism's axis lengths) and the scale of text and marks (roadmap 23). */
+/** Plot-area size (the axis lengths) and the scale of text and marks (roadmap 23). */
 export function SizeSection({ ctx }: { ctx: PanelContext }) {
   const { graph, set } = ctx
   const scale = graphScale(graph)
@@ -676,7 +676,7 @@ export function DataSetsSection({ ctx }: { ctx: PanelContext }) {
   )
 }
 
-/** Functions plotted on an XY graph (Prism's "Plot a function"), and adding one. */
+/** Functions plotted on an XY graph ("Plot a function"), and adding one. */
 export function FunctionsSection({ ctx }: { ctx: PanelContext }) {
   const { graph } = ctx
   if (graph.frame !== 'xy') return null

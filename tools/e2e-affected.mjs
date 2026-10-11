@@ -27,6 +27,8 @@ const GRAPH = [
   'export',
   'figureExport',
   'format',
+  // Decision 1212: the Format panel's Open in window, its pop-ups inside the modal dialog.
+  'formatWindow',
   'graphBuilder',
   'graphTypes',
   'graphs',
@@ -149,7 +151,7 @@ const RULES = [
   ['packages/io/src/', ['import', 'dataExport', 'files', 'tables']],
   ['packages/ui/src/export/', ['export', 'figureExport', 'dataExport']],
   ['packages/ui/src/ImportDialog.tsx', ['import', 'importInterop', 'cellsTables', 'accessibility']],
-  // Roadmap 39: dropped files, the Prism import dialog, missing codes and detection limits.
+  // Roadmap 39: dropped files, the .pzfx import dialog, missing codes and detection limits.
   ['packages/ui/src/import/', ['import', 'importInterop', 'cellsTables']],
   ['packages/ui/src/drop/', ['importInterop', 'layoutObjects', 'import', 'files']],
   ['packages/ui/src/LargeImportDialog.tsx', ['largeTables', 'import', 'cellsTables']],
@@ -263,7 +265,7 @@ const RULES = [
   ['packages/ui/src/updates/', ['darkMode', 'styles']],
   [
     'packages/ui/src/richText/',
-    ['richText', 'fontControls', 'format', 'layoutObjects', 'formatBar'],
+    ['richText', 'fontControls', 'format', 'formatWindow', 'layoutObjects', 'formatBar'],
   ],
   // Roadmap 45: the format bar (graph view and pages), the format painter.
   [
@@ -277,6 +279,7 @@ const RULES = [
       'formatPanel',
       'selection',
       'format',
+      'formatWindow',
       'fontControls',
       'richText',
       'layoutObjects',

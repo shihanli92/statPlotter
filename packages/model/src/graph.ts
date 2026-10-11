@@ -187,7 +187,7 @@ export const SeriesStyle = z.object({
     .object({
       /**
        * box: quartiles with whiskers, line at the median. floating: a bar from the minimum to
-       * the maximum with a line at the centre (mean or median; Prism's "floating bars").
+       * the maximum with a line at the centre (mean or median; "floating bars").
        * violin: the kernel density of the values, mirrored (see `violin`).
        */
       kind: z.enum(['box', 'floating', 'violin']),
@@ -465,7 +465,7 @@ export const GraphStyleV1 = z.object({
   /** Fill of the plot area only. */
   plotBackground: FillStyle.optional(),
   bracket: BracketStyle.optional(),
-  /** Column / grouped graphs: gap = categoryGap × a group's width (Prism's convention). */
+  /** Column / grouped graphs: gap = categoryGap × a group's width (the usual convention). */
   categoryGap: z.number().min(0).max(0.9).optional(),
   /**
    * Grouped graphs: data sets side by side within each row ('interleaved', default), or all at
@@ -488,7 +488,7 @@ export const GraphStyleV1 = z.object({
    * Column graphs of data sets with several subcolumns (nested tables: a group's subjects). All
    * optional; absent = today's pooled drawing.
    * - `layout`: a group's values in one column ('pooled') or one narrow column per subject, side
-   *   by side ('subjects', Prism's nested scatter);
+   *   by side ('subjects', the usual nested scatter);
    * - `mark`: subjects told apart by symbol shape, by a shade of the group's colour, or not;
    * - `subjectMeans`: a short line at each subject's mean.
    */
@@ -832,7 +832,7 @@ export function annotationEnds(e: LineEnds): Pick<LineAnnotation, 'arrow' | 'hea
 }
 
 /**
- * A function plotted on an XY graph (Prism's "Plot a function"): a built-in equation (its id) or
+ * A function plotted on an XY graph ("Plot a function"): a built-in equation (its id) or
  * a user-defined one (`equation` 'user', text in `userEquation`), with parameter values by name,
  * evaluated over the X range (absent ends: the X axis' range) at `points` X values.
  */

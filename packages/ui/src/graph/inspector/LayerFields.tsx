@@ -1112,7 +1112,7 @@ const LABEL_VALUES = [
   { value: 'sem', label: 'SEM' },
 ] as const
 
-/** A number above each bar or column (Prism's bar labels): what, where and in which format. */
+/** A number above each bar or column (bar labels): what, where and in which format. */
 function LabelFields({ e }: { e: LayerEdit }) {
   const { style, layer, ctx } = e
   if (layer.stat.kind === 'fraction') return <SliceLabelFields e={e} />

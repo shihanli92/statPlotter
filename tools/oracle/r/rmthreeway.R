@@ -1,5 +1,5 @@
 # Three-way (2 x 2 x k) ANOVA with repeated measures, and the mixed-effects model for missing
-# values (Prism's three-way ANOVA "Repeated measures design" tab: any factor may be repeated).
+# values (any factor may be repeated).
 #
 # input: y (null = missing), row (0..k-1), col1, col2 (0/1), subject. params: repeated (factor
 # indices: 0 row, 1 column factor 1, 2 column factor 2), method ("anova" | "mixed").
@@ -14,7 +14,7 @@
 # the sequential rank contribution of subject x (E intersect W) to [X Z] (terms ordered with
 # every term after those nested in it), or the residual df when E contains every repeated factor.
 # Cross-checks: lmer logLik (1e-7 abs), lmerTest F (1e-5).
-# RM ANOVA also gives Prism's effect sizes (eta^2, partial eta^2 against the effect's own error
+# RM ANOVA also gives the effect sizes (eta^2, partial eta^2 against the effect's own error
 # term, Cohen's f).
 
 source(file.path(ORACLE_DIR, "ref_rm.R"))
@@ -84,9 +84,8 @@ oracle <- function(input, params) {
         }
       }
     }
-    # Effect sizes as Prism reports them for RM designs (Statistics Guide, "Understanding ANOVA
-    # effect sizes"): eta^2 = SS / SS_total, partial eta^2 = SS / (SS + SS of the error term the
-    # effect is tested against), Cohen's f = sqrt(pe / (1 - pe)).
+    # Effect sizes for RM designs: eta^2 = SS / SS_total, partial eta^2 = SS / (SS + SS of the
+    # error term the effect is tested against), Cohen's f = sqrt(pe / (1 - pe)).
     sst <- sum((d$y - mean(d$y))^2)
     for (j in seq_along(effects)) {
       e <- effects[[j]]

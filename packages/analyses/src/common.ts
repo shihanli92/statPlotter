@@ -106,7 +106,7 @@ export const CONFIDENCE_FIELD = {
 } as const
 
 /**
- * Prism's one-tailed P assumes the direction you predicted is the one observed, so the
+ * A one-tailed P assumes the direction you predicted is the one observed, so the
  * alternative follows the sign of the observed effect.
  */
 export function alternativeFor(
@@ -263,7 +263,7 @@ export const comparisonKey = (a: NormalizedDataSet, b: NormalizedDataSet) =>
   `${a.ref.key}|${b.ref.key}`
 
 /**
- * XY data as (x, y) points, each replicate its own point (Prism's default for regression). Rows
+ * XY data as (x, y) points, each replicate its own point (the default for regression). Rows
  * without an X, and missing/excluded Y values, are skipped. Summary data contributes its means.
  */
 export function xyPoints(ds: NormalizedDataSet): { x: Float64Array; y: Float64Array } {

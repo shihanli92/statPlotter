@@ -4,7 +4,7 @@
  * (2026), https://doi.org/10.1038/s41564-026-02500-6 (CC BY 4.0,
  * https://creativecommons.org/licenses/by/4.0/). Supplementary source data MOESM5–9 (Figs 1–5):
  * the cells of each sheet the rebuilt figures need, as CSV (sheet layout kept: title row, header
- * rows, row titles). Changes: Prism results pasted beside the values left out; non-breaking
+ * rows, row titles). Changes: the results pasted beside the values left out; non-breaking
  * spaces as spaces; Fig. 3D its 20 h columns only; the relative abundances drawn as stacked bars
  * (Figs 1c, 2a, 2d, 3a, 3d, 4a) rounded to 4 significant digits and the heat map's log2 fold
  * changes (Fig. 1d) to 3; the values tested kept as deposited. Generated from the workbooks;

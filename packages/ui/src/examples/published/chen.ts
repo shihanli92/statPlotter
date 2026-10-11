@@ -794,7 +794,7 @@ export const CHEN: PaperSpec = {
           analysis: 'oneWayAnova',
           test: 'One-way ANOVA, Tukey',
           params: { comparisons: 'allPairs', allPairsMethod: 'tukey' },
-          why: 'Tukey’s test (Prism’s default) reproduces both printed values.',
+          why: 'Tukey’s test (the usual default) reproduces both printed values.',
           printed: [
             { a: GFP, b: 'IIV 1ug + IFNb mRNA LNP 3ug', p: '0.0002' },
             { a: GFP, b: 'IIV 1ug + IL21 mRNA LNP 3ug', p: '<0.0001' },

@@ -10,16 +10,15 @@ const NaN_ = Number.NaN
 
 /**
  * Categorical (and continuous) predictors for the regression models of multiple-variables
- * tables (multiple linear, logistic, Poisson and Cox regression), as Prism's multiple regression
+ * tables (multiple linear, logistic, Poisson and Cox regression), as the multiple regression
  * dialogs: a categorical variable with L levels is dummy (indicator, "reference") coded as L − 1
  * columns, one per level other than the reference level (1 in rows at that level, else 0), named
  * `Name[level]`; an interaction of chosen variables is the product of their columns (every
- * combination), named with colons, e.g. `Age:Sex[M]` or `Sex[M]:Arm[B]` — "the interaction term
- * uses the categorical variable's non-reference level" (Prism Curve Fitting Guide, "Choosing a
- * model for multiple regression"). The same coding as R's `model.matrix` with `contr.treatment`
- * and the reference level first.
+ * combination), named with colons, e.g. `Age:Sex[M]` or `Sex[M]:Arm[B]` — the interaction term
+ * uses the categorical variable's non-reference level. The same coding as R's `model.matrix`
+ * with `contr.treatment` and the reference level first.
  *
- * Tests of a whole term (every column of a variable or interaction together, Prism's "ANOVA
+ * Tests of a whole term (every column of a variable or interaction together, the "ANOVA
  * table" of multiple regression):
  * - least squares: Type III F test, the rise in the residual SS when the term's columns are
  *   dropped from the full model (with the other columns as coded), over its df, divided by the
@@ -171,7 +170,7 @@ export interface LinearAnovaTable {
 }
 
 /**
- * Prism's ANOVA table of a multiple linear regression (Type III sums of squares): a fit of the
+ * The ANOVA table of a multiple linear regression (Type III sums of squares): a fit of the
  * full model and one per term without that term's columns. `rss(columns)` returns the residual
  * SS of a least-squares fit on those columns of X (plus the intercept when `intercept`).
  */

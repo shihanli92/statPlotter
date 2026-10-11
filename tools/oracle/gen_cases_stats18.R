@@ -28,7 +28,7 @@ want <- function(s) length(sections) == 0 || s %in% sections
 if (want("contingency_extra")) {
   ce <- function(name, table, params = NULL, note = NULL)
     write_case("contingency_extra", name, list(table = table), params, note = note)
-  ce("t2x2", list(c(76, 399), c(129, 332)), note = "Prism's relative-risk example; phi only.")
+  ce("t2x2", list(c(76, 399), c(129, 332)), note = "The AZT relative-risk example; phi only.")
   ce("t3x2_fisher_bonferroni", list(c(12, 18), c(20, 10), c(28, 4)))
   ce("t3x2_chisq_holm_sidak", list(c(12, 18), c(20, 10), c(28, 4)),
      params = list(test = "chiSquare", method = "holm-sidak"))
@@ -152,7 +152,7 @@ if (want("nlweights")) {
      note = "n = 12: the weighting test's Spearman P is exact.")
   nw("mm_weight_1_over_x", list(list(x = xs, y = ymm)),
      list(equation = "michaelis-menten", constraints = fitc(2), start = list(c(120, 6))),
-     weights = list(1 / xs), note = "Prism's 1/X weighting (fixed point weights).")
+     weights = list(1 / xs), note = "1/X weighting (fixed point weights).")
   nw("mm_weight_1_over_x2", list(list(x = xs, y = ymm)),
      list(equation = "michaelis-menten", constraints = fitc(2), start = list(c(120, 6))),
      weights = list(1 / xs^2))
@@ -163,7 +163,7 @@ if (want("nlweights")) {
   nw("agonist_sd_weights", list(list(x = dose, y = ysd + rnorm(length(dose), 0, sds))),
      list(equation = "agonist-response-variable-slope", constraints = fitc(4),
           start = list(c(5, 95, -6.5, 1.1))),
-     weights = list(1 / sds^2), note = "Prism's 1/SD^2 weighting (SDs entered with the means).")
+     weights = list(1 / sds^2), note = "1/SD^2 weighting (SDs entered with the means).")
   d3 <- lapply(c(-6.8, -6.5, -6.1), function(l)
     list(x = rep(dose, 2), y = r4(rep(dose, 2), c(4, 96, l, 1.2)) + rnorm(2 * length(dose), 0, 3)))
   nw("compare_logec50_separate", d3,

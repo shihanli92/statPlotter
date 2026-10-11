@@ -19,9 +19,9 @@ import {
 
 // Import and interop (roadmap 39): files dropped on the window (a CSV, an XLSX, a project, images
 // on a page and off it, several at once), the user's missing codes and values at detection limits
-// (LOD/2, changed later in Edit › Limits…, marked in the grid, noted on results), and Prism's
-// graphs imported from a .pzfx with a report. Fixtures: apps/e2e/fixtures (growth.csv,
-// two-sheets.xlsx, photo.jpg, micrograph.png, xy-with-exclusions.pzfx: a Prism-made file from the
+// (LOD/2, changed later in Edit › Limits…, marked in the grid, noted on results), and a .pzfx
+// file's graphs imported with a report. Fixtures: apps/e2e/fixtures (growth.csv,
+// two-sheets.xlsx, photo.jpg, micrograph.png, xy-with-exclusions.pzfx: a real .pzfx file from the
 // pzfx R package, MIT).
 
 const FIXTURES = new URL('../fixtures/', import.meta.url)
@@ -248,7 +248,7 @@ test('missing codes and values at detection limits: LOD/2, marked, changed later
   )
 })
 
-test('a Prism file with Import graphs: graphs from its settings, and the report', async ({
+test('a .pzfx file with Import graphs: graphs from its settings, and the report', async ({
   page,
 }) => {
   await dropFiles(page, main(page), [
@@ -256,15 +256,15 @@ test('a Prism file with Import graphs: graphs from its settings, and the report'
   ])
   const d = importDialog(page, 'xy-with-exclusions.pzfx')
   await expect(d).toContainText('1 XY table.')
-  await expect(d).toContainText('1 graph: 1 drawn from Prism’s settings.')
+  await expect(d).toContainText('1 graph: 1 drawn from the file’s settings.')
   await expect(d.getByRole('checkbox', { name: 'Import graphs' })).toBeChecked()
   await d.getByRole('button', { name: 'Import', exact: true }).click()
 
-  const report = dialog(page, 'Prism graphs in “xy-with-exclusions.pzfx”')
-  const lines = report.getByRole('list', { name: 'Prism graph report' }).getByRole('listitem')
+  const report = dialog(page, 'Graphs in “xy-with-exclusions.pzfx”')
+  const lines = report.getByRole('list', { name: 'Graph report' }).getByRole('listitem')
   await expect(lines).toHaveCount(1)
   await expect(lines.first()).toContainText('Data 1 — Read')
-  await expect(lines.first()).toContainText('From Prism: data sets (3)')
+  await expect(lines.first()).toContainText('From the file: data sets (3)')
   await expect(lines.first()).toContainText('Y axis range')
   await expect(lines.first()).toContainText('Default: kind of graph')
   await report.getByRole('button', { name: 'Done' }).click()
@@ -273,7 +273,7 @@ test('a Prism file with Import graphs: graphs from its settings, and the report'
   await sheet(page, 'Data 1', 'Graphs').click()
   const svg = main(page).getByRole('img', { name: 'Graph', exact: true })
   await expect(svg).toBeVisible()
-  // Prism's axis titles of this file ("XX"; "YTitle", Prism's default, shown as Prism showed it).
+  // The file's axis titles ("XX"; "YTitle", a default the file holds, shown as the file shows it).
   await expect(svg).toContainText('XX')
   await expect(svg).toContainText('YTitle')
 })

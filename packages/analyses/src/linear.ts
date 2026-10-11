@@ -54,7 +54,7 @@ const Params = z.object({
   throughPoint: z.boolean().default(false),
   pointX: z.number().default(0),
   pointY: z.number().default(0),
-  /** Fit every replicate Y as its own point (Prism's default), or only the mean Y of each row. */
+  /** Fit every replicate Y as its own point (the default), or only the mean Y of each row. */
   replicates: z.enum(['each', 'mean']).default('each'),
   band: z.enum(['none', 'confidence', 'prediction']).default('none'),
   compare: z.boolean().default(true),
@@ -227,7 +227,7 @@ export const linearRegressionDef: AnalysisDef<Params> = {
               ],
             ] as [string, ResultValue[]][])),
       ]),
-      // Prism reports no R² when the line is constrained (it would be ambiguous).
+      // No R² when the line is constrained (it would be ambiguous).
       labelTable('Goodness of Fit', cols, [
         ...(constrained
           ? []
@@ -280,7 +280,7 @@ export const linearRegressionDef: AnalysisDef<Params> = {
           text: 'The slopes differ, so it is not meaningful to compare intercepts.',
         })
         if (ok.length === 2) {
-          // Where the two lines cross (Prism's guide gives this when the slopes differ).
+          // Where the two lines cross (reported when the slopes differ).
           const [a, b] = [ok[0]!.fit, ok[1]!.fit]
           const xc = (b.intercept - a.intercept) / (a.slope - b.slope)
           compareBlocks.push(

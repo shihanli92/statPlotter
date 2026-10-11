@@ -32,7 +32,7 @@ const SUFFIXES: Record<Exclude<SubcolumnRole, 'value'>, string[]> = {
 interface OurColumn {
   values: FixtureValue[]
   excluded: boolean[]
-  /** Multiply our value by this to get Prism's (CV: fraction → percent). */
+  /** Multiply our value by this to get the file's (CV: fraction → percent). */
   scale: number
 }
 
@@ -197,7 +197,7 @@ describe('pzfx mapping', () => {
     expect(t.x!.title).toBe('XX')
   })
 
-  it('imports date X as Prism’s numbers and keeps the dates as row titles', () => {
+  it('imports date X as the file’s numbers and keeps the dates as row titles', () => {
     const { tables, warnings } = read('x_date.pzfx')
     expect(tables[0]!.x!.subcolumns[0]!.values.slice(0, 2)).toEqual([0, 5.22929500342231])
     expect(tables[0]!.rowTitles!.slice(0, 2)).toEqual(['16-Jan-2004', '9-Apr-2009'])
@@ -416,12 +416,12 @@ describe('pzfx edge cases', () => {
     ])
   })
 
-  it('rejects files that are not Prism XML', () => {
+  it('rejects files that are not .pzfx XML', () => {
     expect(() => readPzfx('<html></html>')).toThrow(ImportError)
     expect(() => readPzfx('<GraphPadPrismFile><Table>')).toThrow(/Malformed XML/)
   })
 
-  it('parses Prism number formats', () => {
+  it('parses .pzfx number formats', () => {
     expect(parsePzfxNumber('1.')).toBe(1)
     expect(parsePzfxNumber('3,25')).toBe(3.25)
     expect(parsePzfxNumber('-1,5E-3')).toBe(-0.0015)

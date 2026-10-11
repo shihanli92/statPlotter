@@ -8,7 +8,7 @@ describe('formatP', () => {
     expect(formatP(0.03456, GP)).toBe('0.0346')
     expect(formatP(0.00001, GP)).toBe('<0.0001')
     expect(formatP(0.0001, GP)).toBe('0.0001')
-    // Rounding up to 1 would overstate it: Prism prints ">0.9999".
+    // Rounding up to 1 would overstate it: ">0.9999".
     expect(formatP(0.99996, GP)).toBe('>0.9999')
     expect(formatP(1, GP)).toBe('>0.9999')
     expect(formatP(0.99994, GP)).toBe('0.9999')

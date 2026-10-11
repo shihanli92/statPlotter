@@ -34,7 +34,7 @@ y <- r4(10 + 0.3 * X[, "Age"] + 0.2 * X[, "Weight"] - 1.5 * X[, "Dose"] + rnorm(
 mr("three_predictors", y, X)
 mr("three_predictors_99", y, X, params = list(confLevel = 0.99))
 mr("no_intercept", y, X, params = list(intercept = FALSE),
-   note = "R² stays centred (Prism); the F test is against Y = 0 (R's summary.lm).")
+   note = "R² stays centred; the F test is against Y = 0 (R's summary.lm).")
 mr("interaction", y, X, params = list(interactions = pairs(0, 2)),
    note = "Age:Dose product appended after the main effects.")
 mr("two_interactions", y, X, params = list(interactions = pairs(0, 1, 1, 2)))

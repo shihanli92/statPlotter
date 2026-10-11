@@ -2,7 +2,7 @@ import { type FunctionCurve, type GraphableDataSet, labelPlain, newSeriesId } fr
 import { EQUATIONS, parseEquation } from '@ps/stats'
 import { Lru } from './lru.ts'
 
-// "Plot a function" (Prism's): a built-in or user-defined equation drawn on an XY graph over an X
+// "Plot a function": a built-in or user-defined equation drawn on an XY graph over an X
 // range, from parameter values stored on the graph (`graph.functions`). Evaluated in the layout,
 // like column statistics: nothing derived is stored.
 

@@ -3,7 +3,7 @@ import { integrate } from '../numint/quadrature.ts'
 import { lgamma } from './gamma.ts'
 
 /**
- * Special functions of the user-equation language (Prism's "Available functions"): the gamma
+ * Special functions of the user-equation language: the gamma
  * function over the whole real line, digamma / trigamma, erf / erfc, Bessel functions of integer
  * order and the confluent / Gauss hypergeometric functions. Implemented from the published
  * formulas cited at each function (no translated code); the R oracle (suite `specialfn`) checks

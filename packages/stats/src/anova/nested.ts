@@ -17,10 +17,9 @@ import { type ContrastRow, contrastComparisons } from './rmCompare.ts'
 import { dunnettLambdas } from './rmOneWay.ts'
 
 /**
- * Nested t test and nested one-way ANOVA (Prism Statistics Guide, "How Prism performs the nested
- * t test and one-way ANOVA": "Prism fits a mixed effects model. It treats the main factor (that
- * defines the data set columns) as a fixed factor, and the nested factor as a random factor";
- * FAQ 2105: SAS PROC MIXED METHOD=REML; MODEL y = Condition; RANDOM Room*Condition, and
+ * Nested t test and nested one-way ANOVA: a mixed effects model with the main factor (that
+ * defines the data set columns) as a fixed factor and the nested factor as a random factor
+ * (SAS PROC MIXED METHOD=REML; MODEL y = Condition; RANDOM Room*Condition, and
  * lmer(y ~ Condition + (1 | Room:Condition), REML = TRUE)).
  *
  *   y_gsr = μ_g + b_gs + e_gsr,  b ~ N(0, σ²_subcolumn),  e ~ N(0, σ²_residual),
@@ -38,7 +37,7 @@ import { dunnettLambdas } from './rmOneWay.ts'
  * - whether the subcolumns differ: the F test of subcolumns within groups (MS of subcolumn
  *   means within groups / MS residual, df S − k and N − S; the classical nested-ANOVA test of
  *   σ²_sub = 0) and the likelihood-ratio χ² of the REML fits with and without the random
- *   effect (df 1), as Prism reports for "was the matching effective?" in mixed models;
+ *   effect (df 1), as reported for "was the matching effective?" in mixed models;
  * - the REML log-likelihood (lme4's, contr.sum coding).
  * Values are shifted by the first value before fitting (exact for nearby values).
  */
@@ -179,7 +178,7 @@ function nestedContrast(
 }
 
 export interface NestedTTest {
-  /** mean[1] − mean[0] (Prism's B − A). */
+  /** mean[1] − mean[0] (B − A). */
   diff: number
   se: number
   t: number

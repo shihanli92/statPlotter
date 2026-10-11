@@ -1,7 +1,7 @@
 # t tests. params$test selects: "unpaired" (Student / Welch), "paired", "ratio" (paired t on
 # log10(b/a)) or "summary" (from mean / SD / n).
 #
-# Sign convention: the effect is B - A (Prism reports the difference as mean(B) - mean(A)), so
+# Sign convention: the effect is B - A (the difference is reported as mean(B) - mean(A)), so
 # the oracle calls t.test(b, a); `alternative` refers to B - A.
 #
 # Cases where t.test() refuses the data ("data are essentially constant", SD = 0) get the

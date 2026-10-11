@@ -341,7 +341,7 @@ export function createClinicalExample(fonts: FontRegistry): Project {
   peas.dataSets[0]!.title = 'Peas'
   peas.dataSets[0]!.subcolumns[0]!.values = [315, 108, 101, 32]
   peas.notes =
-    'Mendel’s dihybrid cross (556 peas), the example of Prism’s guide. Compared with the 9:3:3:1 ratio by the chi-square goodness-of-fit test (P = 0.93: no evidence against the ratio).'
+    'Mendel’s dihybrid cross (556 peas), a textbook example. Compared with the 9:3:3:1 ratio by the chi-square goodness-of-fit test (P = 0.93: no evidence against the ratio).'
   b.table(peas)
   b.analyze(
     peas,

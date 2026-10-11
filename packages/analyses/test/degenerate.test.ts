@@ -22,7 +22,7 @@ type Fill = 'empty' | 'one value' | 'constant' | 'too few data sets'
  * data table (an empty table in gives an empty table out) are exempt without being listed.
  */
 const OK_ALLOWED: Record<string, readonly Fill[]> = {
-  // Reports N = 0 (and the statistics of a single value), as Prism does.
+  // Reports N = 0 (and the statistics of a single value).
   descriptive: ['empty', 'one value'],
   // Reports "N too small" for each test, with an info note of the N each test needs.
   normality: ['empty', 'one value'],

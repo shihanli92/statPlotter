@@ -1,4 +1,4 @@
-# Three-way ANOVA (ordinary; Prism's 2 x 2 x k layout) and factorial effect sizes.
+# Three-way ANOVA (ordinary; the 2 x 2 x k layout) and factorial effect sizes.
 # input$cells: [{levels: [a, b, c] (0-based), values}]; params$summary only changes the TS side;
 # params$shift is subtracted (exactly) before fitting and added back to the marginal means.
 #
@@ -60,7 +60,7 @@ oracle <- function(input, params) {
               marginalMeans = mm)
   if (shift != 0) return(out)
 
-  # Cells in Prism order: A (rows) slowest, then (B, C).
+  # Cells in table order: A (rows) slowest, then (B, C).
   key <- paste(cl$levels[, 1], cl$levels[, 2], cl$levels[, 3])
   ord <- order(cl$levels[, 1], cl$levels[, 2], cl$levels[, 3])
   means <- vapply(cl$values, mean, 0)[ord]; n <- len[ord]; lv <- cl$levels[ord, , drop = FALSE]

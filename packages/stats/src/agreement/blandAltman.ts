@@ -3,17 +3,15 @@ import { normalQuantile } from '../dist/normal.ts'
 import { tQuantile } from '../dist/t.ts'
 
 /**
- * Bland–Altman method comparison, as GraphPad Prism
- * (https://www.graphpad.com/guides/prism/latest/statistics/stat_bland_altman.htm,
- * https://www.graphpad.com/guides/prism/latest/statistics/bland-altman_results.htm):
+ * Bland–Altman method comparison:
  *
  * - Per pair: x = (a + b) / 2 and y = a − b ("Difference (A − B)"), a / b ("Ratio (A / B)") or
  *   100·(a − b) / x ("%Difference"), or the B − A, B / A, 100·(b − a) / x variants.
  * - Bias = mean of y; "SD of bias" = SD of y (n − 1); 95% limits of agreement = bias ± 1.96·SD.
- *   Prism uses 1.96 literally (its sample output, bias 0.238095 and SD 6.96351, gives the
- *   limits −13.4104 to 13.8866, which z = 1.959964 would not); other confidence levels use the
+ *   The 95% limits use 1.96 literally (a published sample output, bias 0.238095 and SD 6.96351,
+ *   gives the limits −13.4104 to 13.8866, which z = 1.959964 would not); other levels use the
  *   normal quantile z_{(1+level)/2}. Ratios and percents are analysed as they are (no logs).
- * - Prism reports no CIs for these; biasCI (bias ± t·SD/√n) and the limits' CIs
+ * - biasCI (bias ± t·SD/√n) and the limits' CIs
  *   (limit ± t·SD·√(3/n), t on n − 1 df) are Bland & Altman's (1986, Lancet i:307) approximate
  *   intervals, as BlandAltmanLeh's bland.altman.stats reports them.
  */

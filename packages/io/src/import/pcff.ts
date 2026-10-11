@@ -1,7 +1,7 @@
 /**
- * The record structure of the binary section of a Prism XML project (roadmap 39): the base64
+ * The record structure of the binary section of an XML project (.pzfx) (roadmap 39): the base64
  * `<Template>` element holds zlib data that inflates to `PCFFGRA4` followed by tagged records.
- * Found by reading Prism-made files (docs/design/PZFX_GRAPHS.md); not a published format.
+ * Found by reading real .pzfx files (docs/design/PZFX_GRAPHS.md); not a published format.
  *
  * A record is a little-endian u16 tag and, unless it is an end marker, a u32 payload length and
  * the payload. Tag bit 15 opens a container: the records after it are its children until the end
@@ -12,7 +12,7 @@ import { Unzlib } from 'fflate'
 
 export const PCFF_MAGIC = 'PCFFGRA4'
 
-/** Deeper nesting than any Prism file shows; refused rather than followed. */
+/** Deeper nesting than any .pzfx file shows; refused rather than followed. */
 const MAX_DEPTH = 64
 
 export interface PcffRecord {
@@ -36,11 +36,11 @@ const NAME = 0x3fff
 /**
  * Reads the records after the magic. End markers close the innermost open container of the same
  * name (an unmatched one closes nothing); containers still open at the end are closed there, as
- * Prism's last records are. Throws `PcffError` on a wrong magic or a length past the end.
+ * the last records of real files are. Throws `PcffError` on a wrong magic or a length past the end.
  */
 export function readPcff(bytes: Uint8Array): PcffRecord {
   const magic = String.fromCharCode(...bytes.subarray(0, PCFF_MAGIC.length))
-  if (magic !== PCFF_MAGIC) throw new PcffError('not a Prism graph block (no PCFFGRA4 header)')
+  if (magic !== PCFF_MAGIC) throw new PcffError('not a .pzfx graph block (no PCFFGRA4 header)')
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
   const root: PcffRecord = { tag: -1, offset: 0, payload: new Uint8Array(), children: [] }
   const stack: PcffRecord[] = [root]
@@ -105,7 +105,7 @@ export function fields(payload: Uint8Array) {
 }
 
 /**
- * Most bytes a graph block may inflate to: Prism's are kilobytes to a few megabytes, so a block
+ * Most bytes a graph block may inflate to: real ones are kilobytes to a few megabytes, so a block
  * past this is a zlib bomb (audit 2 X2), not a graph.
  */
 export const MAX_TEMPLATE_BYTES = 64 * 1024 * 1024

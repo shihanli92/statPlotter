@@ -29,7 +29,7 @@ export interface BracketSpan {
 /**
  * Significance brackets (plot-local). `tops` are the highest points drawn at each x (smallest
  * plot y); an 'auto' bracket sits `gap` above the data it spans and stacks `step` above any
- * placed bracket it overlaps, narrow spans first (like Prism). Returns the nodes and the top of
+ * placed bracket it overlaps, narrow spans first. Returns the nodes and the top of
  * the highest label (≤ 0 when brackets rise above the plot).
  *
  * Horizontal graphs (`across`: the value axis' length): spans and tops are given in the vertical

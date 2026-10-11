@@ -167,8 +167,8 @@ export interface WeightingTest {
 }
 
 /**
- * Prism's "test for appropriate weighting" (homoscedasticity when unweighted; Curve Fitting
- * Guide, "Test for appropriate weighting/homoscedasticity"): each residual y − ŷ is weighted as
+ * The "test for appropriate weighting" (homoscedasticity when unweighted): each residual
+ * y − ŷ is weighted as
  * the fit weights it (divided by ŷ for relative weighting: the square root of the weight on the
  * squared residual, here times √(fixed point weight)), and the Spearman rank correlation between
  * the absolute weighted residuals and ŷ is tested (P as `spearmanCorrelation`: exact for n ≤ 17,

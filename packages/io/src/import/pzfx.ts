@@ -1,6 +1,6 @@
 /**
- * Reads the data tables of a GraphPad Prism XML project (.pzfx). Analyses, graphs and layouts
- * (stored by Prism as an opaque binary section) and info sheets are not imported.
+ * Reads the data tables of an XML project (.pzfx). Analyses, graphs and layouts
+ * (stored in the file as an opaque binary section) and info sheets are not imported.
  */
 import {
   type CellColumn,
@@ -24,11 +24,11 @@ import { ImportError } from './errors.ts'
 import { inflateTemplate, PcffError } from './pcff.ts'
 import {
   defaultGraphsFor,
-  graphsFromPrism,
+  graphsFromPzfx,
   type PzfxGraphImport,
   pairTables,
 } from './pzfxGraphMap.ts'
-import { decodePrismGraphs } from './pzfxGraphs.ts'
+import { decodePzfxGraphs } from './pzfxGraphs.ts'
 import { richTextOf } from './pzfxText.ts'
 import { isTextColumn } from './variables.ts'
 import {
@@ -45,14 +45,14 @@ export interface PzfxImport {
   tables: DataTable[]
   warnings: string[]
   /**
-   * Roadmap 39: Prism's graphs, read from the file's binary section, when asked for
+   * Roadmap 39: the file's graphs, read from its binary section, when asked for
    * (`PzfxOptions.graphs`).
    */
   graphs?: PzfxGraphImport
 }
 
 export interface PzfxOptions {
-  /** Read Prism's graphs too (roadmap 39). */
+  /** Read the file's graphs too (roadmap 39). */
   graphs?: boolean
 }
 
@@ -91,7 +91,7 @@ function subcolumnTitlesOf(
     : null
 }
 
-/** Prism Y formats (the YFormat attribute) → summary presets. CV is a percent in Prism. */
+/** .pzfx Y formats (the YFormat attribute) → summary presets. CV is a percent in the file. */
 const SUMMARY_FORMATS: Record<string, SummaryPreset> = {
   SDN: 'meanSdN',
   SEN: 'meanSemN',
@@ -151,7 +151,10 @@ function readSubcolumns(col: XmlElement | undefined): RawCell[][] {
 const NUMBER = /^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/
 const COMMA_NUMBER = /^[+-]?(\d+,?\d*|,\d+)([eE][+-]?\d+)?$/
 
-/** Prism writes numbers in the locale of the machine: "1.", "3.25", "3,25", "1.5E-3". */
+/**
+ * .pzfx files hold numbers in the locale of the machine that wrote them: "1.", "3.25", "3,25",
+ * "1.5E-3".
+ */
 export function parsePzfxNumber(raw: string): number | null {
   let s = raw.trim().replace(/−/g, '-')
   if (!NUMBER.test(s)) {
@@ -183,12 +186,12 @@ function noteText(table: XmlElement): string {
 export function readPzfx(xml: string, opts: PzfxOptions = {}): PzfxImport {
   const root = parseXml(xml)
   if (localName(root.name) !== 'GraphPadPrismFile') {
-    throw new ImportError('Not a Prism XML project (.pzfx) file.')
+    throw new ImportError('Not an XML project (.pzfx) file.')
   }
   const warnings: string[] = []
   const tables: DataTable[] = []
   const tableEls = findTables(root)
-  // The imported table of each XML table (null: skipped), for Prism's graphs.
+  // The imported table of each XML table (null: skipped), for the file's graphs.
   const imported: (number | null)[] = []
   tableEls.forEach((el, i) => {
     const table = readTable(el, i, warnings)
@@ -213,11 +216,11 @@ export function readPzfx(xml: string, opts: PzfxOptions = {}): PzfxImport {
   }
   if (!opts.graphs) return { tables, warnings }
   const found = elements(root, 'GraphSequence').reduce((n, s) => n + elements(s, 'Ref').length, 0)
-  return { tables, warnings, graphs: prismGraphsOf(root, tableEls, imported, tables, found) }
+  return { tables, warnings, graphs: pzfxGraphsOf(root, tableEls, imported, tables, found) }
 }
 
-/** Prism's graphs as native graphs, or default graphs per table when they can't be read. */
-function prismGraphsOf(
+/** The file's graphs as native graphs, or default graphs per table when they can't be read. */
+function pzfxGraphsOf(
   root: XmlElement,
   tableEls: XmlElement[],
   imported: (number | null)[],
@@ -231,7 +234,7 @@ function prismGraphsOf(
       ? defaultGraphsFor(tables, found, 'the file’s graph section could not be read')
       : { graphs: [], report: [], found, decoded: 0, layouts: 0 }
   try {
-    const decoded = decodePrismGraphs(block)
+    const decoded = decodePzfxGraphs(block)
     const pairs = pairTables(
       decoded.tables,
       tableEls.map((el) => ({
@@ -239,7 +242,7 @@ function prismGraphsOf(
         yTitles: elements(el, 'YColumn').map((y) => titleOf(child(y, 'Title'))),
       })),
     )
-    return graphsFromPrism(decoded, tables, (b) => {
+    return graphsFromPzfx(decoded, tables, (b) => {
       const xmlIndex = pairs[b]
       return xmlIndex === null || xmlIndex === undefined ? null : (imported[xmlIndex] ?? null)
     })
@@ -370,12 +373,12 @@ function readTable(el: XmlElement, index: number, warnings: string[]): DataTable
       if (!rowTitles && dates.some((c) => c.text !== null)) {
         rowTitles = Array.from({ length: rowCount }, (_, r) => dates[r]?.text ?? null)
         warn(
-          'X dates imported as the numbers Prism analyzes (time since the first date, in the ' +
+          'X dates imported as the numbers the file stores for them (time since the first date, in the ' +
             "table's units); the dates are kept as row titles.",
         )
       } else {
         warn(
-          "X dates imported as the numbers Prism analyzes (time since the first date, in the table's units).",
+          "X dates imported as the numbers the file stores for them (time since the first date, in the table's units).",
         )
       }
     } else if (xfAttr !== 'numbers') {

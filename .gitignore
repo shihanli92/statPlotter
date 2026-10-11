@@ -32,6 +32,6 @@ apps/e2e/test-results/
 apps/e2e/playwright-report/
 apps/e2e/blob-report/
 
-# Private Prism files kept in the checkout root for manual checks (never committed); the
+# Private .pzfx files kept in the checkout root for manual checks (never committed); the
 # fixtures under packages/ and apps/ stay tracked.
 /*.pzfx

@@ -298,7 +298,7 @@ export const ttest: AnalysisDef<Params> = {
 }
 
 /**
- * Standardized effect sizes (Prism 11 reports Cohen's d, Hedges' g and, unpaired, Glass's Δ):
+ * Standardized effect sizes (Cohen's d, Hedges' g and, unpaired, Glass's Δ):
  * paired designs use d_z (mean difference / SD of the differences).
  */
 function effectRows(e: StandardizedDifference, paired: boolean): [string, ResultValue][] {

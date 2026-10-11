@@ -165,7 +165,7 @@ const X = [-9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4]
 const Y = [4.1, 6.2, 9.8, 18.5, 33.9, 51.2, 70.3, 83.1, 90.8, 94.2, 95.9]
 
 describe('nonlinear fit behaviour', () => {
-  it('fits a clean curve and reports Prism-style summaries', () => {
+  it('fits a clean curve and reports the usual summaries', () => {
     const fit = nonlinearFit(hill, [{ x: X, y: Y }])
     expect(fit.status).toBe('converged')
     expect(fit.nParams).toBe(4)

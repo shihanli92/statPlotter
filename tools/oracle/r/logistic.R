@@ -1,37 +1,34 @@
-# Multiple logistic regression (Prism's "Multiple logistic regression"), from glm(binomial).
+# Multiple logistic regression, from glm(binomial).
 #
 # input: y (0/1), X (rows), names. params: intercept, confLevel, ciMethod ('profile' default |
 # 'wald'), cutoff (default 0.5), interactions (as multreg.R).
 #
-# Prism's documented methods (Curve Fitting Guide, "Multiple logistic regression"):
+# Methods:
 # - Fit: maximum likelihood (glm, converged tightly: epsilon 1e-14, maxit 100).
-# - Coefficient P: Wald z = estimate/SE, two-sided normal ("The absolute value of Z, calculated
-#   as the coefficient estimate divided by its standard error"; reg_multiple_logistic_results_
-#   p_values.htm).
-# - CIs: profile likelihood ("Prism actually calculates ... profile likelihood confidence
-#   intervals", reg_multiple_logistic_results_parameters.htm). Computed here exactly: for each
+# - Coefficient P: Wald z = estimate/SE, two-sided normal (the absolute value of Z, the
+#   coefficient estimate divided by its standard error).
+# - CIs: profile likelihood. Computed here exactly: for each
 #   coefficient the signed root sign(b − b̂)·sqrt(2(ℓ̂ − ℓ_j(b))) = ±z is solved with uniroot
 #   (tol 1e-13), ℓ_j(b) from glm.fit with the coefficient as an offset; cross-checked loosely
 #   against confint() (MASS-style spline profile, ~1e-3). Wald on request: confint.default.
 #   Odds-ratio limits = exp(coefficient limits).
-# - Null model: intercept-only (Prism's "intercept-only model"); without an intercept, eta = 0
-#   (p = 1/2), as glm's null deviance. UNCERTAIN: Prism's choice without an intercept.
+# - Null model: intercept-only (the "intercept-only model"); without an intercept, eta = 0
+#   (p = 1/2), as glm's null deviance. UNCERTAIN: the right choice without an intercept.
 # - LR test: 2(ℓ − ℓ0) on (number of non-intercept coefficients) df.
 # - AICc: −2ℓ + 2K + 2K(K+1)/(n − K − 1), K = number of coefficients (checked vs AIC(glm)).
-# - Pseudo R² (reg_multiple_logistic_pseudo_r_squared.htm): Tjur = |mean p̂(y=1) − mean p̂(y=0)|;
+# - Pseudo R²: Tjur = |mean p̂(y=1) − mean p̂(y=0)|;
 #   McFadden = 1 − ℓ/ℓ0; Cox-Snell = 1 − (L0/L)^(2/n); Nagelkerke = CS/(1 − L0^(2/n)).
-# - Hosmer-Lemeshow (reg_multiple_logistic_hypothesis_tests.htm: "sorting the observations by
-#   their predicted probability, and splitting them into 10 groups of equal numbers of
-#   observations"; E = N·mean p̂; Pearson statistic over the 0s and 1s): hand-coded — group g
+# - Hosmer-Lemeshow (the observations sorted by their predicted probability and split into 10
+#   groups of equal numbers of observations; E = N·mean p̂; Pearson statistic over the 0s and
+#   1s): hand-coded — group g
 #   holds sorted positions floor(g·n/10) .. floor((g+1)·n/10) − 1, ties in p̂ kept in row order;
-#   df = 10 − 2 (the guide gives no df; 8 is Hosmer & Lemeshow's). UNCERTAIN: Prism's handling
+#   df = 10 − 2 (8 is Hosmer & Lemeshow's). UNCERTAIN: the handling
 #   of n not divisible by 10 and of tied p̂ (ResourceSelection::hoslem.test cuts at quantiles
 #   instead, which differs with ties).
 # - ROC area: Mann-Whitney area of p̂ (ties ½), checked vs wilcox.test. SE: Hanley & McNeil (1982)
-#   with Q1, Q2 computed from the data (their Table II; Prism's ROC "Calculation details" page:
-#   "Prism actually computes Q1 and Q2 using a more complicated equation" linking to that paper);
-#   CI = area ± z·SE clipped to [0, 1] (UNCERTAIN: Prism's CI form); P from z = (A − ½)/SE0 with
-#   SE0² = (0.25 + (na + nn − 2)/12)/(na·nn) (FAQ 1191). Not DeLong (pROC).
+#   with Q1, Q2 computed from the data (their Table II);
+#   CI = area ± z·SE clipped to [0, 1] (UNCERTAIN: the CI form); P from z = (A − ½)/SE0 with
+#   SE0² = (0.25 + (na + nn − 2)/12)/(na·nn). Not DeLong (pROC).
 # - Classification table: positive when p̂ > cutoff ("greater than 0.5").
 # - Separation: glm's "fitted probabilities numerically 0 or 1" (10·eps) -> status 'separation';
 #   coefficients NaN. Aliased columns (NA in glm) -> 'singular'.

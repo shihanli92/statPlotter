@@ -253,7 +253,7 @@ export interface SurvivalData {
 
 /**
  * Survival tables: X is the elapsed time and each data set is a group; a subject is a row with a
- * code in that group's column (Prism: 1 = event, 0 = censored by default).
+ * code in that group's column (by default 1 = event, 0 = censored).
  */
 export function survivalData(
   ds: NormalizedDataSet,

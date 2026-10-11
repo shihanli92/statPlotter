@@ -56,7 +56,7 @@ import {
 import { cellGroup, cellHasData, rowTitleOf } from './grouped.ts'
 
 // ---------------------------------------------------------------------------------------------
-// Three-way ANOVA, Prism's 2 × 2 × k layout on a grouped table: the rows are one factor (k
+// Three-way ANOVA, the 2 × 2 × k layout on a grouped table: the rows are one factor (k
 // levels); data sets A–D are two two-level factors, A and B vs. C and D ("column factor 1") and
 // A and C vs. B and D ("column factor 2"). Ordinary (not repeated measures) ANOVA.
 // ---------------------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ const Params = z.object({
   oneFactorMethod: oneFactorMethod.default('holm-sidak'),
   confidenceLevel,
   /**
-   * Repeated measures (Prism's three checkboxes): values of one subject are stacked in a
+   * Repeated measures (three checkboxes): values of one subject are stacked in a
    * subcolumn down the rows (`repeatedRows`), spread across A/B vs. C/D (`repeatedCol1`: the same
    * subcolumn of A and C, of B and D) and/or A/C vs. B/D (`repeatedCol2`).
    */

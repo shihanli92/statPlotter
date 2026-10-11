@@ -176,7 +176,7 @@ type DialogState =
       reparse?: (opts: TextImportOptions) => Sheet[]
     }
   | { kind: 'largeImport'; fileName: string; blob: Blob }
-  /** Roadmap 39: a Prism project's tables and, ticked, its graphs. */
+  /** Roadmap 39: a .pzfx project's tables and, ticked, its graphs. */
   | { kind: 'pzfx'; fileName: string; bytes: Uint8Array }
   /** Roadmap 39: images dropped off a layout page, to put on a page or ignore. */
   | { kind: 'images'; files: { name: string; bytes: Uint8Array }[] }
@@ -189,8 +189,8 @@ type DialogState =
   | { kind: 'migrated'; notes: MigrationNote[] }
 
 /**
- * Analyze menu shortcuts to common analyses, as in Prism's Analyze menu: each opens the Analyze
- * dialog on the current table with the first of its analyses that the table's kind accepts.
+ * Analyze menu shortcuts to common analyses: each opens the Analyze dialog on the current table
+ * with the first of its analyses that the table's kind accepts.
  */
 const QUICK_ANALYSES: { label: string; ids: string[]; keywords?: string[] }[] = [
   { label: 't test…', ids: ['ttest'], keywords: ['unpaired', 'paired', 'welch'] },
@@ -593,7 +593,7 @@ function Shell() {
 
   /**
    * Starts the import of a picked or dropped file: a large CSV file's own dialog (roadmap 34e), a
-   * Prism project's (roadmap 39) or the import dialog. Answers whether a dialog opened.
+   * .pzfx project's (roadmap 39) or the import dialog. Answers whether a dialog opened.
    */
   const importPicked = async (picked: { name: string; blob: Blob }): Promise<boolean> => {
     // A large CSV file (roadmap 34e) is streamed into a table, never read whole here.
@@ -1130,7 +1130,7 @@ function Shell() {
       id: 'file.import',
       label: 'Import data…',
       menu: { menu: 'file', group: GROUPS.file.import, order: 10 },
-      hint: 'CSV, Excel (.xlsx) or Prism (.pzfx)',
+      hint: 'CSV, Excel (.xlsx) or .pzfx',
       keywords: ['csv', 'excel', 'xlsx', 'pzfx'],
       icon: 'file-input',
       toolbar: { group: TOOLBAR_GROUPS.file, order: 15, label: 'Import' },
@@ -1490,7 +1490,7 @@ function Shell() {
                       </button>
                       {/* Roadmap 43: bringing a file in, the first thing many users do. */}
                       <button type="button" onClick={() => void importData()}>
-                        Import data… (CSV, Excel, Prism)
+                        Import data… (CSV, Excel, .pzfx)
                       </button>
                       <button type="button" onClick={reuse.newFromTemplate}>
                         New from template…

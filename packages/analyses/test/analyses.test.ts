@@ -22,7 +22,7 @@ describe('registry', () => {
 describe('t test', () => {
   const run = (t: DataTable, params: object = {}) => runDef(ttest, t, params)
 
-  it('matches the stats layer, with Prism’s B − A sign convention', () => {
+  it('matches the stats layer, with the B − A sign convention', () => {
     const r = run(columnTable([A, B]))
     const ref = tTestUnpaired(A, B)
     expect(r.status).toBe('ok')

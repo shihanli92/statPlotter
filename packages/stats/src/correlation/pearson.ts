@@ -89,7 +89,7 @@ export function correlationT(r: number, df: number): number {
 }
 
 /**
- * Pearson correlation test, as R's cor.test(method = "pearson") (Prism computes the same): P
+ * Pearson correlation test, as R's cor.test(method = "pearson"): P
  * from t = r √((n−2)/(1−r²)) on n − 2 df; CI by Fisher's z with SE 1/√(n − 3) (n > 3 only).
  * 'greater' means a positive correlation. n < 3 gives NaN statistics (r is still computed for
  * n = 2); an SD of 0 gives NaN throughout; r = ±1 gives P = 0 and the CI [r, r].

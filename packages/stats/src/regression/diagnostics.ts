@@ -3,7 +3,7 @@ import { symmetricInverse } from '../linalg/leastSquares.ts'
 import { lgamma } from '../special/gamma.ts'
 
 /**
- * Diagnostics of a least-squares fit (Prism's "Diagnostics" tab of nonlinear and linear
+ * Diagnostics of a least-squares fit (the "Diagnostics" tab of nonlinear and linear
  * regression): the runs test, the replicates test, parameter correlation and dependency, and
  * Hougaard's skewness (in nonlinearDiagnostics.ts, which needs the model).
  */
@@ -86,7 +86,7 @@ export interface ReplicatesTest {
 }
 
 /**
- * Replicates test for lack of fit (Prism's "replicates test"; Draper & Smith, Applied Regression
+ * Replicates test for lack of fit (the "replicates test"; Draper & Smith, Applied Regression
  * Analysis, §2.1): the fit's (weighted) residual SS is split into pure error — the scatter of
  * replicates around their mean at each X — and lack of fit. `w` are the fit's weights (at the
  * curve; replicates at one X share one weight). Null when no X has replicates or no df remain
@@ -148,7 +148,7 @@ export function correlationMatrix(cov: ArrayLike<number>, q: number): Float64Arr
 }
 
 /**
- * Dependency of each parameter (Prism): 1 − 1/(Cᵢᵢ·(C⁻¹)ᵢᵢ), i.e. the R² of that parameter
+ * Dependency of each parameter: 1 − 1/(Cᵢᵢ·(C⁻¹)ᵢᵢ), i.e. the R² of that parameter
  * regressed on the others in the covariance structure — near 1 when the others can compensate
  * for a change in it. Computed from the correlation matrix R (Cᵢᵢ·(C⁻¹)ᵢᵢ = (R⁻¹)ᵢᵢ); NaN if
  * it is singular. A single parameter has dependency 0.

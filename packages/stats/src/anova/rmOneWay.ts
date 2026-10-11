@@ -16,16 +16,15 @@ import {
 import { type ContrastRow, contrastComparisons, productLambdas } from './rmCompare.ts'
 
 /**
- * Repeated-measures one-way ANOVA, and the mixed-effects model Prism fits instead when values
- * are missing (Prism Statistics Guide, "Repeated measures tab": "Report the fit to a mixed
- * effects model only when there are missing values … When there are no missing values, report
- * the familiar repeated measures ANOVA results").
+ * Repeated-measures one-way ANOVA, and the mixed-effects model fitted instead when values are
+ * missing (the mixed model is reported only when there are missing values; with none, the
+ * familiar repeated measures ANOVA results).
  *
  * Data: one row per subject, one column per treatment, NaN = missing. Rows that are entirely
  * missing are ignored. Everything is computed on the data shifted by the first value (exact
  * for nearby values), so 1e9 + small effects keep their precision.
  *
- * Complete data — RM ANOVA (Prism, "Interpreting results: Repeated measures one-way ANOVA"):
+ * Complete data — RM ANOVA:
  *   SS_treatment = n Σ_j (ȳ_·j − ȳ)², SS_individual = k Σ_i (ȳ_i· − ȳ)²,
  *   SS_residual = Σ (y_ij − ȳ_i· − ȳ_·j + ȳ)², df k − 1, n − 1, (k − 1)(n − 1);
  *   F = MS_treatment/MS_residual; "was the matching effective?" F = MS_individual/MS_residual;
@@ -33,23 +32,21 @@ import { type ContrastRow, contrastComparisons, productLambdas } from './rmCompa
  *   Geisser–Greenhouse ε̂ = (Σλ)²/((k − 1)Σλ²) over the eigenvalues λ of the double-centred
  *   sample covariance matrix of the treatments (Greenhouse & Geisser 1959; Maxwell & Delaney
  *   2004 p. 545), computed as tr(D)²/((k − 1)‖D‖²_F). With 'gg' the P value uses
- *   F(ε(k − 1), ε(k − 1)(n − 1)) ("Prism uses the Geisser and Greenhouse epsilon hat method";
+ *   F(ε(k − 1), ε(k − 1)(n − 1)) (the Geisser and Greenhouse epsilon hat method;
  *   Huynh–Feldt and the lower bound are not computed). ε is always reported for ANOVA fits.
  *
- * Missing values — mixed model (Prism, "The mixed model approach…", "How to report the methods
- * used for the mixed model analysis"; FAQ 2103: SAS PROC MIXED METHOD=REML with RANDOM Int /
+ * Missing values — mixed model (SAS PROC MIXED METHOD=REML with RANDOM Int /
  * SUBJECT=Subject, lme4 lmer(y ~ Type + (1|Subject)) with contr.sum): y = μ_j + b_i + e, b_i ~
  * N(0, σ_s²), σ_s² ≥ 0, REML (mixedModel.ts). The treatment test is the Wald F of the
  * contr.sum treatment coefficients (Type III), with denominator df by
  *   - 'containment' (default): SAS's default for that code, here N − rank([X Z]) = N − k − s + 1
  *     (s subjects with data) — the RM ANOVA df when nothing is missing;
  *   - 'satterthwaite': lmerTest's method.
- * Prism does not document which it uses (see tools/oracle/r/mixed.R). Treatment means are the
+ * Neither is settled as the standard (see tools/oracle/r/mixed.R). Treatment means are the
  * model's least-squares means. "Was the matching effective?" is the likelihood-ratio χ² of the
- * REML fits with and without the subject effect (df 1, Prism's "chi-square statistic … comparing
- * the fit of the full mixed effects model to a simpler model"). Prism applies the GG correction
- * to mixed models too, but does not document how ε is estimated with missing values; it is not
- * computed here (epsilon/corrected are null for mixed fits).
+ * REML fits with and without the subject effect (df 1: the full mixed effects model against the
+ * simpler model without it). How ε would be estimated with missing values is not established,
+ * so the GG correction is not computed here (epsilon/corrected are null for mixed fits).
  *
  * Degenerate data (one subject, a treatment without values, no residual variation) give NaN
  * results and `error`; only rows of unequal length throw.
@@ -322,8 +319,8 @@ export interface RMComparisonOptions {
 }
 
 /**
- * Multiple comparisons after oneWayRM (Prism, "Multiple comparisons after repeated measures
- * one-way ANOVA", following Maxwell & Delaney 2004 pp. 552–555), diff = mean_i − mean_j:
+ * Multiple comparisons after oneWayRM (following Maxwell & Delaney 2004 pp. 552–555),
+ * diff = mean_i − mean_j:
  * - ANOVA, sphericity assumed: pooled MS_residual, SE = √(2 MS_res/n), df (k − 1)(n − 1);
  * - ANOVA, 'gg': "for each comparison of two groups, it uses only the data in those two groups
  *   (essentially performing a paired t test)": SE = SD(y_i − y_j)/√n, df n − 1;
@@ -332,7 +329,7 @@ export interface RMComparisonOptions {
  * Tukey refers √2·t to the studentized range with that comparison's df. Dunnett: pooled —
  * Dunnett's distribution with correlation ½ (exact); paired — the same equal-n distribution
  * with df n − 1 (the paired differences' own correlations are ignored, an approximation that
- * Prism's guide does not settle); mixed — the product-correlation distribution fitted to the
+ * the literature does not settle); mixed — the product-correlation distribution fitted to the
  * model-based correlations of the comparisons (productLambdas).
  */
 export function rmComparisons(

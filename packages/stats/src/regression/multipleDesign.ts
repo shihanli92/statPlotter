@@ -155,8 +155,8 @@ export function expandCov(cov: ArrayLike<number>, keep: readonly boolean[]): num
 }
 
 /**
- * Variance inflation factors from the predictors alone (Prism: "how well each X variable can be
- * predicted from the other X variables … VIF = 1/(1 − R²)"). For kept column j,
+ * Variance inflation factors from the predictors alone (how well each X variable can be
+ * predicted from the other X variables: VIF = 1/(1 − R²)). For kept column j,
  * VIF_j = S_jj · [(XᵀX)⁻¹]_jj, where S_jj is the centred (with an intercept) or raw (without)
  * sum of squares; with an intercept this is 1/(1 − R²_j) from regressing X_j on the other
  * columns plus intercept, and equals car::vif. `covUnscaled` is (XᵀX)⁻¹ over the kept columns

@@ -140,7 +140,7 @@ for (m in c("tukey", "bonferroni", "sidak", "holm", "holm-sidak", "fisher", "bh"
 }
 mc("unequal_tukey_90", gu, list(method = unbox("tukey"), confLevel = unbox(0.9)))
 mc("unequal_dunnett", gu, list(method = unbox("dunnett"), control = unbox(0)),
-   note = "Pairs (control, j): diff = mean(control) - mean(j), as Prism lists 'Control vs. j'.")
+   note = "Pairs (control, j): diff = mean(control) - mean(j), as the results list 'Control vs. j'.")
 mc("unequal_dunnett_99", gu, list(method = unbox("dunnett"), control = unbox(2),
                                    confLevel = unbox(0.99)))
 mc("selected_sidak_family6", gu,

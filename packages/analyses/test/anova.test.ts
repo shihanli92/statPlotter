@@ -332,7 +332,7 @@ describe('repeated measures', () => {
     if (sources.type !== 'table') throw new Error('table expected')
     expect(sources.rows.map((row) => (row[0] as { v: string }).v)).toContain('Subjects (matching)')
     expect(r.comparisons.map((c) => c.rowA)).toEqual([0, 1, 2])
-    // Main-effect comparisons of the repeated factor need sphericity (Prism 8.4+).
+    // Main-effect comparisons of the repeated factor need sphericity.
     const main = runDef(twoWayAnovaDef, t, { repeated: 'rows', comparisons: 'mainRows' })
     expect(main.sheets.map((s) => s.key)).toEqual(['results'])
   })

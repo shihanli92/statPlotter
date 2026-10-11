@@ -715,7 +715,7 @@ function StyleEditor({
           'P values',
           s.pValue?.style,
           [
-            { value: 'GP', label: 'GraphPad (ns, *, **, ***, ****)' },
+            { value: 'GP', label: 'Four stars (ns, *, **, ***, ****)' },
             { value: 'APA', label: 'APA (.033)' },
             { value: 'NEJM', label: 'NEJM (0.033)' },
           ],
@@ -1016,7 +1016,7 @@ export function PreferencesDialog({ onClose }: { onClose: () => void }) {
             label="P values"
             value={p.pValueStyle ?? 'GP'}
             options={[
-              { value: 'GP', label: 'GraphPad (ns, *, **, ***, ****)' },
+              { value: 'GP', label: 'Four stars (ns, *, **, ***, ****)' },
               { value: 'APA', label: 'APA (.033)' },
               { value: 'NEJM', label: 'NEJM (0.033)' },
             ]}

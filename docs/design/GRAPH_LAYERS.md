@@ -47,9 +47,9 @@ The existing layout code is not rewritten from scratch. It is **carved into geom
   - no user-scripted geoms.
 - Facets inside one graph. Small multiples stay separate graphs (decision 41; Q4 resolved in roadmap 34d: sets of linked separate graphs, one per level, data set or row). The polar frame's "one pie per data set" is the only built-in panelling, as today.
 - Changes to analyses, results, `ANALYSES_VERSION`, page layouts, export or the scene/renderer contract. `Scene`, `SceneNode` and the SVG/PDF writers stay as they are; `SceneNode` gains one optional field, `layer`.
-- Reading Prism graph definitions from pzfx. That becomes feasible afterwards (roadmap 39).
+- Reading the graph definitions of .pzfx files. That becomes feasible afterwards (roadmap 39).
 
-### 1.4 What stays Prism-like
+### 1.4 What stays as in table-based lab graphing tools
 
 | Kept | How |
 |---|---|
@@ -223,7 +223,7 @@ export const GraphNode = z.object({
   /**
    * Draw order where marks overlap: 'layer' (every data set's bars, then every data set's points,
    * as ggplot; the default for new graphs, user decision 2026-10-01) or 'series' (each data set's
-   * layers together, data sets in order: v1 and Prism; set by the v1 → v2 migration).
+   * layers together, data sets in order, as v1 drew them; set by the v1 → v2 migration).
    */
   drawOrder: z.enum(['layer', 'series']).optional(),   // absent = 'layer'
   seriesSource: …unchanged…,                       // table, include, rows
@@ -261,7 +261,7 @@ export const SizeScale = z.object({ max: Pt, min: Pt }).partial()
 
 ### 2.4 Attached layers (`on`)
 
-Error bars, labels and centre lines belong to a host in Prism. Examples: the bar's error bar points away from the bar's baseline (`extent.ts:216-225`); a stacked bar's error bar sits on the segment's end (`grouped.ts:273-276`); a label goes above the bar and its error bar (`labels.ts:61`). An attached layer:
+Error bars, labels and centre lines belong to a host (as in v1 and other lab graphing tools). Examples: the bar's error bar points away from the bar's baseline (`extent.ts:216-225`); a stacked bar's error bar sits on the segment's end (`grouped.ts:273-276`); a label goes above the bar and its error bar (`labels.ts:61`). An attached layer:
 
 - takes the host's position (slot, dodge, stack segment);
 - takes the host's summary centre, unless it sets its own;
@@ -541,7 +541,7 @@ The SVG writer emits `data-id` for every node with content and skips empty group
 | polar / category (whole) | `series` (`whole.ts:430`) |
 | matrix | `series`, `cellLabels`, `dendrograms`, `colorScale` (`heatmap.ts:291-296`) |
 
-Within the `series` plane, each data set is a group `series/<key>` holding its layers' nodes in its order, then its labels. This is `MarkLayers.drawn()` (`theme.ts:299-301`) with layer ids in place of mark kinds; that is the **series-major** draw order Prism and v1 use (`drawOrder: 'series'`, which every migrated graph gets, so stage 1 and 2 stay byte-identical). New graphs default to **layer-major** (`drawOrder: 'layer'`, the user's choice): the `series` plane holds one group per layer (`layer/<id>`) in list order, each holding that layer's marks for every data set in data-set order; ids keep the v1 part patterns (`series/<k>/bar/<row>` …) so selection and pointOverrides are unchanged, only the grouping differs. Per-data-set `order` applies only in series-major mode.
+Within the `series` plane, each data set is a group `series/<key>` holding its layers' nodes in its order, then its labels. This is `MarkLayers.drawn()` (`theme.ts:299-301`) with layer ids in place of mark kinds; that is the **series-major** draw order v1 uses (`drawOrder: 'series'`, which every migrated graph gets, so stage 1 and 2 stay byte-identical). New graphs default to **layer-major** (`drawOrder: 'layer'`, the user's choice): the `series` plane holds one group per layer (`layer/<id>`) in list order, each holding that layer's marks for every data set in data-set order; ids keep the v1 part patterns (`series/<k>/bar/<row>` …) so selection and pointOverrides are unchanged, only the grouping differs. Per-data-set `order` applies only in series-major mode.
 
 **Id rule.** A geom's marks keep their v1 ids: `series/<k>/bar/<row>`, `series/<k>/point/<row>/<i>`, `series/<k>/error/<row>/<i>`, `series/<k>/center`, `series/<k>/box/…`, `series/<k>/line/<k>`, `series/<k>/envelope/…`, `series/<k>/area/…`, `series/<k>/xError/…`, `series/<k>/slice/<row>`, `series/<k>/cell/<row>`, `curve/<i>/…`, `function/<i>/…`, `pairs/<row>`, `estimation/<k>/…`, `grandMean`.
 
@@ -723,7 +723,7 @@ A new **Stat** row at the top of each layer (Mean / Median / Geometric mean; err
 - **Double-click** opens Format graph › Appearance on that layer and data set (`formatTargetFor` gains `SeriesPick.layer`, `route.ts:11-16,46-107`).
 - A legend entry selects the data set identity (all its layers).
 
-Open question Q1 is whether the first click should instead select the data set across layers, as Prism and decision 61 do.
+Open question Q1 is whether the first click should instead select the data set across layers, as decision 61 does.
 
 - **Context menu** on a mark: Format…, Hide this layer, Bring layer forward / backward, Remove layer, Add ▸ (error bars / labels on this layer, when allowed).
 - Hover halos and the drill-down use the same index, keyed by `layer` + target.
@@ -841,7 +841,7 @@ Acceptance: the new goldens reviewed, all oracle suites green (`graphstats` adde
 | 4 | Every reference walker (remap, family, apply, method, removal, rows) must learn layers | One `graphRefs` visitor in `@ps/model`, with a test that it visits every `NodeId` / `DataSetKey`-typed path of the zod schema (schema walk) |
 | 5 | Undo paths break when layers move inside a draft | `{id}` path segments; property tests of undo / redo with the layer commands |
 | 6 | UI churn (SeriesPanel 763 lines, GraphSections 708, route 287) | Re-host existing sections per geom (as decision 56 re-hosted panels); stage 2 keeps behaviour, stage 3 changes UX |
-| 7 | Grammar generality overwhelms Prism users | Presets first; the checklist only lists matrix-allowed geoms; explicit mapping only for MV |
+| 7 | Grammar generality overwhelms users of table-based tools | Presets first; the checklist only lists matrix-allowed geoms; explicit mapping only for MV |
 | 8 | v2 files don't open in older builds | Clear message (existing); recovery and `.bak` untouched; note in release notes |
 | 9 | Performance with many layers | Stat memo, layer cap, CPU guards |
 | 10 | Scope creep into facets, free aes or smoothing | The non-goals in §1.3, and open questions that decide facets before roadmap 34 |
@@ -869,7 +869,7 @@ Acceptance: the new goldens reviewed, all oracle suites green (`graphstats` adde
 | §6 Data model | "Graphs are a frame plus a list of layers (geom × stat × position); typed tables imply the mapping; multiple-variables tables map variables explicitly"; schema v2 |
 | §7 Correctness | Add the shadow-compile test (while legacy exists), the v1 migration fixtures and the `graphstats` oracle suite |
 | §8 Roadmap | Add 33 (below) and renumber the next set |
-| §9 Risks | Replace "3. Graph editor depth" with "Graph grammar breadth vs Prism simplicity → matrix + presets" |
+| §9 Risks | Replace "3. Graph editor depth" with "Graph grammar breadth vs table-based simplicity → matrix + presets" |
 
 ### 9.2 Decisions superseded or amended (from the log)
 
@@ -914,8 +914,8 @@ The log skips numbers (for example 163–169 and 211–214 are unused). New entr
 | 227 | A graph is a **frame** (category, grouped, xy, polar, matrix) plus **layers** (geom × stat × position, sparse style, per-data-set overrides, data source) | Keeping graph types with more flags; a full ggplot grammar with free aesthetics |
 | 228 | The table kind implies the mapping; explicit aesthetic mapping only for multiple-variables tables | Mapping for every table (breaks typed-table simplicity) |
 | 229 | One compatibility matrix (`graph/src/layers/matrix.ts`) gates the builder, Layers, presets and validation; unsupported layers in a document are drawn as far as possible, with a warning | Rejecting documents; per-UI rules |
-| 230 | Error bars, labels and centre lines are separate layers **attached** to a host (`on`): position, centre and skyline from the host | Options of the host geom (Prism's single dialog); fully independent layers (ggplot: error bars would miss stacks and baselines) |
-| 231 | Draw order is a graph setting: **layer-major** (all data sets' marks of a layer, layers in list order; ggplot) is the default for new graphs (user decision, 2026-10-01); **series-major** (a data set's layers together, per-data-set `order`) is kept for migrated v1 graphs so they render identically, and can be chosen in Format graph | Series-major only (Prism, v1); a free z-index |
+| 230 | Error bars, labels and centre lines are separate layers **attached** to a host (`on`): position, centre and skyline from the host | Options of the host geom (one dialog for the host); fully independent layers (ggplot: error bars would miss stacks and baselines) |
+| 231 | Draw order is a graph setting: **layer-major** (all data sets' marks of a layer, layers in list order; ggplot) is the default for new graphs (user decision, 2026-10-01); **series-major** (a data set's layers together, per-data-set `order`) is kept for migrated v1 graphs so they render identically, and can be chosen in Format graph | Series-major only (v1); a free z-index |
 | 232 | Scene ids keep v1 patterns; a second same-geom layer adds `@<layerId>`; `SceneNode.layer` carries the layer; targets become `['layers', id, 'series', key]` in stage 3 | Layer-prefixed ids (every golden changes) |
 | 233 | `graphType` splits into `frame`, `layers`, `look` (theme-defaults family, the v1 value) and `preset` (provenance) | Keeping `graphType` as a discriminator; resolving defaults into documents (breaks "overrides, not values") |
 | 234 | Datum overrides (`pointOverrides`) stay graph-level and unchanged; per-layer mark overrides deferred | Moving point formats into each layer (a second key space to remap) |
@@ -927,7 +927,7 @@ The log skips numbers (for example 163–169 and 211–214 are unused). New entr
 | 240 | `node.set` accepts `{id}` path segments addressing array elements by id; layer commands `graph.addLayer / removeLayer / moveLayer / setLayers` | Index paths (break under reorder in drafts); a map of layers keyed by id (loses order) |
 | 241 | One `graphRefs` visitor in `@ps/model` for every reference walker (remap, family, apply, method, removal, rows, `nodeRefs`), tested against a schema walk | Per-walker updates |
 | 242 | A builder popup (presets, checklist, live preview) replaces New graph, Graph type and Duplicate as… styles; unavailable options stay visible with a reason | Hiding unavailable geoms; an "advanced" tab next to the old dialog |
-| 243 | Canvas: first click selects a layer's marks of a data set, the second a point, Alt-click the whole layer (pending Q1) | Prism's data set across layers |
+| 243 | Canvas: first click selects a layer's marks of a data set, the second a point, Alt-click the whole layer (pending Q1) | The data set across layers |
 | 244 | Estimation plots, heat-map clustering, before-after and bubble plots are **composite presets** over special geoms (difference, tile, connector) and graph features (floating axis, axis order, scale legends) | Keeping them as graph types |
 | 245 | Scales: one `ColorScale` for heat maps and bubbles; a `SizeScale`; scale legends | Separate per-chart colour options |
 
@@ -967,7 +967,7 @@ Under **Tests** (while stage 1–3 legacy code exists):
 | 36 ✅ | **Axis extras**: per-layer secondary axes, X breaks and discontinuities, two-level category labels (grouped rows × data sets), log-scaled stats | 35 | Needs the scale training of 33. **Built** (roadmap 36, decisions 510–521) as the user scoped it: +/− treatment grids and two-level labels on category axes (keyed by category), broken axes with set piece lengths and marks on X and Y, listed ticks and text at values, lines and bands at typed values (result layers with a `values` source), scale bars and corner arrows; per-layer secondary axes and log-scaled stats deferred (decision 521) |
 | 37 ✅ | **Preferences and styles**: saved layer stacks as user presets, default presets per table kind, per-geom theme defaults (retiring `look` if Q3 agrees). User presets and a default per table kind were brought forward into 33c (decisions 255–257) | 34 | User presets are just saved layer lists after 33. **Built** (roadmap 37, decisions 530–539): styles (fonts, lines, symbols, palettes, axis look, P values, figure widths) for projects and graphs with the user's edits kept, journal styles, the user's styles in a library and `.psstyle` files, Reset to style, Fit to column, Preferences; the theme table retired into per-geom defaults under context rules (Q3 below) |
 | 38 | **Data manipulation** | 38 | Independent of graphs |
-| 39 | **Import / interop**: pzfx graph definitions mapped onto layers, other formats | 37 | Mapping Prism's graphs is now a table from Prism types to layer lists |
+| 39 | **Import / interop**: pzfx graph definitions mapped onto layers, other formats | 37 | Mapping a .pzfx file's graphs is now a table from its graph types to layer lists |
 | 40 | **Project organisation** | 36 | Independent |
 | 41 | **Polish and desktop distribution** | 40 | Last before a release |
 | 42 | **Consolidation**: an audit of `graph`, `model` and `ui` after 33–41 (dead code, docs, one helper where copies drifted, as audit step 3 / decisions 131–134) | — | Pays down the overhaul |

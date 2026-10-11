@@ -12,15 +12,14 @@ import { applyQ, applyQt, norm2, qrFactor } from '../linalg/qr.ts'
 
 /**
  * Linear mixed model with independent random-intercept variance components nested within
- * subjects, fitted by restricted maximum likelihood (REML) — the model behind Prism's
- * "mixed-effects model" for repeated measures with missing values:
+ * subjects, fitted by restricted maximum likelihood (REML) — the "mixed-effects model" for
+ * repeated measures with missing values:
  *
  *   y = Xβ + Σ_t Z_t b_t + e,  b_t ~ N(0, σ_t² I),  e ~ N(0, σ² I),
  *
  * where every random term t (subject, subject × row, subject × column) has levels nested
  * within subjects, so V = σ²W with W = I + Σ_t ρ_t Z_t Z_tᵀ (ρ_t = σ_t²/σ²) is block-diagonal
- * by subject. Variances are constrained to ρ_t ≥ 0 (as lme4 and Prism: "negative values for
- * variance which — by definition — must be positive", Prism FAQ 2211).
+ * by subject. Variances are constrained to ρ_t ≥ 0 (as lme4: a variance must be positive).
  *
  * Fitting: σ² is profiled out and the REML criterion
  *   d(ρ) = (N − p) log(rᵀW⁻¹r) + log|W| + log|XᵀW⁻¹X|
@@ -30,7 +29,7 @@ import { applyQ, applyQt, norm2, qrFactor } from '../linalg/qr.ts'
  *   ∂d/∂ρ_t = −(N − p) u_tᵀu_t / yᵀPy + tr(Z_tᵀPZ_t),
  *   ∂²d/∂ρ_t∂ρ_s = (N − p)[2 u_tᵀ(Z_tᵀPZ_s)u_s / yᵀPy − (u_tᵀu_t)(u_sᵀu_s)/(yᵀPy)²]
  *                  − ‖Z_tᵀPZ_s‖²_F.
- * Several starting points are tried (Prism 9.2+ does the same) and the best optimum is kept.
+ * Several starting points are tried and the best optimum is kept.
  * σ̂² = yᵀPy/(N − p). The reported REML log-likelihood is lme4's:
  *   −½[(N − p)(1 + log(2πσ̂²)) + log|W| + log|XᵀW⁻¹X|],
  * which depends on the coding of X (the callers use sum-to-zero coding, as
@@ -916,7 +915,7 @@ function symmetricEigen(
 
 /**
  * Containment denominator df (SAS PROC MIXED's default DDFM=CONTAIN with a RANDOM statement,
- * which is the SAS code GraphPad publishes as doing "what Prism does", FAQ 2103/2104): for a
+ * the usual SAS code for these models): for a
  * fixed effect contained in random terms `containing`, the smallest rank contribution of those
  * terms to [X Z] (here: the drop in rank(X Z) when the term's columns are removed); with no
  * containing term, the residual df N − rank(X Z).

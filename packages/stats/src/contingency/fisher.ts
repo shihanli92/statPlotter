@@ -26,11 +26,11 @@ export interface FisherOptions {
 }
 
 /**
- * Fisher's exact test. Two-sided P by the method of summing small P values (Prism; R's
+ * Fisher's exact test. Two-sided P by the method of summing small P values (as R's
  * fisher.test, including its 1e−7 relative tolerance for ties).
  *
  * 2 × 2 tables use the hypergeometric distribution of the top-left cell directly. Larger
- * tables (Freeman–Halton extension, as Prism ≥ 10.1) use a network algorithm over the tables
+ * tables (Freeman–Halton extension) use a network algorithm over the tables
  * with the observed margins (see fisherRxC); this throws if the work exceeds FISHER_MAX_TABLES
  * steps (`opts.maxWork`; use the chi-square test then). An all-zero table (or any table whose margins admit
  * only one table) gives P = 1.

@@ -8,19 +8,19 @@ import type { Band, BandOptions, ModelFTest } from './linear.ts'
 import { type LsqProblem, levenbergMarquardt } from './lm.ts'
 
 /**
- * Nonlinear least-squares curve fitting (Prism's "Nonlinear regression (curve fit)").
+ * Nonlinear least-squares curve fitting ("Nonlinear regression (curve fit)").
  *
  * Fitting: Levenberg–Marquardt with Moré scaling and projected box constraints (see lm.ts).
  *
  * Global fits: each parameter is fitted per data set, held constant, or shared by all data sets.
  * With no shared parameter the data sets are independent, and are fitted (and their SEs scaled
- * by their own s²) one by one, as Prism does; the global SS / df / AICc are then sums over the
+ * by their own s²) one by one; the global SS / df / AICc are then sums over the
  * separate fits, which is what a "shared vs separate" comparison needs. With a shared parameter
  * all data sets are fitted together and every SE uses the pooled s² = SS/df.
  *
- * Weighting (Prism's "relative" = 1/Y², "poisson" = 1/Y, "power" = 1/|Y|^K, "general
- * weighting"): as Prism does since version 5, the weight uses the Y of the curve, not of the data
- * point. Weights that don't depend on the curve (Prism's 1/X, 1/X², 1/SD²) are fixed
+ * Weighting ("relative" = 1/Y², "poisson" = 1/Y, "power" = 1/|Y|^K, "general weighting"): the
+ * weight uses the Y of the curve, not of the data point. Weights that don't depend on the curve
+ * (1/X, 1/X², 1/SD²) are fixed
  * `pointWeights`. The quantity minimised is
  * SS = Σ ((y − ŷ)·√w(ŷ))², i.e. Σ((y − ŷ)/ŷ)² for relative weighting, and the Jacobian includes
  * the derivative of the weight (so SEs are those of that objective, as R's nls on the same
@@ -29,7 +29,7 @@ import { type LsqProblem, levenbergMarquardt } from './lm.ts'
  *
  * Standard errors: Cov = s²·(JᵀJ)⁻¹ with J the Jacobian of the weighted residuals at the
  * solution and s² = SS/df, df = N − (number of fitted parameters). (JᵀJ)⁻¹ comes from a pivoted
- * QR of the column-equilibrated J; the fit is flagged 'singular' (Prism: "ambiguous") when that
+ * QR of the column-equilibrated J; the fit is flagged 'singular' ("ambiguous") when that
  * R has a pivot below 1e-10 of the largest, i.e. the parameters are not identifiable. A parameter
  * that ends on a bound with the gradient pushing outward is treated as fixed there: no SE/CI,
  * excluded from the covariance and from df / nParams.
@@ -39,7 +39,7 @@ import { type LsqProblem, levenbergMarquardt } from './lm.ts'
  * Illinois false position (Dowell & Jarratt 1971) on the profile SS, each point a constrained
  * refit. An endpoint that never crosses reports the bound (±Infinity if unbounded).
  *
- * AICc (Prism, least squares; Burnham & Anderson 2002 §2.4 with K = parameters + 1 for σ):
+ * AICc (least squares; Burnham & Anderson 2002 §2.4 with K = parameters + 1 for σ):
  * N·ln(SS/N) + 2K + 2K(K + 1)/(N − K − 1).
  */
 
@@ -50,7 +50,7 @@ export interface CurveModel {
   /** Optional analytic partial derivatives into out[0..params.length); else central differences. */
   grad?(x: number, p: ArrayLike<number>, out: Float64Array): void
   /**
-   * Automatic initial values from one data set (Prism-style rules). `fixed[j]` is the value of
+   * Automatic initial values from one data set (rules on the data). `fixed[j]` is the value of
    * parameter j when it is held constant for this data set (a constant or data set constant),
    * which some rules use (e.g. an inhibitor concentration).
    */
@@ -89,7 +89,7 @@ export type ParamConstraint =
   | { kind: 'fit' }
   | { kind: 'constant'; value: number }
   | { kind: 'shared' }
-  /** A constant that differs between data sets (Prism's "data set constant"): values[k]. */
+  /** A constant that differs between data sets (a "data set constant"): values[k]. */
   | { kind: 'dataSetConstant'; values: readonly number[] }
 
 export type Weighting = 'none' | 'relative' | 'poisson' | 'power'
@@ -101,7 +101,7 @@ export interface FitOptions {
   bounds?: readonly ([number, number] | null)[]
   /** Initial values per data set; default model.initial. */
   initial?: readonly (readonly number[])[]
-  /** 1, 1/Ŷ², 1/|Ŷ| (Prism: "1/Y^2", "1/Y"), 1/|Ŷ|^K ("1/Y^K"), Ŷ from the curve. */
+  /** 1, 1/Ŷ², 1/|Ŷ| ("1/Y^2", "1/Y"), 1/|Ŷ|^K ("1/Y^K"), Ŷ from the curve. */
   weighting?: Weighting
   /** K of 'power' weighting (default 2). */
   weightPower?: number
@@ -139,7 +139,7 @@ export interface DataSetStats {
 export type FitStatus = 'converged' | 'maxIterations' | 'singular' | 'invalid'
 
 export interface NonlinearFit {
-  /** 'singular' ≈ Prism's "ambiguous". */
+  /** 'singular' ≈ "ambiguous". */
   status: FitStatus
   message?: string
   iterations: number
@@ -783,7 +783,7 @@ function fitCore(
   return out
 }
 
-/** Prism's AICc for least squares, K = nParams + 1. */
+/** AICc for least squares, K = nParams + 1. */
 export function aiccLeastSquares(n: number, ss: number, nParams: number): number {
   const K = nParams + 1
   if (n - K - 1 <= 0) return NaN_

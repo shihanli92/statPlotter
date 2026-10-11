@@ -1,18 +1,18 @@
 /**
- * Prism graphs as native graphs (roadmap 39, decision 571): each decoded Prism graph becomes its
- * table's default graph (the preset New graph makes, `createGraphFor`) with what was read from
- * Prism set on it — its name, data sets and their order, the graph and axis titles (hidden ones
+ * A .pzfx file's graphs as native graphs (roadmap 39, decision 571): each decoded graph becomes
+ * its table's default graph (the preset New graph makes, `createGraphFor`) with what was read from
+ * the file set on it — its name, data sets and their order, the graph and axis titles (hidden ones
  * removed), the axes' ranges, each data set's colour and symbol. What wasn't read (the kind of
  * marks, error bars, log scales, fonts and sizes) stays the default, and the report says so per
  * graph, so nothing is guessed silently.
  */
 import { createGraphFor } from '@ps/graph'
 import { type ContinuousAxisSpec, type DataTable, GraphNode, plainText, setAt } from '@ps/model'
-import type { PrismAxis, PrismGraph, PrismGraphs, PrismTableInfo, PrismText } from './pzfxGraphs.ts'
+import type { PzfxAxis, PzfxGraph, PzfxGraphs, PzfxTableInfo, PzfxText } from './pzfxGraphs.ts'
 
-/** What became of one Prism graph. */
+/** What became of one of the file's graphs. */
 export interface PzfxGraphReport {
-  /** The graph's name in Prism. */
+  /** The graph's name in the file. */
   name: string
   /** The table it draws (its name here); null when that table wasn't imported. */
   table: string | null
@@ -21,7 +21,7 @@ export interface PzfxGraphReport {
    * couldn't be read); `skipped`: not imported (its table isn't, e.g. an analysis's results).
    */
   status: 'decoded' | 'default' | 'skipped'
-  /** What was taken from Prism ("Title", "Y axis range 0 to 4000"…). */
+  /** What was taken from the file ("Title", "Y axis range 0 to 4000"…). */
   matched: string[]
   /** What is this app's default instead. */
   defaulted: string[]
@@ -31,11 +31,11 @@ export interface PzfxGraphImport {
   /** Graphs to add, each of `tables[tableIndex]`. */
   graphs: { graph: GraphNode; tableIndex: number }[]
   report: PzfxGraphReport[]
-  /** Prism graphs in the file. */
+  /** Graphs in the file. */
   found: number
   /** Graphs drawn from decoded settings. */
   decoded: number
-  /** Why Prism's graphs couldn't be read at all (default graphs per table instead). */
+  /** Why the file's graphs couldn't be read at all (default graphs per table instead). */
   problem?: string
   /** Layouts in the file (not imported). */
   layouts: number
@@ -60,7 +60,7 @@ const num = (v: number) => String(Number(v.toPrecision(6)))
  * columns, else the only one of that name. Binary tables left over are analyses' results.
  */
 export function pairTables(
-  binary: readonly PrismTableInfo[],
+  binary: readonly PzfxTableInfo[],
   xmlTables: readonly { title: string; yTitles: string[] }[],
 ): (number | null)[] {
   const used = new Set<number>()
@@ -84,28 +84,28 @@ export function pairTables(
   })
 }
 
-const textSpec = (t: PrismText) => ({ content: plainText(t.text) })
+const textSpec = (t: PzfxText) => ({ content: plainText(t.text) })
 
-function setRange(axis: GraphNode['axes']['x'], a: PrismAxis): GraphNode['axes']['x'] | null {
+function setRange(axis: GraphNode['axes']['x'], a: PzfxAxis): GraphNode['axes']['x'] | null {
   if (axis.type !== 'continuous') return null
   const next: ContinuousAxisSpec = { ...axis, range: { min: a.min, max: a.max } }
   return next
 }
 
 /**
- * The native graph of one decoded Prism graph of `table`, and what was matched; null when none
+ * The native graph of one decoded graph of `table`, and what was matched; null when none
  * of the graph's data sets is one of the table's.
  */
-export function graphFromPrism(
-  prism: PrismGraph,
+export function graphFromPzfx(
+  src: PzfxGraph,
   table: DataTable,
-  info: PrismTableInfo,
+  info: PzfxTableInfo,
 ): { graph: GraphNode; matched: string[]; defaulted: string[] } | null {
   // Binary columns are row titles, then X when the table has one, then the Y columns.
   const yStart = info.columns.length - table.dataSets.length
   const keys: string[] = []
   const styles = new Map<string, { color?: string; shape?: string }>()
-  for (const ds of prism.dataSets) {
+  for (const ds of src.dataSets) {
     const d = table.dataSets[ds.column - yStart]
     if (!d || keys.includes(d.id)) continue
     keys.push(d.id)
@@ -113,7 +113,7 @@ export function graphFromPrism(
   }
   if (!keys.length) return null
 
-  let g: GraphNode = createGraphFor(table, prism.name || table.name)
+  let g: GraphNode = createGraphFor(table, src.name || table.name)
   const matched: string[] = []
   const defaulted = [...NOT_DECODED]
   const set = (path: (string | number | { id: string })[], value: unknown) => {
@@ -128,38 +128,38 @@ export function graphFromPrism(
       ? 'data set'
       : inTableOrder
         ? `data sets (${keys.length})`
-        : `data sets (${keys.length}, in Prism’s order)`,
+        : `data sets (${keys.length}, in the file’s order)`,
   )
 
-  if (prism.title) {
-    set(['title'], prism.title.hidden || !prism.title.text.trim() ? null : textSpec(prism.title))
-    matched.push(prism.title.hidden ? 'title (hidden)' : 'title')
+  if (src.title) {
+    set(['title'], src.title.hidden || !src.title.text.trim() ? null : textSpec(src.title))
+    matched.push(src.title.hidden ? 'title (hidden)' : 'title')
   }
-  const axisTitle = (which: 'x' | 'y', label: string, a: PrismAxis | null) => {
+  const axisTitle = (which: 'x' | 'y', label: string, a: PzfxAxis | null) => {
     if (!a?.title) return
     const hidden = a.title.hidden || !a.title.text.trim()
     set(['axes', which, 'title'], hidden ? null : textSpec(a.title))
     matched.push(`${label} title${hidden ? ' (hidden)' : ''}`)
   }
-  axisTitle('x', 'X axis', prism.x)
-  axisTitle('y', 'Y axis', prism.y)
+  axisTitle('x', 'X axis', src.x)
+  axisTitle('y', 'Y axis', src.y)
 
-  if (prism.y) {
-    const y = setRange(g.axes.y, prism.y)
+  if (src.y) {
+    const y = setRange(g.axes.y, src.y)
     if (y) {
       set(['axes', 'y'], y)
-      matched.push(`Y axis range ${num(prism.y.min)} to ${num(prism.y.max)}`)
+      matched.push(`Y axis range ${num(src.y.min)} to ${num(src.y.max)}`)
     }
   }
   const xNumericHere = g.axes.x.type === 'continuous'
-  if (prism.x && prism.xNumeric && xNumericHere) {
-    const x = setRange(g.axes.x, prism.x)
+  if (src.x && src.xNumeric && xNumericHere) {
+    const x = setRange(g.axes.x, src.x)
     if (x) {
       set(['axes', 'x'], x)
-      matched.push(`X axis range ${num(prism.x.min)} to ${num(prism.x.max)}`)
+      matched.push(`X axis range ${num(src.x.min)} to ${num(src.x.max)}`)
     }
-  } else if (!prism.xNumeric && xNumericHere)
-    defaulted.unshift('X as categories (Prism drew X values as categories; here X is numeric)')
+  } else if (!src.xNumeric && xNumericHere)
+    defaulted.unshift('X as categories (the file drew X values as categories; here X is numeric)')
 
   let colors = 0
   let shapes = 0
@@ -185,12 +185,12 @@ export function graphFromPrism(
 }
 
 /**
- * Graphs for a .pzfx import: one per Prism graph whose table was imported (`tableOf` gives the
- * imported table of a binary table, or null), drawn from what decoded, else its table's default
- * graph.
+ * Graphs for a .pzfx import: one per graph in the file whose table was imported (`tableOf` gives
+ * the imported table of a binary table, or null), drawn from what decoded, else its table's
+ * default graph.
  */
-export function graphsFromPrism(
-  decoded: PrismGraphs,
+export function graphsFromPzfx(
+  decoded: PzfxGraphs,
   tables: readonly DataTable[],
   tableOf: (binaryTable: number) => number | null,
 ): PzfxGraphImport {
@@ -201,11 +201,11 @@ export function graphsFromPrism(
     decoded: 0,
     layouts: decoded.layouts,
   }
-  for (const prism of decoded.graphs) {
-    const binaryTables = [...new Set(prism.dataSets.map((d) => d.table))]
+  for (const src of decoded.graphs) {
+    const binaryTables = [...new Set(src.dataSets.map((d) => d.table))]
     const ti = binaryTables.length === 1 ? tableOf(binaryTables[0]!) : null
     const table = ti === null ? undefined : tables[ti]
-    const name = prism.name || 'Graph'
+    const name = src.name || 'Graph'
     if (!table || ti === null) {
       out.report.push({
         name,
@@ -220,7 +220,7 @@ export function graphsFromPrism(
       })
       continue
     }
-    const built = graphFromPrism(prism, table, decoded.tables[binaryTables[0]!]!)
+    const built = graphFromPzfx(src, table, decoded.tables[binaryTables[0]!]!)
     if (built) {
       out.graphs.push({ graph: built.graph, tableIndex: ti })
       out.report.push({
@@ -245,7 +245,7 @@ export function graphsFromPrism(
   return out
 }
 
-/** Default graphs per imported table, when Prism's graphs can't be read at all. */
+/** Default graphs per imported table, when the file's graphs can't be read at all. */
 export function defaultGraphsFor(
   tables: readonly DataTable[],
   found: number,

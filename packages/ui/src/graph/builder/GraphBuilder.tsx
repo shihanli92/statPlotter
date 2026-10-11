@@ -138,7 +138,7 @@ export function legendOnLast(graphs: GraphNode[]): GraphNode[] {
 
 /**
  * The preset a new graph of a node starts with, when it has a natural one: a frequency
- * distribution's table is a histogram (as in Prism).
+ * distribution's table is a histogram.
  */
 export function defaultPresetFor(node: DocNode | undefined): string | undefined {
   return node?.kind === 'analysis' && node.analysisId === 'frequencyDistribution'

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /**
  * LOWESS smoother (Cleveland 1979; Chambers, Cleveland, Kleiner & Tukey, Graphical Methods for
- * Data Analysis, 1983, §4.11 — the algorithm GraphPad cites for Prism's LOWESS curves) exactly as
+ * Data Analysis, 1983, §4.11 — the usual reference for LOWESS curves) exactly as
  * R's lowess() runs it.
  *
  * Translated from R 4.4.3: src/library/stats/src/lowess.c (clowess and lowest, a C translation of

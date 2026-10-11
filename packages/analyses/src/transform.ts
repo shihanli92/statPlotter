@@ -32,11 +32,11 @@ import {
 } from './resultTable.ts'
 
 // ---------------------------------------------------------------------------------------------
-// Transform (Prism: Analyze › Transform, concentrations and data). The standard functions of
-// Prism's list (User Guide, "Transform data"): each value becomes f(Y) (or f(X) for X values of
+// Transform (Analyze › Transform, concentrations and data). The standard functions: each value
+// becomes f(Y) (or f(X) for X values of
 // XY tables); a value the function isn't defined for (log of a negative number, logit outside
 // 0–1…) becomes an empty cell and is counted. Trigonometric functions use radians, probit adds 5
-// ("Prism uses an older definition of probit that adds 5"), rank and z score are computed within
+// (the older definition of probit), rank and z score are computed within
 // each data set (column) over all its values, ties getting the average rank.
 // ---------------------------------------------------------------------------------------------
 
@@ -371,7 +371,7 @@ export const transformDef: AnalysisDef<TransformParams> = {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Normalize (User Guide, "Normalize"): each data set is rescaled so that its 0% and 100% values
+// Normalize: each data set is rescaled so that its 0% and 100% values
 // become 0 and 100 (or 0 and 1): Y' = (Y − Z) / (H − Z). "If you have entered replicate values,
 // zero and one hundred percent are defined by the mean of the replicates"; SD and SEM are
 // divided by (H − Z) as well. Z: the smallest value, the first value or a value you enter; H: the
@@ -532,7 +532,7 @@ export const normalizeDef: AnalysisDef<NormalizeParams> = {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Remove baseline and column math (User Guide, "Remove baseline and column math"). Three layouts:
+// Remove baseline and column math. Three layouts:
 // - baseline data set: every other data set minus (or ÷, or % change from) the baseline data set,
 //   row by row;
 // - baseline rows: each data set minus its own value in the first (or last) row(s), averaged

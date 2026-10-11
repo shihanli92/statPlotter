@@ -30,7 +30,7 @@ const Params = z.object({
   shapiroWilk: z.boolean().default(true),
   kolmogorovSmirnov: z.boolean().default(true),
   /**
-   * A QQ plot on a graph of its own (Prism: actual values on X, the values a Gaussian sample
+   * A QQ plot on a graph of its own (actual values on X, the values a Gaussian sample
    * would have at the same ranks on Y, with the line of identity). Lognormal when only
    * lognormality is tested. Off by default here, so existing projects gain no graph.
    */
@@ -95,7 +95,7 @@ export function testBlock(
     !r ? na : r.pAbove010 || Number.isFinite(r.p) ? v(r) : NONE
   return labelTable(`${t.title}${dist === 'normality' ? '' : ' (lognormal)'}`, titles, [
     [t.stat, results.map((r) => cell(r, (r) => num(r.stat)))],
-    // Lilliefors P is only accurate below 0.10; Prism then shows just "> 0.10".
+    // Lilliefors P is only accurate below 0.10; above it, just "> 0.10".
     ['P value', results.map((r) => cell(r, (r) => (r.pAbove010 ? text('> 0.10') : pval(r.p))))],
     [passed, results.map((r) => cell(r, (r) => decided(!(r.p < ALPHA), r.p)))],
     ['P value summary', results.map((r) => cell(r, (r) => psum(r.p)))],

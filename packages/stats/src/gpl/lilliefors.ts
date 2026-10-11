@@ -15,7 +15,7 @@ export interface LillieforsResult extends NormalityTest {
   stat: number
   /**
    * True when p > 0.10: the Dallal–Wilkinson approximation is only accurate for small P, and
-   * Prism then reports just "P > 0.10". `p` still holds the value of the (cruder) large-P
+   * the result then reads just "P > 0.10". `p` still holds the value of the (cruder) large-P
    * approximation below.
    */
   pAbove010: boolean
@@ -25,8 +25,8 @@ const LILLIEFORS_MIN_N = 5
 
 /**
  * Kolmogorov–Smirnov normality test with mean and SD estimated from the data (Lilliefors), P by
- * the Dallal & Wilkinson (1986, Am. Stat. 40, 294–296) approximation, as Prism ("Prism uses the
- * Dallal and Wilkinson approximation to Lilliefors' method") and nortest::lillie.test:
+ * the Dallal & Wilkinson (1986, Am. Stat. 40, 294–296) approximation to Lilliefors' method, as
+ * nortest::lillie.test:
  *
  *   D = max(D⁺, D⁻), D⁺ = max(i/n − Φ(z_i)), D⁻ = max(Φ(z_i) − (i − 1)/n), z_i = (x_(i) − x̄)/s.
  *   For n > 100, D is rescaled D(n/100)^0.49 and n set to 100 (Dallal & Wilkinson).
@@ -36,7 +36,7 @@ const LILLIEFORS_MIN_N = 5
  *   D* = (√n − 0.01 + 0.85/√n) D (D'Agostino & Stephens 1986, Table 4.7) by nortest's quartic
  *   fits: 1 (D* ≤ 0.302), then quartics on (0.302, 0.5], (0.5, 0.9], (0.9, 1.31], 0 above.
  *
- * n < 5 (Prism's minimum) or zero spread gives NaN.
+ * n < 5 (the minimum) or zero spread gives NaN.
  */
 export function kolmogorovSmirnovNormality(x: ArrayLike<number>): LillieforsResult {
   const n = x.length

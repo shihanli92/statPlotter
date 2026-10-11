@@ -575,7 +575,7 @@ const CoxParams = z.object({
   confidenceLevel,
   ...categoricalParams,
   /**
-   * Estimated survival curves (Prism's Graphs tab): each curve gives predictor values by data
+   * Estimated survival curves (the Graphs tab): each curve gives predictor values by data
    * set key — a number, or a level of a categorical predictor; numeric predictors not given are
    * 0 and categorical ones take their reference level.
    */

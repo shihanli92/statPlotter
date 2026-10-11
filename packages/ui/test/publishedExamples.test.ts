@@ -196,7 +196,7 @@ describe('Swaminathan et al. (embedded data)', () => {
   )
 
   it(
-    'gives the P values the source data state (Prism’s, beside the values) to 1e-10',
+    'gives the P values the source data state (pasted beside the values) to 1e-10',
     async () => {
       const built = await swam()
       const stated: [string, string, number][] = [

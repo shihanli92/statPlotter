@@ -1,23 +1,18 @@
-# Empirical ROC curve, as GraphPad Prism documents it
-# (https://www.graphpad.com/guides/prism/latest/statistics/stat_calcualtion_details_for_roc_cu.htm,
-#  https://www.graphpad.com/support/faq/details-of-calculations-for-roc-curves/,
-#  https://www.graphpad.com/guides/prism/latest/statistics/sensitivity_and_specificity.htm,
-#  https://www.graphpad.com/guides/prism/latest/statistics/stat_howto_roc.htm):
+# Empirical ROC curve:
 #
 # - Thresholds: pooled values sorted, adjacent values averaged. We merge ties first (so every
 #   threshold lies strictly between two distinct values), ascending. Cross-checked with
 #   pROC::coords(roc, "all") (pROC uses the same midpoints, plus -Inf / Inf, which we drop).
 # - Sensitivity: patients above the threshold / n patients; specificity: controls below /
-#   n controls (direction "higher"; mirrored for "lower"). CIs: Clopper-Pearson (Prism: "the
-#   Clopper method") = binom.test()$conf.int, or params$ciMethod = "wilsonBrown" (Prism's
+#   n controls (direction "higher"; mirrored for "lower"). CIs: Clopper-Pearson ("the
+#   Clopper method") = binom.test()$conf.int, or params$ciMethod = "wilsonBrown" (the
 #   hybrid Wilson / Poisson interval, as proportionCI; code copied from contingency.R).
 #   Likelihood ratio = sens / (1 - spec) (Inf at spec = 1, NaN if sens is also 0).
-# - Direction: "auto" (Prism: "it figures out automatically whether the patients tend to have
-#   higher or lower test results"; "If the area is first calculated as less than 0.50, Prism
-#   will reverse the definition of abnormal") = "higher" unless its area < 0.5.
+# - Direction: "auto" (whether the patients tend to have higher or lower test results is
+#   found automatically: when the area is first calculated as less than 0.50, the definition
+#   of abnormal is reversed) = "higher" unless its area < 0.5.
 # - Area: Mann-Whitney P(patient > control) + P(tie)/2 = pROC::auc (checked) = wilcox W/(n n).
-# - SE: Hanley & McNeil (1982) with Q1, Q2 estimated from the data. Prism: "Prism actually
-#   computes Q1 and Q2 using a more complicated equation", linking to IBM SPSS's ROC algorithm
+# - SE: Hanley & McNeil (1982) with Q1, Q2 estimated from the data, by IBM SPSS's ROC algorithm
 #   ("SE of the area under the ROC curve statistic, nonparametric assumption", SPSS Statistics
 #   Algorithms, ROC Algorithms):
 #     Q1 = sum_x n-(=x) [n+(>x)^2 + n+(>x) n+(=x) + n+(=x)^2 / 3] / (n- n+^2)
@@ -26,9 +21,8 @@
 #   used here.) Checked against a brute-force definition: Q1 = mean over controls c and ordered
 #   pairs of patients (a1, a2) (with replacement) of P(c lowest), ties broken at random.
 #   Direction "lower": SE(1 - W) = SE(W).
-# - CI: A +- qnorm((1 + level)/2) SE (SPSS's asymptotic interval; Prism: "computed by a
-#   nonparametric method"), truncated to [0, 1] (to verify against Prism output).
-# - P: z = (A - 0.5) / SE0, SE0 = sqrt((n+ + n- + 1) / (12 n+ n-)) (Prism FAQ: sqrt((0.25 +
+# - CI: A +- qnorm((1 + level)/2) SE (SPSS's asymptotic interval), truncated to [0, 1].
+# - P: z = (A - 0.5) / SE0, SE0 = sqrt((n+ + n- + 1) / (12 n+ n-)) (often written sqrt((0.25 +
 #   (na + nn - 2) 0.083333) / (na nn)); we use 1/12 exactly); two-tailed normal.
 # params: direction ("auto" / "higher" / "lower"), confLevel, ciMethod.
 

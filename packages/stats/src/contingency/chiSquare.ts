@@ -13,9 +13,9 @@ export interface ChiSquareResult {
 /**
  * Pearson's chi-square test of independence for an r × c table (R's chisq.test).
  *
- * `yates` applies Yates' continuity correction to 2 × 2 tables only (ignored otherwise), as
- * Prism does it: Σ(|O − E| − ½)² / E even when |O − E| < ½, where the correction then
- * increases chi-square (Prism's guide says it applies the correction "even in this case").
+ * `yates` applies Yates' continuity correction to 2 × 2 tables only (ignored otherwise):
+ * Σ(|O − E| − ½)² / E even when |O − E| < ½, where the correction then increases
+ * chi-square (the correction is applied even in this case).
  * R's chisq.test instead caps the correction at |O − E|; the two agree whenever
  * |O − E| ≥ ½.
  *
@@ -47,7 +47,7 @@ export function chiSquareTest(
 
 /**
  * Chi-square test for trend (Cochran-Armitage) in a k × 2 table whose rows are ordered and
- * equally spaced; scores 1..k, "success" = the first column (Prism; Altman 1991,
+ * equally spaced; scores 1..k, "success" = the first column (Altman 1991,
  * pp. 261–265; identical to R's prop.trend.test):
  *   χ² = (Σ xᵢsᵢ − R s̄)² / (p(1 − p) Σ nᵢ(sᵢ − s̄)²),  s̄ = Σ nᵢsᵢ / N, p = R / N,
  * with xᵢ the first-column count and nᵢ the row total. Empty rows contribute nothing.
@@ -83,7 +83,7 @@ export function chiSquareTrend(table: readonly (readonly number[])[]): {
 /**
  * Chi-square goodness of fit of observed counts to expected counts or proportions (either
  * is accepted: expected values are rescaled to sum to the observed total). df = k − 1.
- * No Yates correction (Prism). A category with expected 0 gives an infinite (observed > 0)
+ * No Yates correction. A category with expected 0 gives an infinite (observed > 0)
  * or NaN (observed 0) statistic, as R's chisq.test(p =).
  * Throws for fewer than 2 categories, mismatched lengths, invalid observed counts, or
  * expected values that are negative, non-finite or all zero.
@@ -117,10 +117,10 @@ export function chiSquareGoodnessOfFit(
 
 /**
  * McNemar's test for a paired 2 × 2 table [[a, b], [c, d]] (discordant pairs b and c).
- * chiSq = (|b − c| − 1)² / (b + c), df 1, with the continuity correction as in Prism's
- * QuickCalc and R's mcnemar.test (which, like this, drops the correction when b = c, giving
- * 0). pExact is the exact two-sided binomial test of b out of b + c at ½ (Prism's
- * recommended analysis); 1 when there are no discordant pairs, where chiSq and p are NaN.
+ * chiSq = (|b − c| − 1)² / (b + c), df 1, with the continuity correction as in R's
+ * mcnemar.test (which, like this, drops the correction when b = c, giving 0). pExact is the
+ * exact two-sided binomial test of b out of b + c at ½ (the recommended analysis); 1 when
+ * there are no discordant pairs, where chiSq and p are NaN.
  */
 export function mcNemar(table: readonly (readonly number[])[]): {
   chiSq: number

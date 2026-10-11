@@ -6,25 +6,24 @@ import type { CurveModel } from './nonlinear.ts'
 import { polynomialRegression } from './polynomial.ts'
 
 /**
- * The rest of Prism's built-in equation library (roadmap 20), family by family as the GraphPad
- * Curve Fitting Guide lists them ("Models (equations) built-in to Prism"): the "X is
+ * The rest of the built-in equation library (roadmap 20), family by family: the "X is
  * concentration" dose-response forms, the special dose-response models (operational model,
  * Gaddum/Schild, EC50 shift, allosteric EC50 shift, absolute IC50), binding with ligand
  * depletion, allosteric modulators, total and nonspecific binding together, homologous and
  * kinetic competition, the Morrison equation, three-phase decay, the remaining lines,
  * polynomials up to the sixth order (plain and centered), sums of Gaussians and Lorentzians,
  * lognormal and cumulative Gaussians, damped and sinc waves, the linear-quadratic radiation
- * models and the classic (Prism 1–3) forms that differ from the modern ones.
+ * models and the classic forms that differ from the modern ones.
  *
- * Every equation is written in GraphPad's own text (typos in the guide fixed: EC50 shift's
+ * Every equation is written in its published text (typos in the source fixed: EC50 shift's
  * "EC50Control + EC50Ratio" is EC50Control·EC50Ratio as its log form says; the damped sine's
  * missing parenthesis), so gradients are exact (automatic differentiation). Parameter names
- * follow the guide; constants the guide says to set ("you must constrain…") default to a
+ * follow the source; constants the source says to set ("you must constrain…") default to a
  * constant the user is expected to change, data set constants (antagonist or modulator
  * concentrations, hot ligand concentrations) come from the column titles, and parameters the
- * guide says are shared default to shared. The guide publishes no initial-value rules for
+ * source says are shared default to shared. The source publishes no initial-value rules for
  * built-in equations (only that Hill slopes start at SIGN(YatXmax − YatXmin) and polynomials at
- * 1.0); ours are written in Prism's rule vocabulary (YMIN, YMAX, X at YMID…) where it suffices,
+ * 1.0); ours are written in the rule vocabulary (YMIN, YMAX, X at YMID…) where it suffices,
  * with "X is concentration" forms using the rules of their log forms on log10(X).
  */
 
@@ -108,7 +107,7 @@ const SPECIAL_C: EquationCategory = 'Dose-response — Special, X is concentrati
 const SPECIAL_L: EquationCategory = 'Dose-response — Special, X is log(concentration)'
 const log10 = Math.log10
 
-/** GraphPad's text of each standard form with X = concentration, in DOSE_FORMS order. */
+/** The text of each standard form with X = concentration, in DOSE_FORMS order. */
 const DOSE_CONC_TEXT = [
   'Y=Bottom + X*(Top-Bottom)/(EC50 + X)',
   'Y=Bottom + (X^HillSlope)*(Top-Bottom)/(X^HillSlope + EC50^HillSlope)',
@@ -1315,7 +1314,7 @@ function polynomial(degree: number, centered: boolean): EquationDef {
     params,
     paramInfo,
     initial(x, y, fixed) {
-      // Linear least squares gives the solution (Prism starts every coefficient at 1.0).
+      // Linear least squares gives the solution (rather than starting every coefficient at 1.0).
       const m = centered ? (fixed?.[degree + 1] ?? meanOfX(x)) : 0
       const xs = Array.from(x, (v) => v - m)
       const c = Array.from(polynomialRegression(xs, y, degree).coef)
@@ -1671,7 +1670,7 @@ lq.push(
   }),
 )
 
-// ---- classic equations (Prism 1–3) whose form differs from the modern ones ------------------------
+// ---- classic equations whose form differs from the modern ones ------------------------
 
 const CLASSIC: EquationCategory = 'Classic equations'
 
@@ -1758,7 +1757,7 @@ const classic: EquationDef[] = [
       C: info('Coefficient of the second term'),
       D: info('Power of the second term'),
     },
-    // The guide: all four start at 1.0 ("not very helpful"). Ours: a log-log line through the
+    // The source starts all four at 1.0 ("not very helpful"). Ours: a log-log line through the
     // upper half of X for the term that dominates there, then one through what it leaves at
     // the lower half for the other term.
     initial(x, y) {

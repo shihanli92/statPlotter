@@ -745,7 +745,7 @@ export const GraphStyle = z.object({
   /** Fill of the plot area only. */
   plotBackground: FillStyle.optional(),
   bracket: BracketStyle.optional(),
-  /** Category and grouped frames: gap = categoryGap × a group's width (Prism's convention). */
+  /** Category and grouped frames: gap = categoryGap × a group's width (the usual convention). */
   categoryGap: z.number().min(0).max(0.9).optional(),
   /**
    * Category and grouped frames: categories along the bottom ('vertical', default) or down the

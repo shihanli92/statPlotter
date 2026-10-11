@@ -1,6 +1,6 @@
 # Contingency-table additions (roadmap 18): effect sizes and comparisons of pairs of rows.
 #
-# Phi        2 x 2 only: |ad - bc| / sqrt(r1 r2 c1 c2) (Prism: "ranges from 0 to 1", computed
+# Phi        2 x 2 only: |ad - bc| / sqrt(r1 r2 c1 c2) (from 0 to 1, computed
 #            from the cell counts whatever the test), cross-checked as sqrt(X^2 / N) with the
 #            uncorrected chisq.test statistic.
 # Cramer's V sqrt(X^2 / (N (min(r, c) - 1))), X^2 = chisq.test(correct = FALSE).

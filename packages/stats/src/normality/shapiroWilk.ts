@@ -17,8 +17,7 @@ const C6 = [-0.4803, -0.082676, 0.0030302]
 
 /**
  * Shapiro–Wilk W with Royston's approximations to the coefficients and to the null
- * distribution (Royston 1992, 1995 AS R94), the method Prism uses ("Prism uses the method of
- * Royston"); matches R's shapiro.test.
+ * distribution (Royston 1992, 1995 AS R94); matches R's shapiro.test.
  *
  * Coefficients: m_i = Φ⁻¹((i − 3/8)/(n + 1/4)); with u = 1/√n the two largest are
  * a_n = −m_1/‖m‖ + poly(C1, u) and (n > 5) a_{n−1} = −m_2/‖m‖ + poly(C2, u); the rest are m_i
@@ -30,8 +29,8 @@ const C6 = [-0.4803, -0.082676, 0.0030302]
  * γ = −2.273 + 0.459n (P = 0 when ln(1 − W) ≥ γ, where AS R94 returns "1e-99"); n ≥ 12:
  * ln(1 − W) ~ N(μ(ln n), σ(ln n)).
  *
- * NaN outside 3 ≤ n ≤ 5000 (Prism's limits) and when all values are equal. The test is known
- * to behave poorly with many ties (Prism Statistics Guide).
+ * NaN outside 3 ≤ n ≤ 5000 (the test's limits) and when all values are equal. The test is known
+ * to behave poorly with many ties.
  */
 export function shapiroWilk(x: ArrayLike<number>): NormalityTest {
   const n = x.length

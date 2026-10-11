@@ -8,13 +8,13 @@ import { firstCol, rowCountOf } from './common.ts'
 // text (categorical) variables (`NormalizedDataSet.text`) and numeric variables the user treats
 // as categorical, coded for regression (reference / dummy coding) or ANOVA.
 //
-// Conventions (Prism's multiple regression "Reference level" tab and multifactor ANOVA):
+// Conventions (the multiple regression "Reference level" tab and multifactor ANOVA):
 // - A text value is trimmed; an empty text cell is a missing value. A numeric variable treated as
 //   categorical has one level per distinct number, labelled with the number as written by JS.
-// - Levels are ordered by their first appearance in the table ("Prism will display levels … in
-//   the same order that they appear in the data table"); levels that occur only in rows left out
+// - Levels are ordered by their first appearance in the table (displayed in the same order
+//   that they appear in the data table); levels that occur only in rows left out
 //   (missing values) are not levels of the analysis.
-// - Reference level: Prism's automatic rules — the first level (default), the last, the most or
+// - Reference level: the automatic rules — the first level (default), the last, the most or
 //   the least frequent in the analyzed rows (ties: the earlier level) — or a level chosen per
 //   variable.
 // - Rows are analyzed when every variable of the model has a value (complete cases); rows with a
@@ -38,7 +38,7 @@ export const categoricalParams = {
 
 /** Prediction ("interpolation") params of linear, logistic and Poisson regression. */
 export const predictionParams = {
-  /** Predict the outcome of rows with every predictor but no outcome (Prism's Interpolation). */
+  /** Predict the outcome of rows with every predictor but no outcome ("Interpolation"). */
   interpolate: z.boolean().default(false),
   /** Points to predict: predictor key → number or level (missing: mean / reference level). */
   predictions: z.array(z.record(z.string(), z.union([z.number(), z.string()]))).default([]),

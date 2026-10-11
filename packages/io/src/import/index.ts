@@ -60,7 +60,7 @@ export type ImportedFile =
       kind: 'tables'
       tables: DataTable[]
       warnings: string[]
-      /** .pzfx: Prism's graphs (roadmap 39), read with `ImportFileOptions.graphs`. */
+      /** .pzfx: the file's graphs (roadmap 39), read with `ImportFileOptions.graphs`. */
       graphs?: PzfxGraphImport
     }
 
@@ -80,7 +80,7 @@ export const IMPORT_EXTENSIONS = [
 export const TEXT_EXTENSIONS = ['csv', 'tsv', 'tab', 'txt'] as const
 
 export type TextImportOptions = Pick<CsvOptions, 'delimiter' | 'decimal'> & {
-  /** .pzfx: read Prism's graphs too (roadmap 39). */
+  /** .pzfx: read the file's graphs too (roadmap 39). */
   graphs?: boolean
 }
 
@@ -119,7 +119,7 @@ const baseName = (name: string) => {
 
 /**
  * Reads a file by extension: delimited text and Excel workbooks give sheets (the caller picks a
- * block and table kind, then calls `sheetToTable`); Prism .pzfx projects give finished tables.
+ * block and table kind, then calls `sheetToTable`); .pzfx projects give finished tables.
  * `text` overrides the sniffed delimiter and decimal separator of delimited text. A file whose
  * sheets have no values (an empty CSV, a workbook of blank sheets) is an ImportError.
  */
@@ -202,11 +202,13 @@ function readFile(
       throw new ImportError(
         'Legacy Excel (.xls) files are not supported. Save the workbook as .xlsx and try again.',
       )
+    // Binary projects (the extension is the file format's, kept as data): only the XML format
+    // (.pzfx) is read.
     case 'prism':
     case 'pzf':
       throw new ImportError(
-        `Prism .${ext} files are not supported. In Prism, use File › Save As and choose the XML ` +
-          'format (.pzfx), then import that file.',
+        `.${ext} files are not supported. Save the project in the XML format (.pzfx), then import ` +
+          'that file.',
       )
     default:
       throw new ImportError(

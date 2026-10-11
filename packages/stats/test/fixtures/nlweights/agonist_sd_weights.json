@@ -47,5 +47,5 @@
     "r": "4.4.3",
     "packages": {}
   },
-  "note": "Prism's 1/SD^2 weighting (SDs entered with the means)."
+  "note": "1/SD^2 weighting (SDs entered with the means)."
 }

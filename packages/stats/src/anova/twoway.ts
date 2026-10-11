@@ -15,18 +15,17 @@ import { cellSummary, fitCellMeans, type GroupData, groupStats, roundedSS } from
  * Coding and sums of squares: effect (sum-to-zero) coding with the last level as −1, and
  * Type III sums of squares — the increase in the (cell-mean) residual SS when that effect's
  * columns are dropped from the full model — which is what car::Anova(type = 3) reports with
- * contr.sum, and what Prism reports for unbalanced data ("Prism uses the regression approach …
- * Type III sum-of-squares", Prism Statistics Guide, "How Prism computes two-way ANOVA"). For
+ * contr.sum (the regression approach, the usual choice for unbalanced data). For
  * balanced data they are the classical sums of squares. With `interaction: false` the additive
  * model is fitted ("assume no interaction"): the interaction SS is pooled into the residual,
  * whose df becomes N − r − c + 1; the row/column SS are then Type II = Type III.
  *
- * Percent of total variation = 100·SS/SS_total with SS_total = Σ (x − grand mean)², as Prism
- * reports it (for unbalanced data the Type III SS need not add up to the total).
+ * Percent of total variation = 100·SS/SS_total with SS_total = Σ (x − grand mean)² (for
+ * unbalanced data the Type III SS need not add up to the total).
  *
  * Degenerate designs return NaN sources with `error` set instead of throwing:
  * - 'empty-cells': a row × column combination has no data and the interaction model was asked
- *   for (Type III tests are then not defined; Prism refuses too). The additive model is fine
+ *   for (Type III tests are then not defined). The additive model is fine
  *   with empty cells as long as the rows and columns are connected.
  * - 'no-residual-df': one value per cell with the interaction model (use interaction: false).
  * - 'not-estimable': the additive model's effects are not estimable (disconnected design), or

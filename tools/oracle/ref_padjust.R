@@ -32,7 +32,7 @@ bky_reject <- function(p, Q, m = length(p)) {
   step_up(q1 * m / m0)[seq_along(p)]
 }
 
-# q value at FDR level Q, as Prism reports it (audit 3, RTA-1; decision 1084): the BH-adjusted
+# q value at FDR level Q (audit 3, RTA-1; decision 1084): the BH-adjusted
 # P value (p.adjust) times (1 + Q) m0 / m, m0 = m - r1 from the first stage at Q / (1 + Q) (taken
 # as 1 when the first stage rejects every hypothesis), capped at 1. No R function computes it;
 # it reproduces every q value of Tawk et al. 2026's source data, and q <= Q exactly when

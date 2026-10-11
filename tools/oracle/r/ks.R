@@ -1,21 +1,20 @@
-# Two-sample Kolmogorov-Smirnov test, as Prism documents it
-# (https://www.graphpad.com/guides/prism/latest/statistics/interpreting_results_kolmogorov-smirnov_test.htm):
+# Two-sample Kolmogorov-Smirnov test:
 #
 #   d       max |F_a - F_b| (ks.test's D).
-#   exact   Prism: exact "when the number of permutations of n1 values from n1+n2 values is less
-#           than 60,000", i.e. choose(n1 + n2, n1) < 60000 (params$exact = "auto", the default).
-#           The guide's list of such sizes agrees except for its first line, "(2, 2) ... (2, 346)",
+#   exact   exact when the number of permutations of n1 values from n1+n2 values is less
+#           than 60,000, i.e. choose(n1 + n2, n1) < 60000 (params$exact = "auto", the default).
+#           A published list of such sizes agrees except for its first line, "(2, 2) ... (2, 346)",
 #           where choose(348, 2) = 60378; the formula gives (2, 344). We follow the formula.
-#   p       exact: "the fraction of these reshuffled data sets where the D ... is greater than or
-#           equal than the D computed from the actual data", ties included (Prism's in-house
-#           algorithm) = ks.test(exact = TRUE), which since R 4.3 conditions on the tie pattern
+#   p       exact: the fraction of the reshuffled data sets where the D is greater than or
+#           equal to the D computed from the actual data, ties included
+#           = ks.test(exact = TRUE), which since R 4.3 conditions on the tie pattern
 #           (psmirnov(z = pooled data)).
-#           asymptotic: Prism cites Numerical Recipes (3rd ed.), whose two-sample test uses
+#           asymptotic: Numerical Recipes (3rd ed.), whose two-sample test uses
 #           Q_KS((sqrt(Ne) + 0.12 + 0.11/sqrt(Ne)) D), Ne = n1 n2/(n1 + n2) (Stephens 1970).
 #           Hand-coded here with Q_KS summed to convergence. Without the correction term it is
 #           R's asymptotic P, which is checked against R's C routine at tol 1e-12 (ks.test
 #           itself evaluates Q_KS only to about 1e-5).
-#           Prism's actual large-sample formula is not documented beyond the citation.
+#           Other large-sample formulas exist; this is the one implemented.
 #           Exact P is also computed by brute force -- every split of the pooled data into
 #           samples of sizes n1 and n2, D compared as the integer n1 n2 D -- whenever
 #           choose(n1 + n2, n1) * (n1 + n2) <= 5e6, and that value is used: ks.test(exact = TRUE)

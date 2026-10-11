@@ -1,5 +1,5 @@
 {
-  "name": "t2x2_mcnemar_prism",
+  "name": "t2x2_mcnemar_25_4",
   "input": {"table":[[13,25],[4,92]]},
   "params": {},
   "expected": {
@@ -93,5 +93,5 @@
       "contingencytables": "3.1.0"
     }
   },
-  "note": "Prism's McNemar example."
+  "note": "A McNemar example: 25 and 4 discordant pairs."
 }

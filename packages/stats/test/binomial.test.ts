@@ -45,7 +45,7 @@ describe('binomial / proportion / goodness of fit vs R', () => {
 })
 
 describe('binomial invariants', () => {
-  it('Prism example: 7 of 100 at 0.2', () => {
+  it('published example: 7 of 100 at 0.2', () => {
     expectClose(binomialTest(7, 100, 0.2).p, 0.00061307, { rtol: 1e-4 }, 'p')
   })
 

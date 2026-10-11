@@ -80,9 +80,9 @@ const Constraint = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('fit') }),
   z.object({ kind: z.literal('constant'), value: z.number() }),
   z.object({ kind: z.literal('shared') }),
-  /** Prism's "data set constant": the value is each data set's title (a number). */
+  /** A "data set constant": the value is each data set's title (a number). */
   z.object({ kind: z.literal('dataSetConstant') }),
-  /** Prism's "Data set constant (= Mean X)": the mean X of each data set (centered polynomials). */
+  /** "Data set constant (= Mean X)": the mean X of each data set (centered polynomials). */
   z.object({ kind: z.literal('meanX') }),
 ])
 export type Constraint = z.infer<typeof Constraint>
@@ -90,7 +90,7 @@ export type Constraint = z.infer<typeof Constraint>
 /** `params.equation` for a user-defined equation (its text is `params.userEquation`). */
 export const USER_EQUATION = 'user'
 
-/** 4-parameter log(agonist) vs. response, the most common fit in Prism. */
+/** 4-parameter log(agonist) vs. response, the most common dose-response fit. */
 export function defaultEquationId(): string {
   const eq =
     EQUATIONS.find(
@@ -116,7 +116,7 @@ export const NonlinearParamsSchema = z.object({
    */
   initialValues: z.record(z.string(), z.number()).default({}),
   /**
-   * Prism's rules for initial values (user equations): per parameter a number and a multiplier
+   * Rules for initial values (user equations): per parameter a number and a multiplier
    * ('value' = the number itself, else number × YMIN, YMAX, YMID, XATYMID…, from each data set).
    * Initial values typed in `initialValues` take precedence.
    */
@@ -132,7 +132,7 @@ export const NonlinearParamsSchema = z.object({
   /** ROUT's Q, in percent. */
   routQ: z.number().gt(0).lt(100).default(1),
   /**
-   * Prism's weighting choices: none, 1/Y² (relative), 1/Y (Poisson), 1/Y^K (power, K =
+   * Weighting choices: none, 1/Y² (relative), 1/Y (Poisson), 1/Y^K (power, K =
    * weightPower), 1/X, 1/X², 1/SD² (the SD of each row's replicates, or the entered SD).
    */
   weighting: z.enum(['none', 'relative', 'poisson', 'power', 'x', 'x2', 'sd']).default('none'),
@@ -145,7 +145,7 @@ export const NonlinearParamsSchema = z.object({
    * every data set in the null model (extra sum-of-squares F test and AICc).
    */
   compareParams: z.array(z.string()).default([]),
-  /** Prism's test for appropriate weighting (homoscedasticity when unweighted). */
+  /** The test for appropriate weighting (homoscedasticity when unweighted). */
   weightingTest: z.boolean().default(false),
   /**
    * A different equation for some data sets (data set key → built-in id, or 'user' with its
@@ -318,7 +318,7 @@ function rowSD(ds: NormalizedDataSet, row: number): number {
 }
 
 /**
- * Fixed point weights of a data set for Prism's 1/X, 1/X² and 1/SD² weighting (null for the
+ * Fixed point weights of a data set for 1/X, 1/X² and 1/SD² weighting (null for the
  * other choices), or a message when they can't be computed.
  */
 function pointWeightsOf(d: Data, w: Weights): Float64Array | null | string {
@@ -1193,7 +1193,7 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
 }
 
 /**
- * "Do the best-fit values of the chosen parameters differ between data sets?" (Prism's Compare
+ * "Do the best-fit values of the chosen parameters differ between data sets?" (the Compare
  * tab): the null model shares them across the data sets. Its sheet and P value, if compared.
  */
 function compareParamsSheet(run: FitRun): { sheet: ResultSheet; p: number } | null {

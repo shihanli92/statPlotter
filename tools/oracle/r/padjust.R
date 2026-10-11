@@ -1,7 +1,7 @@
 # Multiplicity adjustment of P values. bonferroni, holm, BH ("bh") and BY ("by") are R's
 # p.adjust (with n = the family size when params$n is given); Sidak and Holm-Sidak are written
 # out (ref_padjust.R); "bky" is the q value of the two-stage step-up procedure of Benjamini,
-# Krieger & Yekutieli (2006, Definition 6) at Q = 0.05, as Prism reports it (bky_q: BH-adjusted
+# Krieger & Yekutieli (2006, Definition 6) at Q = 0.05 (bky_q: BH-adjusted
 # P x (1 + Q) m0 / m).
 
 source(file.path(ORACLE_DIR, "ref_padjust.R"))

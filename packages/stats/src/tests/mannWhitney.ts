@@ -5,8 +5,7 @@ import { type Alternative, zPValue } from './common.ts'
 import { doubledRanks, midranks } from './ranks.ts'
 
 /**
- * 'auto' uses the exact distribution when nA + nB ≤ this. Provisional: to be checked against
- * the cut-off Prism uses.
+ * 'auto' uses the exact distribution when nA + nB ≤ this. Provisional cut-off.
  */
 const MANN_WHITNEY_EXACT_MAX_N = 100
 
@@ -20,7 +19,7 @@ export interface MannWhitneyOptions {
 }
 
 export interface MannWhitneyResult {
-  /** min(uA, uB), the U Prism reports. */
+  /** min(uA, uB), the U reported. */
   U: number
   /** U of group A: sumRanksA − nA(nA+1)/2. uA + uB = nA·nB. */
   uA: number

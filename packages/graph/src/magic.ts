@@ -16,7 +16,7 @@ import { scaffoldFor } from './scaffold.ts'
 import { defined } from './theme.ts'
 import { DEFAULT_RIGHT_AXIS } from './yAxes.ts'
 
-// Magic (Prism's "match format", decision 30 amended in roadmap 33c): a graph takes another's
+// Magic ("match format", decision 30 amended in roadmap 33c): a graph takes another's
 // formats — styles, text, legend, axis formats and, by option, size, ranges, titles, per-data-set
 // formats matched by position, and its layers. Layers are matched by id, then by geom and
 // position; data and the graph's own analysis curves and functions stay the target's.
@@ -164,7 +164,7 @@ function withSeries(l: Layer, series: Layer['series'] | undefined): Layer {
 }
 
 /**
- * Makes `target` look like `source` (Prism's "Magic"): styles, text, legend, axis formats and,
+ * Makes `target` look like `source` ("Magic"): styles, text, legend, axis formats and,
  * by option, size, ranges, titles, data-set formats and layers. Data, titles' wording,
  * annotations, the target's analysis curves and functions and a bubble plot's variables stay the
  * target's own.

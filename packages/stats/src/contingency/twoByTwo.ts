@@ -12,8 +12,8 @@ export interface TwoByTwo {
   /**
    * Number needed to treat, 1 / (p1 − p2), signed like the difference (positive: row 1 has
    * the higher proportion in column 1). Limits are the reciprocals of the difference's limits,
-   * lower = 1 / diff.upper and upper = 1 / diff.lower (Prism takes "the reciprocal of both
-   * confidence limits"). When the difference's CI contains 0 the confidence set passes
+   * lower = 1 / diff.upper and upper = 1 / diff.lower (the reciprocal of both confidence
+   * limits). When the difference's CI contains 0 the confidence set passes
    * through ±∞, and then lower > upper: it is NNT ≥ lower or NNT ≤ upper.
    * null when the difference is 0 or undefined.
    */
@@ -21,7 +21,7 @@ export interface TwoByTwo {
   /** ad / bc; Baptista–Pike exact conditional CI. */
   oddsRatio: Estimate
   /**
-   * Diagnostic-test view (Prism: row 1 = has the condition, row 2 = does not; column 1 = test
+   * Diagnostic-test view (row 1 = has the condition, row 2 = does not; column 1 = test
    * positive): sensitivity a/(a+b), specificity d/(c+d), PPV a/(a+c), NPV d/(b+d); CIs by
    * proportionCI (Wilson/Brown by default).
    */
@@ -36,7 +36,7 @@ export interface TwoByTwo {
 export interface TwoByTwoOptions {
   /** Default 0.95. */
   confLevel?: number
-  /** Newcombe's continuity correction for the difference (default true, Prism's advice). */
+  /** Newcombe's continuity correction for the difference (default true, the usual advice). */
   newcombeCorrection?: boolean
   /** CI method for sensitivity etc. (default 'wilsonBrown'). */
   proportionMethod?: ProportionCiMethod
@@ -44,7 +44,7 @@ export interface TwoByTwoOptions {
 
 /**
  * Effect sizes for a 2 × 2 table [[a, b], [c, d]] (rows = groups, row 1 = treated/exposed;
- * columns = outcome, column 1 = outcome present), with Prism's recommended CI methods.
+ * columns = outcome, column 1 = outcome present), with the recommended CI methods.
  *
  * Degenerate tables do not throw: a zero row total makes that row's proportion NaN and the
  * estimates that use it NaN (intervals as far as defined: e.g. RR = 0 has lower limit 0, an

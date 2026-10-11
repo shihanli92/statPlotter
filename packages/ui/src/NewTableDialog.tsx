@@ -129,7 +129,7 @@ export function NewTableDialog({
     const table = sample
       ? sampleTable(kind, name)
       : createTable({ name, tableKind: kind, yFormat, columns, rows: DEFAULT_ROWS[kind] })
-    // Like Prism, every new table gets a linked graph.
+    // Every new table gets a linked graph, as in other lab graphing tools.
     const graph = createGraphFor(table, name)
     store.dispatch(
       [

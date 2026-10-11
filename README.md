@@ -17,7 +17,7 @@ computer, see [Privacy](#privacy)).
 - **Data tables** for the common lab layouts: XY, column, grouped, contingency, survival, parts of
   whole, nested, and multiple variables (numbers, text and calculated columns). Enter replicates
   or mean with SD/SEM and N, exclude values, sort, fill series (such as dilutions), find and
-  replace. Import CSV, Excel and GraphPad Prism (`.pzfx`) files.
+  replace. Import CSV, Excel and `.pzfx` files.
 - **Statistics:** t tests and nonparametric tests; one-, two- and three-way and repeated-measures
   ANOVA, mixed models and multiple comparisons; linear, multiple, logistic, Poisson and Cox
   regression; nonlinear curve fitting (over a hundred built-in equations, your own equations,
@@ -39,7 +39,7 @@ computer, see [Privacy](#privacy)).
 - **Examples:** File › Examples opens example projects for each area, including figures rebuilt
   from published papers' open source data.
 
-What's covered, compared with GraphPad Prism's feature list: [docs/PRISM_COVERAGE.md](docs/PRISM_COVERAGE.md).
+What's covered, area by area: [docs/FEATURE_COVERAGE.md](docs/FEATURE_COVERAGE.md).
 
 ## How the statistics are checked
 
@@ -148,6 +148,3 @@ LGPL-2-or-later); they are kept in `packages/stats/src/gpl/`, each citing its so
 Liberation fonts keep their own licences (SIL Open Font License 1.1; GPL-2 with the font
 exception for Liberation Sans Narrow). Some built-in examples include published source data under
 CC BY 4.0. [NOTICE](NOTICE) lists all of these and the third-party test data.
-
-statPlotter is not affiliated with or endorsed by GraphPad Software; it reads `.pzfx` files for
-interoperability only.

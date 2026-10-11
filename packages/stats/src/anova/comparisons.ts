@@ -6,41 +6,38 @@ import { adjustP } from './padjust.ts'
 import { type ContrastRow, contrastComparisons, mcRow } from './rmCompare.ts'
 
 /**
- * Multiple comparisons after ANOVA, following the definitions in GraphPad's Prism Statistics
- * Guide ("How Prism computes multiple comparisons", "Tukey and Dunnett methods"):
+ * Multiple comparisons after ANOVA:
  *
  * - All methods use the pooled residual mean square and its df from the ANOVA (`mse`, `df`):
  *   SE = √(MSE (1/n_i + 1/n_j)), t = diff / SE, with diff = mean_i − mean_j.
- * - Tukey (Tukey–Kramer for unequal n): Prism reports q = √2·diff/SE (the studentized range
- *   statistic; "For the Tukey test, q = sqrt(2)*D/SED"); P = P(Q_{k,df} ≥ |q|); simultaneous CI
+ * - Tukey (Tukey–Kramer for unequal n): q = √2·diff/SE (the studentized range statistic,
+ *   q = √2·D/SED); P = P(Q_{k,df} ≥ |q|); simultaneous CI
  *   diff ± q_{conf; k, df}/√2 · SE.
- * - Dunnett (single-step, Dunnett 1955): stat = t (Prism's Dunnett "q" is D/SED); P and the
+ * - Dunnett (single-step, Dunnett 1955): stat = t (Dunnett's "q" is D/SED); P and the
  *   simultaneous CI from the many-to-one distribution with the actual group sizes.
  * - Bonferroni / Šidák: P from the per-comparison t test, multiplied / Šidák-adjusted for the
  *   family size m; simultaneous CI with t at α/m (Bonferroni) or 1 − (1 − α)^{1/m} (Šidák),
  *   α = 1 − confLevel.
- * - Holm / Holm–Šidák: step-down adjusted P values; no CI (NaN), as Prism.
+ * - Holm / Holm–Šidák: step-down adjusted P values; no CI (NaN).
  * - Fisher's LSD: unadjusted P and per-comparison CI.
  * - bh / bky: FDR q values (see adjustP); no CI. `significant` means q < alpha.
- * - Newman-Keuls (Student-Newman-Keuls; Prism offers it but advises against it): the means of
+ * - Newman-Keuls (Student-Newman-Keuls; offered but not recommended): the means of
  *   the family are ranked; a pair spanning r ranked means (r = |rank_i − rank_j| + 1) is tested
  *   with q = √2·|diff|/SE (the Tukey-Kramer SE) against the studentized range with r means;
  *   step-down, so a pair can only be significant when every pair whose range contains it is.
- *   Prism reports no P values or CIs for this test; the P reported here is the step-down
+ *   The test has no P values or CIs of its own; the P reported here is the step-down
  *   equivalent max over the containing ranges (itself included) of P(Q_{r,df} ≥ q), so that
  *   P < α exactly when the procedure at α declares the pair significant. No CI (NaN). Every
  *   pair of the family's means must be compared (all pairs).
  *
  * Two-way ANOVA: the caller compares cell (or marginal) means with the two-way result's `mse`
- * and `dfResidual`. For Prism's "compare columns within each row" (simple effects; Prism
- * Statistics Guide, "Multiple comparisons tab: Two-way ANOVA"):
- * - "one family per row" (Prism's recommended default): call once per row with that row's
+ * and `dfResidual`. For "compare columns within each row" (simple effects):
+ * - "one family per row" (the recommended default): call once per row with that row's
  *   pairs; Tukey nMeans = number of columns, Šidák/Bonferroni/Holm familySize = C(C, 2) (the
  *   default, pairs.length), Dunnett = the row's C − 1 comparisons with its control cell.
  * - "one family for all comparisons": one call with every row's pairs; Šidák/Bonferroni/Holm/
- *   FDR familySize = R·C(C, 2) (again the default). For Tukey the guide does not say which k
- *   Prism uses here; nMeans = R·C (all cell means) is the conservative reading — to be verified
- *   against Prism.
+ *   FDR familySize = R·C(C, 2) (again the default). For Tukey which k to use here is not
+ *   settled; nMeans = R·C (all cell means) is the conservative reading.
  * Rows within columns are the same with rows and columns swapped. Main-effect comparisons
  * (row means) use the least-squares marginal means with n_eff = C² / Σ_j 1/n_ij, so that
  * MSE/n_eff is the variance of a row's LS mean (Σ n_ij for balanced data). The oracle (twoway suite) checks per-row Tukey and Šidák and all-rows Šidák
@@ -68,14 +65,14 @@ export interface McCell {
 export interface McRow {
   i: number
   j: number
-  /** mean[i] − mean[j] (Prism's "Mean Diff."). */
+  /** mean[i] − mean[j] ("Mean Diff."). */
   diff: number
   se: number
   /** CI of diff: simultaneous for tukey/dunnett/bonferroni/sidak (and the Welch methods),
    *  per-comparison for fisher, NaN for step-down and FDR methods. */
   lo: number
   hi: number
-  /** q for Tukey (Prism's definition, √2·diff/SE), t otherwise (also for Games–Howell). */
+  /** q for Tukey (√2·diff/SE), t otherwise (also for Games–Howell). */
   stat: number
   df: number
   /** Multiplicity-adjusted P (q value for bh / bky; unadjusted for fisher). */
@@ -185,9 +182,8 @@ export interface WelchMcOptions {
  *   with m = number of comparisons;
  * - tamhane-t2 (Tamhane 1979, JASA 74, 471–480): Šidák adjustment of the Welch t tests.
  * All CIs are simultaneous: diff ± crit·SE with the corresponding critical value. `stat` is t for
- * all three ("The three tests compute the same t ratio and the same df values. They differ in
- * how they compute the P value", Prism Statistics Guide, "How the Dunnett T3, Games and Howell,
- * and Tamhane T2 tests work").
+ * all three (the three tests compute the same t ratio and the same df values; they differ in
+ * how they compute the P value).
  */
 export function welchComparisons(
   cells: readonly Required<McCell>[],
@@ -246,7 +242,7 @@ export interface DunnOptions {
  * Dunn's (1964, Technometrics 6, 241–252) test after Kruskal–Wallis: all groups are ranked
  * together; z = (R̄_i − R̄_j) / √([N(N+1)/12 − Σ(t³ − t)/(12(N − 1))] (1/n_i + 1/n_j)), with the
  * tie correction of Glantz / dunn.test; two-sided P = 2(1 − Φ(|z|)), multiplied by the number of
- * comparisons (Bonferroni, Prism's default) or Šidák-adjusted.
+ * comparisons (Bonferroni, the default) or Šidák-adjusted.
  */
 export function dunnComparisons(
   groups: readonly ArrayLike<number>[],

@@ -18,7 +18,7 @@ export interface LinearRegressionOptions {
   /** Force the line through (0, 0). */
   throughOrigin?: boolean
   /**
-   * Force the line through (x, y) (Prism: "force the line to go through a specified point"):
+   * Force the line through (x, y) ("force the line to go through a specified point"):
    * the slope is fitted to (X − x, Y − y) through the origin; the intercept is then y − slope·x,
    * with no SE (it is fixed by the constraint). Takes precedence over throughOrigin.
    */
@@ -55,7 +55,7 @@ export interface LinearFit {
   inverseSlope: number
   /**
    * 1 − SSres/SStot with SStot about the (weighted) mean of Y — also through the origin, where it
-   * can be negative (Prism's convention; R reports the uncentred Σy² version there).
+   * can be negative (our convention; R reports the uncentred Σy² version there).
    */
   r2: number
   /** √(SSres/df). */
@@ -278,7 +278,7 @@ function fTest(ssReduced: number, dfReduced: number, ssFull: number, dfFull: num
 
 /**
  * Compares linear regressions (analysis of covariance, Zar, Biostatistical Analysis, 5th ed.,
- * §18.1–18.4, as Prism does): first separate lines vs parallel lines (common slope, separate
+ * §18.1–18.4): first separate lines vs parallel lines (common slope, separate
  * intercepts); if the slopes don't differ (P ≥ 0.05), parallel lines vs one line through all
  * the data.
  */

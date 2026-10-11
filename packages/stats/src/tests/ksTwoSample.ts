@@ -1,22 +1,20 @@
 import { kolmogorovSf } from '../dist/kolmogorov.ts'
 
 /**
- * Prism uses the exact permutation P when the number of ways of choosing n1 values out of
- * n1 + n2 is below this (Prism Statistics Guide, "Interpreting results: Kolmogorov-Smirnov
- * test": exact "when the number of permutations of n1 values from n1+n2 values is less than
- * 60,000").
+ * The exact permutation P is used when the number of ways of choosing n1 values out of
+ * n1 + n2 is below this (60,000).
  */
 const KS_EXACT_MAX_COMBINATIONS = 60000
 
 export interface KsTwoSampleOptions {
-  /** 'auto' (default) follows Prism's C(n1 + n2, n1) < 60000 rule. */
+  /** 'auto' (default) follows the C(n1 + n2, n1) < 60000 rule. */
   exact?: 'auto' | boolean
 }
 
 export interface KsTwoSampleResult {
   /** Largest distance between the two empirical CDFs. */
   d: number
-  /** Two-sided P (the KS test has no one-sided form in Prism). */
+  /** Two-sided P (no one-sided form is offered). */
   p: number
   exact: boolean
   nA: number
@@ -30,18 +28,18 @@ function choose(n: number, k: number): number {
 }
 
 /**
- * Two-sample Kolmogorov–Smirnov test (compare cumulative distributions), as Prism computes it:
+ * Two-sample Kolmogorov–Smirnov test (compare cumulative distributions):
  *
  * - D = max_x |F_A(x) − F_B(x)|, evaluated after each distinct value (ties handled).
  * - Exact P (small samples, see KS_EXACT_MAX_COMBINATIONS): the fraction of the C(N, nA)
- *   reassignments of the pooled data to the two groups whose D is ≥ the observed D (Prism:
- *   "systematically shuffles the actual data between two groups … The P value it reports is the
+ *   reassignments of the pooled data to the two groups whose D is ≥ the observed D (the
+ *   actual data systematically shuffled between the two groups; the P value is the
  *   fraction of these reshuffled data sets where the D computed … is greater than or equal
  *   than the D computed from the actual data"). With ties this is the conditional distribution
  *   given the tie pattern, as R's psmirnov(exact = TRUE, z = pooled data) (R ≥ 4.3). Computed by
  *   counting monotone lattice paths that stay strictly inside the band |i·nB − j·nA| < D·nA·nB
  *   at every point where the pooled sorted data change value; all arithmetic is in integers.
- * - Otherwise the asymptotic P of Numerical Recipes (3rd ed., §14.3.3, which Prism cites):
+ * - Otherwise the asymptotic P of Numerical Recipes (3rd ed., §14.3.3):
  *   Q_KS((√Ne + 0.12 + 0.11/√Ne)·D), Ne = nA nB/(nA + nB) (Stephens' 1970 small-sample
  *   correction). R's ks.test(exact = FALSE) uses Q_KS(√Ne·D) without the correction.
  *

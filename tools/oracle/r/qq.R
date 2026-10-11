@@ -1,4 +1,4 @@
-# Normal QQ plot as Prism draws it (Statistics Guide, "QQ plot"): X = the data sorted; Y = the
+# Normal QQ plot: X = the data sorted; Y = the
 # value of a Gaussian sample at the same rank, mean + qnorm((i - 0.5)/n) * sd (the data's mean
 # and SD, n - 1). params$lognormal: the same on log(values), exponentiated back. Checked against
 # qqnorm() (its ppoints use a = 3/8 for n <= 10, so it is compared only for n > 10, where a = 1/2).

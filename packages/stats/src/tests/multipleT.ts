@@ -13,15 +13,15 @@ import {
 import { wilcoxonSignedRank } from './wilcoxon.ts'
 
 /**
- * Multiple t tests (and nonparametric tests), one per row of a grouped table, as Prism's
- * "Multiple t tests" analysis (Prism Statistics Guide, "Options for multiple t tests"). Each row
+ * Multiple t tests (and nonparametric tests), one per row of a grouped table (the "Multiple
+ * t tests" analysis). Each row
  * compares data set A with data set B; the effect is B − A (the caller swaps the groups for
  * A − B). Tests:
  *
- * - 'welch': unpaired t test with Welch's correction, each row's own variances (Prism's default).
+ * - 'welch': unpaired t test with Welch's correction, each row's own variances (the default).
  * - 'unpaired': Student's t test, pooling the two groups' variances within each row.
  * - 'pooled': Student's t test with one SD pooled from every tested row ("assume a consistent
- *   SD … Prism computes one pooled SD, as it would by doing two-way ANOVA"): s² = Σ_rows Σ_groups
+ *   SD": one pooled SD, as two-way ANOVA would compute it): s² = Σ_rows Σ_groups
  *   (n − 1)·SD² / Σ_rows (nA + nB − 2), df = Σ_rows (nA + nB − 2) — the residual mean square of
  *   the two-way ANOVA (rows × the two data sets, with interaction). Every row with at least one
  *   value in each group is tested and contributes.
@@ -30,16 +30,16 @@ import { wilcoxonSignedRank } from './wilcoxon.ts'
  * - 'mannWhitney', 'kolmogorovSmirnov' (unpaired), 'wilcoxon' (paired): the rank tests of this
  *   package, exact P when the samples are small enough (the same rules as the single tests).
  *
- * `lognormal` (t tests only) analyses log10 of the values: Prism's "lognormal" choices, i.e. the
+ * `lognormal` (t tests only) analyses log10 of the values: the "lognormal" choices, i.e. the
  * t tests on logs (unpaired) and the ratio paired t test (paired). Means are then geometric
  * means, `diff` is the difference of the log10 means and `ratio` = 10^diff (B/A). Values ≤ 0
  * (paired: the pairs holding one) have no logarithm and are left out of their row, counted in
- * `leftOut`; the row is tested when at least two values (pairs) per group remain — as Prism, and
+ * `leftOut`; the row is tested when at least two values (pairs) per group remain — as
  * R's t.test of the positive values' log10 (audit 3, RTA-2; until then the whole row was
  * skipped).
  *
  * Rows that can't be tested get `p = NaN` and a `skip` reason (too few values, no variation —
- * Prism leaves out rows whose SD is zero — fewer than two values > 0 on a log scale, summary data
+ * rows whose SD is zero are left out — fewer than two values > 0 on a log scale, summary data
  * for a test that needs raw values).
  */
 

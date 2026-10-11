@@ -11,5 +11,5 @@
     "method": "dunnett",
     "control": 0
   },
-  "note": "Pairs (control, j): diff = mean(control) - mean(j), as Prism lists 'Control vs. j'."
+  "note": "Pairs (control, j): diff = mean(control) - mean(j), as the results list 'Control vs. j'."
 }

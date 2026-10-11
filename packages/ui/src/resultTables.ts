@@ -22,7 +22,7 @@ export function givesTable(
 }
 
 /**
- * The node that "Analyze…" and "New graph…" work on for the selection, as in Prism: a data
+ * The node that "Analyze…" and "New graph…" work on for the selection: a data
  * table; an analysis' own result table when it gives one, else the data it analyzed; a graph's
  * source (a data table or a result table).
  */

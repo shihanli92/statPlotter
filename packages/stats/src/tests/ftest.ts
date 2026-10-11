@@ -2,7 +2,7 @@ import { variance } from '../descriptive/basic.ts'
 import { fCdf, fSf } from '../dist/f.ts'
 
 export interface FTestResult {
-  /** Larger variance / smaller variance (≥ 1), as Prism reports it. */
+  /** Larger variance / smaller variance (≥ 1). */
   F: number
   /** Numerator df: n − 1 of the group with the larger variance. */
   dfn: number

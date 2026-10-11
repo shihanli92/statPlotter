@@ -197,7 +197,7 @@ const base: ResolvedSeriesStyle = {
     quartileLine: { color: BLACK, width: 1, dash: 'dash' },
   },
   label: { show: false, stat: 'value', position: 'above', format: { mode: 'auto' }, text: {} },
-  // Centre line length as a fraction of the column: a short line over the points (as in Prism),
+  // Centre line length as a fraction of the column: a short line over the points (the usual look),
   // not most of the column. Grouped slots are narrower, so a larger fraction of one.
   center: { stat: 'mean', line: line(1.25), width: 0.3 },
   error: { stat: 'SD', direction: 'both', capWidth: 8, line: line(1) },

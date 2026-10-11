@@ -4,8 +4,8 @@ import type { RegCoefficient } from '../regression/multipleDesign.ts'
 import { type PcaOptions, type PcaResult, pca } from './pca.ts'
 
 /**
- * Principal component regression, as Prism describes it (Statistics Guide, "Principal Component
- * Regression (PCR)"): (1) PCA of the predictors, (2) keep the components chosen by the selection
+ * Principal component regression (PCR): (1) PCA of the predictors, (2) keep the components
+ * chosen by the selection
  * rule, (3) multiple linear regression of Y on their scores with an intercept, (4) the
  * coefficients converted back to the scale of the original variables.
  *

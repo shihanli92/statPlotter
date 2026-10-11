@@ -38,5 +38,5 @@
   "params": {
     "intercept": false
   },
-  "note": "R<c2><b2> stays centred (Prism); the F test is against Y = 0 (R's summary.lm)."
+  "note": "R<c2><b2> stays centred; the F test is against Y = 0 (R's summary.lm)."
 }

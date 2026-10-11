@@ -157,7 +157,7 @@ cr("spearman_n8_heavy_ties", c(1, 1, 1, 2, 2, 3, 3, 3), c(2, 1, 2, 2, 3, 3, 1, 3
    list(method = "spearman"))
 tx <- rnorm(17); ty <- -0.4 * tx + rnorm(17)
 cr("spearman_n17_exact", tx, ty, list(method = "spearman"),
-   note = "Largest n with Prism's exact P; pspearman's exact distribution.")
+   note = "Largest n with an exact P; pspearman's exact distribution.")
 cr("spearman_n17_exact_less", tx, ty, list(method = "spearman", alternative = "less"))
 ux <- rnorm(18); uy <- 0.5 * ux + rnorm(18)
 cr("spearman_n18_auto", ux, uy, list(method = "spearman"),

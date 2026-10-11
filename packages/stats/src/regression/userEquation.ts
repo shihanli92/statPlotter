@@ -5,9 +5,9 @@ import type { CurveModel } from './nonlinear.ts'
 import { solveOde } from './ode.ts'
 
 /**
- * User-defined equations for curve fitting, following Prism's "Enter your own equation" syntax
- * (Curve Fitting Guide: "Writing user-defined equations", "Available functions", "Multiline
- * models", "Different equations for different data sets", differential and implicit equations):
+ * User-defined equations for curve fitting, in the usual equation syntax (Y = …, one statement
+ * per line; multiline models, different equations for different data sets, differential and
+ * implicit equations):
  *
  *   ; a comment runs from a semicolon to the end of the line
  *   Span = Top - Bottom
@@ -19,7 +19,7 @@ import { solveOde } from './ode.ts'
  *   X, a function or a constant is a parameter to fit, in order of first appearance. Names are
  *   case-insensitive (the spelling first seen is kept): a letter or underscore, then letters,
  *   digits or underscores. (), [] and {} are interchangeable.
- * - Operators, loosest first (GraphPad publishes no precedence table; this is the usual one):
+ * - Operators, loosest first (no precedence table is published; this is the usual one):
  *   OR; AND; NOT; comparisons (= == <> != < <= > >=, giving 1 or 0; not chained); + -; * / and
  *   MOD; unary - and +; ^ (right-associative and binding tighter than a leading minus, so
  *   -X^2 = -(X^2), and 2^-X is allowed). and(...), or(...), not(...) also work as functions.
@@ -27,27 +27,27 @@ import { solveOde } from './ode.ts'
  *   arcsin, arccos, arctan, arctan2(y, x), sinh, cosh, tanh, arcsinh, arccosh, arctanh
  *   (asin, acos, atan, atan2, asinh, acosh, atanh as aliases), pow(a, b), min(a, b, ...),
  *   max(a, b, ...), if(condition, then, else), int (toward zero), floor, ceil, round(k) and
- *   round(k, j) (j decimals, half away from zero), sgn, deg, rad. Constant: pi. Prism's special
+ *   round(k, j) (j decimals, half away from zero), sgn, deg, rad. Constant: pi. The special
  *   and distribution functions (gamma, gammaln, beta, ibeta, igamma, igammac, erf, erfc, psi,
  *   besselj/y/i/k, hypgeometricm/u/f, zdist, zinv, zpdf, normdist, norminv, normpdf, tdist,
  *   tinv, tpdf, fdist, finv, fpdf, chidist, chiinv, chisqc, binomial, fact, perc, logit, probit,
  *   is_defined; see equationFunctions.ts for their tails and argument orders). A distribution's
  *   optional tail is a quoted word: zdist(Z, "two").
- * - Lines for particular data sets (Curve Fitting Guide, "Fitting different data sets to
- *   different equations"): `<C>` data set C only, `<~B>` all but B, `<A:D>` A to D, `<~A:D>` all
+ * - Lines for particular data sets (different data sets fitted to different equations):
+ *   `<C>` data set C only, `<~B>` all but B, `<A:D>` A to D, `<~A:D>` all
  *   but A to D, `<A:J,3>` every third data set from A to J (A, D, G, J), `<~A:J,3>` all but
  *   those; also `<A,C>` (a list, our extension). Letters are positions among the data sets
  *   analyzed (A = the first), not table columns. Lines without a prefix apply to all. Each data
  *   set gets the program of the lines that apply to it; the parameters are the union over data
  *   sets, in order of first appearance in the text (`program.forDataSet(k)`).
- * - Implicit equations (Prism's "implicit equation" type): when Y is used before any line
+ * - Implicit equations: when Y is used before any line
  *   assigns it, Y is unknown on the right side, and the last line `Y = g(X, Y)` is solved for Y
  *   at each X (Newton's method with a bracketing fallback; ∂Y/∂θ = (∂g/∂θ)/(1 − ∂g/∂Y) by the
  *   implicit function theorem).
- * - Differential equations (Prism's "differential equation" type): a line `Y' = f(X, Y)` (also
+ * - Differential equations: a line `Y' = f(X, Y)` (also
  *   accepted: `dY/dX = …`) makes Y the solution of the ODE from Y = Y[0] at X = X0. `Y[0]` is a
  *   parameter created automatically (it may also appear in the equation); X0 is 0 unless a line
- *   `X[0] = …` sets it (Prism sets X0 in the equation definition). Solved by Dormand–Prince
+ *   `X[0] = …` sets it (X0 belongs to the equation definition). Solved by Dormand–Prince
  *   5(4) with dense output and the sensitivity equations for ∂Y/∂θ (see ode.ts).
  *
  * The parser builds a tape (a list of operations in evaluation order); evaluation runs it with
@@ -190,7 +190,7 @@ function tokenize(text: string): Token[] {
       i += name.length
       continue
     }
-    // (), [] and {} are interchangeable, as in Prism.
+    // (), [] and {} are interchangeable.
     if (c === '(' || c === '[' || c === '{') {
       out.push({ kind: '(', text: c, pos: i })
       i++
@@ -566,7 +566,7 @@ class Parser {
 
   /**
    * The slot of the parameter Y[0] of a differential equation (emitted here if the equation
-   * never mentions it; it then comes first among the parameters, as Prism lists it).
+   * never mentions it; it then comes first among the parameters).
    */
   private initialParam(): number {
     const j = this.reg.get('y[0]', 'Y[0]', -1)

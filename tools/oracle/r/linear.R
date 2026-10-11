@@ -1,4 +1,4 @@
-# Simple linear regression (Prism's "Simple linear regression"), from lm().
+# Simple linear regression, from lm().
 #
 # input: x, y, optional weights, bandX (points for the confidence / prediction bands).
 # params: throughOrigin, throughPoint ([x0, y0]: the line forced through that point, fitted as
@@ -9,7 +9,7 @@
 # predict() gives the new observation unit weight, which is our documented convention too.
 # F (slope != 0): summary(lm)$fstatistic, which equals t^2 for one predictor also without an
 # intercept.
-# R^2: Prism's convention 1 - SSres/SStot with SStot about the (weighted) mean of Y, computed
+# R^2: our convention 1 - SSres/SStot with SStot about the (weighted) mean of Y, computed
 # explicitly (summary()$r.squared is the uncentred version when there is no intercept).
 # X intercept CI: Fieller's interval, computed explicitly from vcov(lm): the x with
 # (a + b x)^2 <= t^2 var(a + b x); NaN when b^2 <= t^2 var(b) (unbounded).

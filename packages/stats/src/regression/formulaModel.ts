@@ -9,7 +9,7 @@ export type FormulaModel = Pick<CurveModel, 'f' | 'grad'> & {
 
 /**
  * A model's f and exact gradient from its formula in the user-equation language, with the
- * parameters in a declared order (built-in equations written the way GraphPad writes them).
+ * parameters in a declared order (built-in equations written in their published form).
  * Throws if the formula doesn't parse or its parameters differ from `params`.
  */
 export function formulaModel(text: string, params: readonly string[]): FormulaModel {

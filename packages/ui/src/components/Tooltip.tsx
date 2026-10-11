@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
+import { portalHost } from './portalHost.ts'
 
 // Roadmap 43: the app's own tooltip, in place of the native `title` on the toolbars (slow, never
 // shown for the keyboard, invisible to tests). Shown after a short rest of the pointer, at once on
@@ -148,7 +149,7 @@ export function Tooltip({
           >
             {content}
           </div>,
-          document.body,
+          portalHost(anchor.current),
         )}
     </span>
   )

@@ -1,6 +1,6 @@
-# Curves without a model (Prism's "Fit spline/LOWESS"). input: x, y, at (points to evaluate).
+# Curves without a model ("Fit spline/LOWESS"). input: x, y, at (points to evaluate).
 # params$method:
-#   lowess     stats::lowess(x, y, f, iter) (Cleveland; the algorithm Prism cites, Chambers et al.
+#   lowess     stats::lowess(x, y, f, iter) (Cleveland; the usual reference, Chambers et al.
 #              1983 section 4.11); returns the fitted values at the sorted x.
 #   natural    splinefun(x, y, method = "natural") at `at` (x distinct, increasing).
 #   akima      Akima (1970) written out from the paper: chord slopes m, two extra on each side by

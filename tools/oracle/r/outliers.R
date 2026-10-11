@@ -1,4 +1,4 @@
-# Identify outliers (Prism: "How to: Identify outliers"). input$values (null = empty);
+# Identify outliers. input$values (null = empty);
 # params$method: grubbs, grubbsIterative (alpha) or rout (q, a fraction).
 #
 # Grubbs (two-sided; Grubbs 1969): G = max|x - mean|/sd; critical value

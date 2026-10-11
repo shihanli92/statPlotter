@@ -163,5 +163,5 @@
       "emmeans": "2.0.2"
     }
   },
-  "note": "Welch (Prism's default) with two-stage step-up FDR at Q = 1%; rows 5 and 9 can't be tested."
+  "note": "Welch (the default) with two-stage step-up FDR at Q = 1%; rows 5 and 9 can't be tested."
 }

@@ -20,5 +20,5 @@
       "pspearman": "0.3.1"
     }
   },
-  "note": "Largest n with Prism's exact P; pspearman's exact distribution."
+  "note": "Largest n with an exact P; pspearman's exact distribution."
 }

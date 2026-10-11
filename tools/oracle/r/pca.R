@@ -1,10 +1,6 @@
-# Principal component analysis, as GraphPad Prism documents it
-# (https://www.graphpad.com/guides/prism/latest/statistics/stat_pca_options_tab.htm,
-#  .../stat_pca_results_eigenvalues.htm, .../stat_pca_results_loadings.htm,
-#  .../stat_pca_results_pc_scores.htm, .../stat_pca_process_selection_parallel_analysis.htm,
-#  .../stat_pca_process_selection_classic.htm):
+# Principal component analysis:
 #
-# - standardize = TRUE: prcomp(scale. = TRUE) ("PCA on standardized data", Prism's recommended
+# - standardize = TRUE: prcomp(scale. = TRUE) ("PCA on standardized data", the recommended
 #   default; SD with n - 1). FALSE: prcomp(scale. = FALSE) ("centered data"). Cross-checked
 #   against eigen(cor(X)) / eigen(cov(X)).
 # - eigenvalues = sdev^2 (covariance / correlation matrix, divisor n - 1), padded with 0 to p.
@@ -12,21 +8,20 @@
 #   in the TS code; rank = number of non-zero eigenvalues.
 # - loadings = eigenvector * sqrt(eigenvalue) ("Loadings = Eigenvector * sqrt(Eigenvalue)").
 # - scores = standardized / centered data %*% eigenvectors (prcomp's x).
-# - Sign convention (ours; Prism's is undocumented): each eigenvector is flipped so that its
+# - Sign convention (ours): each eigenvector is flipped so that its
 #   elements sum to a positive number; if |sum| <= 1e-8, its first element with |v| > 1e-8 is
 #   made positive.
 # - Selection: kaiser: eigenvalues > value (default 1); variance: smallest k with cumulative
 #   proportion >= value / 100 (default 75); fixed: value (default 2); all: rank; parallel:
 #   leading components whose eigenvalue exceeds the simulated upper percentile. Always <= rank.
-# - Parallel analysis (Horn), as Prism describes it: `simulations` data sets (default 1000) of
+# - Parallel analysis (Horn): `simulations` data sets (default 1000) of
 #   n x p normals with mean 0 and each variable's SD, analysed as the data; per component the
 #   mean, the upper percentile (value, default 95) and the lower percentile (100 - value) of
 #   the simulated eigenvalues. Percentiles by quantile(type = 6), as our other percentiles
-#   (Prism's definition unknown). Deterministic: the normals are R's own
+#   (a choice). Deterministic: the normals are R's own
 #   set.seed(seed, kind = "L'Ecuyer-CMRG", normal.kind = "Inversion"); rnorm(n * p) filling a
 #   matrix column by column; the TS code reproduces that generator bit for bit
-#   (packages/stats/src/gpl/rngLecuyer.ts). Default seed 1 (Prism draws a random seed and shows
-#   it).
+#   (packages/stats/src/gpl/rngLecuyer.ts). Default seed 1.
 # Eigenvectors, loadings and scores are compared only for the first `vectorsK` components (the
 # ones with distinct, non-zero eigenvalues); the rest are arbitrary.
 

@@ -59,17 +59,16 @@ async function retained(make: () => DataTable, graphOf: (t: DataTable) => GraphN
     }
     return process.memoryUsage().heapUsed
   }
-  // Once first, so the code it runs is compiled before the heap is measured.
+  // Once first, so the code it runs is compiled (and any lasting caches made) before measuring.
   {
     const t = make()
     const g = graphOf(t)
     layoutGraph({ project: projectOf(t, g), graph: g, fonts })
   }
-  const before = await collect()
   let t: DataTable | null = make()
   const g = graphOf(t)
   let project: ReturnType<typeof projectOf> | null = projectOf(t, g)
-  const scene: Scene = layoutGraph({ project, graph: g, fonts })
+  let scene: Scene | null = layoutGraph({ project, graph: g, fonts })
   const refs = {
     project: new WeakRef(project),
     table: new WeakRef(t),
@@ -78,14 +77,18 @@ async function retained(make: () => DataTable, graphOf: (t: DataTable) => GraphN
   const rows = t.rowCount
   project = null
   t = null
-  // The scene's own heap (its typed arrays are outside it), per point drawn, the table gone.
-  const perPoint = ((await collect()) - before) / rows
+  const withScene = await collect()
   const kept = Object.entries(refs)
     .filter(([, r]) => r.deref() !== undefined)
     .map(([k]) => k)
   expect(isCloud(scene.root)).toBe(true)
   // The scene is still in use (it draws, hits and maps points).
   expect(scene.axes!.x.fromPx(scene.plot.x)).toEqual(expect.any(Number))
+  // The scene's own heap, per point drawn: what letting it go gives back (its typed arrays are
+  // outside the heap). Measured as a difference with the scene and without it, so caches the
+  // layout keeps (fonts, columns' categories) count on neither side.
+  scene = null
+  const perPoint = (withScene - (await collect())) / rows
   // About 5 bytes (was 480 to 790: the layout's rows, looks, project and caches).
   expect(perPoint).toBeLessThan(50)
   return kept

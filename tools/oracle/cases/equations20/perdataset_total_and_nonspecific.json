@@ -12,5 +12,5 @@
     ]
   },
   "params": {"equation":"user","params":["Bmax","Kd","NS","Background"],"ours":["Bmax","Kd","NS","Background"],"text":"specific=Bmax*X/(X+Kd)\nnonspecific=NS*X + Background\n<A>Y=specific+nonspecific\n<B>Y=nonspecific","formula":"ind*(Bmax*x/(x + Kd)) + NS*x + Background","start":[[1500,4,20,30],[1500,4,20,30]],"initial":[1000,2,10,10],"constraints":[{"kind":"shared"},{"kind":"shared"},{"kind":"shared"},{"kind":"shared"}],"ind":"g == 1"},
-  "note": "Prism's 'One site -- Fit total and nonspecific binding' as a user equation: data set A total, B nonspecific."
+  "note": "'One site -- Fit total and nonspecific binding' as a user equation: data set A total, B nonspecific."
 }

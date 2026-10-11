@@ -108,15 +108,15 @@ describe('multiple t tests', () => {
     expect(none.flagged).toEqual([true, false])
   })
 
-  it('two-stage step-up q values are Prism’s: BH × (1 + Q)·m̂₀/m (audit 3, RTA-1)', () => {
-    // Tawk et al. 2026 (CC BY 4.0), Fig. 3b's source data: Prism's P and q values (Q = 1%).
+  it('two-stage step-up q values are the published ones: BH × (1 + Q)·m̂₀/m (audit 3, RTA-1)', () => {
+    // Tawk et al. 2026 (CC BY 4.0), Fig. 3b's source data: published P and q values (Q = 1%).
     const p = [0.00021, 0.615665, 0.428412, 0.014977, 0.136817, 0.575996]
-    const prism = [0.001061, 0.518184, 0.518184, 0.037818, 0.230309, 0.518184]
+    const published = [0.001061, 0.518184, 0.518184, 0.037818, 0.230309, 0.518184]
     const r = correctFamily(p, { method: 'bky', q: 0.01 })
     expect(r.m0).toBe(5)
     // (The P values are given to six digits, so the q values agree to about 1e-6.)
     r.adjusted.forEach((x, i) => {
-      expect(Math.abs(x - prism[i]!)).toBeLessThan(1.5e-6)
+      expect(Math.abs(x - published[i]!)).toBeLessThan(1.5e-6)
     })
     // Stage one rejects nothing: m̂₀ = m, q = BH × (1 + Q); everything: m̂₀ taken as 1.
     const none = correctFamily([0.3, 0.6], { method: 'bky', q: 0.05 })

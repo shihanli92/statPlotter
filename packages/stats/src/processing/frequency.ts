@@ -1,17 +1,16 @@
 /**
- * Frequency distributions as Prism tabulates them (Statistics Guide, "How to: Frequency
- * distribution"; FAQ 1660, "Prism's algorithm for determining the automatic bin width"):
+ * Frequency distributions (with the usual algorithm for the automatic bin width):
  *
  * - Bins of equal width w, the first centred at c₀; bin i covers [c₀ + (i − ½)w, c₀ + (i + ½)w).
  *   "A point on the border goes with the bin holding the larger values"; values below the
  *   first bin are omitted (only possible with a first centre you set), as are values above an
  *   upper limit you set.
- * - Automatic width (FAQ 1660): per data set, (max − min)/(1 + log₂ n); the mean over the data
+ * - Automatic width: per data set, (max − min)/(1 + log₂ n); the mean over the data
  *   sets; rounded down to a "nice" value; if every value is an integer, rounded down to an
  *   integer (1 if that would give 0). "Nice" is our reading of "a value whose last digit (in
  *   scientific notation) ends with 0, 2, or 5": two significant digits, the second one
  *   lowered to 0, 2 or 5 (3.7 → 3.5, 0.0461 → 0.045, 1.13 → 1.0).
- * - Automatic first centre: not documented by GraphPad. Here the multiple of w nearest the
+ * - Automatic first centre: not documented. Here the multiple of w nearest the
  *   smallest value (c₀ = w·⌊min/w + ½⌋), so bin edges fall on odd multiples of w/2 and every
  *   value is in a bin.
  */
@@ -35,7 +34,7 @@ export function niceFloor(w: number): number {
   return (two * up) / down
 }
 
-/** Prism's automatic bin width for these data sets (values: finite numbers). */
+/** The automatic bin width for these data sets (values: finite numbers). */
 export function autoBinWidth(dataSets: readonly (readonly number[])[]): number {
   const widths: number[] = []
   let integers = true
@@ -155,7 +154,7 @@ export interface HistogramResult extends FrequencyResult {
 
 /**
  * A histogram's bars (the graphs' `bin` stat, roadmap 33d): the data sets in shared bins, as the
- * frequency distribution bins them (FAQ 1660's automatic width unless one is given), each bin's
+ * frequency distribution bins them (the automatic width unless one is given), each bin's
  * count or its share of the data set's values tabulated (as the analysis' relative frequencies).
  */
 export function histogram(

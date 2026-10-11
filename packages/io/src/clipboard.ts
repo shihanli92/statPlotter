@@ -3,7 +3,7 @@ import { parseRecords } from './import/csv.ts'
 import { type DecimalSeparator, detectDecimal, parseNumberWith } from './numbers.ts'
 
 /**
- * Parses tab-separated text as copied from Excel, Prism, or another grid. Numbers become
+ * Parses tab-separated text as copied from Excel or another grid. Numbers become
  * numbers, blank cells null, anything else stays a string (the caller decides whether text is
  * acceptable — e.g. as a column title — or an error). Cells Excel quotes (text with line breaks,
  * tabs or quotes) are unquoted. Decimal-comma data ("0,5", "1,25") is recognised when no cell

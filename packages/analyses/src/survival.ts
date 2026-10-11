@@ -55,7 +55,7 @@ const Params = z.object({
 })
 type Params = z.infer<typeof Params>
 
-/** Undefined medians (the curve never drops to 50%) are shown as text, as Prism does. */
+/** Undefined medians (the curve never drops to 50%) are shown as text. */
 const maybe = (v: number, digits?: number): ResultValue =>
   Number.isFinite(v) ? num(v, digits) : text('Undefined')
 

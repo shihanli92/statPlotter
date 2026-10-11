@@ -33,7 +33,7 @@ import { linkedExtent } from '../links.ts'
 import { kmSeries, staircase, survivalExtent } from '../stats/km.ts'
 
 // Survival graphs: the xy frame with `km` layers — a staircase per group (step), tick marks at
-// censored times (censor) and the confidence band (band, plane `bands`). Codes are Prism's
+// censored times (censor) and the confidence band (band, plane `bands`). Codes are the usual
 // defaults (1 = event, 0 = censored).
 
 /** Lays out a Kaplan-Meier graph. */

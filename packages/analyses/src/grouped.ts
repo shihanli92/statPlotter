@@ -39,13 +39,13 @@ export function cellHasData(ds: NormalizedDataSet, r: number): boolean {
   return Number.isFinite(ds.data.mean[r]!)
 }
 
-// ---- Family of P values: Prism's multiple-comparisons choices for multiple t tests and stacks of
+// ---- Family of P values: the multiple-comparisons choices for multiple t tests and stacks of
 // P values ---------------------------------------------------------------------------------------
 
 export const familyParams = {
   approach: z.enum(['fdr', 'significance', 'none']).default('fdr'),
   fdrMethod: z.enum(['bky', 'bh', 'by']).default('bky'),
-  /** Desired FDR Q, as a percentage (as Prism's dialog). */
+  /** Desired FDR Q, as a percentage (as the dialog shows it). */
   q: z.number().gt(0).lt(100).default(1),
   sigMethod: z.enum(['holm-sidak', 'sidak', 'bonferroni']).default('holm-sidak'),
   alpha: z.number().gt(0).lt(1).default(0.05),

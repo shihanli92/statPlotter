@@ -33,24 +33,24 @@ export interface SurvivalComparison {
 }
 
 /**
- * Compares survival curves (Prism's "Survival" analysis).
+ * Compares survival curves (the "Survival" analysis).
  *
  * At each distinct event time t, with nⱼ at risk and dⱼ events in group j (N, D in total),
  * a weighted log-rank statistic has
  *   Uⱼ = Σ_t w_t (dⱼ − D nⱼ/N),
  *   Vⱼₖ = Σ_t w_t² D (N − D)/(N − 1) · (nⱼ/N)(δⱼₖ − nₖ/N)
  * and chi-square U'V⁻¹U over the groups with a positive expected count, less one
- * (df = that number − 1), as R's survdiff (Prism's "match SAS and SPSS" method, its default
+ * (df = that number − 1), as R's survdiff (the "match SAS and SPSS" method, the default
  * for ≥ 3 groups).
  * - Log-rank (Mantel–Cox): w = 1.
  * - Gehan–Breslow–Wilcoxon: w = N (Gehan's generalized Wilcoxon, Breslow's k-sample form;
  *   SAS LIFETEST's "Wilcoxon" test).
- * - Log-rank for trend: (Σ cⱼUⱼ)² / (c'Vc) with w = 1 and cⱼ = 1..k (Prism uses the column
- *   order as equally spaced scores); the "match SAS/SPSS" form with the full covariance.
- * - Hazard ratio, group 2 vs group 1, both as in Prism's guide (Machin, Cheung & Parmar
+ * - Log-rank for trend: (Σ cⱼUⱼ)² / (c'Vc) with w = 1 and cⱼ = 1..k (the column order as
+ *   equally spaced scores); the "match SAS/SPSS" form with the full covariance.
+ * - Hazard ratio, group 2 vs group 1, both (Machin, Cheung & Parmar
  *   2006, ch. 3): Mantel–Haenszel L = (O₂ − E₂)/V, HR = e^L, CI e^(L ± z/√V), V the log-rank
  *   variance; log-rank HR = (O₂/E₂)/(O₁/E₁), CI e^(ln HR ± z√(1/E₁ + 1/E₂)).
- * - Median ratio (Prism FAQ 718): M₂/M₁ with CI e^(ln ratio ± z√(1/O₁ + 1/O₂)), which assumes
+ * - Median ratio: M₂/M₁ with CI e^(ln ratio ± z√(1/O₁ + 1/O₂)), which assumes
  *   exponential survival.
  *
  * Degenerate input does not throw: fewer than two groups with expected events give NaN

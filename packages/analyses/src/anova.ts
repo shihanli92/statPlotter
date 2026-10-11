@@ -90,7 +90,7 @@ const OneWayParams = z.object({
   sphericity: z.enum(['gg', 'assumed']).default('gg'),
   gaussian: z.boolean().default(true),
   equalSD: equalSD.default('yes'),
-  /** 'trend': Prism's post-test for linear trend (column order), in place of comparisons. */
+  /** 'trend': the post-test for linear trend (column order), in place of comparisons. */
   comparisons: z.enum(['none', 'allPairs', 'vsControl', 'trend']).default('allPairs'),
   /** Data set key of the control; empty = the first analyzed data set. */
   control: z.string().default(''),
@@ -243,7 +243,7 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
         return failure(NK_RM_MESSAGE, diagnostics)
       return runOneWayRM(input, { ...params, comparisons: mcKind }, diagnostics)
     }
-    // Pairs: indices into `input`. "A vs. B" means diff = mean(A) − mean(B), as in Prism.
+    // Pairs: indices into `input`. "A vs. B" means diff = mean(A) − mean(B).
     const { control, pairs } = oneWayPairs(input, params.comparisons, params.control)
     if (!params.gaussian) return runKruskalWallis(input, pairs, diagnostics)
 
@@ -523,7 +523,7 @@ const TwoWayParams = z.object({
     .enum(['none', 'withinRows', 'withinColumns', 'allCells', 'mainColumns', 'mainRows'])
     .default('withinRows'),
   kind: z.enum(['allPairs', 'vsControl']).default('allPairs'),
-  /** Prism 8+: each row (column) is a family (recommended), or all comparisons form one. */
+  /** Each row (column) is a family (recommended), or all comparisons form one. */
   family: z.enum(['perBlock', 'all']).default('perBlock'),
   allPairsMethod: allPairsMethod.default('sidak'),
   controlMethod: controlMethod.default('dunnett'),
@@ -785,10 +785,10 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
       const { pairs, meta } = byRow
         ? within(R, C, (o, a, b) => [cellAt(o, a), cellAt(o, b)])
         : within(C, R, (o, a, b) => [cellAt(a, o), cellAt(b, o)])
-      // Prism's default family is each row (or column), with Tukey's k = means per block and
+      // The default family is each row (or column), with Tukey's k = means per block and
       // Dunnett's control = the block's first cell. "One family for all comparisons" widens the
       // correction for Šidák/Bonferroni/Holm/Fisher/FDR; Tukey and Dunnett stay per block (how
-      // Prism pools their distributions across rows is not documented).
+      // to pool their distributions across rows is not settled).
       const opts = { method: method as never, mse: res.mse, df: res.dfResidual, confLevel: level }
       const blocks = byRow ? R : C
       const perBlock = pairs.length / blocks
@@ -818,7 +818,7 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
         add(byRow ? { rowA: o, colA: a, colB: b } : { colA: o, rowA: a, rowB: b }, mcRows[k]!.p)
       })
     } else if (params.comparisons === 'allCells') {
-      // Prism's "compare cell means regardless of rows and columns": one family of all cells
+      // "Compare cell means regardless of rows and columns": one family of all cells
       // (Tukey's k = number of cells), ordered row by row. Dunnett's control is the first cell.
       const order: number[] = []
       for (let ri = 0; ri < R; ri++) for (let ci = 0; ci < C; ci++) order.push(cellAt(ri, ci))

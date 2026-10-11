@@ -243,7 +243,7 @@ describe('linear regression vs NIST StRD', () => {
         coef = p.intercept ? [r.intercept, r.slope] : [r.slope]
         se = p.intercept ? [r.interceptSE, r.slopeSE] : [r.slopeSE]
         sd = r.syx
-        // NIST's R² through the origin is the uncentred 1 − SS/Σy²; ours follows Prism (centred).
+        // NIST's R² through the origin is the uncentred 1 − SS/Σy²; ours is centred.
         r2 = p.intercept ? r.r2 : 1 - r.ssResidual / f.input.y.reduce((a, v) => a + v * v, 0)
       } else {
         const r = polynomialRegression(f.input.x!, f.input.y, p.degree)

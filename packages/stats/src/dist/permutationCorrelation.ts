@@ -17,7 +17,7 @@ interface Dist {
 
 /**
  * The last distribution built, keyed by the sorted reduced scores it depends on: the one-sided
- * and two-sided P of the same data (Prism reports both) share it, and n = 17 takes a second.
+ * and two-sided P of the same data (both are reported) share it, and n = 17 takes a second.
  */
 let last: { key: string; dist: Dist } | undefined
 

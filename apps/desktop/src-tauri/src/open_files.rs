@@ -126,7 +126,7 @@ mod tests {
         assert!(accepted(Path::new("C:/x/y.Xlsx")));
         assert!(accepted(Path::new("look.psstyle")));
         assert!(accepted(Path::new("bars.pspreset")));
-        assert!(accepted(Path::new("prism.pzfx")));
+        assert!(accepted(Path::new("project.pzfx")));
         assert!(!accepted(Path::new("/a/b/notes.docx")));
         assert!(!accepted(Path::new("/a/b/psproj")));
         assert!(!accepted(Path::new("/a/b/")));

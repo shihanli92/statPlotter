@@ -7,7 +7,7 @@ import { ibeta } from '../special/beta.ts'
 import { lgamma } from '../special/gamma.ts'
 
 /**
- * Power and sample size of common designs (Prism's "Sample size and power"; formulas as R's
+ * Power and sample size of common designs ("Sample size and power"; formulas as R's
  * power.t.test, power.anova.test and power.prop.test, and the usual closed forms for a
  * correlation and the log-rank test). Every power function is increasing in n, so the sample
  * size for a target power is the root of power(n) − target, found to ~1e−12 (a fractional n;

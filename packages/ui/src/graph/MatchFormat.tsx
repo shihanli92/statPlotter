@@ -39,8 +39,8 @@ export function matchFormatCommands(
 const matchLabel = (n: number) => (n > 1 ? `Match format of ${n} graphs` : 'Match format')
 
 /**
- * Prism's "Magic": make this graph look like another one, or make every other graph (or those
- * selected in the navigator, roadmap 47) look like this one.
+ * Match format ("Magic"): make this graph look like another one, or make every other graph (or
+ * those selected in the navigator, roadmap 47) look like this one.
  */
 export function MatchFormatSection({
   project,

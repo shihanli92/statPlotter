@@ -16,21 +16,21 @@ export type ProportionCiMethod = 'wilsonBrown' | 'clopperPearson' | 'wilson'
 export interface ProportionCiOptions {
   /** Default 0.95. */
   confLevel?: number
-  /** Default 'wilsonBrown' (Prism's recommended method). */
+  /** Default 'wilsonBrown' (the recommended method). */
   method?: ProportionCiMethod
 }
 
 /**
  * Confidence interval of the proportion k / n.
  *
- * - 'wilson': Wilson's score interval (no continuity correction, as Prism).
+ * - 'wilson': Wilson's score interval (no continuity correction).
  * - 'clopperPearson': the "exact" interval, Beta quantiles (R's binom.test).
- * - 'wilsonBrown': Prism's hybrid (Brown, Cai & DasGupta 2001, §4.1.1 "modified Wilson"):
+ * - 'wilsonBrown': the hybrid of Brown, Cai & DasGupta 2001, §4.1.1 ("modified Wilson"):
  *   Wilson, except that the lower limit is the one-sided Poisson bound ½χ²_{2k, α} / n when
  *   k = 1 or 2, or k = 3 with n > 50, and symmetrically the upper limit is
  *   1 − ½χ²_{2(n−k), α} / n when n − k = 1, 2, or 3 with n > 50 (α = 1 − confLevel, not α/2,
  *   as in the paper). k = 0 gives lower = 0 and k = n gives upper = 1, with the other limit by
- *   Wilson (these take precedence over the Poisson rule, as Prism's guide describes).
+ *   Wilson (these take precedence over the Poisson rule).
  *
  * n = 0 gives NaN throughout. Throws for non-integer or negative counts or k > n.
  */
@@ -68,7 +68,7 @@ export interface BinomialTestResult {
 
 /**
  * Exact binomial test of H0: success probability = p0, for k successes in n trials. The
- * two-sided P value is Prism's "method of small P values", identical to R's binom.test
+ * two-sided P value is the "method of small P values", identical to R's binom.test
  * (outcomes with probability ≤ P(X = k)·(1 + 1e−7) form the rejection region).
  * n = 0 gives P = 1. Throws for invalid counts or p0 outside [0, 1].
  */

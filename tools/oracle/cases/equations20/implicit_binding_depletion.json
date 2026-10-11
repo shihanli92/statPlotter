@@ -8,5 +8,5 @@
     ]
   },
   "params": {"equation":"user","params":["NS","Bmax","Kd"],"ours":["NS","Bmax","Kd"],"text":"Free = X - Y\nY = NS*Free + Bmax*Free/(Kd + Free)","formula":"x - ((x - (1 + NS)*Kd - Bmax) + sqrt((x - (1 + NS)*Kd - Bmax)^2 + 4*(1 + NS)*x*Kd)) /(2*(1 + NS))","start":[[0.050000000000000003,800,300]],"initial":[0.10000000000000001,1000,200]},
-  "note": "Prism's implicit-equation example (bound on both sides, X and Y in the same units); R fits the explicit root of the quadratic."
+  "note": "An implicit-equation example (bound on both sides, X and Y in the same units); R fits the explicit root of the quadratic."
 }

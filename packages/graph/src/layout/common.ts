@@ -171,7 +171,7 @@ function coarsen(
 }
 
 /**
- * Axis domain and ticks. `includeZero` mimics Prism's Y autoscale, which starts at zero when all
+ * Axis domain and ticks. `includeZero` is the usual Y autoscale, which starts at zero when all
  * data share a sign. A manual range that can't be drawn (min ≥ max, or min ≤ 0 on a log axis)
  * falls back to the automatic range with a warning; ticks never fall outside a manual range, and
  * an interval giving more than MAX_TICKS ticks is widened. Automatic ticks whose labels don't fit

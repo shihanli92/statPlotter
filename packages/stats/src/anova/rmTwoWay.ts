@@ -20,10 +20,10 @@ import { dunnettLambdas, ggEpsilon, type RMDdf, type RMSource } from './rmOneWay
 
 /**
  * Two-way ANOVA with repeated measures in one or both factors, and the mixed-effects model
- * Prism fits instead when values are missing.
+ * fitted instead when values are missing.
  *
  * Data are long: y (NaN = missing), 0-based row and column levels, and a subject id per value.
- * `repeated` names the within-subject factor(s), as Prism's "Matching by which factor(s)?":
+ * `repeated` names the within-subject factor(s), as the dialog's "Matching by which factor(s)?":
  *   'columns' — "each column represents a different time point, so matched values are spread
  *               across a row": subjects are nested in rows (row = between-subjects factor);
  *   'rows'    — "matched values are stacked into a subcolumn": subjects nested in columns;
@@ -31,27 +31,27 @@ import { dunnettLambdas, ggEpsilon, type RMDdf, type RMSource } from './rmOneWay
  *
  * Complete data (every subject has all its cells) — RM ANOVA. One factor repeated (between
  * factor A with a levels and n_g subjects per level, within factor B with b levels; Maxwell &
- * Delaney 2004 ch. 12, "split-plot"; unequal n_g allowed, Prism "How Prism computes two-way
- * ANOVA"): the between stratum is the one-way ANOVA of subject means (SS_A, SS_subjects);
+ * Delaney 2004 ch. 12, "split-plot"; unequal n_g allowed): the between stratum is the one-way
+ * ANOVA of subject means (SS_A, SS_subjects);
  * the within stratum takes orthonormal contrasts of B within each subject: SS_B tests the
  * unweighted mean of the group profiles (Type III), SS_AB the group differences in profile,
  * SS_residual the within-group scatter of the profiles (car::Anova(mlm, idata, type = 3)).
- * F: A / subjects, B / residual, A×B / residual, subjects / residual (Prism, "ANOVA table in
- * two way RM ANOVA": "for the factor that is not repeated measures, the denominator MS is
- * MSsubjects"). Both factors repeated (M&D Table 12.2): Row / (Row × Subjects), Column /
+ * F: A / subjects, B / residual, A×B / residual, subjects / residual (for the factor that is
+ * not repeated measures, the denominator MS is MS_subjects). Both factors repeated (M&D
+ * Table 12.2): Row / (Row × Subjects), Column /
  * (Column × Subjects), Interaction / Residual; the Subjects row is tested against the residual.
  * Geisser–Greenhouse ε̂ for every within-subject effect, from its error SSP matrix
  * (tr(E)²/(df·‖E‖²_F)); with 'gg' each within effect gets pCorrected from F(ε·dfn, ε·dfd)
- * (Prism: "If you do not assume sphericity, Prism uses the Greenhouse-Geisser correction").
+ * (without the sphericity assumption, the Greenhouse–Geisser correction).
  *
  * Missing values, or `interaction: false` — mixed model (REML, mixedModel.ts), with the random
- * effects of Prism's SAS code (FAQ 2104: RANDOM Int A B / SUBJECT=S when both factors are
+ * effects of the usual SAS code (RANDOM Int A B / SUBJECT=S when both factors are
  * repeated; a random subject intercept otherwise), sum-to-zero coded fixed effects and Wald F
  * tests of the Type III hypotheses, denominator df by containment (default; SAS's default for
  * that code) or Satterthwaite (lmerTest). Containment: the between factor is contained in the
  * subject term (nested subjects); with both factors repeated, row in subject × row and column in
  * subject × column; everything else gets the residual df N − rank([X Z]). No GG correction for
- * mixed fits (Prism's ε with missing values is undocumented). The additive (main-effects) model
+ * mixed fits (no documented ε with missing values). The additive (main-effects) model
  * is only fitted as a mixed model.
  *
  * Invalid shapes throw (unequal array lengths, negative or non-integer levels, a duplicated
@@ -678,7 +678,7 @@ export interface TwoWayRMComparisonSpec {
   /** vsControl: the control level of the compared factor (default 0). */
   control?: number
   /**
-   * Simple effects: one family for all rows (columns) instead of one per row (Prism's
+   * Simple effects: one family for all rows (columns) instead of one per row (the
    * recommended default). Widens Šidák/Bonferroni/Holm/Fisher/FDR only; Tukey and Dunnett stay
    * per row (as the ordinary two-way comparisons, DATA_MODEL §11).
    */
@@ -700,9 +700,9 @@ interface MeanDef {
 
 /**
  * Multiple comparisons after twoWayRM, diff = mean A − mean B (for vsControl, control − other,
- * as Prism lists "Control vs. X"). Error terms:
- * - ANOVA (complete data): "Prism always computes the multiple comparison tests using a pooled
- *   error term" (Prism, "Interpreting results: repeated measures two-way ANOVA"; M&D p. 583).
+ * as the results list "Control vs. X"). Error terms:
+ * - ANOVA (complete data): the multiple comparison tests always use a pooled error term
+ *   (M&D p. 583).
  *   With A between and B within: B-levels within an A level: SE² = 2 MS_res/n_g; B main
  *   effect: 2 MS_res (1/a²)Σ1/n_g; A-levels within a B level: (MS_subjects + (b − 1) MS_res)/b ·
  *   (1/n_g + 1/n_h) (M&D's pooled within-cell variance); A main effect: MS_subjects/b ·
@@ -710,11 +710,10 @@ interface MeanDef {
  *   column main effect: 2 MS_C×S/(R n) (and symmetrically). These are the mixed model's SEs
  *   with the ANOVA (moment) variance estimates. df: with ddf 'containment' the df of the
  *   effect the comparison belongs to (cells → interaction/residual df, "(n-1)(a-1)" and
- *   "(n-1)(a-1)(b-1)" in Prism's guide; main effects → that effect's error df); with
+ *   "(n-1)(a-1)(b-1)"; main effects → that effect's error df); with
  *   'satterthwaite' the Satterthwaite df of the combined mean square.
- *   The sphericity choice does not change comparisons (pooled error either way; Prism 8.4+
- *   disables main-effect comparisons of a repeated factor under GG — FAQ 2172 — which is left to
- *   the caller).
+ *   The sphericity choice does not change comparisons (pooled error either way; disabling
+ *   main-effect comparisons of a repeated factor under GG is left to the caller).
  * - Mixed model: model-based SEs of differences of least-squares means; df = the containment df
  *   of the corresponding effect (interaction for cells with the full model) or Satterthwaite's
  *   per comparison.

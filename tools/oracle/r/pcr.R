@@ -1,5 +1,5 @@
-# Principal component regression, as Prism describes it (Statistics Guide, "Principal Component
-# Regression (PCR)"): prcomp of the predictors (scale. = standardize), the first k components
+# Principal component regression (PCR): prcomp of the predictors (scale. = standardize), the
+# first k components
 # (params$k, a fixed number here), lm(y ~ scores[, 1:k]) with an intercept, and the coefficients
 # converted back to the original variables: beta_j = sum_c V[j, c] gamma_c / d_j (d = SDs when
 # standardized, else 1), beta_0 = gamma_0 - sum_j beta_j mean_j, with covariance T vcov(gamma) T'.

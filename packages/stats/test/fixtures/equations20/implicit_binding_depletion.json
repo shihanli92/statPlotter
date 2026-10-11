@@ -36,5 +36,5 @@
     "r": "4.4.3",
     "packages": {}
   },
-  "note": "Prism's implicit-equation example (bound on both sides, X and Y in the same units); R fits the explicit root of the quadratic."
+  "note": "An implicit-equation example (bound on both sides, X and Y in the same units); R fits the explicit root of the quadratic."
 }

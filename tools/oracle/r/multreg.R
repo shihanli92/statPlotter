@@ -1,24 +1,23 @@
-# Multiple linear regression (Prism's "Multiple linear regression", least squares), from lm().
+# Multiple linear regression (least squares), from lm().
 #
 # input: y, X (rows), names. params: intercept (default TRUE), confLevel, interactions (pairs of
 # 0-based predictor indices; the product X_i·X_j is appended after the main effects, named "A:B").
 #
-# Choices (Prism's Curve Fitting Guide, "Multiple regression with Prism", and
-# reg_choosing-diagnostics-for-mulit.htm / reg_multicollinearity.htm):
+# Choices:
 # - Coefficient CIs: estimate ± t(df)·SE (confint.lm); P: two-sided t test (summary.lm).
 # - R² = 1 − SS/SStot with SStot about the mean of Y, also without an intercept (the Phase 2
 #   simple-regression convention; summary.lm's r.squared is uncentred there). Adjusted R² =
 #   1 − (SS/df)/(SStot/(n − 1)) (equals summary.lm's with an intercept).
 # - Sy.x = sqrt(SS/df) ("divides the sum-of-squares by N-K").
-# - AICc = n·ln(SS/n) + 2K + 2K(K+1)/(n − K − 1), K = number of coefficients + 1 (Prism's
+# - AICc = n·ln(SS/n) + 2K + 2K(K+1)/(n − K − 1), K = number of coefficients + 1 (the
 #   least-squares AICc, as the nonlinear fits); checked against AIC(lm), which differs by the
 #   constant n·(log(2π) + 1). NaN when n − K − 1 ≤ 0.
 # - Overall F: summary.lm's fstatistic (with an intercept H0: all slopes 0; without, H0: Y = 0).
-#   UNCERTAIN: which null Prism uses when the intercept is excluded.
+#   UNCERTAIN: which null to use when the intercept is excluded.
 # - VIF = 1/(1 − R²_j), R²_j from regressing X_j on the other design columns (with the intercept
 #   when the model has one; uncentred R² through the origin otherwise), cross-checked against
 #   car::vif where it applies (≥ 2 terms). Interaction products are treated as ordinary columns.
-#   Prism: "how well each independent (X) variable can be predicted from the other X variables".
+#   How well each independent (X) variable can be predicted from the other X variables.
 # - Collinear design: lm's aliasing (last dependent column NA) -> status 'singular', NaN for the
 #   aliased coefficient and all VIFs (car::vif refuses aliased models); the fit is the reduced one.
 

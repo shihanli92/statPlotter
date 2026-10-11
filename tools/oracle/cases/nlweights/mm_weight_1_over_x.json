@@ -11,5 +11,5 @@
     ]
   },
   "params": {"equation":"michaelis-menten","constraints":[{"kind":"fit"},{"kind":"fit"}],"start":[[120,6]]},
-  "note": "Prism's 1/X weighting (fixed point weights)."
+  "note": "1/X weighting (fixed point weights)."
 }

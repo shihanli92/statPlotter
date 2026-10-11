@@ -13,9 +13,9 @@ const rowsFor = (text: string) =>
   )
 
 /**
- * A sheet's notes (roadmap 31): free text above a table, results, graph or layout page (Prism's "info" per
- * sheet), edited in place. Collapsed while empty; an edit is one undo step when the field loses
- * focus. Never drawn on graphs or exported with them.
+ * A sheet's notes (roadmap 31): free text above a table, results, graph or layout page (an
+ * "info" per sheet), edited in place. Collapsed while empty; an edit is one undo step when the
+ * field loses focus. Never drawn on graphs or exported with them.
  */
 export function SheetNotes({ node }: { node: DataTable | AnalysisNode | GraphNode | LayoutNode }) {
   const { store } = useServices()

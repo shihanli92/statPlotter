@@ -3,7 +3,7 @@ import { tCdf, tQuantile, tSf } from '../dist/t.ts'
 
 /**
  * Alternative hypothesis, always about the reported effect: for two-sample tests that is
- * B − A (the second group minus the first, as Prism reports differences), for one-sample
+ * B − A (the second group minus the first, as differences are reported), for one-sample
  * tests x − μ. 'greater' means the effect is > 0.
  */
 export type Alternative = 'two-sided' | 'less' | 'greater'

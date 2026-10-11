@@ -1,6 +1,6 @@
 # Roadmap 20: equations and simulation. Suite "equations20".
 #
-# task "special": Prism's special and distribution functions of the user-equation language
+# task "special": the special and distribution functions of the user-equation language
 #   (input$calls = [{fn, args}]), from R's own functions: gamma, lgamma, beta, pbeta, pgamma,
 #   digamma, besselJ/Y/I/K, pnorm/qnorm/dnorm, pt/qt/dt, pf/qf/df, pchisq/qchisq, pbinom,
 #   factorial; erf from integrate() of exp(-t^2) (R has no erf; 2*pnorm(x*sqrt(2)) - 1 loses
@@ -20,7 +20,7 @@ PACKAGES <- character(0)
 sys.source(file.path("r", "curvefit.R"), envir = environment())
 
 # ---- equations added in roadmap 20 (same parameterisation as packages/stats equationsMore.ts) ----
-# Formulas in R syntax (log10 for Prism's log, pnorm for zdist). Lines for particular data sets
+# Formulas in R syntax (log10 for log, pnorm for zdist). Lines for particular data sets
 # use the indicator `ind` of data set A (g == 1); IF(...) models use `ind` of their condition.
 
 # (B/10^-pA2)^SchildSlope written with ind = (B > 0) so that B = 0 (the control) has a finite

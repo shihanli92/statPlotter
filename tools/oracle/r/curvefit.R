@@ -12,7 +12,7 @@
 #   q          ROUT's Q as a fraction (task "rout")
 # input: data = [{x, y}], interpolate = {y: [...], x: [...]} (unknowns for data set 1).
 #
-# Interpolation (Prism's rules, see packages/stats/src/regression/interpolate.ts): X from Y is
+# Interpolation (see packages/stats/src/regression/interpolate.ts): X from Y is
 # the first crossing of the curve from the smallest to the largest X of the standards, else
 # below the smallest, else above the largest, within half the X range beyond each end; its CI
 # is where the confidence band crosses the line Y. Here crossings are located on a grid of

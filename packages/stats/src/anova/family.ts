@@ -1,17 +1,17 @@
 import { adjustP, stepUpCount } from './padjust.ts'
 
 /**
- * Decisions for a family of P values (multiple t tests, a stack of P values), as Prism's
- * "Multiple comparisons" choices for these analyses:
+ * Decisions for a family of P values (multiple t tests, a stack of P values), the "Multiple
+ * comparisons" choices for these analyses:
  *
- * - False discovery rate at level Q (a fraction here; Prism's dialog takes a percentage):
- *   'bky' two-stage step-up (Benjamini, Krieger & Yekutieli 2006, Definition 6; Prism's
+ * - False discovery rate at level Q (a fraction here; the dialog takes a percentage):
+ *   'bky' two-stage step-up (Benjamini, Krieger & Yekutieli 2006, Definition 6; the
  *   recommended default), 'bh' (Benjamini & Hochberg 1995), 'by' (Benjamini & Yekutieli 2001).
  *   A P value is a discovery when the procedure run at Q rejects it (a step-up procedure rejects
  *   p_(i) ≤ i·Q/m', so a P value on the boundary is a discovery). The adjusted value is its q
- *   value (adjustP; BKY's at this Q, as Prism's: a discovery has q ≤ Q).
- * - Statistical significance at level α: 'holm-sidak' (Prism's recommendation), 'sidak'
- *   (Prism's "Šídák-Bonferroni") and 'bonferroni' ("Bonferroni-Dunn"); a P value is "below
+ *   value (adjustP; BKY's at this Q: a discovery has q ≤ Q).
+ * - Statistical significance at level α: 'holm-sidak' (the recommended one), 'sidak'
+ *   ("Šídák-Bonferroni") and 'bonferroni' ("Bonferroni-Dunn"); a P value is "below
  *   threshold" when its multiplicity-adjusted P is < α.
  * - 'none': each P value is compared with α on its own.
  *

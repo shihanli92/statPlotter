@@ -4738,7 +4738,7 @@
      ]
     }
    ],
-   "notes": "Mendel’s dihybrid cross (556 peas), the example of Prism’s guide. Compared with the 9:3:3:1 ratio by the chi-square goodness-of-fit test (P = 0.93: no evidence against the ratio)."
+   "notes": "Mendel’s dihybrid cross (556 peas), a textbook example. Compared with the 9:3:3:1 ratio by the chi-square goodness-of-fit test (P = 0.93: no evidence against the ratio)."
   },
   "zid000102": {
    "kind": "analysis",

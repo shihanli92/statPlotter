@@ -37,7 +37,7 @@ export const ALL_PAIRS_METHODS = [
   { value: 'holm-sidak', label: 'Holm-Šidák (step-down)' },
   { value: 'fisher', label: 'Fisher’s LSD (no correction)' },
   { value: 'bky', label: 'False discovery rate (two-stage Benjamini, Krieger & Yekutieli)' },
-  { value: 'newman-keuls', label: 'Newman-Keuls (not recommended; no P values or CIs in Prism)' },
+  { value: 'newman-keuls', label: 'Newman-Keuls (not recommended; no P values or CIs)' },
 ] as const
 export const CONTROL_METHODS = [
   { value: 'dunnett', label: 'Dunnett (recommended)' },
@@ -356,8 +356,8 @@ export function groupData(ds: NormalizedDataSet): GroupData | null {
 }
 
 /**
- * Prism-style comparisons table. FDR methods report q values and no CIs; Newman-Keuls reports q
- * and its step-down P value (Prism shows neither P nor CI for it).
+ * The comparisons table. FDR methods report q values and no CIs; Newman-Keuls reports q
+ * and its step-down P value (the test itself defines neither P nor CI).
  */
 export function comparisonTable(
   title: string,

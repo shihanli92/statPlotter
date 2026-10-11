@@ -5,9 +5,8 @@ import { factorial } from '../special/functions.ts'
 import { doubledRanks, midranks } from './ranks.ts'
 
 /**
- * Prism computes the exact P value when (k!)^n ≤ this, k treatments and n subjects (Prism
- * Statistics Guide, "Interpreting results: Friedman test": "When that value exceeds 10^9,
- * Prism uses the approximate method").
+ * The exact P value is computed when (k!)^n ≤ this, k treatments and n subjects (above it, the
+ * approximate method).
  */
 const FRIEDMAN_EXACT_MAX_PERMUTATIONS = 1e9
 
@@ -19,8 +18,7 @@ export interface FriedmanResult {
   p: number
   /**
    * Exact permutation P, P(stat ≥ observed) over all (k!)^n within-row rearrangements (ties
-   * included), when (k!)^n ≤ 1e9 as Prism; null otherwise. The P Prism reports is
-   * `pExact ?? p`.
+   * included), when (k!)^n ≤ 1e9; null otherwise. The P reported is `pExact ?? p`.
    */
   pExact: number | null
   /** Column rank sums R_j (mid-ranks within each row). */
@@ -31,7 +29,7 @@ export interface FriedmanResult {
 }
 
 export interface FriedmanOptions {
-  /** 'auto' (default) follows Prism's (k!)^n ≤ 1e9 rule. */
+  /** 'auto' (default) follows the (k!)^n ≤ 1e9 rule. */
   exact?: 'auto' | boolean
 }
 
@@ -178,7 +176,7 @@ export interface DunnFriedmanRow {
   j: number
   /** R_i − R_j (column rank sums). */
   rankSumDiff: number
-  /** R̄_i − R̄_j (mean ranks, as Prism's table shows). */
+  /** R̄_i − R̄_j (mean ranks, as the results table shows). */
   meanRankDiff: number
   z: number
   /** Two-sided unadjusted P. */
@@ -188,11 +186,10 @@ export interface DunnFriedmanRow {
 }
 
 /**
- * Dunn's multiple comparisons after the Friedman test, as the Prism Statistics Guide ("How the
- * Dunn method for nonparametric comparisons works") defines them: z = (R̄_i − R̄_j) /
+ * Dunn's multiple comparisons after the Friedman test: z = (R̄_i − R̄_j) /
  * √(k(k+1)/(6n)) on the mean ranks, equivalently (R_i − R_j)/√(n k(k+1)/6) on the rank sums, with
  * no tie correction; two-sided P = 2(1 − Φ(|z|)), multiplied by the number of comparisons
- * (Bonferroni, Prism's "Dunn's test"), Šidák-adjusted, or left uncorrected. This is the test of
+ * (Bonferroni, "Dunn's test"), Šidák-adjusted, or left uncorrected. This is the test of
  * Siegel & Castellan (1988, §7.2.2) and PMCMRplus::frdAllPairsSiegelTest.
  */
 export function dunnFriedmanComparisons(

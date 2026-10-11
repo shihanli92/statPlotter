@@ -45,7 +45,7 @@ r[[5]] <- list(a = c(9.1, NA, NA, NA), b = c(10.2, 11.0, NA, 12.5))   # Welch: t
 r[[9]] <- list(a = c(NA, NA, NA, NA), b = c(1, 2, 3, NA))             # empty group
 write_case("multiple_t", "welch_bky", list(rows = rows_json(r)),
            params = list(method = "welch", family = "bky", q = 0.01),
-           note = "Welch (Prism's default) with two-stage step-up FDR at Q = 1%; rows 5 and 9 can't be tested.")
+           note = "Welch (the default) with two-stage step-up FDR at Q = 1%; rows 5 and 9 can't be tested.")
 write_case("multiple_t", "unpaired_bh", list(rows = rows_json(r)),
            params = list(method = "unpaired", family = "bh", q = 0.05))
 write_case("multiple_t", "pooled_holm", list(rows = rows_json(r)),
@@ -53,8 +53,8 @@ write_case("multiple_t", "pooled_holm", list(rows = rows_json(r)),
            note = "Consistent SD across rows: row 5 (1 value vs 3) is tested with the pooled SD.")
 
 # Audit 3 (RTA-2): lognormal tests leave values <= 0 out of their row (paired: the pairs holding
-# one) and test it when two values (pairs) per group remain, as Prism (and R's t.test of the
-# positive values' log10).
+# one) and test it when two values (pairs) per group remain (as R's t.test of the positive
+# values' log10).
 zr <- list(
   list(a = c(0, 2.1, 3.3, 4.2), b = c(5.5, 6.1, 7.9, NA)),   # a zero: 3 vs 3 (paired: 2 pairs)
   list(a = c(1.2, 1.9, 2.4, 1.1), b = c(0, 0, 3.1, 4.4)),    # two zeros: 4 vs 2
@@ -137,7 +137,7 @@ r <- list(list(a = c(5, 5, 5), b = c(5, 5, 5)), list(a = c(1, 2, 3), b = c(4, 5,
 write_case("multiple_t", "degenerate_unpaired", list(rows = rows_json(r)),
            params = list(method = "unpaired", family = "holm-sidak"),
            tol = list(rtol = 1e-8),
-           note = "Rows 1 and 3 have no variation (skipped, as Prism); row 4 sits on a 1e9 offset (rtol 1e-8: R's t.test loses digits there).")
+           note = "Rows 1 and 3 have no variation (skipped); row 4 sits on a 1e9 offset (rtol 1e-8: R's t.test loses digits there).")
 write_case("multiple_t", "degenerate_pooled", list(rows = rows_json(r)),
            params = list(method = "pooled", family = "bky"), tol = list(rtol = 1e-8),
            note = "Pooled SD: rows without variation are still tested (their SD is 0 but the pooled SD isn't).")

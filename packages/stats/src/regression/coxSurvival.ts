@@ -1,6 +1,5 @@
 /**
- * Estimated survival curves from a Cox model, as Prism describes them (Statistics Guide,
- * "Baseline values" and "Estimated survival curves"): the baseline cumulative survival is that
+ * Estimated survival curves from a Cox model: the baseline cumulative survival is that
  * of an individual whose predictors are all zero, the product of one α per event time; the
  * curve for predictors x is S₀(t)^exp(x·β); the baseline cumulative hazard is −ln S₀(t).
  *

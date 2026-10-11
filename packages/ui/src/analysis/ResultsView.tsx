@@ -157,7 +157,7 @@ export function ResultsView({
       : state?.status === 'pending'
         ? state.previous
         : undefined
-  // The data table this analysis produces (Transform, Normalize…), shown first, as in Prism.
+  // The data table this analysis produces (Transform, Normalize…), shown first.
   const table = useSourceTable(id)
   const [tab, setTab] = useState<string | null>(null)
 

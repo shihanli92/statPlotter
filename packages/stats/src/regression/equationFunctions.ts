@@ -26,19 +26,18 @@ import { lbeta, lgamma } from '../special/gamma.ts'
 import { igamma } from '../special/gammaInc.ts'
 
 /**
- * Prism's special and distribution functions for user-defined equations (Curve Fitting Guide,
- * "Available functions for user-defined equations"). Each has a value and, where it is cheap,
+ * The special and distribution functions for user-defined equations. Each has a value and,
+ * where it is cheap,
  * analytic partial derivatives for the automatic differentiation of the equation; a missing
  * partial is taken by central differences (only ever for arguments that depend on parameters,
  * e.g. the shape arguments of the incomplete gamma or hypergeometric functions).
  *
- * Tails. Prism documents tdist, fdist and chidist as upper-tail P values, chisqc as the lower
- * tail, tinv as the inverse of a two-tailed P and finv / chiinv as inverses of upper tails. zdist
- * is the standard normal CDF (the guide's Excel equivalent NORMSDIST; Prism 11: "cumulative
- * probability", so zdist(1.96) = 0.975, which Prism's own cumulative-Gaussian equations rely
- * on), zinv its inverse, normdist the normal CDF and norminv its quantile. Prism 11's optional
- * tail argument is accepted in quotes: "left", "right" or "two" (zdist, zinv, normdist,
- * norminv, tdist).
+ * Tails. tdist, fdist and chidist are upper-tail P values, chisqc is the lower tail, tinv the
+ * inverse of a two-tailed P and finv / chiinv inverses of upper tails. zdist is the standard
+ * normal CDF (Excel's NORMSDIST, the cumulative probability, so zdist(1.96) = 0.975, which the
+ * cumulative-Gaussian equations rely on), zinv its inverse, normdist the normal CDF and norminv
+ * its quantile. An optional tail argument is accepted in quotes: "left", "right" or "two"
+ * (zdist, zinv, normdist, norminv, tdist).
  */
 
 export const TAIL_CODES: Record<string, number> = {

@@ -1,4 +1,4 @@
-# Area under the curve (Prism Statistics Guide, "Area under the curve"). input: x and either
+# Area under the curve. input: x and either
 # rows (replicates, null = empty) or mean + sem. params: baseline, minHeight (fraction of
 # max Y - min Y), minPoints, direction ("above" / "both").
 #

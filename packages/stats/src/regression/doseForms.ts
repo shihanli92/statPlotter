@@ -1,5 +1,5 @@
 /**
- * The eight standard dose-response forms of Prism's library, in library order: agonist
+ * The eight standard dose-response forms of the equation library, in library order: agonist
  * (stimulation) then inhibitor, each with the full response (Bottom, Top) then the normalized
  * one (0 to 100), each with a standard then a variable slope. equations.ts writes them with
  * X = log(concentration), equationsMore.ts with X = concentration.

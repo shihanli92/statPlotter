@@ -5,7 +5,7 @@
  * activation to initiate innate immunity", Nature Immunology (2026),
  * https://doi.org/10.1038/s41590-026-02643-y (CC BY 4.0). P values are those printed in the
  * figures, compared at the printed precision. The comparison family is the one that reproduces
- * the figure (Prism's two-way options); where the legend names another test, the note says so.
+ * the figure (among the two-way options); where the legend names another test, the note says so.
  */
 import type { AnalysisResult } from '@ps/model'
 import { describe, expect, it } from 'vitest'

@@ -1,4 +1,4 @@
-# Power and sample size (Prism's "Sample size and power"), from base R.
+# Power and sample size ("Sample size and power"), from base R.
 #
 # params$design:
 #   ttest    power.t.test(n, delta, sd, sig.level, type = "two.sample" | "paired" | "one.sample",

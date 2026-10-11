@@ -1,17 +1,14 @@
-# Bland-Altman method comparison, as GraphPad Prism documents it
-# (https://www.graphpad.com/guides/prism/latest/statistics/stat_bland_altman.htm,
-#  https://www.graphpad.com/guides/prism/latest/statistics/bland-altman_results.htm):
+# Bland-Altman method comparison:
 #
-# - Prism's dialog offers "Difference (A - B)", "Ratio (A / B)", "%Difference (100*(A - B)/
+# - The dialog offers "Difference (A - B)", "Ratio (A / B)", "%Difference (100*(A - B)/
 #   average)" and the B - A, B / A, 100*(B - A)/average variants, each "vs. average".
 #   params$measure = difference / ratio / percent, params$order = aMinusB / bMinusA.
 # - x = (a + b) / 2; y = the measure; bias = mean(y); "SD of bias" = sd(y); 95% limits of
-#   agreement = bias +- 1.96 sd ("plus or minus 1.96 times its SD"). Prism uses 1.96 exactly:
-#   its sample output (bias 0.238095, SD 6.96351, limits -13.4104 to 13.8866) is reproduced by
+#   agreement = bias +- 1.96 sd ("plus or minus 1.96 times its SD"), 1.96 exactly: a published
+#   sample output (bias 0.238095, SD 6.96351, limits -13.4104 to 13.8866) is reproduced by
 #   1.96 but not by qnorm(0.975) (which gives -13.4101). Other levels: qnorm((1 + level) / 2).
-# - Ratios and percents are analysed on their own scale (no log transform); to be verified
-#   against Prism output.
-# - CIs (not reported by Prism): bias +- t sd / sqrt(n) and limits +- t sd sqrt(3 / n), t on
+# - Ratios and percents are analysed on their own scale (no log transform).
+# - CIs: bias +- t sd / sqrt(n) and limits +- t sd sqrt(3 / n), t on
 #   n - 1 df (Bland & Altman 1986), cross-checked with BlandAltmanLeh::bland.altman.stats
 #   (difference measure; mode 1 = A - B, mode 2 = B - A).
 # params: measure, order, confLevel.

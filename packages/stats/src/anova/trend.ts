@@ -2,9 +2,7 @@ import { fSf } from '../dist/f.ts'
 import { centredStats, type GroupData, weightedGrandMean, withinSS } from './groups.ts'
 
 /**
- * Post-test for linear trend after one-way ANOVA (Prism Statistics Guide, "Overview: Test for
- * linear trend", "How the test for trend works", "Results from test for trend"). Groups are in
- * column order, scored 1, 2, …, k.
+ * Post-test for linear trend after one-way ANOVA. Groups are in column order, scored 1, 2, …, k.
  *
  * - Slope: unweighted linear regression of the column means on the column number ("each column
  *   gets the same weight, even if you've entered more values into some columns").
@@ -14,7 +12,7 @@ import { centredStats, type GroupData, weightedGrandMean, withinSS } from './gro
  *   F = SS_linear / MS_within with (1, N − k) df.
  * - Effect size R² = SS_linear / SS_total; alerting R² = SS_linear / SS_between.
  * - Nonlinear variation: SS_between − SS_linear with k − 2 df, F = MS_nonlinear / MS_within
- *   (Prism reports it with four or more groups).
+ *   (reported with four or more groups).
  *
  * Empty groups take no part (their score is still their column number).
  */

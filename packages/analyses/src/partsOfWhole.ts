@@ -16,11 +16,11 @@ import {
 } from './common.ts'
 import { rowName } from './grouped.ts'
 
-// "Compare observed distribution with expected" (Prism's parts-of-whole analysis; Statistics
-// Guide, "Compare observed and expected distributions"): each data set's rows are categories of
+// "Compare observed distribution with expected" (the parts-of-whole analysis): each data set's
+// rows are categories of
 // counts, compared with expected counts or percentages entered in the dialog by the chi-square
-// goodness-of-fit test (no Yates correction, as Prism) or, with exactly two categories, the exact
-// binomial test (Prism "strongly recommends" it there; both one- and two-tailed P, the two-tailed
+// goodness-of-fit test (no Yates correction) or, with exactly two categories, the exact
+// binomial test (strongly recommended there; both one- and two-tailed P, the two-tailed
 // by the method of small P values).
 
 const Params = z.object({

@@ -1,5 +1,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { portalHost } from '../components/portalHost.ts'
 
 // Roadmap 45: the format bar's drop-downs (font, sizes, colours, line widths and styles,
 // symbols): a menu of radio items at a viewport position below its button, as the app's menus
@@ -92,7 +93,8 @@ export function BarMenu({
       close()
     }
   }
-  // In the body (not inside the bar): the bar's own button styles stay off its items.
+  // In the body (not inside the bar): the bar's own button styles stay off its items; in the
+  // modal dialog the bar is in, if any (decision 1212).
   return createPortal(
     <div
       ref={ref}
@@ -135,6 +137,6 @@ export function BarMenu({
         ),
       )}
     </div>,
-    document.body,
+    portalHost(anchor),
   )
 }

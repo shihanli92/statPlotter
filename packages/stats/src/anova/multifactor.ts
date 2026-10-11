@@ -8,15 +8,15 @@ import type { McRow } from './comparisons.ts'
 import { type ContrastRow, contrastComparisons } from './rmCompare.ts'
 
 /**
- * Multifactor (N-way) ANOVA from raw data (Prism's "Multifactor ANOVA" of a multiple-variables
+ * Multifactor (N-way) ANOVA from raw data (the "Multifactor ANOVA" of a multiple-variables
  * table): a numeric response, any number of categorical factors, and a chosen set of terms (main
  * effects and interactions). Fixed effects, least squares on the rows.
  *
  * - Coding: effect (sum-to-zero, R's contr.sum) columns — level l < L − 1 is the unit vector
  *   e_l, the last level −1 in every column; an interaction's columns are the products of its
  *   factors' columns.
- * - Sums of squares are Type III ("each effect is evaluated as if it's the last one entered",
- *   Prism Statistics Guide, "Interpreting results: Multifactor ANOVA"): the rise in the residual
+ * - Sums of squares are Type III (each effect is evaluated as if it were the last one entered):
+ *   the rise in the residual
  *   SS when the term's columns are dropped from the full model, i.e. car::Anova(type = 3) with
  *   contr.sum. The residual is the full model's (not the within-cell SS unless the model is
  *   saturated), F = MS / MS_residual.
@@ -278,7 +278,7 @@ export type EmmMethod = 'tukey' | 'bonferroni' | 'sidak' | 'holm-sidak' | 'fishe
 /**
  * A pairwise comparison of marginal means: `i`, `j` index the marginal means
  * (levelCombinations order); CI simultaneous (Tukey, Bonferroni, Šídák), per-comparison
- * (Fisher) or NaN (Holm-Šídák); `stat` is q = √2·t for Tukey (Prism's q), t otherwise.
+ * (Fisher) or NaN (Holm-Šídák); `stat` is q = √2·t for Tukey, t otherwise.
  */
 export type EmmComparison = McRow
 

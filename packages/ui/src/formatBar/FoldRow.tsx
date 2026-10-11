@@ -12,6 +12,7 @@ import {
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
+import { portalHost } from '../components/portalHost.ts'
 import { Tooltip } from '../components/Tooltip.tsx'
 import { type FoldId, foldedGroups, sameFolded } from './overflow.ts'
 
@@ -229,7 +230,7 @@ export function FoldRow({
               </span>
             ))}
           </div>,
-          document.body,
+          portalHost(moreRef.current),
         )}
     </>
   )

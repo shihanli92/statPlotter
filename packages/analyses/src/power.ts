@@ -11,7 +11,7 @@ import {
 import { z } from 'zod'
 import { failure, int, kv, num, rawValues, result, resultsSheet, table, text } from './common.ts'
 
-// Sample size and power (Prism's "Sample size and power" tool): for a planned experiment, the
+// Sample size and power (the "Sample size and power" tool): for a planned experiment, the
 // sample size that gives the wanted power, or the power of a given sample size, with a power
 // curve. The inputs are typed in; for t tests and one-way ANOVA they can instead come from pilot
 // data in the analyzed columns.

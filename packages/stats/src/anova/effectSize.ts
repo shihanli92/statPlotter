@@ -1,8 +1,8 @@
 import { lgamma } from '../special/gamma.ts'
 
 /**
- * ANOVA effect sizes for one source of variation (Prism Statistics Guide, "Understanding ANOVA
- * effect sizes"; ω² as Olejnik & Algina 2003, Table 2, between-subjects designs):
+ * ANOVA effect sizes for one source of variation (ω² as Olejnik & Algina 2003, Table 2,
+ * between-subjects designs):
  *
  * - η² = SS_effect / SS_total (corrected total)
  * - partial η² = SS_effect / (SS_effect + SS_error)
@@ -43,7 +43,7 @@ export function effectSizes(
 }
 
 /**
- * Standardized difference of two group means (Prism 11 reports these with t tests):
+ * Standardized difference of two group means (reported with t tests):
  * - Cohen's d = (mean_B − mean_A) / s_pooled, s_pooled² = ((n_A − 1)s_A² + (n_B − 1)s_B²)/(n_A + n_B − 2)
  * - Hedges' g = d · J(df), J(df) = Γ(df/2) / (√(df/2)·Γ((df − 1)/2)) with df = n_A + n_B − 2
  *   (the exact small-sample correction, Hedges 1981)

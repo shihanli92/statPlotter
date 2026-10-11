@@ -29,7 +29,7 @@ export interface MultipleLinearResult {
   n: number
   /** n − number of estimated coefficients. */
   df: number
-  /** 1 − SS/SStot, SStot about the mean of Y also without an intercept (Prism's convention). */
+  /** 1 − SS/SStot, SStot about the mean of Y also without an intercept (our convention). */
   rSquared: number
   /** 1 − (SS/df)/(SStot/(n − 1)). */
   adjRSquared: number
@@ -37,7 +37,7 @@ export interface MultipleLinearResult {
   syx: number
   /** Residual sum of squares. */
   ss: number
-  /** n·ln(SS/n) + 2K + 2K(K+1)/(n − K − 1), K = coefficients + 1 (Prism's least-squares AICc). */
+  /** n·ln(SS/n) + 2K + 2K(K+1)/(n − K − 1), K = coefficients + 1 (the least-squares AICc). */
   aicc: number
   /**
    * Overall F test, H₀: every coefficient except the intercept is 0 (with an intercept); without
@@ -58,7 +58,7 @@ export interface MultipleLinearResult {
 const NaN_ = Number.NaN
 
 /**
- * Multiple linear least-squares regression Y = β₀ + Σ βⱼXⱼ (+ interaction products), as Prism's
+ * Multiple linear least-squares regression Y = β₀ + Σ βⱼXⱼ (+ interaction products), the
  * "Multiple linear regression" with least squares.
  *
  * The fit is by Householder QR on the centred design with iterative refinement in the original

@@ -19,7 +19,7 @@ export interface LogisticOptions {
   intercept?: boolean
   /** Default 0.95. */
   confLevel?: number
-  /** CIs of the coefficients and odds ratios: profile likelihood (default, as Prism) or Wald. */
+  /** CIs of the coefficients and odds ratios: profile likelihood (default) or Wald. */
   ciMethod?: 'wald' | 'profile'
   /** Classification cutoff: predicted positive when the probability is > cutoff. Default 0.5. */
   cutoff?: number
@@ -59,7 +59,7 @@ export interface LogisticResult {
   /**
    * Area under the ROC curve of the fitted probabilities; SE by Hanley & McNeil (1982) with Q1,
    * Q2 computed from the data; CI = area ± z·SE clipped to [0, 1]; P from z = (area − ½)/SE₀
-   * with SE₀ the Hanley–McNeil SE at area ½ (Prism's ROC calculation).
+   * with SE₀ the Hanley–McNeil SE at area ½ (as rocCurve).
    */
   auc: { value: number; se: number; lower: number; upper: number; p: number }
   /** Positive = predicted probability > cutoff; tp = observed 1 predicted positive. */
@@ -196,7 +196,7 @@ function irls(
 }
 
 /**
- * Hosmer–Lemeshow statistic as Prism describes it: observations sorted by predicted probability
+ * Hosmer–Lemeshow statistic: observations sorted by predicted probability
  * (ties in the original row order) and split into `groups` groups of (as nearly as possible)
  * equal size — group g holds sorted positions ⌊g·n/G⌋ … ⌊(g+1)·n/G⌋ − 1. Per group, expected 1s
  * = Σp, expected 0s = N − Σp; χ² = Σ (O − E)²/E over both cells of every group; df = G − 2.
@@ -231,8 +231,7 @@ export function hosmerLemeshow(
 /**
  * Area under the empirical ROC curve of scores for positives (y = 1) vs negatives (ties count ½),
  * with the Hanley & McNeil (1982, Radiology 143:29, Table II) standard error, Q1 and Q2 computed
- * from the data (hanleyMcNeil, as rocCurve). P: z = (A − ½)/SE₀ (Prism, "Calculation details for
- * ROC curves").
+ * from the data (hanleyMcNeil, as rocCurve). P: z = (A − ½)/SE₀ (as rocCurve).
  */
 export function aucHanleyMcNeil(
   y: ArrayLike<number>,
@@ -256,11 +255,10 @@ export function aucHanleyMcNeil(
 }
 
 /**
- * Multiple logistic regression by maximum likelihood (Prism's "Multiple logistic regression").
+ * Multiple logistic regression by maximum likelihood.
  *
- * Coefficient P values are Wald z tests (Prism: "|Z| = estimate / SE"); CIs are profile
- * likelihood by default ("Prism actually calculates … profile likelihood confidence intervals"),
- * or Wald on request; odds-ratio limits are the exponentiated coefficient limits.
+ * Coefficient P values are Wald z tests (|Z| = estimate / SE); CIs are profile likelihood by
+ * default, or Wald on request; odds-ratio limits are the exponentiated coefficient limits.
  *
  * Degenerate data never throw: complete or quasi-complete separation (some fitted probability
  * numerically 0 or 1 while the likelihood can still only creep upward — glm's 10ε rule) gives

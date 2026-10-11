@@ -62,7 +62,7 @@ export function AnalyzeDialog(props: Props) {
     props.mode === 'edit' ? (d.nodes[props.analysisId] as AnalysisNode) : null,
   )
   const tableId = props.mode === 'create' ? props.tableId : existing!.input.source
-  // A data table, or the table an analysis produced (analyzing a result, as in Prism).
+  // A data table, or the table an analysis produced (analyzing a result).
   const table = useSourceTable(tableId) ?? (props.mode === 'create' ? props.draftTable : undefined)
   const sourceNode = useDoc((d) => d.nodes[tableId])
   const sourceState = useResultState(tableId)

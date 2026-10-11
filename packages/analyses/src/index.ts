@@ -50,9 +50,11 @@ import { demingDef, simpleLogisticDef } from './xyModels.ts'
 // 1.4.0 (audit 3, step 1B): ANOVA rounding noise is no effect (S2) and warnings for no residual
 // variation and extreme magnitudes (S2, S4); scale-invariant SDs and t tests (S4); "—" for
 // verdicts on undefined P and no NaN / Infinity in result text (S6); P = 0 at −log10 of the
-// smallest double in multiple t tests (S5); Prism's two-stage step-up q values (RTA-1);
+// smallest double in multiple t tests (S5); the two-stage step-up q values (RTA-1);
 // lognormal tests leave values ≤ 0 out of the row (RTA-2).
-export const ANALYSES_VERSION = '1.4.0'
+// 1.4.1 (roadmap 48b): result text only — the Deming note and the LOWESS info message no longer
+// name another program; every number is unchanged.
+export const ANALYSES_VERSION = '1.4.1'
 
 export const ANALYSES: readonly AnalysisDef<unknown>[] = [
   descriptive,

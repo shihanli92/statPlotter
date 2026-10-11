@@ -1,6 +1,6 @@
 /**
- * Prism graphs from a .pzfx file's binary section (roadmap 39, decisions 570–573): what decodes
- * reliably — each graph's name, its data sets (which table and column, in Prism's order), the
+ * The graphs of a .pzfx file, from its binary section (roadmap 39, decisions 570–573): what decodes
+ * reliably — each graph's name, its data sets (which table and column, in the file's order), the
  * graph and axis titles and whether they are shown, the axes' ranges, whether X is numeric, and
  * each data set's symbol and colour. Field by field with its evidence in
  * docs/design/PZFX_GRAPHS.md; anything else (the kind of marks, error bars, log scales, fonts) is
@@ -27,50 +27,50 @@ export const PCFF = {
 } as const
 
 /** A table of the binary section: its name and columns (row titles first, then X, then Y). */
-export interface PrismTableInfo {
+export interface PzfxTableInfo {
   name: string
   /** Column ids (unique in the file) and titles, in table order. */
   columns: { id: number; title: string }[]
 }
 
-export interface PrismText {
+export interface PzfxText {
   text: string
-  /** Hidden in Prism (an object flag). */
+  /** Hidden in the file (an object flag). */
   hidden: boolean
 }
 
-export interface PrismAxis {
-  /** The axis' range as Prism last drew it. */
+export interface PzfxAxis {
+  /** The axis' range as last drawn in the file. */
   min: number
   max: number
   /** Its title; null when the axis names none. */
-  title: PrismText | null
+  title: PzfxText | null
 }
 
-export interface PrismDataSet {
-  /** The binary table (index into `PrismGraphs.tables`) and column (index into its columns). */
+export interface PzfxDataSet {
+  /** The binary table (index into `PzfxGraphs.tables`) and column (index into its columns). */
   table: number
   column: number
-  /** Symbol: only Prism's codes seen with certainty (circle, square, triangle). */
+  /** Symbol: only the codes seen with certainty (circle, square, triangle). */
   shape?: SymbolShape
   /** `#rrggbb`: the data set's single colour, or its fill when its parts differ. */
   color?: string
 }
 
-export interface PrismGraph {
+export interface PzfxGraph {
   name: string
   /** A continuous X axis (XY family); false: categories along X (column, grouped…). */
   xNumeric: boolean
-  /** Data sets in Prism's order. */
-  dataSets: PrismDataSet[]
-  title: PrismText | null
-  x: PrismAxis | null
-  y: PrismAxis | null
+  /** Data sets in the file's order. */
+  dataSets: PzfxDataSet[]
+  title: PzfxText | null
+  x: PzfxAxis | null
+  y: PzfxAxis | null
 }
 
-export interface PrismGraphs {
-  tables: PrismTableInfo[]
-  graphs: PrismGraph[]
+export interface PzfxGraphs {
+  tables: PzfxTableInfo[]
+  graphs: PzfxGraph[]
   /** Layouts in the file (not imported). */
   layouts: number
 }
@@ -94,7 +94,7 @@ const PLOT_SYMBOL = 60
 const PLOT_COLORS = 68
 const NO_COLOR = 0xff
 
-/** Prism's symbol codes for its first three data sets' defaults (A, B, C). */
+/** The symbol codes of the first three data sets' defaults (A, B, C). */
 const SYMBOLS: Record<number, SymbolShape> = { 5: 'circle', 1: 'square', 2: 'triangle' }
 
 const latin1 = (bytes: Uint8Array) => String.fromCharCode(...bytes)
@@ -121,7 +121,7 @@ const nameOf = (rec: PcffRecord) => {
 
 const hex2 = (n: number) => n.toString(16).padStart(2, '0')
 
-function readTables(doc: PcffRecord): PrismTableInfo[] {
+function readTables(doc: PcffRecord): PzfxTableInfo[] {
   return childrenOf(doc, PCFF.table).map((t) => ({
     name: nameOf(t),
     columns: childrenOf(t, PCFF.column).map((c) => ({
@@ -132,8 +132,8 @@ function readTables(doc: PcffRecord): PrismTableInfo[] {
 }
 
 /** Text records of a graph by id, with the hidden flag of the object holding each. */
-function textsOf(graph: PcffRecord): Map<number, PrismText> {
-  const out = new Map<number, PrismText>()
+function textsOf(graph: PcffRecord): Map<number, PzfxText> {
+  const out = new Map<number, PzfxText>()
   for (const obj of descendantsOf(graph, PCFF.object)) {
     const hidden = ((fields(obj.payload).u16(OBJECT_FLAGS) ?? 0) & HIDDEN) !== 0
     for (const t of childrenOf(obj, PCFF.text)) {
@@ -156,17 +156,17 @@ function colorOf(payload: Uint8Array): string | undefined {
   }
   const used = new Set(slots.filter((s) => s))
   if (used.size === 1) return [...used][0]
-  // Prism's defaults: a border colour (slot 0) and a fill (slot 1); the fill tells sets apart.
+  // The default style: a border colour (slot 0) and a fill (slot 1); the fill tells sets apart.
   return slots[1] || slots[0] || undefined
 }
 
 function readGraph(
   g: PcffRecord,
   columns: Map<number, { table: number; column: number }>,
-): PrismGraph {
+): PzfxGraph {
   const head = fields(childOf(g, PCFF.graphHeader)?.payload ?? new Uint8Array())
   const texts = textsOf(g)
-  const axes = childrenOf(g, PCFF.axis).map((a): PrismAxis | null => {
+  const axes = childrenOf(g, PCFF.axis).map((a): PzfxAxis | null => {
     const f = fields(a.payload)
     const min = f.f64(AXIS_MIN)
     const max = f.f64(AXIS_MAX)
@@ -196,7 +196,7 @@ function readGraph(
     }
   }
   for (const id of plots.keys()) if (!order.includes(id)) order.push(id)
-  const dataSets: PrismDataSet[] = []
+  const dataSets: PzfxDataSet[] = []
   for (const id of order) {
     const p = plots.get(id)
     if (!p) continue
@@ -218,7 +218,7 @@ function readGraph(
 }
 
 /** Decodes an inflated graph block (`inflateTemplate`). Throws `PcffError` when unreadable. */
-export function decodePrismGraphs(block: Uint8Array): PrismGraphs {
+export function decodePzfxGraphs(block: Uint8Array): PzfxGraphs {
   const root = readPcff(block)
   const doc = root.children.find((c) => c.tag === PCFF.document) ?? root
   const tables = readTables(doc)

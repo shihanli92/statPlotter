@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><GraphPadPrismFile PrismXMLVersion="5.00">
 <Created>
-<OriginalVersion CreatedByProgram="GraphPad Prism" CreatedByVersion="7.0d.179" Login="yue.jiang" DateTime="2018-08-02T22:42:37-07:00"></OriginalVersion>
-<MostRecentVersion CreatedByProgram="GraphPad Prism" CreatedByVersion="7.0d.179" Login="yue.jiang" DateTime="2018-08-02T23:19:35-07:00"></MostRecentVersion>
+<OriginalVersion CreatedByVersion="7.0d.179" Login="yue.jiang" DateTime="2018-08-02T22:42:37-07:00"></OriginalVersion>
+<MostRecentVersion CreatedByVersion="7.0d.179" Login="yue.jiang" DateTime="2018-08-02T23:19:35-07:00"></MostRecentVersion>
 </Created>
 <InfoSequence>
 <Ref ID="Info0" Selected="1"></Ref>
@@ -39,7 +39,7 @@ How the data are organized
 censored 
 </Font></I>
 <Font Size="11" Color="#000000" Face="Verdana">
-at that time (either because we don&apos;t know what happened after that time, or we do know but can&apos;t use the data because the protocol was not being followed).   Note that unlike some programs, you don&apos;t enter group ID into a column in Prism, but rather define the treatment groups by the Y columns. 
+at that time (either because we don&apos;t know what happened after that time, or we do know but can&apos;t use the data because the protocol was not being followed).   Note that unlike some programs, you don&apos;t enter group ID into a column here, but rather define the treatment groups by the Y columns. 
 </Font>
 <B><Font Size="11" Color="#000000" Face="Verdana">
 <BR></BR><BR></BR>The goals
@@ -51,7 +51,7 @@ at that time (either because we don&apos;t know what happened after that time, o
 <BR></BR><BR></BR>Viewing the results
 </Font></B>
 <Font Size="11" Color="#000000" Face="Verdana">
-<BR></BR>Survival analysis is unique. You don&apos;t need to click the Analyze button because Prism automatically analyzes survival data. Simply view the linked results sheet and graph.  Click below to learn more about survival analysis.
+<BR></BR>Survival analysis is unique. You don&apos;t need to click the Analyze button because survival data are analyzed automatically. Simply view the linked results sheet and graph.  Click below to learn more about survival analysis.
 </Font>
 </FloatingNote>
 

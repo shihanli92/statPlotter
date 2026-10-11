@@ -48,7 +48,7 @@ import {
 // ---------------------------------------------------------------------------------------------
 // Nested t test and nested one-way ANOVA (nested tables: a data set = a treatment group, its
 // subcolumns = the subjects in it, rows = replicate measurements). See stats/anova/nested.ts
-// for the model. Results follow Prism's layout: the test, the size of the difference (t test) or
+// for the model. Results are laid out as: the test, the size of the difference (t test) or
 // the means (ANOVA), random effects as SD and variance, whether the subcolumns differ, and a
 // data summary; the one-way ANOVA adds multiple comparisons "as they are for one-way ANOVA".
 // ---------------------------------------------------------------------------------------------

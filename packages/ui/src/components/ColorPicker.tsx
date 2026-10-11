@@ -10,16 +10,18 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { ColorInput } from './fields.tsx'
+import { portalHost } from './portalHost.ts'
 
 // Roadmap 46 (UX review V6): one colour control for the Format panel's fields, the dialog's and
 // the format bar's colour buttons — a button showing the colour (striped when the items differ,
 // "Automatic" when nothing is set) that opens a popover: Automatic (when the field has one: it
 // writes `undefined`, decision 531), the graph's palette, greys, the colours recently made
 // custom, and a custom colour (a picker and a hex box). The popover is a non-modal dialog
-// portalled to the body (never under the data grid's `.grid` rule) holding a listbox: arrows move
-// across the swatches by row and column, Enter or Space pick (and close), Escape closes, the focus
-// going back where it was (the button, or the canvas for the format bar's buttons, which keep it
-// there). Tab cycles inside it.
+// portalled to the body (never under the data grid's `.grid` rule), or into the modal dialog its
+// button is in (`portalHost`, decision 1212), holding a listbox: arrows move across the swatches
+// by row and column, Enter or Space pick (and close), Escape closes, the focus going back where it
+// was (the button, or the canvas for the format bar's buttons, which keep it there). Tab cycles
+// inside it.
 
 /** Greys after the palette (the format bar's and the text editor's). */
 export const GREYS: readonly (readonly [string, string])[] = [
@@ -460,7 +462,7 @@ export function ColorPopover({
         />
       </div>
     </div>,
-    document.body,
+    portalHost(anchor),
   )
 }
 

@@ -7,5 +7,5 @@
   "params": {
     "fn": "binomial"
   },
-  "note": "Prism's guide: two-tailed P = 0.00061307."
+  "note": "Published example: two-tailed P = 0.00061307."
 }

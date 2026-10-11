@@ -2,7 +2,7 @@
 #
 #   cd tools/oracle && Rscript pzfx_fixtures.R
 #
-# 1. Copies the Prism-generated example files shipped with the CRAN package pzfx (MIT, Yue Jiang;
+# 1. Copies the example .pzfx files shipped with the CRAN package pzfx (MIT, Yue Jiang;
 #    inst/extdata and inst/testdata) into the fixture directory.
 # 2. Reads every .pzfx file there (including our hand-written synthetic_*.pzfx) with
 #    pzfx::read_pzfx and writes <file>.expected.json:
@@ -10,7 +10,7 @@
 #    Columns are laid out as read_pzfx lays them out (ROWTITLE, X or X_X/X_ERROR, then each Y
 #    column with _1.._n or _MEAN/_SD/_N… suffixes). `values` come from strike_action = "keep"
 #    (excluded values kept; numbers, or strings when a column has text); `excluded` from
-#    strike_action = "star". Date X columns use date_x = "numeric" (Prism's numeric X values).
+#    strike_action = "star". Date X columns use date_x = "numeric" (the files' numeric X values).
 
 suppressPackageStartupMessages({
   library(jsonlite)

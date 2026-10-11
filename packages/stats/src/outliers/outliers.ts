@@ -3,9 +3,9 @@ import { quantileSorted } from '../descriptive/quantile.ts'
 import { tQuantile, tSf } from '../dist/t.ts'
 
 /**
- * Outlier identification for a column of values, as Prism's "Identify outliers" analysis.
+ * Outlier identification for a column of values (the "Identify outliers" analysis).
  *
- * Grubbs' test (Prism Statistics Guide, "How it works: Grubbs' test"; Grubbs 1969,
+ * Grubbs' test (Grubbs 1969,
  * Technometrics 11: 1–21), two-sided: G = max |xᵢ − x̄| / s over all values (s with n − 1),
  * compared with the critical value
  *   G_crit = (n − 1)/√n · √(t² / (n − 2 + t²)),  t = t_{α/(2n); n−2} (upper quantile).
@@ -13,19 +13,19 @@ import { tQuantile, tSf } from '../dist/t.ts'
  * t_G = √(n(n − 2)G² / ((n − 1)² − nG²)), so P < α exactly when G > G_crit. "Iterative Grubbs"
  * removes the outlier and tests the remaining values again, until none is found (or n < 3).
  *
- * ROUT (Motulsky & Brown 2006, BMC Bioinformatics 7: 123; Prism "How it works: ROUT method"),
+ * ROUT (Motulsky & Brown 2006, BMC Bioinformatics 7: 123),
  * with the model a single location (K = 1 parameter), as for column data:
  * 1. Robust fit: minimise Σ ln(1 + (rᵢ/RSDR)²) (the Lorentzian merit function), where
  *    RSDR = P68.27(|rᵢ|) · N/(N − K) is the robust SD of the residuals, recomputed from the
  *    current fit until the fit and RSDR no longer change. The location for a fixed RSDR is found
  *    by iteratively reweighted means (weights 1/(1 + (r/RSDR)²), a descent method), starting at
- *    the median. The 68.27th percentile is Prism's percentile definition (type 6).
+ *    the median. The 68.27th percentile uses percentile definition type 6.
  * 2. Outlier test (false discovery rate): tᵢ = |rᵢ|/RSDR, two-tailed P from t with N − K df.
  *    Only the 30% of values with the largest residuals are candidates (at least one): ranked
  *    from the largest residual (j = 1), the Benjamini-Hochberg threshold is Q·j/N (the paper's
  *    Q(N − (i − 1))/N with i ranked from the smallest); the largest j among the candidates with
  *    P_j < Q·j/N makes values 1..j outliers.
- * GraphPad does not publish a numeric worked example of ROUT for column data; the rounding of
+ * There is no published numeric worked example of ROUT for column data; the rounding of
  * "30%" and the percentile definition are our choices (see DATA_MODEL.md, "to verify").
  */
 

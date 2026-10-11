@@ -3,7 +3,7 @@ import { sum } from '../summation.ts'
 import { NAN_TEST, type NormalityTest, sortedDeviations } from './common.ts'
 
 export interface AndersonDarlingResult extends NormalityTest {
-  /** A²* = A²(1 + 0.75/n + 2.25/n²), the statistic Prism reports ("A2*"). Same as `stat`. */
+  /** A²* = A²(1 + 0.75/n + 2.25/n²), the statistic reported ("A2*"). Same as `stat`. */
   stat: number
   /** The unadjusted A² (nortest::ad.test's statistic). */
   a2: number
@@ -30,7 +30,7 @@ function logCdf(z: number): number {
  *   A²* < 0.6:  exp(0.9177 − 4.279A²* − 1.38A²*²)
  *   A²* < 10:   exp(1.2937 − 5.709A²* + 0.0186A²*²)
  *   otherwise   3.7e−24.
- * Prism reports A²* and requires n ≥ 8; below that, or with zero spread, the result is NaN.
+ * A²* is reported and n ≥ 8 is required; below that, or with zero spread, the result is NaN.
  */
 export function andersonDarling(x: ArrayLike<number>): AndersonDarlingResult {
   const n = x.length

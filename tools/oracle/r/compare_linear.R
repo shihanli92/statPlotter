@@ -1,4 +1,4 @@
-# Comparing linear regressions (Prism: "Test whether slopes and intercepts are significantly
+# Comparing linear regressions ("Test whether slopes and intercepts are significantly
 # different"; ANCOVA as in Zar, Biostatistical Analysis, ch. 18).
 #
 # Slopes: anova(parallel lines y ~ x + g, separate lines y ~ x * g).

@@ -18,7 +18,7 @@ function withoutRange(fc: FunctionDef): FunctionDef {
   return rest
 }
 
-/** A user equation to start from (Prism's syntax). */
+/** A user equation to start from (Y = …, one statement per line). */
 const USER_TEMPLATE = 'Y = Bottom + (Top - Bottom)*exp(-K*X)'
 
 /** A function of the graph: its layer and definition. */
@@ -32,7 +32,7 @@ function functionOf(graph: PanelContext['graph'], id: string) {
 }
 
 /**
- * A function plotted on the graph (Prism's "Plot a function"): the equation (built-in or typed
+ * A function plotted on the graph ("Plot a function"): the equation (built-in or typed
  * in), its parameter values, the X range, and its name in the legend. Its colour and line are
  * those of any series (the identity, the functions layer's fields). The preview follows every
  * change.
@@ -75,7 +75,7 @@ export function FunctionPanel({ ctx, id }: { ctx: PanelContext; id: string }) {
           onChange={setEquation}
         />
         {fc.equation === 'user' && (
-          <Field label="Equation (Prism syntax: Y = …, one statement per line)">
+          <Field label="Equation (Y = …, one statement per line)">
             {(textId) => (
               <textarea
                 id={textId}

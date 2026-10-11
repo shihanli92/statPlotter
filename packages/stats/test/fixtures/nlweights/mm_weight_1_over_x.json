@@ -47,5 +47,5 @@
     "r": "4.4.3",
     "packages": {}
   },
-  "note": "Prism's 1/X weighting (fixed point weights)."
+  "note": "1/X weighting (fixed point weights)."
 }

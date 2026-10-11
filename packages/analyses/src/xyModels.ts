@@ -173,7 +173,7 @@ export const demingDef: AnalysisDef<DemingParams> = {
       ]),
       {
         type: 'note',
-        text: 'Deming regression reports no R²: it has no generally accepted meaning here (as Prism).',
+        text: 'Deming regression reports no R²: it has no generally accepted meaning here.',
       },
     ]
     const outputs: Record<string, GraphableDataSet> = {}
@@ -200,7 +200,7 @@ export const demingDef: AnalysisDef<DemingParams> = {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Simple logistic regression (Prism 8.3+: XY table, Y = 0 or 1)
+// Simple logistic regression (XY table, Y = 0 or 1)
 // ---------------------------------------------------------------------------------------------
 
 const LogisticXYParams = z.object({

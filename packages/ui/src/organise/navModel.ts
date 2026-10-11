@@ -55,7 +55,7 @@ export interface NavSection {
 }
 
 /**
- * The by-kind view's sections, in Prism's order (info sheets after Data Tables). Roadmap 43:
+ * The by-kind view's sections, in the usual order (info sheets after Data Tables). Roadmap 43:
  * "Info sheets", as the Insert menu and the sheet itself call them.
  */
 const SECTIONS: { kind: DocNode['kind']; title: string }[] = [

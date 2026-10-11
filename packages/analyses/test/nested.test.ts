@@ -130,7 +130,7 @@ describe('nested t test and nested one-way ANOVA vs R', () => {
     expect(tt.df).toBe(4)
   })
 
-  it('plugins: Prism-style sheets, comparisons for brackets', () => {
+  it('plugins: result sheets, comparisons for brackets', () => {
     const groups = [
       [
         [10, 11, 12],

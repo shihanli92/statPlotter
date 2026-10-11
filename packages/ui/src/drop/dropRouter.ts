@@ -81,7 +81,7 @@ export function dropHints(kinds: ReadonlySet<DropKind> | null, target: DropTarge
       'A project (.psproj) opens in place of this one, or its sheets are imported into it (Alt or Shift: import)',
     ],
     ['data', 'CSV, TSV, TXT and Excel files open the import dialog'],
-    ['pzfx', 'Prism files (.pzfx) open the Prism import dialog'],
+    ['pzfx', '.pzfx files open the .pzfx import dialog'],
     ['image', image],
     ['preset', 'Graph presets (.pspreset) and styles (.psstyle) go into your library'],
   ]

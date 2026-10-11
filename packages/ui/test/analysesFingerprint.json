@@ -1,5 +1,5 @@
 {
-  "analysesVersion": "1.4.0",
+  "analysesVersion": "1.4.1",
   "node": "24",
   "digits": 10,
   "runs": {
@@ -34,7 +34,7 @@
     "81e158220e5c2930": "5786fab2fefd7ecd deming on a xy table: constant",
     "666c04c680f40573": "1b1ddfb99191dc75 deming on a xy table: empty",
     "1cb9aa2e0c95f6d4": "1b1ddfb99191dc75 deming on a xy table: one value",
-    "bddfa00752260112": "8962145ad0851445 deming on the xy sample",
+    "bddfa00752260112": "cfcdb97c8fd28a56 deming on the xy sample",
     "4d105f03b0330e4f": "ad506b20b8bdcfcd descriptive on a column table: constant",
     "779f8f8bb47e2f63": "aaf59e0c8a4cd082 descriptive on a column table: empty",
     "9b03d0306a1efcf8": "a281bd46fa511f7e descriptive on a column table: one value",
@@ -60,7 +60,7 @@
     "6963c97b71e45d4b": "7d4ec532f40202f1 example clinical: roc #15",
     "9762927609635e23": "e56a1a92dd997d18 example clinical: survival #1",
     "f18e3bfdcde6311f": "f0124752fe289ae3 example clinical: survivalFromVariables #14",
-    "9e5712e508295921": "856842da79d81f26 example curve-fitting: deming #12",
+    "9e5712e508295921": "9381d72454e9bcf6 example curve-fitting: deming #12",
     "7f240784e4279662": "ef62d11fa4713de8 example curve-fitting: fitSpline #14",
     "2527311e6a73146d": "5f4d554af5a7a5ef example curve-fitting: fitSpline #15",
     "1cea48e9bb80aeca": "c6e1b1b8ce8e5054 example curve-fitting: linearRegression #5",
@@ -145,7 +145,7 @@
     "18983c830f63449d": "92f3f0889ad52cc0 filterRows on the partsOfWhole sample",
     "dc6ccdb0b3cfd671": "92f3f0889ad52cc0 filterRows on the survival sample",
     "ccebcdc858d45d61": "92f3f0889ad52cc0 filterRows on the xy sample",
-    "9c365e0259129487": "5b40c0e3eb059123 fitSpline on a xy table: constant",
+    "9c365e0259129487": "fbe4d8e551940aa9 fitSpline on a xy table: constant",
     "043ff58fc5554fa0": "56148414e75753e4 fitSpline on a xy table: empty",
     "9248efb6de18206f": "56148414e75753e4 fitSpline on a xy table: one value",
     "e467278854c68a3d": "26839d0c1542a85f fitSpline on the xy sample",

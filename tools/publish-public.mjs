@@ -73,7 +73,7 @@ export function isExcluded(path) {
   return EXCLUDED.some((e) => (e.endsWith('/') ? p === e.slice(0, -1) || p.startsWith(e) : p === e))
 }
 
-/** The committed Prism files: test fixtures (any other .pzfx is someone's data). */
+/** The committed .pzfx files: test fixtures (any other .pzfx is someone's data). */
 export const PZFX_FIXTURES = ['packages/io/test/fixtures/', 'apps/e2e/fixtures/']
 
 export const MAX_FILE_BYTES = 5 * 1024 * 1024

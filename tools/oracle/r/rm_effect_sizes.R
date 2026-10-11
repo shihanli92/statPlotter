@@ -1,7 +1,6 @@
-# Effect sizes of repeated-measures ANOVA, as Prism 11 reports them (Statistics Guide,
-# "Understanding ANOVA effect sizes"): eta^2 = SS_effect / SS_total (all values), partial
+# Effect sizes of repeated-measures ANOVA: eta^2 = SS_effect / SS_total (all values), partial
 # eta^2 = SS_effect / (SS_effect + SS of the error term the effect is tested against; for one-way
-# RM ANOVA this is Prism's R^2 of the treatment effect, Keppel), Cohen's f = sqrt(pe / (1 - pe)).
+# RM ANOVA this is the R^2 of the treatment effect, Keppel), Cohen's f = sqrt(pe / (1 - pe)).
 # SS from aov(... + Error(...)) on balanced complete data.
 # input: y, row, col (two-way; one-way uses col only), subject. params: repeated ("one" |
 # "rows" | "columns" | "both").

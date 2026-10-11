@@ -12,8 +12,8 @@ import { cellsOf, labelOf, type PreparedModel } from './mvVariables.ts'
 import { buildTable, type OutDataSet, stableId } from './resultTable.ts'
 
 // ---------------------------------------------------------------------------------------------
-// Prediction ("interpolation") from the regression models of multiple-variables tables, as
-// Prism's Interpolation tab: (1) the table's rows with a value for every predictor but no
+// Prediction ("interpolation") from the regression models of multiple-variables tables, the
+// dialog's Interpolation tab: (1) the table's rows with a value for every predictor but no
 // outcome, and (2) points whose predictor values the user enters. A numeric predictor left blank
 // in a point takes the mean of its analyzed values, a categorical one its reference level.
 //

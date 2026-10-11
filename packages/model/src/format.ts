@@ -11,14 +11,14 @@ interface PStyleDef {
 
 const trimLeadingZero = (s: string) => s.replace(/^0\./, '.')
 
-/** P at `digits` decimals; one that would round up to 1 reads ">0.99…" (as Prism does). */
+/** P at `digits` decimals; one that would round up to 1 reads ">0.99…". */
 function fixedP(p: number, digits: number): string {
   const s = p.toFixed(digits)
   return Number(s) >= 1 ? `>${(1 - 10 ** -digits).toFixed(digits)}` : s
 }
 
 const P_STYLES: Record<PStyle, PStyleDef> = {
-  // GraphPad style: up to four asterisks; P < 0.0001 reported as "<0.0001".
+  // Four-star style (GP): up to four asterisks; P < 0.0001 reported as "<0.0001".
   GP: {
     stars: [
       [0.0001, '****'],

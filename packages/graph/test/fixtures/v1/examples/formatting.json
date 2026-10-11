@@ -1535,7 +1535,7 @@
      ]
     }
    ],
-   "notes": "No data: the graph plots a user-defined function (Prism’s “Plot a function”), Y = A·exp(−X/Tau)·cos(2π·X/Period), and its envelope."
+   "notes": "No data: the graph plots a user-defined function (“Plot a function”), Y = A·exp(−X/Tau)·cos(2π·X/Period), and its envelope."
   },
   "zid000036": {
    "kind": "graph",

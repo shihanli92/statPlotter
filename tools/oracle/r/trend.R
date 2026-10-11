@@ -1,4 +1,4 @@
-# Post-test for linear trend after one-way ANOVA (Prism). input$groups in column order, scored
+# Post-test for linear trend after one-way ANOVA. input$groups in column order, scored
 # x = 1..k. params$summary only changes the TS side.
 #
 #   slope       coef(lm(means ~ x)) -- unweighted regression of the column means

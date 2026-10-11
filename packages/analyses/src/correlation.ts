@@ -113,7 +113,7 @@ export const correlationDef: AnalysisDef<Params> = {
       return [
         text(p.label),
         cell(r, (c) => num(c.r)),
-        // Prism shows no Spearman CI for n ≤ 10 (the Fisher z approximation is poor there).
+        // No Spearman CI for n ≤ 10 (the Fisher z approximation is poor there).
         cell(r, (c) =>
           'ciValid' in c && c.ciValid === false ? text('—') : interval(c.lower, c.upper, level),
         ),

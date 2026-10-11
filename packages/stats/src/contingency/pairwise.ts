@@ -5,7 +5,7 @@ import { check2x2, checkTable, colSums, rowSums } from './validate.ts'
 
 /**
  * Phi coefficient of a 2 × 2 table [[a, b], [c, d]]: |ad − bc| / √(r₁r₂c₁c₂) = √(χ²/N) with the
- * uncorrected Pearson χ². Prism reports it unsigned ("ranges from 0 to 1") and computes it from
+ * uncorrected Pearson χ². It is reported unsigned (from 0 to 1) and computed from
  * the cell counts whichever test is chosen. NaN when a row or column total is 0.
  */
 export function phiCoefficient(table: readonly (readonly number[])[]): number {

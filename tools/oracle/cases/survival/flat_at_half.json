@@ -9,5 +9,5 @@
       [1, 1, 1, 1, 1, 1]
     ]
   },
-  "note": "Group 1: S = 1/2 exactly from t = 4 to 17 (a censoring at 6 leaves it there), so the median is the midpoint 10.5 (Machin / Prism / R). Group 2 falls to 0 (last subject has the event)."
+  "note": "Group 1: S = 1/2 exactly from t = 4 to 17 (a censoring at 6 leaves it there), so the median is the midpoint 10.5 (Machin / R). Group 2 falls to 0 (last subject has the event)."
 }

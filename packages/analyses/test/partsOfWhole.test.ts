@@ -8,7 +8,7 @@ const run = (t: ReturnType<typeof countsTable>, p: Record<string, unknown> = {})
 
 describe('compare observed distribution with expected', () => {
   it('reproduces the guide’s Mendel example (chi-square, P = 0.93)', () => {
-    // Prism Statistics Guide, "Compare observed and expected distributions": 556 peas,
+    // A statistics guide's "Compare observed and expected distributions" example: 556 peas,
     // expected 9:3:3:1 entered as counts (312.75, 104.25, 104.25, 34.75).
     const t = countsTable(
       'partsOfWhole',

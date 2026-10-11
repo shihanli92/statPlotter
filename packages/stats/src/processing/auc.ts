@@ -2,7 +2,7 @@ import { normalQuantile } from '../dist/normal.ts'
 import { maxOf, minOf } from '../regression/initialRules.ts'
 
 /**
- * Area under the curve as Prism computes it (Statistics Guide, "Area under the curve"):
+ * Area under the curve:
  *
  * - The trapezoid rule on the points (X ascending), ΔX·[(Y₁ + Y₂)/2 − baseline] per pair of
  *   adjacent points; no smoothing, no extrapolation beyond the data. Where the line between two
@@ -17,7 +17,7 @@ import { maxOf, minOf } from '../regression/initialRules.ts'
  * - Total area: every region considered (all heights and widths); total peak area: the peaks
  *   that count; net area (both directions): area of counted peaks above − below.
  * - SE of the total area (Gagnon & Peterson 1998, J. Pharmacokinet. Biopharm. 26: 87–102, the
- *   method the guide cites): the trapezoid AUC is Σ wᵢȳᵢ with wᵢ = (x_{i+1} − x_{i−1})/2 (half
+ *   method): the trapezoid AUC is Σ wᵢȳᵢ with wᵢ = (x_{i+1} − x_{i−1})/2 (half
  *   intervals at the ends), so Var = Σ wᵢ² sᵢ²/nᵢ, with sᵢ²/nᵢ the squared SEM of the mean at
  *   each X. CI = AUC ± z·SE ("uses the z distribution … always 1.96"). This is exact when the
  *   curve does not cross the baseline; when it does, the same SE is reported (not documented).

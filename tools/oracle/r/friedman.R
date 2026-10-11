@@ -1,19 +1,17 @@
-# Friedman test and Dunn's post test, as Prism documents them:
-#   https://www.graphpad.com/guides/prism/latest/statistics/how_the_friedman_test_works.htm
-#   https://www.graphpad.com/guides/prism/latest/statistics/stat_how_the_dunn_method_for_nonpar.htm
+# Friedman test and Dunn's post test.
 #
 # input$rows: subjects x treatments (complete rows only).
 #
 #   stat, df, p   friedman.test (chi-square corrected for ties within rows; P from chi^2(k-1)).
-#                 Whether Prism applies the ties correction is undocumented.
-#   pExact        Prism: exact P when (k!)^n <= 1e9 ("When that value exceeds 10^9, Prism uses
-#                 the approximate method"), "examining all possible rearrangements of the
-#                 values, keeping each value in the same row", ties included (Prism 6+).
+#                 Whether to apply the ties correction is a choice.
+#   pExact        exact P when (k!)^n <= 1e9 (above it, the approximate method), examining all
+#                 possible rearrangements of the values, keeping each value in the same row,
+#                 ties included.
 #                 P = P(stat >= observed) over all (k!)^n rearrangements. Computed here by brute
 #                 force when (k!)^n <= 2e6, otherwise by a DP over (sorted) column-sum vectors
 #                 that is itself checked against brute force on every case small enough.
 #                 null when the rule says approximate. Exact comparisons (integer 2x ranks).
-#   dunn          Prism's Dunn test after Friedman: z = (mean rank_i - mean rank_j) /
+#   dunn          Dunn's test after Friedman: z = (mean rank_i - mean rank_j) /
 #                 sqrt(k(k+1)/(6n)), no tie correction, P = 2(1 - Phi(|z|)), times the number
 #                 of comparisons (bonferroni) / Sidak / none, for every pair i < j (0-based).
 #                 Hand-coded: the same statistic as PMCMRplus::frdAllPairsSiegelTest (Siegel &

@@ -1,4 +1,4 @@
-# Estimated survival curves from a Cox model (Prism's Cox regression "Graphs" tab and "Baseline
+# Estimated survival curves from a Cox model (the Cox regression "Graphs" tab and "Baseline
 # values"): the baseline survival of an individual with every predictor 0, as a product of the
 # Kalbfleisch-Prentice factors alpha (survfit.coxph(stype = 1)), and S(t | x) = S0(t)^exp(x b)
 # for each row of `newdata` (survfit(fit, newdata, stype = 1)). Values at the event times.

@@ -1,9 +1,7 @@
-# Normality tests, as Prism documents them (Statistics Guide, "Choosing a normality test",
-# https://www.graphpad.com/guides/prism/latest/statistics/stat_choosing_a_normality_test.htm and
-# "Q&A: Normality tests"):
+# Normality tests:
 #
 #   dagostino        D'Agostino-Pearson omnibus K2 (D'Agostino, Belanger & D'Agostino 1990),
-#                    Prism's recommended test; n >= 8. Hand-coded below; z scores cross-checked
+#                    the usually recommended test; n >= 8. Hand-coded below; z scores cross-checked
 #                    against moments::agostino.test (D'Agostino 1970) and moments::anscombe.test
 #                    (Anscombe & Glynn 1983). Differences from moments: asinh(Y/alpha) instead of
 #                    log(Y/alpha + sqrt(...)) (more accurate for small Y), and the real cube root
@@ -11,16 +9,16 @@
 #                    negative base (strongly platykurtic small samples).
 #                    skewness = sqrt(b1) = m3/m2^1.5, kurtosis = b2 - 3 (moment ratios, n
 #                    denominators), NOT the adjusted G1/G2 of the descriptive statistics.
-#   shapiroWilk      shapiro.test (Royston 1995, AS R94; "Prism uses the method of Royston");
-#                    3 <= n <= 5000 ("only ... when the sample size is less than 5000"; R allows
+#   shapiroWilk      shapiro.test (Royston 1995, AS R94);
+#                    3 <= n <= 5000 (for sample sizes below 5000; R allows
 #                    5000 itself, as do we).
-#   andersonDarling  nortest::ad.test; Prism reports A2* = A2 (1 + 0.75/n + 2.25/n^2) ("stat"),
+#   andersonDarling  nortest::ad.test; reported: A2* = A2 (1 + 0.75/n + 2.25/n^2) ("stat"),
 #                    ad.test's statistic is A2 ("a2"); n >= 8. P: D'Agostino & Stephens (1986)
-#                    piecewise formula, as ad.test. Prism's own P formula is undocumented.
+#                    piecewise formula, as ad.test.
 #                    A2 is recomputed with a compensated sum (see ad_stat) and checked against
 #                    ad.test to 1e-10.
 #   ks               nortest::lillie.test (KS distance with estimated mean/SD, Dallal-Wilkinson
-#                    P, Stephens' formula for P > 0.1); n >= 5. Prism reports "P > 0.10" when
+#                    P, Stephens' formula for P > 0.1); n >= 5. Reported as "P > 0.10" when
 #                    the Dallal-Wilkinson P exceeds 0.1 (pAbove010).
 # Below a test's minimum n (or with zero spread) every value is NaN.
 #

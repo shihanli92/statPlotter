@@ -4,18 +4,18 @@ import { GraphNode } from '@ps/model'
 import { zlibSync } from 'fflate'
 import { describe, expect, it } from 'vitest'
 import {
-  decodePrismGraphs,
-  graphFromPrism,
+  decodePzfxGraphs,
+  graphFromPzfx,
   inflateTemplate,
   MAX_TEMPLATE_BYTES,
   PcffError,
-  type PrismGraph,
+  type PzfxGraph,
   pairTables,
   readPcff,
   readPzfx,
 } from '../src/index.ts'
 
-// Roadmap 39: the binary section of .pzfx files. The Prism-made fixtures (from the pzfx R
+// Roadmap 39: the binary section of .pzfx files. The real fixtures (from the pzfx R
 // package) each hold one table and its graph; the synthetic blocks below exercise the record
 // reader and the decoder's structure on data built here (no user's file is used).
 
@@ -96,7 +96,7 @@ const plot = (ds: number, col: number, symbol: number, colors: Uint8Array[]): Re
   ],
 })
 
-/** One XY table (row titles, X, two Y) and a graph of it, as Prism lays them out. */
+/** One XY table (row titles, X, two Y) and a graph of it, laid out as in real .pzfx files. */
 function synthetic(opts: { hiddenTitle?: boolean; family?: number } = {}) {
   const table = named(0x08, 'Growth', u16(0), [
     column(0, ''),
@@ -160,7 +160,7 @@ describe('record reader (roadmap 39)', () => {
   })
 
   it('refuses a wrong header and lengths past the end', () => {
-    expect(() => readPcff(new TextEncoder().encode('NOTPRISM'))).toThrow(PcffError)
+    expect(() => readPcff(new TextEncoder().encode('NOTMAGIC'))).toThrow(PcffError)
     const cut = cat(new TextEncoder().encode('PCFFGRA4'), u16(0x0002), u32(100), u16(1))
     expect(() => readPcff(cut)).toThrow(/past the end/)
   })
@@ -188,9 +188,9 @@ describe('record reader (roadmap 39)', () => {
   })
 })
 
-describe('Prism graph decoder (roadmap 39)', () => {
+describe('.pzfx graph decoder (roadmap 39)', () => {
   it('reads tables, data sets, titles, ranges, colours and symbols from synthetic records', () => {
-    const d = decodePrismGraphs(synthetic())
+    const d = decodePzfxGraphs(synthetic())
     expect(d.tables).toEqual([
       {
         name: 'Growth',
@@ -208,7 +208,7 @@ describe('Prism graph decoder (roadmap 39)', () => {
     expect(g.title).toEqual({ text: 'Growth curves', hidden: false })
     expect(g.x).toEqual({ min: 0, max: 10, title: { text: 'Hours', hidden: false } })
     expect(g.y).toEqual({ min: -50, max: 150, title: { text: 'OD 600', hidden: false } })
-    // Prism's order (data set 1 first), each with its table column.
+    // The file's order (data set 1 first), each with its table column.
     expect(g.dataSets).toEqual([
       { table: 0, column: 3, shape: 'square', color: '#a0a0a4' },
       { table: 0, column: 2, shape: 'circle', color: '#ff0066' },
@@ -216,12 +216,12 @@ describe('Prism graph decoder (roadmap 39)', () => {
   })
 
   it('reads hidden titles and categorical X', () => {
-    const g = decodePrismGraphs(synthetic({ hiddenTitle: true, family: 1 })).graphs[0]!
+    const g = decodePzfxGraphs(synthetic({ hiddenTitle: true, family: 1 })).graphs[0]!
     expect(g.title?.hidden).toBe(true)
     expect(g.xNumeric).toBe(false)
   })
 
-  it('decodes the Prism-made fixtures: one graph of the table, Prism’s default titles', () => {
+  it('decodes the real fixtures: one graph of the table, the default titles they hold', () => {
     for (const [file, sets, xNumeric] of [
       ['column.pzfx', 2, false],
       ['x_y_rep.pzfx', 3, true],
@@ -236,7 +236,7 @@ describe('Prism graph decoder (roadmap 39)', () => {
       expect(graphs!.report[0]!.matched).toContain(`data sets (${sets})`)
       expect(g.axes.x.type === 'continuous').toBe(xNumeric)
     }
-    // The XY fixture's titles: Prism's defaults where the user typed none.
+    // The XY fixture's titles: the defaults the file holds where the user typed none.
     const xy = readPzfx(fixture('x_y_rep.pzfx'), { graphs: true }).graphs!.graphs[0]!.graph
     expect(xy.axes.x.title?.content).toEqual([{ text: 'XX' }])
     expect(xy.axes.y.title?.content).toEqual([{ text: 'YTitle' }])
@@ -315,7 +315,7 @@ describe('Prism graph decoder (roadmap 39)', () => {
   })
 })
 
-describe('Prism graphs as native graphs (roadmap 39)', () => {
+describe('.pzfx graphs as native graphs (roadmap 39)', () => {
   const table = () => {
     const { tables } = readPzfx(fixture('x_y_rep.pzfx'))
     return tables[0]!
@@ -330,7 +330,7 @@ describe('Prism graphs as native graphs (roadmap 39)', () => {
       { id: 4, title: 'Yc' },
     ],
   }
-  const prism = (over: Partial<PrismGraph> = {}): PrismGraph => ({
+  const source = (over: Partial<PzfxGraph> = {}): PzfxGraph => ({
     name: 'Mine',
     xNumeric: true,
     dataSets: [
@@ -343,9 +343,9 @@ describe('Prism graphs as native graphs (roadmap 39)', () => {
     ...over,
   })
 
-  it('draws the table’s default graph with Prism’s data sets, titles, ranges, colours, symbols', () => {
+  it('draws the table’s default graph with the file’s data sets, titles, ranges, colours, symbols', () => {
     const t = table()
-    const built = graphFromPrism(prism(), t, info)!
+    const built = graphFromPzfx(source(), t, info)!
     const g = built.graph
     expect(g.name).toBe('Mine')
     expect(g.seriesSource.include).toEqual([t.dataSets[2]!.id, t.dataSets[0]!.id])
@@ -358,7 +358,7 @@ describe('Prism graphs as native graphs (roadmap 39)', () => {
     const points = g.layers.find((l) => l.geom === 'points')!
     expect(points.series?.[t.dataSets[2]!.id]?.style).toEqual({ shape: 'triangle' })
     expect(built.matched).toEqual([
-      'data sets (2, in Prism’s order)',
+      'data sets (2, in the file’s order)',
       'title',
       'X axis title',
       'Y axis title (hidden)',
@@ -370,14 +370,14 @@ describe('Prism graphs as native graphs (roadmap 39)', () => {
     expect(built.defaulted[0]).toMatch(/kind of graph/)
   })
 
-  it('keeps X numeric (and its automatic range) when Prism drew X as categories, and says so', () => {
-    const built = graphFromPrism(prism({ xNumeric: false }), table(), info)!
+  it('keeps X numeric (and its automatic range) when the file drew X as categories, and says so', () => {
+    const built = graphFromPzfx(source({ xNumeric: false }), table(), info)!
     const x = built.graph.axes.x
     expect(x.type === 'continuous' && x.range).toBe('auto')
     expect(built.defaulted[0]).toMatch(/X as categories/)
   })
 
   it('answers null when none of the data sets is the table’s', () => {
-    expect(graphFromPrism(prism({ dataSets: [{ table: 0, column: 9 }] }), table(), info)).toBeNull()
+    expect(graphFromPzfx(source({ dataSets: [{ table: 0, column: 9 }] }), table(), info)).toBeNull()
   })
 })

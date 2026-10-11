@@ -1,30 +1,28 @@
-# Mixed-effects models for repeated measures with missing values (suite mixed), as GraphPad
-# Prism fits them "instead of" RM ANOVA.
+# Mixed-effects models for repeated measures with missing values (suite mixed), fitted
+# "instead of" RM ANOVA.
 #
-# What Prism documents (Prism 11 Statistics Guide and knowledge base):
-#   stat_how-to-report-the-methods-used.htm: "This mixed model uses a compound symmetry
-#     covariance matrix, and is fit using Restricted Maximum Likelihood (REML)".
-#   stat_repeated-measures-tab1way.htm: with no missing values "the two are completely
-#     equivalent"; a subject variance estimated at zero or negative makes them differ.
-#   FAQ 2211 (updated-reml-calculation-method-920): variances are constrained positive; Prism
-#     tries two sets of starting values and keeps the best fit.
-#   FAQ 2103 / 2104 (R and SAS code "so they can understand what Prism is doing"):
+# The model:
+#   a compound symmetry covariance matrix, fitted by Restricted Maximum Likelihood (REML).
+#   With no missing values the two are completely equivalent; a subject variance estimated at
+#     zero or negative makes them differ.
+#   Variances are constrained positive; several sets of starting values are tried and the
+#     best fit kept.
+#   The R and SAS code:
 #     one-way:  PROC MIXED METHOD=REML; MODEL effort=Type; RANDOM Int / SUBJECT=Subject;
 #               lmer(effort ~ Type + (1|Subject)) with contr.sum
 #     two-way, both factors repeated: RANDOM Int A B / SUBJECT=S (subject, A x subject,
 #               B x subject)
-#   stat_interpreting-results-mixed-mod.htm: fixed-effect P value; random-effect SD and variance;
+#   Results: fixed-effect P value; random-effect SD and variance;
 #     "was the matching effective?" by a chi-square comparing the full model with one without
 #     the repeated-measures random effect(s); GG correction applies to mixed fits too
-#     (stat_notes-for-a-statistical-consul.htm: "The Geisser-Greenhouse correction only changes
-#     the degrees of freedom").
+#     (the Geisser-Greenhouse correction only changes the degrees of freedom).
 # NOT documented: the denominator df of the F tests and comparisons, and how epsilon is
 # estimated with missing values. We provide both df methods and test both:
 #   containment    SAS's default for the published SAS code (DDFM=CONTAIN): the smallest rank
 #                  contribution to [X Z] of the random terms containing the effect (subject for
 #                  the between-subjects factor, subject x row / subject x column for the
 #                  factors of a both-repeated design), else the residual df N - rank([X Z]).
-#                  Equals the RM ANOVA df with complete data, and matches the guide's
+#                  Equals the RM ANOVA df with complete data, and matches the usual
 #                  "(n-1)(a-1)(b-1)" df for comparisons after two-way RM ANOVA. The rank
 #                  contribution is taken as the drop in rank when the term is removed (SAS's
 #                  exact definition for unbalanced designs is an open question).

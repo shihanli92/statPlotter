@@ -81,7 +81,7 @@ export const oneSampleDef: AnalysisDef<Params> = {
           confLevel: level,
           alternative: alternativeFor(params.tails, two.mean - mu),
         })
-        // One-tailed P, but the usual two-sided CI (as Prism).
+        // One-tailed P, but the usual two-sided CI.
         return { ...r, diffLo: two.diffLo, diffHi: two.diffHi }
       })
       blocks = [

@@ -133,5 +133,5 @@
       "emmeans": "2.0.2"
     }
   },
-  "note": "No subject effect: the REML subject variance sits on the boundary 0 (checked in the oracle); results differ from RM ANOVA, as Prism warns."
+  "note": "No subject effect: the REML subject variance sits on the boundary 0 (checked in the oracle); results differ from RM ANOVA."
 }

@@ -19,7 +19,7 @@ import { applyQt, norm2, qrFactor, solveR } from '../linalg/qr.ts'
  *   sitting on a bound whose descent direction points outward is held fixed for the step; the
  *   trial point is projected onto the box, and the predicted reduction uses the projected step.
  *
- * Convergence (Prism-like): the relative change in SS is below 1e-8 on 5 consecutive trials,
+ * Convergence: the relative change in SS is below 1e-8 on 5 consecutive trials,
  * where a trial counts if it was accepted with a relative decrease < 1e-8, or rejected when the
  * model itself predicted a relative decrease < 1e-8 (at the minimum, rounding makes the
  * remaining tiny steps fail). A rejected trial with a large predicted decrease resets the count.

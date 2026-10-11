@@ -11,7 +11,7 @@ import {
 import { checkFit, constraintsOf, type FitExpected, type RawConstraint } from './nls.ts'
 import { arr, expectClose, loadFixtures } from './oracle.ts'
 
-// Roadmap 20 R oracle (tools/oracle/r/equations20.R): Prism's special and distribution functions,
+// Roadmap 20 R oracle (tools/oracle/r/equations20.R): the special and distribution functions,
 // user equations using them, implicit and differential equations (against the fits of their
 // closed-form solutions), lines for particular data sets, and the built-in equations added in
 // roadmap 20. Our fits start from automatic (or the case's) initial values; R's from the truth.

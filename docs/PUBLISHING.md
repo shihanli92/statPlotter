@@ -34,9 +34,9 @@ repository)").
   any secret; deploys, releases and the nightly runs are guarded to the private repository, and
   no workflow uses `pull_request_target` (`ui/test/publication.test.ts` checks all of this).
 
-## Once: the demo on Cloudflare Pages
+## Once: the demo on Cloudflare
 
-The Pages project is connected to `shihanli92/statPlotter` (Git integration): Cloudflare builds
+The demo project (a Worker serving static assets, or a Pages project) is connected to `shihanli92/statPlotter` (Git integration): Cloudflare builds
 and deploys `main` on each push. Its settings (Workers & Pages › the project › Settings):
 
 | Setting | Value |
@@ -45,6 +45,7 @@ and deploys `main` on each push. Its settings (Workers & Pages › the project �
 | Framework preset | None |
 | Build command | `npx --yes pnpm@11.9.0 install --frozen-lockfile && npx --yes pnpm@11.9.0 --filter @ps/web build` |
 | Build output directory | `apps/web/dist` |
+| Deploy command (Worker projects) | `npx wrangler deploy` (reads `wrangler.jsonc` at the root) |
 | Root directory | `/` (empty) |
 | Build system version | the latest (v3) |
 | Environment variables (production) | `NODE_VERSION` = `24`, `SKIP_DEPENDENCY_INSTALL` = `true` |
@@ -55,6 +56,11 @@ and deploys `main` on each push. Its settings (Workers & Pages › the project �
   lockfile is pnpm 11's. The build image's own pnpm may be older, so the command runs pnpm 11.9.0
   itself, and `SKIP_DEPENDENCY_INSTALL` skips the image's install step. If a build log shows the
   image installing anyway and failing, add `PNPM_VERSION` = `11.9.0`.
+- **A Worker project** (the dashboard's default) runs a deploy command after the build. Without
+  `wrangler.jsonc`, `npx wrangler deploy` stops at the workspace root ("application detection
+  logic has been run in the root of a workspace"); the file names the Worker and its assets
+  folder. Workers' static assets honour `_headers` as Pages does. Turn off its non-production
+  branch builds as below.
 - **Preview deployments off:** with them on, every branch (and pull request) pushed to the public
   repository would be built and served at a public URL. Only `main`, which only the publish
   script writes, is deployed.

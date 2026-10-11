@@ -42,11 +42,11 @@ import {
 import { cellsOf, labelOf, levelsOf } from './mvVariables.ts'
 
 // ---------------------------------------------------------------------------------------------
-// Multifactor (N-way) ANOVA of a multiple-variables table (Prism 11's "Multifactor ANOVA"): a
+// Multifactor (N-way) ANOVA of a multiple-variables table ("Multifactor ANOVA"): a
 // numeric response and any number of factors — text variables, or numeric variables whose
 // distinct values are the levels — with all main effects and chosen interactions (by default
-// every two- and three-way interaction, which is what Prism tests; it never tests four-way or
-// higher ones). Type III sums of squares by least squares on the rows (unbalanced designs are
+// every two- and three-way interaction; four-way and higher ones are left out).
+// Type III sums of squares by least squares on the rows (unbalanced designs are
 // fine; every combination of an interaction's levels needs data). Effect sizes η², partial η²,
 // Cohen's f and % of total variation. Multiple comparisons of estimated marginal means: main
 // effects (levels of one factor, averaged over the others), simple effects (levels of one factor

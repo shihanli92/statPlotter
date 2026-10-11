@@ -1,14 +1,14 @@
 /**
- * Interpolating unknowns from a fitted standard curve (Prism: "Interpolate unknowns from
- * standard curve", for nonlinear and linear regression). Works on any curve y = f(x) with a
+ * Interpolating unknowns from a fitted standard curve ("Interpolate unknowns from standard
+ * curve", for nonlinear and linear regression). Works on any curve y = f(x) with a
  * confidence band lo(x) ≤ f(x) ≤ hi(x).
  *
- * X from Y (Curve Fitting Guide, "Q&A: Interpolating"): search the curve from the smallest to
+ * X from Y: search the curve from the smallest to
  * the largest X of the standards and stop at the first X where it reaches Y (so with two
  * crossings the lower X is reported); if there is none, search below the smallest X, then above
- * the largest, each within the curve's extended range — Prism extrapolates "a distance equal to
- * half the length of the X axis" in each direction, here half the X range of the standards. No
- * crossing (Y beyond a plateau, or too far out) gives NaN (Prism leaves the cell blank).
+ * the largest, each within the curve's extended range — extrapolated by half the X range of
+ * the standards in each direction. No crossing (Y beyond a plateau, or too far out) gives NaN
+ * (a blank cell).
  * Crossings are found on a grid of 1000 steps per search interval, then refined to machine
  * precision (Illinois false position), so two crossings closer than a grid step can be missed;
  * a sign change across a pole is not taken for a crossing.

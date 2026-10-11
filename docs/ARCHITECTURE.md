@@ -1,9 +1,9 @@
 # Architecture
 
-A scientific analysis & graphing application with the functional scope of GraphPad Prism:
-typed data tables, a statistics engine, publication-quality graphs, and live linking between them.
+A scientific analysis & graphing application for the lab: typed data tables, a statistics engine,
+publication-quality graphs, and live linking between them.
 
-> Naming: the product must not use "Prism" in its name or reuse GraphPad UI assets. Reading `.pzfx`
+> Naming: the app is statPlotter; it uses no other product's name or UI assets. Reading `.pzfx`
 > files for interoperability is fine.
 
 ## 1. Core idea: the project is a reactive DAG
@@ -75,7 +75,7 @@ packages/
     examples/   Example projects and the Examples dialog's cards, their thumbnails drawn ahead
                 of time (`thumbnails.json`, roadmap 47); `private/` (development builds only,
                 found by `import.meta.glob`, left out of the public repository: roadmap 48)
-    import/     The Prism (.pzfx) import dialog, cell rules, large-file import
+    import/     The .pzfx import dialog, cell rules, large-file import
     layout/     Layout pages: the page view, its items, drags, arrange, the inspector dock
     onboarding/ The getting-started checklist under the navigator (roadmap 47)
     organise/   Folders, the Family view, search, thumbnails, info sheets, Gallery, merging and
@@ -108,7 +108,7 @@ tools/
   oracle/            R scripts (renv) → JSON fixtures in oracle/cases/
   nist/              NIST StRD certified datasets fetcher
 docs/              ARCHITECTURE.md (this), ROADMAP.md, DECISIONS.md, DATA_MODEL.md,
-                   PRISM_COVERAGE.md, RELEASING.md, PUBLISHING.md
+                   FEATURE_COVERAGE.md, RELEASING.md, PUBLISHING.md
 .github/workflows/ ci.yml (checks + web build + deploy), desktop.yml (Rust tests, macOS and Windows),
                    release.yml (installers on version tags), e2e-nightly.yml, visual-baselines.yml,
                    codeql.yml (code scanning, in the public repository only)

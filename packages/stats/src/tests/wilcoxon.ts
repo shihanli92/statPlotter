@@ -7,7 +7,7 @@ import { doubledRanks, midranks } from './ranks.ts'
 
 /**
  * 'auto' uses the exact distribution when the number of non-zero differences is ≤ this.
- * Provisional: to be checked against Prism.
+ * Provisional cut-off.
  */
 const WILCOXON_EXACT_MAX_N = 100
 
@@ -28,7 +28,7 @@ export interface WilcoxonResult {
   /** Sum of ranks of the positive differences (R's V). */
   wPlus: number
   wMinus: number
-  /** Sum of signed ranks wPlus − wMinus (Prism's W). */
+  /** Sum of signed ranks wPlus − wMinus (W). */
   W: number
   n: number
   nNonZero: number

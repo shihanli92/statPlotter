@@ -4,21 +4,21 @@
  * - bonferroni: min(1, m·p).
  * - sidak: 1 − (1 − p)^m (Šidák 1967), computed as −expm1(m·log1p(−p)).
  * - holm: step-down Bonferroni (Holm 1979); adjusted p_(i) = max_{j ≤ i} min(1, (m − j + 1) p_(j)).
- * - holm-sidak: step-down Šidák (Holm 1979, §4; Prism's recommended step-down method):
+ * - holm-sidak: step-down Šidák (Holm 1979, §4; the recommended step-down method):
  *   adjusted p_(i) = max_{j ≤ i} 1 − (1 − p_(j))^{m − j + 1}.
  * - bh: Benjamini & Hochberg (1995) step-up; adjusted p_(i) = min_{j ≥ i} min(1, m p_(j) / j).
  * - by: Benjamini & Yekutieli (2001): as bh with m·Σ_{j≤m} 1/j in place of m.
  * - bky: q values of the two-stage linear step-up procedure of Benjamini, Krieger & Yekutieli
- *   (2006, Biometrika 93, 491–507, Definition 6), which Prism calls "two-stage step-up". At FDR
+ *   (2006, Biometrika 93, 491–507, Definition 6), called "two-stage step-up". At FDR
  *   level Q it (1) runs BH at q′ = Q/(1 + Q), rejecting r₁; stops if r₁ = 0 (nothing rejected)
  *   or r₁ = m (everything rejected); otherwise (2) re-runs BH at q′·m/m̂₀ with m̂₀ = m − r₁.
- *   A hypothesis' q value is Prism's (audit 3, RTA-1; decision 1084): its BH-adjusted P p̃ times
- *   (1 + Q)·m̂₀/m, with m̂₀ = m − r₁ from the first stage at the given Q (`q`, the user's; Prism's
+ *   A hypothesis' q value (audit 3, RTA-1; decision 1084) is its BH-adjusted P p̃ times
+ *   (1 + Q)·m̂₀/m, with m̂₀ = m − r₁ from the first stage at the given Q (`q`, the user's; the
  *   default 1%). Then q ≤ Q exactly when the procedure at Q rejects it (stage two rejects p̃ ≤
  *   q′m/m̂₀). This reproduces all 36 q values of Tawk et al. 2026's source data; no R function
  *   computes it. When stage one rejects everything (m̂₀ = 0) m̂₀ is taken as 1, so q values stay
  *   positive (and at most Q/m). q values are capped at 1. (Until audit 3 the q value was the
- *   smallest Q at which the hypothesis is rejected, which no Prism output matches.)
+ *   smallest Q at which the hypothesis is rejected, which no published output matches.)
  *
  * `n` is the family size m when it exceeds the number of P values supplied (as R's
  * p.adjust(p, n = …)): the missing P values are taken to be 1. NaN inputs give NaN and are

@@ -365,7 +365,7 @@ export const pcaDef: AnalysisDef<PcaParams> = {
       }
     }
     if (params.biplot) {
-      // Prism: "the loadings are scaled to 90% of the PC scores" — here the largest loading
+      // The loadings are scaled to 90% of the PC scores — here the largest loading
       // coordinate on PC1/PC2 becomes 90% of the largest absolute score on them.
       const sMax = maxOf(res.scores.flatMap((r) => [Math.abs(r[0]!), Math.abs(r[1] ?? 0)]))
       const lMax = Math.max(
@@ -531,7 +531,7 @@ export const rocDef: AnalysisDef<RocParams> = {
       label: 'CIs of sensitivity and specificity',
       kind: 'radio',
       options: [
-        { value: 'clopperPearson', label: 'Clopper-Pearson (exact; as Prism)' },
+        { value: 'clopperPearson', label: 'Clopper-Pearson (exact)' },
         { value: 'wilsonBrown', label: 'Wilson/Brown' },
       ],
     },

@@ -1,5 +1,5 @@
 # Nonlinear regression additions of roadmap 18: more weighting choices, Hougaard's skewness of
-# weighted fits, Prism's test for appropriate weighting, and "is parameter P the same for every
+# weighted fits, the test for appropriate weighting, and "is parameter P the same for every
 # data set?" (extra sum-of-squares F test and AICc).
 #
 # Fits reuse nonlinear.R (nls with exact deriv() gradients, polished). params as nonlinear.R plus
@@ -11,8 +11,8 @@
 # Hougaard (SAS PROC NLIN's formula as curvefit.R) for data set 1's block with the weights held
 # at the solution: J~ = sqrt(w) J, H~ = sqrt(w) H, L = (J~'J~)^-1, mse = weighted SS / df,
 # w = w(yhat) * fixed weight.
-# Weighting test (Prism's Curve Fitting Guide, "Test for appropriate weighting/homoscedasticity"):
-# per data set, Spearman r between |(y - yhat) sqrt(w)| and yhat; P as Prism's Spearman (exact
+# Weighting test (appropriate weighting / homoscedasticity):
+# per data set, Spearman r between |(y - yhat) sqrt(w)| and yhat; P as the Spearman test (exact
 # for n <= 17 via pspearman, no ties in these cases; t approximation above, cor.test(exact =
 # FALSE)).
 

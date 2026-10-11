@@ -16,7 +16,7 @@
 #               (t at alpha/2); NaN otherwise.
 # Unequal-variance methods (Welch SE and Welch-Satterthwaite df per pair):
 #   games-howell  P from q = sqrt(2) |t| and the studentized range with k means (reference
-#                 integral); stat is t, as Prism reports for all three methods
+#                 integral); stat is t, as reported for all three methods
 #   dunnett-t3    |t| referred to the studentized maximum modulus with m comparisons
 #                 (psmm_ref), critical value by uniroot
 #   tamhane-t2    Sidak-adjusted Welch t tests
@@ -92,7 +92,7 @@ oracle <- function(input, params) {
     dfw <- (vi + vj)^2 / (vi^2 / (ni - 1) + vj^2 / (nj - 1))
     t <- diff / se
     if (method == "games-howell") {
-      stat <- t  # Prism reports t for all three (P from q = sqrt(2) |t|)
+      stat <- t  # t is reported for all three (P from q = sqrt(2) |t|)
       q <- sqrt(2) * abs(t)
       p <- mapply(function(q, d) ptukey_ref(q, kk, d, lower = FALSE), q, dfw)
       stopifnot(all(abs(p - ptukey(q, kk, dfw, lower.tail = FALSE)) < 1e-9))

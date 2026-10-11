@@ -3,8 +3,8 @@
 #
 # params$kind:
 #   transform  input { rows (rows x replicates, null = empty), x (or null) }, params y, k, x, kx.
-#              Y functions as Prism's list (User Guide, "Transform data"): trig in radians,
-#              probit = 5 + qnorm(Y) ("an older definition of probit that adds 5"), logit =
+#              Y functions: trig in radians,
+#              probit = 5 + qnorm(Y) (the older definition of probit that adds 5), logit =
 #              ln(Y/(1-Y)), rank = average ranks within the data set (all replicates),
 #              zscore = (Y - mean)/SD over the data set; rounding half away from zero (the app
 #              rounds on the decimal digits, as spreadsheets: round(1.005, 2) = 1.01; the inputs

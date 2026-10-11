@@ -1,11 +1,11 @@
 import { leastSquares } from '../linalg/leastSquares.ts'
 
 /**
- * Curves through or near XY data without a model (Prism's "Fit spline/LOWESS", Curve Fitting
- * Guide, "Spline and Lowess curves"): point-to-point lines, the natural cubic spline through
+ * Curves through or near XY data without a model ("Fit spline/LOWESS"): point-to-point lines,
+ * the natural cubic spline through
  * every point, the Akima spline (Akima 1970), and a least-squares cubic spline with a chosen
- * number of knots (Prism's "smoothing spline": "you decide the degree of smoothness by specifying
- * the number of knots"). Each returns an evaluator; X values must be sorted, distinct and finite
+ * number of knots (a "smoothing spline": the number of knots sets the degree of smoothness).
+ * Each returns an evaluator; X values must be sorted, distinct and finite
  * for the interpolating splines (callers average replicates at the same X first).
  */
 
@@ -153,7 +153,7 @@ export function akimaSpline(x: ArrayLike<number>, y: ArrayLike<number>): Curve {
 
 /**
  * Least-squares natural cubic spline with `knots` knots (≥ 2) equally spaced from the smallest to
- * the largest X, the two ends included (Prism's "smoothing spline" with that many knots; the knot
+ * the largest X, the two ends included (the "smoothing spline" with that many knots; the knot
  * placement is our reading). The space of natural cubic splines on K knots has dimension K (a
  * straight line for K = 2), spanned here by the truncated-power basis of Hastie, Tibshirani &
  * Friedman (Elements of Statistical Learning, eq. 5.4–5.5) on X scaled to [0, 1], fitted by QR.

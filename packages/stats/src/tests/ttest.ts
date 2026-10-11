@@ -6,7 +6,7 @@ import { type Alternative, tInterval, tOfEstimate, tPValue, tRSquared } from './
 /**
  * Student / Welch t tests.
  *
- * Sign convention (Prism's): the effect is B − A, where A is the first data set. So `diff` is
+ * Sign convention: the effect is B − A, where A is the first data set. So `diff` is
  * mean(B) − mean(A), t has the sign of diff, the CI brackets diff, and 'greater' means
  * mean(B) > mean(A). The R oracle therefore calls t.test(b, a).
  */

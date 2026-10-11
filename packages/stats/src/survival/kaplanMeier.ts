@@ -9,7 +9,7 @@ export interface SurvivalSubject {
 }
 
 /**
- * Pointwise CI of the survival fraction: 'asymmetric' is Prism's recommended "log-log
+ * Pointwise CI of the survival fraction: 'asymmetric' is the recommended "log-log
  * transform" (exponential Greenwood) interval, identical to R's survfit(conf.type =
  * "log-log"); 'symmetric' is S ± z·SE truncated to [0, 1].
  */
@@ -63,9 +63,9 @@ export function checkSubjects(subjects: readonly SurvivalSubject[], what: string
 }
 
 /**
- * Kaplan–Meier product-limit estimate with Greenwood standard errors (Prism's survival
+ * Kaplan–Meier product-limit estimate with Greenwood standard errors (the survival
  * analysis). At a time with both events and censorings the events come first (the censored
- * subjects count as at risk), as in Prism and R.
+ * subjects count as at risk), as in R.
  *
  * Conventions where the formulas are undefined: while S = 1 the SE is 0 and the CI is [1, 1];
  * once S = 0 the SE is reported as 0 and the CI as [0, 0] (R's survfit gives NaN / NA

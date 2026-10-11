@@ -1,18 +1,18 @@
-# Contingency tables as GraphPad Prism documents them (Statistics Guide, "Contingency tables").
+# Contingency tables.
 #
 # Chi-square     Pearson, expected r_i c_j / N; df (r-1)(c-1); a zero margin gives NaN (as R).
-#                Yates (2x2 only): sum((|O - E| - 1/2)^2 / E) with NO cap -- Prism's guide
-#                ("Chi-square or Fisher's test?") says it applies the correction even when
+#                Yates (2x2 only): sum((|O - E| - 1/2)^2 / E) with NO cap -- the correction
+#                is applied even when
 #                |O - E| < 1/2; R's chisq.test caps it at |O - E|. Checked against chisq.test
 #                wherever the two definitions agree.
 # Fisher         fisher.test (two-sided = sum of probabilities <= observed x (1 + 1e-7),
-#                Prism's "method of summing small P values"); 2x2 also alternative less and
+#                the "method of summing small P values"); 2x2 also alternative less and
 #                greater. r x c: FEXACT (network algorithm) -- the TS side has its own network
 #                algorithm (columns as stages, merged pasts, closed-form completion sums).
-# Trend          Cochran-Armitage with scores 1..k, first column = success (Prism; Altman
+# Trend          Cochran-Armitage with scores 1..k, first column = success (Altman
 #                1991 pp. 261-265): prop.trend.test, cross-checked by the closed form.
 # 2x2 estimates  rows = groups (row 1 treated/exposed), columns = outcome (col 1 present).
-#   Relative risk     Koopman asymptotic score (Prism's recommended method), hand-coded as in
+#   Relative risk     Koopman asymptotic score (the recommended method), hand-coded as in
 #                     Fagerland, Lydersen & Laake (2017, sec. 4.7): roots of
 #                     T(phi) = (p1 - phi p2)/sqrt(p1~(1 - p1~)/n1 + phi^2 p2~(1 - p2~)/n2) = +/- z
 #                     with the constrained MLEs, solved on log(phi) to 1e-15. Cross-checked
@@ -21,14 +21,14 @@
 #                     x1 = 0 -> lower 0; x2 = 0 -> upper Inf; x1 = x2 = 0 -> [0, Inf]; an
 #                     empty row -> NaN.
 #   Difference        p1 - p2, Newcombe hybrid score (1998, method 10) and with continuity
-#                     correction (method 11), which Prism recommends and uses by default here.
+#                     correction (method 11), the recommended one and the default here.
 #                     Hand-coded; method 10 cross-checked against
 #                     contingencytables::Newcombe_hybrid_score_CI_2x2, and both reproduce
 #                     Newcombe's worked example (case t2x2_newcombe).
-#   NNT               1/difference; limits 1/upper and 1/lower of the difference (Prism takes
-#                     "the reciprocal of both confidence limits"); lower > upper when the
+#   NNT               1/difference; limits 1/upper and 1/lower of the difference (the
+#                     reciprocal of both confidence limits); lower > upper when the
 #                     difference's CI contains 0. null when the difference is 0 or NaN.
-#   Odds ratio        ad/bc, Baptista-Pike exact conditional interval (Prism's recommended
+#   Odds ratio        ad/bc, Baptista-Pike exact conditional interval (the recommended
 #                     method): inf/sup of {theta: P(theta) > alpha}, P the two-sided "sum of
 #                     small probabilities" P value under the non-central hypergeometric
 #                     distribution (tolerance 1 + 1e-7 as fisher.test). Found by going out
@@ -39,7 +39,7 @@
 #                     exact and mid-P versions share one helper and both return the mid-P
 #                     interval.) a at the bottom/top of its support -> lower 0 / upper Inf;
 #                     a one-point support -> [0, Inf].
-#   Sens., spec., PPV, NPV   (Prism's diagnostic layout: row 1 = has the condition, column 1 =
+#   Sens., spec., PPV, NPV   (the diagnostic layout: row 1 = has the condition, column 1 =
 #                     test positive) a/(a+b), d/(c+d), a/(a+c), d/(b+d) with the Wilson/Brown
 #                     hybrid (see binomial.R); likelihood ratio = sens / (1 - spec).
 # McNemar        mcnemar.test (continuity-corrected; no correction when b = c) and the exact
@@ -196,7 +196,7 @@ wilson_brown <- function(x, n, conf) {
   list(value = x / n, lower = lim[1], upper = lim[2])
 }
 
-chi_prism <- function(tab, yates) {
+chi_uncapped <- function(tab, yates) {
   rs <- rowSums(tab); cs <- colSums(tab); N <- sum(tab)
   E <- outer(rs, cs) / N
   D <- if (yates) abs(tab - E) - 0.5 else tab - E
@@ -216,11 +216,11 @@ oracle <- function(input, params) {
   if (!is.matrix(tab)) tab <- do.call(rbind, tab)
   storage.mode(tab) <- "double"
   is2x2 <- nrow(tab) == 2 && ncol(tab) == 2
-  out <- list(chiSquare = chi_prism(tab, FALSE))
+  out <- list(chiSquare = chi_uncapped(tab, FALSE))
   fi <- if (sum(tab) == 0) list(p.value = 1) else fisher.test(tab, workspace = 2e7)
   out$fisher <- list(p = fi$p.value)
   if (is2x2) {
-    out$chiSquareYates <- chi_prism(tab, TRUE)
+    out$chiSquareYates <- chi_uncapped(tab, TRUE)
     if (sum(tab) == 0) {
       out$fisher$pLess <- 1; out$fisher$pGreater <- 1
     } else {

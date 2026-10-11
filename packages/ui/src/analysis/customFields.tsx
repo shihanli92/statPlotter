@@ -92,12 +92,12 @@ const UserEquationField: CustomField = ({ label, params, onChange }) => {
       />
       {parsed === null ? (
         <div className="help">
-          One line per equation in Prism’s syntax, e.g. {USER_EXAMPLE}. Unknown names are
-          parameters; a name assigned first on the left is an intermediate variable. Prism’s
-          functions work (gamma, erf, zdist, tdist, besselj…); <code>&lt;A&gt;</code>,{' '}
-          <code>&lt;~A&gt;</code>, <code>&lt;B:D&gt;</code> start lines for particular data sets;{' '}
-          <code>Y' = …</code> is a differential equation (starting from <code>Y[0]</code> at X = 0,
-          or <code>X[0] = …</code>); Y on both sides is an implicit equation.
+          One statement per line, e.g. {USER_EXAMPLE}. Unknown names are parameters; a name assigned
+          first on the left is an intermediate variable. The usual functions work (gamma, erf,
+          zdist, tdist, besselj…); <code>&lt;A&gt;</code>, <code>&lt;~A&gt;</code>,{' '}
+          <code>&lt;B:D&gt;</code> start lines for particular data sets; <code>Y' = …</code> is a
+          differential equation (starting from <code>Y[0]</code> at X = 0, or <code>X[0] = …</code>
+          ); Y on both sides is an implicit equation.
         </div>
       ) : parsed.ok ? (
         <div className="help">

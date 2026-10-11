@@ -12,13 +12,13 @@ export interface DagostinoResult extends NormalityTest {
   zKurtosis: number
 }
 
-/** The minimum n Prism accepts for the D'Agostino–Pearson test. */
+/** The minimum n accepted for the D'Agostino–Pearson test. */
 const DAGOSTINO_MIN_N = 8
 
 /**
  * D'Agostino–Pearson omnibus K² test (D'Agostino, Belanger & D'Agostino 1990, "A suggestion for
  * using powerful and informative tests of normality", Am. Stat. 44, 316–321), the normality
- * test Prism recommends ("omnibus K2"):
+ * test usually recommended ("omnibus K2"):
  *
  *   Z(√b1): D'Agostino (1970) — Y = √b1 √((n+1)(n+3) / (6(n−2))),
  *     β₂(√b1) = 3(n² + 27n − 70)(n+1)(n+3) / ((n−2)(n+5)(n+7)(n+9)), W² = √(2(β₂ − 1)) − 1,
@@ -30,7 +30,7 @@ const DAGOSTINO_MIN_N = 8
  *   K² = Z(√b1)² + Z(b2)², P from χ²(2).
  *
  * The cube root is the real (sign-preserving) one: for strongly platykurtic small samples the
- * base is negative, where moments::anscombe.test gives NaN. n < 8 (Prism's minimum) or zero
+ * base is negative, where moments::anscombe.test gives NaN. n < 8 (the minimum) or zero
  * spread gives NaN throughout.
  */
 export function dagostinoPearson(x: ArrayLike<number>): DagostinoResult {

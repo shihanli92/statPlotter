@@ -19,13 +19,13 @@ import {
  * recomputed from the current fit, until the parameters and RSDR no longer change. Each step is a
  * weighted least-squares fit with weights 1/(1 + (rᵢ/RSDR)²) from the previous residuals
  * (iteratively reweighted least squares; its fixed point is a stationary point of the Lorentzian
- * merit at that RSDR), started from the ordinary least-squares fit. As in Prism the robust fit
+ * merit at that RSDR), started from the ordinary least-squares fit. The robust fit
  * ignores weighting (1/Y², 1/Y). Data sets are fitted one by one, or together when a parameter
  * is shared (then RSDR pools the data sets). The fixed point reached depends on the start when
  * the Lorentzian merit has several minima.
  *
  * ROUT: the robust fit's residuals — weighted by the chosen weighting at the robust curve, as
- * Prism judges outliers on weighted residuals, with RSDR recomputed from them — are tested with
+ * outliers are judged on weighted residuals, with RSDR recomputed from them — are tested with
  * `routTest` at the false discovery rate Q (the same test as for column data); the outliers are
  * then removed and the curve refitted by least squares with the usual options (by the caller).
  */
@@ -84,7 +84,7 @@ function fitBlock(
   opts: FitOptions,
   maxIterations: number,
 ): Omit<RobustBlock, 'sets'> & { residuals: Float64Array[]; weights: Float64Array[] } {
-  // Robust fitting ignores every weighting choice (Prism), fixed point weights included.
+  // Robust fitting ignores every weighting choice, fixed point weights included.
   const base: FitOptions = { ...opts, profileCI: false, weighting: 'none' }
   delete base.pointWeights
   let fit = nonlinearFit(model, data, base)

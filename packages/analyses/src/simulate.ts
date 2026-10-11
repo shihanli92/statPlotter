@@ -25,28 +25,28 @@ import {
 import { defaultEquationId, type FitModel, resolveEquation, USER_EQUATION } from './nonlinear.ts'
 import { buildTable, stableId } from './resultTable.ts'
 
-// Simulations (Prism's "Simulate and generate"; Statistics Guide, "Simulating data"): analyses
+// Simulations ("Simulate and generate"): analyses
 // that need no input data and make a data table (`producesTable`) of random data, reproducible
 // from a random seed.
 //
 // - Simulate XY data: X values as an arithmetic or geometric series (start, increment or ratio,
 //   stop when X equals or exceeds the end) or the analyzed table's X; Y from a built-in or
 //   user-defined equation with parameter values per data set (or the analyzed table's Y), with
-//   replicates; random error as Prism offers it: none, Gaussian (constant SD), relative
+//   replicates; random error: none, Gaussian (constant SD), relative
 //   (Gaussian, SD a percentage of Y), double Gaussian (a percentage of the points with one SD,
 //   the rest with another), Poisson (Y is the mean), t (df, scaled by the SD) or Lorentzian
 //   (Cauchy, = t with df 1); then optionally a number of outliers: randomly chosen points to
 //   which a value uniform between two limits is added or subtracted.
 // - Simulate column data: columns of values, each column's mean given or drawn at random from a
 //   Gaussian of means, with the same random-error choices.
-// - Simulate a contingency table: Prism's 2 × 2 designs — cross-sectional (only the grand total
+// - Simulate a contingency table: the 2 × 2 designs — cross-sectional (only the grand total
 //   fixed: a multinomial over the four cells), prospective and experimental (row totals fixed:
 //   a binomial outcome in each row), case-control (column totals fixed: a binomial exposure in
 //   each column).
 //
 // Random numbers: `Random` in @ps/stats (xoshiro128**; normal and t by inversion; Poisson and
-// binomial by inversion of the CDF), not Prism's Numerical Recipes routines, so the numbers
-// differ from Prism's but follow the same distributions. The seed is a parameter: the same seed
+// binomial by inversion of the CDF), not Numerical Recipes routines, so the numbers differ
+// from other programs' but follow the same distributions. The seed is a parameter: the same seed
 // gives the same table on every machine; "New seed" in the dialog draws new data.
 
 const ALL_KINDS: readonly TableKind[] = [

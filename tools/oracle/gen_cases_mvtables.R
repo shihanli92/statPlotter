@@ -40,7 +40,7 @@ if (want("catreg")) {
     '{"model": "linear", "y": "SBP", "interactions": [["Age", "Sex"], ["Sex", "Arm"]],
       "interpolate": true,
       "predictions": [{"Age": 50, "Sex": "F", "Arm": "High"}, {"Sex": "M"}]}',
-    note = "Sex first appears as M (the reference by Prism's first-level rule); row 5 has no SBP (interpolated), row 9 no Age (left out); the second point takes the mean Age and the reference Arm.")
+    note = "Sex first appears as M (the reference by the first-level rule); row 5 has no SBP (interpolated), row 9 no Age (left out); the second point takes the mean Age and the reference Arm.")
 
   write_case("catreg", "linear_reference_rules", list(
     SBP = sbp, Age = age, Sex = sex, Dose = unname(dose), Site = site),

@@ -167,7 +167,7 @@ m <- gen_rows(5, c(3, 4, 5), 0, 1.5)
 m[2, 1] <- NA
 ow("mixed", "ow_k3_n5_boundary", m, comparisons = mix_cmp,
    note = paste("No subject effect: the REML subject variance sits on the boundary 0 (checked",
-                "in the oracle); results differ from RM ANOVA, as Prism warns."))
+                "in the oracle); results differ from RM ANOVA."))
 m <- gen_rows(12, c(5, 7, 6), 1, 1)
 m[cbind(c(2, 5, 9, 11), c(3, 1, 2, 3))] <- NA
 ow("mixed", "ow_k3_n12", m, comparisons = list(cmp1("tukey"), cmp1("dunnett", control = 0)),

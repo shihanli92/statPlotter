@@ -5,5 +5,5 @@
       [4, 5]
     ]
   },
-  "note": "|O - E| < 1/2: Prism's Yates correction still subtracts 1/2 (R's chisq.test would not)."
+  "note": "|O - E| < 1/2: the Yates correction here still subtracts 1/2 (R's chisq.test would not)."
 }

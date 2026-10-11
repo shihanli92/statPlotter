@@ -69,5 +69,5 @@
   "tol": {
     "rtol": 1e-08
   },
-  "note": "Rows 1 and 3 have no variation (skipped, as Prism); row 4 sits on a 1e9 offset (rtol 1e-8: R's t.test loses digits there)."
+  "note": "Rows 1 and 3 have no variation (skipped); row 4 sits on a 1e9 offset (rtol 1e-8: R's t.test loses digits there)."
 }

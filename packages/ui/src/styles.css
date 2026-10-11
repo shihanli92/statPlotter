@@ -3118,11 +3118,10 @@ dialog.format-dialog {
   min-height: 380px;
   max-width: calc(100vw - 16px);
   max-height: calc(100vh - 16px);
-  /* The bottom-right corner resizes it; the title bar moves it. */
+  /* The bottom-right corner resizes it; the title bar moves it (by its insets, not a transform:
+     a dialog must not be a containing block for its pop-ups, decision 1212). */
   resize: both;
   overflow: hidden;
-  /* Its content adapts to the dialog's own width (see the @container rule below). */
-  container-type: inline-size;
 }
 dialog.format-dialog[open] {
   display: flex;
@@ -3249,21 +3248,21 @@ dialog.format-dialog[open] {
 .format-error {
   color: var(--danger);
 }
-/* Narrow (a small window, or the dialog resized down): preview above the options. */
-@container (max-width: 640px) {
-  .format-body {
-    flex-direction: column-reverse;
-  }
-  .format-options.inspector {
-    width: auto;
-    flex: 1;
-    min-height: 0;
-    border-right: none;
-    border-top: 1px solid var(--border);
-  }
-  .format-preview {
-    flex: 0 0 38%;
-  }
+/* Narrow (a small window, or the dialog resized down, 640 px or less): preview above the options.
+   The dialog measures itself (`narrow`) rather than being a size container, which would make it a
+   containing block for its pop-ups (decision 1212). */
+.format-dialog.narrow .format-body {
+  flex-direction: column-reverse;
+}
+.format-dialog.narrow .format-options.inspector {
+  width: auto;
+  flex: 1;
+  min-height: 0;
+  border-right: none;
+  border-top: 1px solid var(--border);
+}
+.format-dialog.narrow .format-preview {
+  flex: 0 0 38%;
 }
 
 /* ---------- The docked Format panel (roadmap 46) ---------- */

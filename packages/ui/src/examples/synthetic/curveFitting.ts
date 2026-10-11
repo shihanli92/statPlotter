@@ -464,7 +464,7 @@ export function createCurveFitting(fonts: FontRegistry): Project {
       'Seconds',
       tSec,
       { Signal: tSec.map((t) => [round(gammaVariate(t) + r.normal(0, 0.6), 2)]) },
-      'Indicator concentration after a bolus, every 1.5 s. The gamma-variate model is a user-defined equation using Prism’s gamma() function: Y = A·X^(B−1)·exp(−X/C)/(gamma(B)·C^B), with A the area under the curve. Simulated with A = 800, B = 3.5, C = 3 s.',
+      'Indicator concentration after a bolus, every 1.5 s. The gamma-variate model is a user-defined equation using the gamma() function: Y = A·X^(B−1)·exp(−X/C)/(gamma(B)·C^B), with A the area under the curve. Simulated with A = 800, B = 3.5, C = 3 s.',
     ),
   )
   const bolusGraph = b.graph(bolus, { yTitle: 'Signal' })

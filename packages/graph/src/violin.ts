@@ -30,7 +30,7 @@ const CUT = 3
 
 /**
  * The violin of a group's values: its density from the smallest to the largest value
- * ('truncated', Prism's default) or with the tails out to 3 bandwidths ('extended'). Null
+ * ('truncated', the usual default) or with the tails out to 3 bandwidths ('extended'). Null
  * without raw values.
  */
 export function violinOf(

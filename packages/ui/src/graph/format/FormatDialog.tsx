@@ -14,6 +14,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -45,6 +46,8 @@ import {
 import { jumpTarget } from './search.ts'
 
 const SIZE_KEY = 'ps.formatDialogSize'
+/** At this width or less the preview goes above the options (`narrow`). */
+const NARROW_PX = 640
 
 /** The size the user last gave the Format dialog (null: the default, fitting the window). */
 function readDialogSize(): { w: number; h: number } | null {
@@ -65,7 +68,7 @@ function writeDialogSize(s: { w: number; h: number }) {
 }
 
 /**
- * Prism-style Format dialogs (graph, axes, legend, bracket, text/line): the Format panel's "Open
+ * Format dialogs (graph, axes, legend, bracket, text/line): the Format panel's "Open
  * in window" (roadmap 46). The dialog edits a draft of the document (DraftStore) shown in its live
  * preview; OK replays the draft onto the document as one undo step, Cancel / Escape drop it.
  * Which dialog and tab show follows `target`, which clicking in the preview (or a panel's "Format
@@ -202,7 +205,22 @@ export function FormatDialog({
       '[data-autofocus], .format-options :is(input, select, button):not(:disabled)',
     )?.focus()
   }, [])
+  // Decision 1212: it moves by its insets (`top: y; bottom: -y`…: still centred by its auto
+  // margins, then shifted), never a transform or `translate`, and is narrow by measuring itself,
+  // never a size container: either would make it the containing block of its pop-ups (colour
+  // popovers, menus, tooltips: `position: fixed` in viewport coordinates), moving and clipping
+  // them.
   const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const [narrow, setNarrow] = useState(false)
+  useLayoutEffect(() => {
+    const d = ref.current
+    if (!d) return
+    const measure = () => setNarrow(d.clientWidth > 0 && d.clientWidth <= NARROW_PX)
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(d)
+    return () => ro.disconnect()
+  }, [])
   const moving = useRef<{ x0: number; y0: number; ox: number; oy: number } | null>(null)
   // Roadmap 46 (P3): a size the user drags it to (its corner) is remembered; it opens at it, kept
   // inside the window (CSS: never larger than the window less 16 px).
@@ -224,10 +242,13 @@ export function FormatDialog({
   return (
     <dialog
       ref={ref}
-      className="dialog format-dialog"
+      className={`dialog format-dialog${narrow ? ' narrow' : ''}`}
       aria-labelledby={titleId}
       style={{
-        translate: `${offset.x}px ${offset.y}px`,
+        top: offset.y,
+        bottom: -offset.y,
+        left: offset.x,
+        right: -offset.x,
         ...(size ? { width: size.w, height: size.h } : {}),
       }}
       onPointerDown={(e) => {

@@ -77,7 +77,7 @@ export const mannWhitney: AnalysisDef<MWParams> = {
       confLevel: params.confidenceLevel,
       alternative: alternativeFor(params.tails, two.hlEstimate),
     })
-    // One-tailed P, but the usual two-sided Hodges-Lehmann estimate and CI (as Prism).
+    // One-tailed P, but the usual two-sided Hodges-Lehmann estimate and CI.
     const r = { ...oneSided, hlEstimate: two.hlEstimate, hlLo: two.hlLo, hlHi: two.hlHi }
     if (r.method === 'normal' && params.pMethod === 'exactWhenPossible') {
       notes.push({

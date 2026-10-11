@@ -1,8 +1,9 @@
-# Coverage of Prism's statistics
+# Feature coverage
 
-Checklist against GraphPad's feature list for Prism 11 (graphpad.com/features, read 2026-09-29),
-grouped as GraphPad groups it. Status: ✅ done (R oracles), ◐ partly, ✗ missing. "Phase" is where a
-missing item is planned; blank means not yet planned.
+What statPlotter covers, area by area: the data tables, analyses and graphs of a lab graphing and
+statistics app. Status: ✅ done (R oracles), ◐ partly, ✗ missing. "Phase" is the roadmap phase
+([ROADMAP.md](ROADMAP.md)) that did an item or where a missing item is planned; blank means not
+yet planned.
 
 ## Data tables
 
@@ -41,7 +42,7 @@ Roadmap 29; every edit is one undo step.
 | One-way ANOVA, ordinary and repeated measures | ✅ | | |
 | Comparisons: Tukey, Dunnett, Bonferroni, Holm-Šídák, Šídák, Fisher's LSD, FDR (BKY) | ✅ | | |
 | Comparisons: Newman-Keuls | ✅ | 11 | Not with repeated measures; reports a step-down P |
-| Post-test for linear trend (one-way) | ✅ | 11 | Ordinary ANOVA only (Prism also after RM with sphericity) |
+| Post-test for linear trend (one-way) | ✅ | 11 | Ordinary ANOVA only |
 | Welch and Brown-Forsythe ANOVA; Games-Howell, Tamhane T2, Dunnett T3 | ✅ | | |
 | Multiplicity-adjusted P values and CIs for comparisons | ✅ | | |
 | Geisser-Greenhouse (one- and two-way RM) | ✅ | | |
@@ -61,14 +62,14 @@ Roadmap 29; every edit is one undo step.
 
 | Feature | Status | Notes |
 | --- | --- | --- |
-| Built-in equations | ✅ | 126 (14, 20): every equation of the Curve Fitting Guide's list — dose-response on log or concentration scales (4PL/5PL, normalized, ECanything, biphasic, bell-shaped, operational model, Gaddum/Schild, EC50 and allosteric EC50 shifts, absolute IC50), binding (saturation, total and nonspecific together, ligand depletion, allosteric modulators, competitive one/two sites, homologous, kinetics incl. Motulsky–Mahan), enzyme kinetics and inhibition (incl. Morrison), exponentials (one to three phases, plateau then decay/association), lines (horizontal, through origin, segmental, hinge, semilog, log-log, two crossing lines), polynomials 1–6 plain and centered, Gaussians (sum of two, lognormal, cumulative), Lorentzians, sine waves (damped, sinc), growth, linear-quadratic radiation models, classic forms. Left out: the classic Gaussian, Hyperbola and Padé (1,1) (no equation printed) and classic duplicates |
-| User-entered equations; differential and implicit equations | ✅ | Prism's syntax (14) with its special and distribution functions, lines for particular data sets (`<A>`, `<~A:D>`, `<A:J,3>`), implicit equations and differential equations `Y' = …` (20); rules for initial values and default constraints. Editor: equation text with live checking, constraints, initial values and rules, limits |
+| Built-in equations | ✅ | 126 (14, 20): the common lab curve-fitting equations — dose-response on log or concentration scales (4PL/5PL, normalized, ECanything, biphasic, bell-shaped, operational model, Gaddum/Schild, EC50 and allosteric EC50 shifts, absolute IC50), binding (saturation, total and nonspecific together, ligand depletion, allosteric modulators, competitive one/two sites, homologous, kinetics incl. Motulsky–Mahan), enzyme kinetics and inhibition (incl. Morrison), exponentials (one to three phases, plateau then decay/association), lines (horizontal, through origin, segmental, hinge, semilog, log-log, two crossing lines), polynomials 1–6 plain and centered, Gaussians (sum of two, lognormal, cumulative), Lorentzians, sine waves (damped, sinc), growth, linear-quadratic radiation models, classic forms. Left out: the classic Gaussian, Hyperbola and Padé (1,1) and classic duplicates |
+| User-entered equations; differential and implicit equations | ✅ | The equation syntax (14: `Y = …`, one statement per line) with special and distribution functions, lines for particular data sets (`<A>`, `<~A:D>`, `<A:J,3>`), implicit equations and differential equations `Y' = …` (20); rules for initial values and default constraints. Editor: equation text with live checking, constraints, initial values and rules, limits |
 | Different equations per data set | ✅ | 18: separate fits per equation (no parameter shared across equations) |
 | Global fit, shared parameters | ✅ | |
 | Robust regression; ROUT outlier detection/removal | ✅ | 14: robust (Lorentzian) fit, ROUT identify or eliminate |
 | Model comparison: extra sum-of-squares F and AICc | ✅ | |
 | Compare one parameter between data sets | ✅ | 18: extra sum-of-squares F and AICc, the parameter(s) shared in the null model |
-| Constraints, initial values | ✅ | Constant, shared, data set constant (column title or mean X), limits; initial values per parameter and Prism's rules for initial values (20). No constraints relating two parameters (Kfast > Kslow) |
+| Constraints, initial values | ✅ | Constant, shared, data set constant (column title or mean X), limits; initial values per parameter and rules for initial values (20). No constraints relating two parameters (Kfast > Kslow) |
 | Weighting | ✅ | 1/Y, 1/Y², 1/Y^K, 1/X, 1/X², 1/SD²; test for appropriate weighting (18) |
 | Symmetric and profile-likelihood CIs | ✅ | |
 | Hougaard's skewness | ✅ | 14; weighted fits too (18) |
@@ -128,7 +129,7 @@ Roadmap 29; every edit is one undo step.
 | Multiple logistic regression | ✅ |
 | Simple logistic regression (XY) | ✅ |
 | Poisson regression | ✅ |
-| Categorical (text) predictors, interpolation from the model | ✅ (19: dummy coding with Prism's reference-level rules, interactions, Type III ANOVA table / LR tests per variable; predicted Y, probability or count with CIs for rows and entered points; no transforms of predictors) |
+| Categorical (text) predictors, interpolation from the model | ✅ (19: dummy coding with reference-level rules, interactions, Type III ANOVA table / LR tests per variable; predicted Y, probability or count with CIs for rows and entered points; no transforms of predictors) |
 
 ## Clinical lab statistics
 
@@ -142,7 +143,7 @@ Roadmap 29; every edit is one undo step.
 
 | Feature | Status |
 | --- | --- |
-| Simulate XY, column, contingency tables | ✅ (20: Prism's random-error models and outliers, seeded; contingency 2 × 2 designs) |
+| Simulate XY, column, contingency tables | ✅ (20: random-error models and outliers, seeded; contingency 2 × 2 designs) |
 | Monte Carlo analysis | ✅ (20: tabulated results with summaries, hits with CI; the simulation and analysis are set in its dialog) |
 | Plot a function | ✅ (17: built-in or user equations on XY graphs, live parameters) |
 
@@ -159,7 +160,7 @@ Roadmap 29; every edit is one undo step.
 | Row means with SD/SEM/CI (row statistics) | ✅ | 11 |
 | Prune rows | ✅ | 13 |
 
-Transform: Prism's standard Y and X functions (plus Y with X, rank, z score, probit, logit);
+Transform: the standard Y and X functions (plus Y with X, rank, z score, probit, logit);
 missing are user-defined equations, Y + random, X ↔ Y interchange and the linearizing plots
 (Scatchard, Lineweaver-Burk, Hanes-Woolf, Eadie-Hofstee, Hill, log-log). The data-processing
 analyses produce tables that other analyses and graphs can use (Phase 13).

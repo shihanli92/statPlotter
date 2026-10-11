@@ -16,8 +16,8 @@ import type { CurveModel, FitOptions, ParamConstraint } from './nonlinear.ts'
 import { polynomialRegression } from './polynomial.ts'
 
 /**
- * Prism's built-in equation library (names and parameterisations as in the GraphPad Curve
- * Fitting Guide), with analytic gradients and Prism-style automatic initial values.
+ * The built-in equation library (names and parameterisations as in the usual curve-fitting
+ * references), with analytic gradients and automatic initial values.
  *
  * Initial-value rules work on the data reduced to one mean Y per distinct X, sorted by X:
  * Bottom/Top = min/max Y, a "half-way" X from linear interpolation where Y first crosses the
@@ -48,8 +48,8 @@ export interface ParamInfo {
   /**
    * 'shared': one value for all data sets (a global fit); 'dataSetConstant': a constant that
    * differs between data sets, read from each data set's title (e.g. an inhibitor
-   * concentration). 'meanX': a data set constant equal to the mean X of each data set (Prism's
-   * "Data set constant (= Mean X)", centered polynomials).
+   * concentration). 'meanX': a data set constant equal to the mean X of each data set
+   * ("Data set constant (= Mean X)", centered polynomials).
    */
   defaultConstraint?:
     | 'fit'
@@ -202,7 +202,7 @@ const halfLife = (k: number) => ({ HalfLife: LN2 / k, Tau: 1 / k })
 const DOSE_LOG: EquationDef[] = DOSE_FORMS.map((d) => {
   const { id, name, category, params, mid, iMid } = doseForm(d, false)
   const agonist = d.kind === 'agonist'
-  // Prism's inhibitor variable slope has the agonist's form, so inhibition gives HillSlope < 0.
+  // The inhibitor variable slope has the agonist's form, so inhibition gives HillSlope < 0.
   const sign = agonist || d.hill ? -1 : 1
   const z = d.hill ? `((${mid} − X)·HillSlope)` : sign < 0 ? `(${mid} − X)` : `(X − ${mid})`
   const half = d.normalized
@@ -754,7 +754,7 @@ export function defaultFitOptions(
   return { constraints, bounds }
 }
 
-/** Mean of the finite values (Prism's "Mean X" of the rows with Y values). */
+/** Mean of the finite values (the "Mean X" of the rows with Y values). */
 export function meanOf(a: ArrayLike<number>): number {
   let s = 0
   let n = 0

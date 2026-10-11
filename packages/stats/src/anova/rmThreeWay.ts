@@ -15,9 +15,8 @@ import {
 import { ggEpsilon, type RMDdf } from './rmOneWay.ts'
 
 /**
- * Three-way ANOVA with repeated measures (Prism's 2 × 2 × k three-way ANOVA, "Repeated measures
- * design" tab: any of the three factors can be repeated), and the mixed-effects model Prism
- * fits instead when values are missing.
+ * Three-way ANOVA with repeated measures (the 2 × 2 × k three-way ANOVA; any of the three
+ * factors can be repeated), and the mixed-effects model fitted instead when values are missing.
  *
  * Factors: 0 = the row factor (k levels), 1 = column factor 1 (A, B vs. C, D), 2 = column
  * factor 2 (A, C vs. B, D). `repeated` lists the within-subject factors W (at least one); the
@@ -36,8 +35,8 @@ import { ggEpsilon, type RMDdf } from './rmOneWay.ts'
  *
  * Missing values (or method 'mixed') — REML mixed model (mixedModel.ts) with sum-to-zero coded
  * fixed effects (full factorial), a random intercept per subject and per subject × W′ for every
- * proper subset W′ ⊂ W (the RM ANOVA error strata; for two repeated factors this is Prism's
- * published SAS code, RANDOM Int A B / SUBJECT=S), Wald F tests of the Type III hypotheses and
+ * proper subset W′ ⊂ W (the RM ANOVA error strata; for two repeated factors this is the SAS
+ * code RANDOM Int A B / SUBJECT=S), Wald F tests of the Type III hypotheses and
  * denominator df by containment (effect E is contained in subject × (E ∩ W), or the residual when
  * E ∩ W = W; the sequential rank contribution, as SAS computes it, since the lower-order
  * subject terms lie in the span of the higher ones) or Satterthwaite. With complete data and positive variance components the F tests

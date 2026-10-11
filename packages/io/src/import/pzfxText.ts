@@ -1,7 +1,7 @@
 import { mergeRuns, type RichText, type TextRun } from '@ps/model'
 import { localName, type XmlElement } from './xml.ts'
 
-// Prism writes formatted titles as nested tags inside the text: <B>, <I>, <U>, <Sup>, <Sub>,
+// .pzfx files hold formatted titles as nested tags inside the text: <B>, <I>, <U>, <Sup>, <Sub>,
 // <Font Face=… Size=… Color=…> and <BR/>, with layout wrappers such as <TextAlign>. Case varies
 // between versions, so tags are matched case-insensitively, with long names accepted too. Older
 // files write Greek letters as Latin letters in the Symbol font (<Font Face="Symbol">m</Font> for

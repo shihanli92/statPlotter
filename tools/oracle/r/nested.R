@@ -1,5 +1,4 @@
-# Nested t test and nested one-way ANOVA (suite nested). GraphPad FAQ 2105 gives the code "so
-# you can understand what Prism is doing":
+# Nested t test and nested one-way ANOVA (suite nested). The model, in SAS:
 #   PROC MIXED METHOD=REML; CLASS Room Condition; MODEL y = Condition;
 #        RANDOM Room*Condition / SUBJECT=Room;
 #   lmer(y ~ Condition + (1 | Room:Condition), REML = TRUE)

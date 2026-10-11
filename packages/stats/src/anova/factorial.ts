@@ -4,14 +4,14 @@ import { cellSummary, fitCellMeans, type GroupData, groupStats, roundedSS } from
 
 /**
  * Full-factorial ANOVA (ordinary, between-subjects factors) for any number of factors, from cells
- * that may have unequal n; used for Prism's three-way ANOVA (2 × 2 × k).
+ * that may have unequal n; used for the three-way ANOVA (2 × 2 × k).
  *
  * As `twoWayAnova`: every cell is reduced to (n, mean, SD) — raw and summary input give the same
  * results — the residual SS is the pooled within-cell Σ (n − 1)·SD² with df N − (number of
  * cells), and the effects are fitted by weighted least squares on the cell means (weights n) with
  * effect (sum-to-zero) coding. Sums of squares are Type III: the increase in the residual SS when
- * one term's columns are dropped from the full model (car::Anova(type = 3) with contr.sum; Prism
- * uses Type III for unbalanced data). Every combination of levels must have data.
+ * one term's columns are dropped from the full model (car::Anova(type = 3) with contr.sum; Type
+ * III is the usual choice for unbalanced data). Every combination of levels must have data.
  *
  * Terms are listed main effects first, then two-way interactions, …, the full interaction last,
  * each in factor order (for three factors: A, B, C, A×B, A×C, B×C, A×B×C), then Residual.

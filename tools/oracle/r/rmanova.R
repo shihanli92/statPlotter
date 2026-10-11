@@ -1,27 +1,18 @@
-# Repeated-measures ANOVA with complete data (suite rmanova), as GraphPad Prism documents it.
+# Repeated-measures ANOVA with complete data (suite rmanova).
 #
-# Prism sources (Prism 11 Statistics Guide, https://www.graphpad.com/guides/prism/latest/statistics/):
-#   anova_table.htm                        one-way RM ANOVA table, "was the matching effective?",
-#                                          R^2 = SS_treatment / (SS_treatment + SS_residual)
-#   stat_epsilon.htm, stat_sphericity_and_compound_symmet.htm
-#                                          Geisser-Greenhouse epsilon-hat only (no Huynh-Feldt, no
-#                                          lower bound); correction multiplies both df
-#   stat_multiple_comparisons_after_rep.htm
-#                                          one-way: sphericity assumed -> pooled MS_residual;
-#                                          not assumed -> "for each comparison of two groups, it
-#                                          uses only the data in those two groups (essentially
-#                                          performing a paired t test)" (Maxwell & Delaney pp. 552-555)
-#   stat_anova_table_in_two_ways_rm_ano.htm
-#                                          two-way F denominators: between factor / subjects; within
-#                                          and interaction / residual; both repeated: effect /
-#                                          effect x subjects, interaction / residual
-#   stat_interpreting_results_repeated_.htm
-#                                          "Prism always computes the multiple comparison tests
-#                                          using a pooled error term", df (n-1)(a-1) (one factor
-#                                          repeated) or (n-1)(a-1)(b-1) (both)
-#   https://www.graphpad.com/support/faq/multiple-comparisons-2-way-RM-ANOVA-no-sphericity/
-#                                          (FAQ 2172) Prism 8.4+ disables main-effect comparisons of
-#                                          a repeated factor when sphericity is not assumed
+# Conventions:
+#   one-way RM ANOVA table, "was the matching effective?",
+#     R^2 = SS_treatment / (SS_treatment + SS_residual)
+#   Geisser-Greenhouse epsilon-hat only (no Huynh-Feldt, no lower bound); the correction
+#     multiplies both df
+#   one-way comparisons: sphericity assumed -> pooled MS_residual; not assumed -> each comparison
+#     of two groups uses only the data in those two groups (essentially a paired t test)
+#     (Maxwell & Delaney pp. 552-555)
+#   two-way F denominators: between factor / subjects; within and interaction / residual; both
+#     repeated: effect / effect x subjects, interaction / residual
+#   two-way comparisons always use a pooled error term, df (n-1)(a-1) (one factor repeated) or
+#     (n-1)(a-1)(b-1) (both)
+#   main-effect comparisons of a repeated factor are disabled when sphericity is not assumed
 #
 # input: one-way { rows } (subjects x treatments); two-way { y, row, col, subject } (long).
 # params: design, sphericity, repeated, interaction, shift (subtracted exactly before fitting),
@@ -53,11 +44,11 @@
 #               correlations are ignored; with small n they are far from product form);
 #               Sidak/Bonferroni/Holm-Sidak/Fisher/BKY closed forms.
 #
-# Choices to verify against Prism: epsilon is reported whenever sphericity is 'gg'; the
-# Subjects F in two-way designs (Prism's table shows a P for subjects; the denominator
+# Choices of ours: epsilon is reported whenever sphericity is 'gg'; the
+# Subjects F in two-way designs (the table shows a P for subjects; the denominator
 # MS_residual is our reading); main-effect comparisons for the between factor use MS_subjects;
 # Satterthwaite-vs-residual df for comparisons of the between factor at one level of the
-# within factor (Prism 8.4 fixed a bug exactly there, FAQ 2172, without giving the formula).
+# within factor (no published formula).
 
 source(file.path(ORACLE_DIR, "ref_rm.R"))
 

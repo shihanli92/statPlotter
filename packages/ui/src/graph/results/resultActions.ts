@@ -376,7 +376,7 @@ export function groupBracketCommands(
         analysisId: 'multipleT',
         pluginVersion: registry.get('multipleT')?.version ?? 1,
         input: { source: table.id, dataSets, pools: [o.group] },
-        // Each row's own test, uncorrected (one comparison per bracket): Welch (Prism's default),
+        // Each row's own test, uncorrected (one comparison per bracket): Welch (the usual default),
         // a pooled SD, or Mann-Whitney.
         params: {
           approach: 'none',

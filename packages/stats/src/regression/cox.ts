@@ -12,7 +12,7 @@ export interface CoxOptions {
   ties?: 'efron' | 'breslow'
   /** Default 0.95. */
   confLevel?: number
-  /** CIs of coefficients and hazard ratios: profile likelihood (default, as Prism) or Wald. */
+  /** CIs of coefficients and hazard ratios: profile likelihood (default) or Wald. */
   ciMethod?: 'wald' | 'profile'
   /** Two-way interaction products X_i·X_j (predictor indices), named 'A:B'. */
   interactions?: readonly (readonly [number, number])[]
@@ -248,10 +248,10 @@ function harrellC(time: readonly number[], event: readonly boolean[], eta: Float
 }
 
 /**
- * Cox proportional-hazards regression by maximum partial likelihood (Prism's "Cox proportional
- * hazards regression"). Coefficient P values are Wald z; CIs profile likelihood by default
- * (Prism) or Wald. The global tests are the partial likelihood ratio, Wald and score tests of
- * β = 0 (Prism's three "hypothesis tests"), as R's summary.coxph.
+ * Cox proportional-hazards regression by maximum partial likelihood. Coefficient P values are
+ * Wald z; CIs profile likelihood by default or Wald. The global tests are the partial
+ * likelihood ratio, Wald and score tests of β = 0 (three "hypothesis tests"), as R's
+ * summary.coxph.
  *
  * Covariates are centred before fitting (the estimates are unchanged). Degenerate data never
  * throw: no events or aliased covariates (including constant ones) give 'singular' (aliased

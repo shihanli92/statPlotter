@@ -1,13 +1,13 @@
-# Deming (model II) regression as Prism computes it.
+# Deming (model II) regression.
 #
-# Estimates  lambda = SD_X^2 / SD_Y^2 (Prism's "How to: Deming regression": it uses the two SDs
-#            only through lambda); slope = [Syy - d Sxx + sqrt((Syy - d Sxx)^2 + 4 d Sxy^2)] /
+# Estimates  lambda = SD_X^2 / SD_Y^2 (the two SDs are used only through lambda);
+#            slope = [Syy - d Sxx + sqrt((Syy - d Sxx)^2 + 4 d Sxy^2)] /
 #            (2 Sxy), d = 1/lambda (Deming 1943, Linnet 1990); intercept = ybar - slope xbar.
 #            Cross-checked (1e-7) by minimising sum((y - a - b x)^2) / (1 + lambda b^2) over b with
 #            optimize(), and for lambda = 1 against the first principal axis of prcomp().
-# SEs        GraphPad FAQ 1690: r = Sxy^2 / (Sxx Syy); SE(slope) = sqrt(b^2 (1 - r) / (r (n - 2)));
+# SEs        r = Sxy^2 / (Sxx Syy); SE(slope) = sqrt(b^2 (1 - r) / (r (n - 2)));
 #            SE(intercept) = SE(slope) sqrt(sum(x^2) / n); CIs +/- qt(., n - 2) SE. Y at X = x0:
-#            FAQ 2230 (the intercept after subtracting x0 from X). P for slope = 0: t = b/SE on
+#            the intercept after subtracting x0 from X. P for slope = 0: t = b/SE on
 #            n - 2 df (checked against cor.test's P to 1e-6: it forms t from r differently).
 # params: lambda (default 1), confLevel (default 0.95), xForY (default 0).
 

@@ -20,7 +20,7 @@ import {
 import { buildTable, stableId } from './resultTable.ts'
 
 // ---------------------------------------------------------------------------------------------
-// Frequency distribution (Statistics Guide, "How to: Frequency distribution"). The result is an
+// Frequency distribution. The result is an
 // XY table: X = bin centre, one data set per analyzed data set (same id), counts, relative
 // frequencies (fraction or %) or their cumulative sums. Every data set uses the same bins.
 // Relative frequencies are of the values tabulated (values outside the bins don't count).

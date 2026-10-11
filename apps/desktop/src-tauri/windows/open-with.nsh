@@ -2,8 +2,8 @@
 ;
 ; The app's own files (.psproj, .pspreset, .psstyle) are registered by `bundle.fileAssociations`,
 ; which makes the app their default. Data files that belong to other apps (.csv, .tsv and .xlsx:
-; Excel; .pzfx: Prism) must not change hands: they are only added to Explorer's "Open with" list
-; (OpenWithProgids), never made the default. Removed again on uninstall.
+; Excel; .pzfx: the app that writes it) must not change hands: they are only added to Explorer's
+; "Open with" list (OpenWithProgids), never made the default. Removed again on uninstall.
 
 !define PS_DATA_CLASS "statPlotter.DataFile"
 

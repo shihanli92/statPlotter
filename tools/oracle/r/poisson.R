@@ -1,18 +1,17 @@
-# Poisson regression (Prism's multiple Poisson regression), from glm(family = poisson).
+# Poisson regression (multiple Poisson regression), from glm(family = poisson).
 #
 # input: y (counts), X (rows), names. params: intercept (default TRUE), confLevel (0.95),
 # ciMethod ('wald' default | 'profile').
 #
 # - Fit: glm, epsilon 1e-14, maxit 100, refitted twice from its own estimates so vcov's weights
 #   sit at the maximum (as logistic.R).
-# - Coefficients: Wald z = estimate / SE (Prism reports |z|), two-sided normal P. CIs: Wald
-#   (confint.default; Prism's "SE times a critical ratio") or profile likelihood solved exactly
+# - Coefficients: Wald z = estimate / SE (|z| is reported), two-sided normal P. CIs: Wald
+#   (confint.default; "SE times a critical ratio") or profile likelihood solved exactly
 #   with uniroot (tol 1e-13) on glm.fit offsets, cross-checked loosely (2e-3) against confint().
 #   Rate ratios = exp(estimate and limits).
 # - Log-likelihoods: logLik(fit) (full, with -log y!); null = intercept-only glm (without an
 #   intercept, mu = 1 as glm's null deviance); saturated = sum(dpois(y, y, log = TRUE)).
-#   Deviance = 2 (LLmax - LL) (checked = deviance(fit)); pseudo R^2 = (LL - LL0)/(LLmax - LL0)
-#   (Prism's "Goodness of fit with Poisson regression").
+#   Deviance = 2 (LLmax - LL) (checked = deviance(fit)); pseudo R^2 = (LL - LL0)/(LLmax - LL0).
 # - Dispersion: Pearson chi^2 / (n - k) = summary(glm(quasipoisson))$dispersion.
 # - AICc: -2 LL + 2k + 2k(k + 1)/(n - k - 1) (checked AIC(fit) = -2 LL + 2k).
 

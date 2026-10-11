@@ -1,14 +1,12 @@
-# Pearson and Spearman correlation, as Prism documents them
-# (https://www.graphpad.com/guides/prism/latest/statistics/stat_interpreting_results_correlati.htm,
-#  https://www.graphpad.com/support/faq/when-i-compute-the-spearman-nonparametric-correlation-with-prism-i-get-the-correlation-coefficient-but-no-confidence-interval/):
+# Pearson and Spearman correlation:
 #
 # pearson   cor.test(method = "pearson"): r, t on n - 2 df, P, Fisher-z CI (SE 1/sqrt(n - 3),
 #           only for n > 3; NaN otherwise). params$shift: analyse x - shift (Pearson is
 #           shift-invariant; exact for 1e9 + noise).
 # spearman  r_s = cor(rank(x), rank(y)) (mid-ranks).
-#           P: Prism is exact for n <= 17 ("looking at all possible permutations of the data";
-#           "Exact calculations handle ties with no problem"), otherwise "computes a t ratio from
-#           Rs, and then computes P from that" = cor.test(method = "spearman", exact = FALSE).
+#           P: exact for n <= 17 (all possible permutations of the data; ties are no problem
+#           for the exact calculation), otherwise from a t ratio computed from Rs
+#           = cor.test(method = "spearman", exact = FALSE).
 #             exact, no ties   pspearman::spearman.test(approximation = "exact") (exact null
 #                              distribution for n <= 22); for n <= 9 also cor.test(exact = TRUE)
 #                              (AS 89 enumerates for n <= 9) and brute force agree.
@@ -16,10 +14,8 @@
 #                              statistic sum(2rank(x) * 2rank(y)); two-sided
 #                              P(|T - E T| >= |t - E T|).
 #           CI: Fisher z with SE sqrt(1.060/(n - 3)) (Fieller, Hartley & Pearson 1957), the
-#           approximation in Zar, Biostatistical Analysis (Prism: "computes the confidence
-#           interval of the Spearman correlation coefficient by an approximation. According to
-#           Zar ... should only be used when n>10"; ciValid = n > 10). Which variance Prism
-#           uses is not stated: 1.060/(n - 3) is Zar's; to be verified against Prism output.
+#           approximation in Zar, Biostatistical Analysis (which, according to Zar, should
+#           only be used when n > 10; ciValid = n > 10). The variance 1.060/(n - 3) is Zar's.
 # params: method, alternative, confLevel, exact ("auto" / true / false; spearman only).
 
 PACKAGES <- c("pspearman")

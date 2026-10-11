@@ -117,7 +117,7 @@ ucase("implicit_binding_depletion", "Free = X - Y\nY = NS*Free + Bmax*Free/(Kd +
             "/(2*(1 + NS))"),
       c("NS", "Bmax", "Kd"), c("NS", "Bmax", "Kd"), bind_f, c(50, 100, 200, 400, 800, 1600, 3200, 6400),
       c(0.05, 800, 300), 10, 3, initial = c(0.1, 1000, 200),
-      note = "Prism's implicit-equation example (bound on both sides, X and Y in the same units); R fits the explicit root of the quadratic.")
+      note = "An implicit-equation example (bound on both sides, X and Y in the same units); R fits the explicit root of the quadratic.")
 ucase("ode_decay_to_plateau", "Y' = -K*(Y - Plateau)", "(Y0 - Plateau)*exp(-K*x) + Plateau",
       c("Y0", "K", "Plateau"), c("Y[0]", "K", "Plateau"),
       function(x, p) (p[1] - p[3]) * exp(-p[2] * x) + p[3], seq(0, 30, 2), c(100, 0.2, 10), 1.5, 2,
@@ -154,7 +154,7 @@ ucase("perdataset_total_and_nonspecific",
       c("Bmax", "Kd", "NS", "Background"), NULL, NULL, c(1500, 4, 20, 30), 0, data = list(tot, ns),
       initial = c(1000, 2, 10, 10), constraints = list(shared_c(), shared_c(), shared_c(), shared_c()),
       ind = "g == 1",
-      note = "Prism's 'One site -- Fit total and nonspecific binding' as a user equation: data set A total, B nonspecific.")
+      note = "'One site -- Fit total and nonspecific binding' as a user equation: data set A total, B nonspecific.")
 
 # ---- built-in equations added in roadmap 20 ------------------------------------------------------
 # One simulated case per equation (designs as DESIGNS20 in packages/stats/test/equationDesigns.ts).

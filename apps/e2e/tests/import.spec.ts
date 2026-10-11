@@ -49,7 +49,7 @@ test('the start screen offers Import data…, and dropping a file', async ({ pag
   const main = page.getByRole('main')
   await expect(main.getByText('or drop a file anywhere in the window')).toBeVisible()
   const chooser = page.waitForEvent('filechooser')
-  await main.getByRole('button', { name: 'Import data… (CSV, Excel, Prism)' }).click()
+  await main.getByRole('button', { name: 'Import data… (CSV, Excel, .pzfx)' }).click()
   await (await chooser).setFiles(fixture('growth.csv'))
   const d = dialog(page, 'Import “growth.csv”')
   await expect(d).toBeVisible()
@@ -196,7 +196,7 @@ test('XLSX: a sheet of the workbook, then every table in it', async ({ page }) =
 
 test('PZFX: tables in, excluded values kept', async ({ page }) => {
   await importFile(page, 'xy-with-exclusions.pzfx')
-  // The file's tables are typed already: the dialog only offers Prism's graphs (roadmap 39;
+  // The file's tables are typed already: the dialog only offers the file's graphs (roadmap 39;
   // importInterop.spec.ts imports them). Without them, what wasn't imported is reported.
   const d = dialog(page, 'Import “xy-with-exclusions.pzfx”')
   await expect(d).toContainText('1 XY table.')

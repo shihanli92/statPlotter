@@ -1,5 +1,5 @@
 /**
- * Helpers for automatic initial values (Prism-style rules), shared by the equation library.
+ * Helpers for automatic initial values (rules on the data), shared by the equation library.
  */
 
 const LN2 = Math.LN2
@@ -135,19 +135,19 @@ export function logisticE(z: number): [number, number] {
   return [1 / (1 + t), t / (1 + t)]
 }
 
-// ---- Prism's rules for initial values (user-defined equations) -------------------------------
+// ---- rules for initial values (user-defined equations) -------------------------------
 
 /**
- * A rule for a parameter's initial value (Prism's "Rules for initial values" tab, Curve Fitting
- * Guide "Entering rules for initial values", FAQ 1413): a number times — or, for a rule written
+ * A rule for a parameter's initial value (the "Rules for initial values" tab): a number
+ * times — or, for a rule written
  * with a leading '/', divided by — a quantity computed from each data set, or the number itself
  * ('value', "Initial value, to be fit"). The quantities, all from one mean Y per distinct X:
  *
  * - YMIN, YMAX, YMID = (YMIN + YMAX)/2; XMIN, XMAX, XMID = (XMIN + XMAX)/2;
- *   YMAX − YMIN and XMAX − XMIN (Prism 3's list);
+ *   YMAX − YMIN and XMAX − XMIN;
  * - XatYMID: the X where straight lines connecting the points first reach YMID; YatXMID: the Y
  *   on the line between the point with the largest X below XMID and the one with the smallest X
- *   above it (FAQ 1413);
+ *   above it;
  * - SIGN(YatXmax − YatXmin): +1 if the curve goes up from left to right, −1 if it goes down;
  * - the slope at XMIN, XMID or XMAX: with 30 or more points the least-squares slope of the
  *   first, middle or last 10% of them (rounded down), otherwise of the first or last two points
@@ -203,7 +203,7 @@ function slopeOf(xs: number[], ys: number[], lo: number, hi: number): number {
   return sxx > 0 ? sxy / sxx : Number.NaN
 }
 
-/** Prism's slope at the start, middle or end of the data (see InitialRule). */
+/** The slope at the start, middle or end of the data (see InitialRule). */
 function slopeAt(pr: Profile, where: 'min' | 'mid' | 'max'): number {
   const { xs, ys } = pr
   const n = xs.length
@@ -265,7 +265,7 @@ function ruleQuantity(id: string, pr: Profile): number {
       return slopeAt(pr, 'mid')
     case 'slopexmax':
       return slopeAt(pr, 'max')
-    // Internal (not in Prism's list): Y at the smallest X, for Y[0] of differential equations.
+    // Internal (not a rule users write): Y at the smallest X, for Y[0] of differential equations.
     case 'yatxmin':
       return ys[0]!
     default:

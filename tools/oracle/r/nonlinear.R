@@ -1,4 +1,4 @@
-# Nonlinear regression (Prism's "Nonlinear regression (curve fit)") from nls().
+# Nonlinear regression ("Nonlinear regression (curve fit)") from nls().
 #
 # input:  data = [{x, y}, ...] (one entry per data set), bandX (points for dataset 1's bands)
 # params: equation (id in EQ below; same parameterisation as packages/stats equations.ts),
@@ -11,7 +11,7 @@
 # Conventions (see nonlinear.ts):
 # - Global fits: nls on the stacked data with per-data-set parameters indexed by g
 #   (Bottom[g]) and shared ones scalar. With no shared parameter each data set is fitted on
-#   its own (as Prism does); global SS / df / nParams are then sums.
+#   its own; global SS / df / nParams are then sums.
 # - Weighting uses the curve's Y: SS = sum(((y - f)/f)^2) (relative) or sum((y - f)^2/f)
 #   (poisson; f > 0 in these cases), fitted as a one-sided nls formula so the Jacobian includes
 #   the weight's derivative.
@@ -20,7 +20,7 @@
 #   Gauss-Newton fixed point itself by ~1e-7 relative.
 # - Bounds: nls(algorithm = "port") finds the optimum; a parameter that ends on its bound is
 #   then held constant there and the model refitted by Gauss-Newton for inference (SEs, df).
-# - CIs: estimate +- qt(1 - alpha/2, df) * SE (Prism's asymptotic interval; confint.default
+# - CIs: estimate +- qt(1 - alpha/2, df) * SE (the asymptotic interval; confint.default
 #   would use the normal quantile). Profile CIs: exact roots of
 #   SSprofile(theta_j) = SS * (1 + qt(1 - alpha/2, df)^2 / df) by uniroot on constrained nls
 #   refits, cross-checked loosely against confint() (profile + spline interpolation).
@@ -35,7 +35,7 @@
 # - Roadmap 20: `ind` may use the data set index g (1, 2, … within a block) for equations with
 #   lines for particular data sets (<A>, <~A>).
 # - Roadmap 18: weighting "power" = 1/Y^K (params$weightPower, default 2; f > 0 in the cases),
-#   residual (y - f)/f^(K/2); fixed point weights (Prism's 1/X, 1/X^2, 1/SD^2) as input$weights
+#   residual (y - f)/f^(K/2); fixed point weights (1/X, 1/X^2, 1/SD^2) as input$weights
 #   (one vector per data set) through nls(weights =), with weighting "none".
 
 PACKAGES <- character(0)

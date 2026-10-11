@@ -1,6 +1,6 @@
 # One-sample t test: t.test(x, mu = mu, alternative, conf.level).
 #   mean, ciLo, ciHi   the sample mean and its CI (R's estimate and conf.int)
-#   diff, diffLo/Hi    Prism's "discrepancy" mean - mu and its CI (conf.int - mu, computed on the
+#   diff, diffLo/Hi    the "discrepancy" mean - mu and its CI (conf.int - mu, computed on the
 #                      shifted data so it is exact for large offsets)
 #   rSquared           t^2 / (t^2 + df)
 # params$shift: the oracle analyses x - shift and mu - shift (both exact for 1e9 + noise) and

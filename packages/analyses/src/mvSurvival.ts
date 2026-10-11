@@ -15,8 +15,7 @@ import { buildTable, stableId } from './resultTable.ts'
 import { CI_METHOD_FIELD, ciMethod, survivalResult } from './survival.ts'
 
 // ---------------------------------------------------------------------------------------------
-// Kaplan-Meier survival analysis of a multiple-variables table (Prism 11: "Running Kaplan-Meier
-// survival analysis from the Multiple Variables data table"): one row per subject, a time
+// Kaplan-Meier survival analysis of a multiple-variables table: one row per subject, a time
 // variable, a status variable — numeric codes (1 = event, 0 = censored by default) or text with a
 // chosen level meaning an event — and optional grouping variables; one curve per combination of
 // the grouping variables' levels that occurs (ordered by the first variable's levels, then the

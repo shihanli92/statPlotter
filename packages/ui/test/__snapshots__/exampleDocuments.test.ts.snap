@@ -1,14 +1,14 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`example documents > chen 1`] = `"1acae2ebf925c3d9d94b0d73b8010d9cd200324f899dd6a7413264505bf4fd95"`;
+exports[`example documents > chen 1`] = `"3fef107cd2dbff0567cf9788c736bb4f959a9c6b48370b251c10820fc65078cf"`;
 
-exports[`example documents > clinical 1`] = `"73283d974a4bfb909bb9087d049d52cf71c23af86c8713ca74cca20959cf65fe"`;
+exports[`example documents > clinical 1`] = `"b5bc58f78c92b9385d8cd5ef0167c0ae4b93d5296a4a9831cb13090e5c1f2b50"`;
 
-exports[`example documents > curve-fitting 1`] = `"7369afe2bf7230ae4ee2e544d92ab3a307ec1c66e72adb0c2c7bf7985cd58770"`;
+exports[`example documents > curve-fitting 1`] = `"8b6daba36d30f467e1b62a33b3effb2fea1f744b65c62d1e9896fe42d4c4071f"`;
 
 exports[`example documents > data-processing 1`] = `"86e6b29565c42485b4316c6cd41cf7d35d03296ddb22c801afb737c8391f0007"`;
 
-exports[`example documents > formatting 1`] = `"c7d1c2bd5b185714eb6803e33050f7708bd046726007d972870287a2634afffd"`;
+exports[`example documents > formatting 1`] = `"55ae363134cc1481769e87322e47d3ce4de129cf37f60f464560fa9c0d298137"`;
 
 exports[`example documents > getting-started 1`] = `"78618e8ae660af36c3b250a1af06b1f5ab7c981c6662f8136abb48c5297ca229"`;
 
@@ -30,7 +30,7 @@ exports[`example documents > stucchi 1`] = `"3debaaaaa9f0b4da6fdef24844b693efb62
 
 exports[`example documents > swaminathan 1`] = `"7aaeddbba68b9ddcab73bfa240476ec7af35378c79abfe8973e1ff2922ec2cc2"`;
 
-exports[`example documents > tawk 1`] = `"e75a8cb846c4bab45ba64e729fc96ec24d8a1d962fe8efa67194e96f9727e436"`;
+exports[`example documents > tawk 1`] = `"a901c24e429e2b9f7cdabe4265dcbecf0a28a6787b6571e2da9f4f2f7e9bc2fd"`;
 
 exports[`sample tables > column 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[34.1,38.5,29.8,41.2,35.6,32.3,36.9,30.4]}],"title":"Control"},{"id":"id2","subcolumns":[{"type":"number","values":[45.2,52.8,48.1,39.7,50.3,47.6,44.9,51.5]}],"title":"Treated"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":8,"rowTitles":null,"tableKind":"column","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
 

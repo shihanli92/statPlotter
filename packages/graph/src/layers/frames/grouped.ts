@@ -274,7 +274,7 @@ export function groupedExtentOf(kit: LayerKit, log: boolean): Extent {
 
 /**
  * Grouped graph: one cluster per table row, one bar (or dot column) per data set within it.
- * This is Prism's "interleaved" grouped layout.
+ * This is the usual "interleaved" grouped layout.
  */
 export function layoutGrouped(kit: LayerKit): Scene {
   const { ctx, graph, theme, palette, warnings } = kit

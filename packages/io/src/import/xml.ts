@@ -1,6 +1,6 @@
 /**
  * A minimal, non-validating XML parser for the well-formed, machine-written XML found in .xlsx
- * parts and Prism .pzfx files: elements, attributes, text, CDATA, and the predefined and numeric
+ * parts and .pzfx files: elements, attributes, text, CDATA, and the predefined and numeric
  * entities. Comments, processing instructions and DOCTYPE declarations are skipped; namespaces are
  * not resolved (names keep their prefix; match with `localName`).
  */
@@ -44,7 +44,7 @@ function isSpace(c: number): boolean {
   )
 }
 
-/** Deeper nesting than any real workbook or Prism file; refused rather than processed. */
+/** Deeper nesting than any real workbook or .pzfx file; refused rather than processed. */
 export const MAX_XML_DEPTH = 1000
 
 /**

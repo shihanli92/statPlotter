@@ -18,7 +18,7 @@ export interface PoissonOptions {
   intercept?: boolean
   /** Default 0.95. */
   confLevel?: number
-  /** CIs of the coefficients: Wald (default; Prism: SE × critical ratio) or profile likelihood. */
+  /** CIs of the coefficients: Wald (default; SE × critical ratio) or profile likelihood. */
   ciMethod?: 'wald' | 'profile'
   /** Two-way interaction products X_i·X_j (predictor indices), named 'A:B'. */
   interactions?: readonly (readonly [number, number])[]
@@ -32,7 +32,7 @@ export interface PoissonCoefficient extends RegCoefficient {
 }
 
 export interface PoissonResult {
-  /** Intercept first when included; stat = Wald z (Prism reports |z|). */
+  /** Intercept first when included; stat = Wald z (|z| is reported). */
   coefficients: PoissonCoefficient[]
   n: number
   /** Full log-likelihood Σ(y·log μ − μ − log y!) (R's logLik). */
@@ -41,14 +41,14 @@ export interface PoissonResult {
   nullLogLik: number
   /** Saturated model (μ = y): the largest possible log-likelihood. */
   maxLogLik: number
-  /** 2(LLmax − LLfit), Prism's "deviance or G²". */
+  /** 2(LLmax − LLfit), the "deviance or G²". */
   deviance: number
   nullDeviance: number
   /** Likelihood-ratio test against the null model. */
   lrChiSq: number
   lrDf: number
   lrP: number
-  /** Prism's pseudo R² = (LLfit − LL0) / (LLmax − LL0) = 1 − deviance / null deviance. */
+  /** Pseudo R² = (LLfit − LL0) / (LLmax − LL0) = 1 − deviance / null deviance. */
   pseudoR2: number
   /** Σ(y − μ)²/μ. */
   pearsonChiSq: number
@@ -129,11 +129,11 @@ function irls(
 }
 
 /**
- * Poisson regression (log link) by maximum likelihood, Prism's "multiple Poisson regression" on
+ * Poisson regression (log link) by maximum likelihood, the "multiple Poisson regression" on
  * a multiple-variables table: Y is a count, log E[Y] = Xβ. Coefficient P values are Wald z
  * tests; CIs Wald (default) or profile likelihood; rate ratios are the exponentiated
- * coefficients and limits. Goodness of fit as Prism's guide ("Goodness of fit with Poisson
- * regression"): pseudo R² from the fitted, intercept-only and saturated log-likelihoods,
+ * coefficients and limits. Goodness of fit: pseudo R² from the fitted, intercept-only and
+ * saturated log-likelihoods,
  * deviance G², and the dispersion ratio φ (here Pearson χ²/(n − k), the quasi-Poisson estimate).
  * Aliased predictors give status 'singular' with NaN for those coefficients (the rest is the
  * reduced fit, as R's glm).

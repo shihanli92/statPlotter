@@ -60,6 +60,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.2.8 | 47b | merge of 47b, legend editing (not tagged) |
 | **0.3.0** | **Code audit 3** (six reviews and six paper reproductions; steps 1–4: bugs, speed and memory, keyboard and screen readers, tests, docs and licence; decisions 1000–1164) | (not tagged: no release yet) |
 | 0.3.1 | 48 | merge of 48, open source as statPlotter (not tagged) |
+| 0.3.2 | 48b | merge of 48b, the commercial product's name removed (not tagged) |
 
 ## Phases
 
@@ -103,7 +104,7 @@ the merge commit. Phases count in the order they reached main.
     d / Hedges' g for t tests; Newman-Keuls; test for linear trend; row statistics; fraction of
     total; analyze a stack of P values.
 
-12. ✅ **Formatting in dialogs** — Prism-style Format graph / Format axes dialogs (plus legend,
+12. ✅ **Formatting in dialogs** — Format graph / Format axes dialogs (plus legend,
     bracket and text/line dialogs) with tabs, opened by double-click, the toolbar, right-click ›
     Format… or Enter on the selection, each on the tab for the clicked element; a live preview of
     a draft inside the dialog, OK as one undo step and Cancel discarding; the side inspector is
@@ -123,9 +124,9 @@ the merge commit. Phases count in the order they reached main.
 
 14. ✅ **Curve fitting for lab assays** — interpolating unknowns from nonlinear and linear
     standard curves (every replicate, CIs from the confidence band, extrapolation and
-    non-monotonic curves as Prism, an XY result table of the interpolated values);
-    user-defined equations in Prism's syntax (safe parser, exact gradients by automatic
-    differentiation, initial values and limits); 23 more built-in equations (ECanything,
+    non-monotonic curves, an XY result table of the interpolated values);
+    user-defined equations (`Y = …`, one statement per line; safe parser, exact gradients by
+    automatic differentiation, initial values and limits); 23 more built-in equations (ECanything,
     biphasic and bell-shaped dose-response, two-site and competitive binding, binding kinetics,
     enzyme inhibition with data set constants, allosteric sigmoidal, kcat, plateau then decay,
     two phase association, exponential plateau, beta growth, segmental linear, sine waves,
@@ -186,19 +187,19 @@ the merge commit. Phases count in the order they reached main.
     updates the formulas using it. Extract and rearrange into column or grouped tables (a copy).
     A "Multiple variables" example project.
     Statistics: text (and coded numeric) variables as categorical predictors of multiple linear,
-    logistic, Poisson and Cox regression (dummy coding with Prism's reference-level rules or a
+    logistic, Poisson and Cox regression (dummy coding with reference-level rules or a
     chosen level, two- and three-way interactions, Type III ANOVA table and likelihood-ratio tests
     per variable, separation / empty-level diagnostics), predicted outcomes with CIs for rows
     without one and entered points (sheet and result table), multifactor (N-way) ANOVA with Type
     III sums of squares, effect sizes and comparisons of marginal means, and Kaplan-Meier curves
     from one row per subject grouped by text variables.
 
-20. ✅ **Equations and simulation** — the user-equation language completed: Prism's special and
+20. ✅ **Equations and simulation** — the user-equation language completed: special and
     distribution functions (gamma, beta, incomplete gamma and beta, erf, psi, Bessel, confluent
     and Gauss hypergeometric, z/t/F/χ²/binomial) with exact gradients, lines for particular data
     sets (`<A>`, `<~A:D>`, `<A:J,3>`), implicit equations, differential equations `Y' = …`
-    (Dormand–Prince with sensitivity equations, stiff fallback), and Prism's rules for initial
-    values; the built-in library completed to the Curve Fitting Guide's list (126 equations,
+    (Dormand–Prince with sensitivity equations, stiff fallback), and rules for initial
+    values; the built-in library completed to the common lab curve-fitting equations (126 equations,
     each with an R `nls` oracle and a recovery test); nonlinear fits from multiple-variables
     tables with a numeric or text grouping variable; Simulate XY data, Simulate column data and
     Simulate contingency table as seeded table-producing analyses; the Monte Carlo analysis
@@ -401,11 +402,11 @@ the merge commit. Phases count in the order they reached main.
     plain title. Graph text gains line breaks (lines a font pitch apart, centred in titles,
     aligned left / centre / right in text boxes; rotated axis titles take the room they need) and
     underline (rects from the font's rule, identical on the canvas and in SVG, PNG and PDF).
-    pzfx import keeps Prism's title formatting (`<B>`, `<I>`, `<U>`, `<Sup>`, `<Sub>`, Symbol-font
-    Greek). Existing golden SVGs are unchanged; five new ones cover formatted legends and
-    categories, row titles, multi-line titles and underline. Not done: point labels taken from
-    row titles stay plain; the desktop PDF of formatted text and IME in Safari were not checked
-    by hand.
+    pzfx import keeps the file's title formatting (`<B>`, `<I>`, `<U>`, `<Sup>`, `<Sub>`,
+    Symbol-font Greek). Existing golden SVGs are unchanged; five new ones cover formatted legends
+    and categories, row titles, multi-line titles and underline. Not done: point labels taken from
+    row titles stay plain; the desktop PDF of formatted text and IME in Safari were not checked by
+    hand.
 28b. ✅ **Word-style font controls** — the editor's floating toolbar grows to two compact rows:
     a font menu (Sans, Serif, Mono, Narrow, each shown in its face), a font size box (a
     combobox: type a size, or pick one of 6–72 pt) with grow / shrink buttons (⌘⇧> / ⌘⇧<,
@@ -999,7 +1000,7 @@ the merge commit. Phases count in the order they reached main.
       fails (string too long) → 802 (12 MB) / 8,106 (115 MB, in the worker), opening 529 → 325 /
       4,005; correlation of 10 variables 1,489 / 16,554 → 996 / 13,035. Unchanged and linear:
       descriptive statistics (~6.8 s at a million rows of 36 variables), PCA grouped by cluster
-      (Kaiser 3.9 s; Prism's parallel analysis, 1,000 simulated tables, 100 s at 100,000 rows),
+      (Kaiser 3.9 s; parallel analysis, 1,000 simulated tables, 100 s at 100,000 rows),
       vector SVG export (1.9 s) and vector PDF (23 s at a million points: hence the notice).
       The user's T-cell export (16,171 cells × 77 variables, 10 MB, 26 text variables) imports by
       either path to the same table (0.34 s by the new one, 1.3 s by the old), its UMAP lays out in
@@ -1389,50 +1390,50 @@ the merge commit. Phases count in the order they reached main.
     fixture byte-identical; the example fingerprints unchanged.
 
 39. ✅ **Import and interop** — decisions 570–581 (DATA_MODEL §3.3a, §8.1, §9.1, §9.5; design
-    [PZFX_GRAPHS.md](design/PZFX_GRAPHS.md)). **Prism graphs** (decisions 570–573): a time-boxed
-    reading of a .pzfx file's binary section (`<Template>`: base64 of zlib data, `PCFFGRA4` then
-    tagged records, `io/src/import/pcff.ts`) found the record structure (u16 tag, u32 length; bit
-    15 opens a container, bit 14 closes it) and, per graph, its name, its data sets (by column ids
-    unique across the file: table and column) in Prism's order, the graph and axis titles with
-    Prism's hidden flag, the axis ranges, whether X is numeric, and each data set's colour and
-    symbol (circle, square, triangle). Each decoded graph becomes its table's default graph with
-    those set (`graphsFromPrism`, validated); the kind of marks, error bars, log scales, fonts and
+    [PZFX_GRAPHS.md](design/PZFX_GRAPHS.md)). **Graphs in .pzfx files** (decisions 570–573): a
+    time-boxed reading of a .pzfx file's binary section (`<Template>`: base64 of zlib data,
+    `PCFFGRA4` then tagged records, `io/src/import/pcff.ts`) found the record structure (u16 tag,
+    u32 length; bit 15 opens a container, bit 14 closes it) and, per graph, its name, its data sets
+    (by column ids unique across the file: table and column) in the file's order, the graph and axis
+    titles with their hidden flag, the axis ranges, whether X is numeric, and each data set's colour
+    and symbol (circle, square, triangle). Each decoded graph becomes its table's default graph with
+    those set (`graphsFromPzfx`, validated); the kind of marks, error bars, log scales, fonts and
     sizes aren't decoded and stay the defaults, listed per graph in a report after the import.
     Graphs of analyses' results or of several tables are not imported (reported); a section that
-    can't be read gives every table its default graph. .pzfx files get an import dialog: the
-    tables and graphs found, "Import graphs" (ticked when one decoded; unticked, the import is as
-    before). On the user's two Prism 9.2 files: 9 graphs of 9 tables (7 XY, 2 grouped), all 9
+    can't be read gives every table its default graph. .pzfx files get an import dialog: the tables
+    and graphs found, "Import graphs" (ticked when one decoded; unticked, the import is as before).
+    On the user's two .pzfx files (version 9.2): 9 graphs of 9 tables (7 XY, 2 grouped), all 9
     decoded (data sets, titles, Y ranges, colours; symbols on the 7 drawn with points), 2 layouts
     not imported. **Missing codes and detection limits** (decisions 574–578): the import dialog's
-    own missing-value codes ("-999, ND, not done") besides NA…, starting from Preferences' list,
-    and values at detection limits ("<0.5", "< 0.5 ng/mL", "≤0.5", ">ULOQ", "<LLOQ", "ULOQ+",
-    "BLQ", "below LOD"…) substituted below by LOD/2 (default), LOD, LOD/√2, blank or a fixed value
-    and above by the limit, blank or a fixed value, with limits typed per column or for all for
-    cells that name none. Both apply to the sheet before any reader (`prepareSheet`: limit cells
-    as unique stand-in numbers, so layouts are detected with them as numbers), the table finished
-    after (`finishCellRules`). Substituted cells are flagged in the document (`CellColumn.limit`:
-    side and original text; the rule `DataTable.limits`), marked in the grid, substituted again
-    from their text by Edit › Limits… (`table.setLimits`, one undo step; "Remove flags"), drawn
-    as open symbols on the graphs made at import (single-point formats, `graph/src/limitPoints.ts`;
-    Limits… turns them on or off for the table's graphs); analyses use the substituted values and
-    their results say so. **Dropping files** (decisions 579–580): projects open (asking about
-    unsaved changes), CSV/TSV/TXT/XLSX/ZIP open the import dialog (the large-CSV dialog and the
-    5,000-row prompt as from the menu), .pzfx the Prism dialog, images land on a layout page where
-    dropped or, elsewhere, go on a page of your choice or are ignored, .pspreset and .psstyle go
-    into the library; several files one after another (each dialog waited for), then a summary;
-    an overlay says what will happen. Web and desktop alike (the webview's HTML5 drop events).
-    Optional fields and a command only, no schema bump; `ANALYSES_VERSION` unchanged (results of
-    existing documents unchanged). Tests: the record reader and decoder on synthetic records and
-    the Prism-made fixtures, graph mapping, pairing, fallbacks, unchanged table import (io: 14);
-    missing codes, limits in sheets and CSV, layout detection, title-keyed limits, project-file
-    round trips small and large, a growth guard (io: 11); limit text in many spellings (unicode ≤
-    ≥, spaces, units, decimal commas and thousands), substitution, re-substitution and schema
-    (model: 69); `table.setLimits` with undo, flags through edits, inserts, deletes and sorts
-    (engine: 4); open symbols at limits (graph: 3); drop routing, the dialog's rules, the Prism
-    report's text (ui: 25). One new golden (`limit-open-symbols`); Playwright in Chromium, WebKit
-    and Firefox (`importInterop.spec.ts`: a CSV, an XLSX and a project dropped, several files with
-    a summary; images on a page and from a graph; custom missing codes and "<LOD" cells at LOD/2,
-    marked, changed with undo, noted on results; a .pzfx with Import graphs and its report;
+    own missing-value codes ("-999, ND, not done") besides NA…, starting from Preferences' list, and
+    values at detection limits ("<0.5", "< 0.5 ng/mL", "≤0.5", ">ULOQ", "<LLOQ", "ULOQ+", "BLQ",
+    "below LOD"…) substituted below by LOD/2 (default), LOD, LOD/√2, blank or a fixed value and
+    above by the limit, blank or a fixed value, with limits typed per column or for all for cells
+    that name none. Both apply to the sheet before any reader (`prepareSheet`: limit cells as unique
+    stand-in numbers, so layouts are detected with them as numbers), the table finished after
+    (`finishCellRules`). Substituted cells are flagged in the document (`CellColumn.limit`: side and
+    original text; the rule `DataTable.limits`), marked in the grid, substituted again from their
+    text by Edit › Limits… (`table.setLimits`, one undo step; "Remove flags"), drawn as open symbols
+    on the graphs made at import (single-point formats, `graph/src/limitPoints.ts`; Limits… turns
+    them on or off for the table's graphs); analyses use the substituted values and their results
+    say so. **Dropping files** (decisions 579–580): projects open (asking about unsaved changes),
+    CSV/TSV/TXT/XLSX/ZIP open the import dialog (the large-CSV dialog and the 5,000-row prompt as
+    from the menu), .pzfx the .pzfx import dialog, images land on a layout page where dropped or,
+    elsewhere, go on a page of your choice or are ignored, .pspreset and .psstyle go into the
+    library; several files one after another (each dialog waited for), then a summary; an overlay
+    says what will happen. Web and desktop alike (the webview's HTML5 drop events). Optional fields
+    and a command only, no schema bump; `ANALYSES_VERSION` unchanged (results of existing documents
+    unchanged). Tests: the record reader and decoder on synthetic records and the real .pzfx
+    fixtures, graph mapping, pairing, fallbacks, unchanged table import (io: 14); missing codes,
+    limits in sheets and CSV, layout detection, title-keyed limits, project-file round trips small
+    and large, a growth guard (io: 11); limit text in many spellings (unicode ≤ ≥, spaces, units,
+    decimal commas and thousands), substitution, re-substitution and schema (model: 69);
+    `table.setLimits` with undo, flags through edits, inserts, deletes and sorts (engine: 4); open
+    symbols at limits (graph: 3); drop routing, the dialog's rules, the .pzfx report's text (ui:
+    25). One new golden (`limit-open-symbols`); Playwright in Chromium, WebKit and Firefox
+    (`importInterop.spec.ts`: a CSV, an XLSX and a project dropped, several files with a summary;
+    images on a page and from a graph; custom missing codes and "<LOD" cells at LOD/2, marked,
+    changed with undo, noted on results; a .pzfx with Import graphs and its report;
     `import.spec.ts`'s pzfx test through the new dialog). Every other golden and v1 fixture
     byte-identical; the example fingerprints unchanged.
 
@@ -1596,7 +1597,7 @@ the merge commit. Phases count in the order they reached main.
     results their own formats). One Format button named by the selection ("Format title…",
     "Format Y axis…", ⇧⌘E). The graph and layout view toolbars have a fixed height (no jump when
     the selection changes) and the selection hint sits next to Add ▾. **First session** (835–839):
-    Import data… (CSV, Excel, Prism) on the start screen and the toolbar, with "or drop a file
+    Import data… (CSV, Excel, .pzfx) on the start screen and the toolbar, with "or drop a file
     anywhere"; the New table dialog in two columns with everything in view at 1024×768, "Start with
     sample data" ticked while the project has no tables; a notice when a table's graph is made; a
     second graph of a table is "Another graph of …", named "Data 1 (2)" (a table's first graph made
@@ -1793,26 +1794,27 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     longer undoes an Undo; annotations held by id; deleting another sheet keeps the open one; legend
     edits keyed to rows and levels, not positions; Match format carries cut-offs and hidden entries;
     bands at breaks and log edges; ANOVA rounding noise is no effect; SDs and t tests at any
-    magnitude; "—" for undefined P; P = 0 on volcano plots; Prism's two-stage step-up q values;
-    lognormal tests keep rows with zeros; the format bar offers only what reaches the marks; new
-    graphs start with solid bars and white points; hexagonal binning rewritten clean from Carr et
-    al. (1987), so no GPL-2-only code remains. **Step 2, speed and memory**: nested t test and
-    nested ANOVA linear in the replicates (9,600 values 37 s → 8 ms; new large R cases first);
-    Satterthwaite df only when asked (12,000 subjects 1.9 GB → 0.35 GB); large point graphs keep no
-    layout working set (1M-point UMAP 1,039 → 365 MB after two drags), thumbnails from a sample
-    (11.8 s → 0.13 s), cloud images reused and released, a new project frees the old (556 → 26 MB),
-    the Format panel and autosave no longer rescan big tables. **Step 3, keyboard and screen
-    readers**: the legend in Tab and ⌘A order with ]/[ through its entries and Format › Format
-    legend…; focus rings on the panel's sections and after ⌘1; arrow keys nudge only on the canvas;
-    Tab out of the canvas keeps the selection; focus kept after deletes; the layer list's Add ▾ a
-    keyboard menu; undo and redo announced; one verb "Delete"; 24 px targets. **Step 4, tests, docs
-    and licence**: GPL-3.0-or-later (LICENSE, NOTICE, package fields, SPDX lines); deploy, release
-    and scheduled jobs only in this repository; e2e under the production CSP; flaky tests fixed at
-    the root (Playwright's clock, one axe scan per screen, a small export test); the affected-specs
-    map corrected; 11 new hard R cases (missing values, P below 1e-12, a zero-variance cell, repeated
-    X, n = 2); tolerances tightened, none loosened; dead code removed; ARCHITECTURE.md and
-    PAPER_PANELS.md brought up to date. `ANALYSES_VERSION` 1.4.0 (S2, S6 verdicts, two-stage q
-    values, lognormal rows with zeros); goldens changed only for new graphs' looks (34 bar graphs).
+    magnitude; "—" for undefined P; P = 0 on volcano plots; two-stage step-up q values (Benjamini,
+    Krieger & Yekutieli); lognormal tests keep rows with zeros; the format bar offers only what
+    reaches the marks; new graphs start with solid bars and white points; hexagonal binning
+    rewritten clean from Carr et al. (1987), so no GPL-2-only code remains. **Step 2, speed and
+    memory**: nested t test and nested ANOVA linear in the replicates (9,600 values 37 s → 8 ms; new
+    large R cases first); Satterthwaite df only when asked (12,000 subjects 1.9 GB → 0.35 GB); large
+    point graphs keep no layout working set (1M-point UMAP 1,039 → 365 MB after two drags),
+    thumbnails from a sample (11.8 s → 0.13 s), cloud images reused and released, a new project
+    frees the old (556 → 26 MB), the Format panel and autosave no longer rescan big tables. **Step
+    3, keyboard and screen readers**: the legend in Tab and ⌘A order with ]/[ through its entries
+    and Format › Format legend…; focus rings on the panel's sections and after ⌘1; arrow keys nudge
+    only on the canvas; Tab out of the canvas keeps the selection; focus kept after deletes; the
+    layer list's Add ▾ a keyboard menu; undo and redo announced; one verb "Delete"; 24 px targets.
+    **Step 4, tests, docs and licence**: GPL-3.0-or-later (LICENSE, NOTICE, package fields, SPDX
+    lines); deploy, release and scheduled jobs only in this repository; e2e under the production
+    CSP; flaky tests fixed at the root (Playwright's clock, one axe scan per screen, a small export
+    test); the affected-specs map corrected; 11 new hard R cases (missing values, P below 1e-12, a
+    zero-variance cell, repeated X, n = 2); tolerances tightened, none loosened; dead code removed;
+    ARCHITECTURE.md and PAPER_PANELS.md brought up to date. `ANALYSES_VERSION` 1.4.0 (S2, S6
+    verdicts, two-stage q values, lognormal rows with zeros); goldens changed only for new graphs'
+    looks (34 bar graphs).
 
 48. ✅ **Open source as statPlotter** — decisions 1170–1203. **The name**: the app is statPlotter
     (titles, About, the desktop app's product name and file types, PDF and TIFF metadata, release
@@ -1833,3 +1835,27 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     public repo, with the app's security headers and no preview deployments. CodeQL and Dependabot
     for the public repo; workflows checked for read-only tokens, pinned actions and no
     `pull_request_target`. Steps in docs/PUBLISHING.md.
+
+48b. ✅ **One name, statPlotter's own** — decisions 1210–1211. The commercial product whose `.pzfx`
+    files the app reads is named nowhere: the app says ".pzfx" ("Import data… (CSV, Excel, .pzfx)"),
+    the equation field says "Y = …, one statement per line", comments say what each convention is
+    (Tukey's test as the usual default, the two-stage step-up with m̂₀ from the first stage, Type
+    III sums of squares for unbalanced designs) instead of whose it is; the coverage list is the
+    app's own (docs/FEATURE_COVERAGE.md); identifiers, test names and the R cases renamed (the R
+    generators rewrite them byte-identically). Only the `.pzfx` schema's own names, which every
+    such file carries, remain. A test keeps the name out. `ANALYSES_VERSION` 1.4.1 (three result
+    texts reworded, no number changed). Also: the demo builds as a Cloudflare Worker serving static
+    assets (`wrangler.jsonc`), and the scene-retention test measures what letting a scene go gives
+    back, so caches don't count.
+    **Fix after 0.3.2 (no version change; decision 1212).** In the Format panel's Open in window,
+    colour fields did nothing: every dialog is modal (the top layer, the rest of the page inert),
+    and the colour popovers, the format bar's menus and tooltips were portalled to the body, under
+    the dialog (Escape on one closed the dialog). Pop-ups now go into the open dialog their button
+    is in (`portalHost`), and the Format dialog is no longer a containing block for them (it moves
+    by its insets and measures its own width instead of a `translate` and a container query), which
+    also puts + Add ▾ and the rich text toolbar back beside their buttons. Tests: the helper, a
+    colour popover in a dialog and a guard on the dialogs' styles (ui); `formatWindow.spec.ts`
+    (a data set's colour and a custom hex through OK and one undo step; every control of every
+    place on an XY, a column scatter, a grouped bar and a multiple-variables graph; the list of
+    layers, + Add ▾, the dialogs over it, Match format). UI only: every golden and v1 fixture
+    byte-identical, the example fingerprints and `ANALYSES_VERSION` unchanged.

@@ -78,7 +78,7 @@ describe('three-way ANOVA with repeated measures (plugin)', () => {
 })
 
 describe('effect sizes of repeated-measures one-way ANOVA', () => {
-  it('reports partial eta squared equal to Prism’s R squared', () => {
+  it('reports partial eta squared equal to the R squared of the treatment effect', () => {
     const t = columnTable([
       [10, 12, 9, 14, 11],
       [12, 15, 10, 16, 13],

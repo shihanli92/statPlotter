@@ -94,10 +94,11 @@ at run time; none of their data is part of this repository.
 Test fixtures
 -------------
 
-The Prism files (.pzfx) in packages/io/test/fixtures/pzfx/ other than synthetic_*.pzfx, and
-apps/e2e/fixtures/xy-with-exclusions.pzfx, are example files from the R package pzfx 0.3.1 by
-Yue Jiang (https://github.com/Yue-Jiang/pzfx). Copyright (c) 2018 Yue Jiang. MIT License (full
-text in packages/io/test/fixtures/pzfx/README.md).
+The .pzfx files in packages/io/test/fixtures/pzfx/ other than synthetic_*.pzfx, and
+apps/e2e/fixtures/xy-with-exclusions.pzfx, are example .pzfx files from the R package pzfx 0.3.1
+by Yue Jiang (https://github.com/Yue-Jiang/pzfx). Copyright (c) 2018 Yue Jiang. MIT License (full
+text in packages/io/test/fixtures/pzfx/README.md). Changed only to leave out the name of the
+program that made them (see that README).
 
 The NIST StRD reference datasets and certified values (packages/stats/test/fixtures/nist/,
 fetched by tools/nist/fetch.mjs) are works of the U.S. Government (National Institute of

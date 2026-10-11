@@ -7,7 +7,7 @@ import { Checkbox } from '../components/fields.tsx'
 import { useServices } from '../context.tsx'
 import { errorMessage } from '../util.ts'
 
-// Importing a Prism project (.pzfx, roadmap 39): its tables as before, and with "Import graphs"
+// Importing a .pzfx project (roadmap 39): its tables as before, and with "Import graphs"
 // its graphs, each drawn from what decodes (`readPzfx` with graphs) or its table's default graph,
 // then a report of what was matched and what is the default.
 
@@ -32,10 +32,10 @@ function describeTables(tables: readonly DataTable[]): string {
   return [...counts].map(([k, n]) => `${n} ${k} ${n === 1 ? 'table' : 'tables'}`).join(', ')
 }
 
-/** "7 graphs: 7 drawn from Prism's settings" */
+/** "7 graphs: 7 drawn from the file's settings" */
 export function describeGraphs(g: PzfxGraphImport): string {
   if (!g.found) return 'No graphs.'
-  const parts = [`${g.decoded} drawn from Prism’s settings`]
+  const parts = [`${g.decoded} drawn from the file’s settings`]
   const def = g.report.filter((r) => r.status === 'default').length
   const skipped = g.report.filter((r) => r.status === 'skipped').length
   if (def) parts.push(`${def} as the table’s default graph`)
@@ -66,7 +66,7 @@ export function PzfxImportDialog({
   const read = useMemo((): { ok: PzfxRead } | { error: string } => {
     try {
       const file = importFile(fileName, bytes, { graphs: true })
-      if (file.kind !== 'tables') throw new ImportError('Not a Prism XML project (.pzfx) file.')
+      if (file.kind !== 'tables') throw new ImportError('Not an XML project (.pzfx) file.')
       if (!file.tables.length)
         throw new ImportError('The file has no data tables this app can read.')
       return { ok: file }
@@ -119,12 +119,12 @@ export function PzfxImportDialog({
             <>
               <p className="muted">
                 {describeGraphs(graphs)}
-                {graphs.problem ? ` Prism’s graphs couldn’t be read: ${graphs.problem}.` : ''}
+                {graphs.problem ? ` The file’s graphs couldn’t be read: ${graphs.problem}.` : ''}
               </p>
               <Checkbox label="Import graphs" checked={withGraphs} onChange={setWithGraphs} />
               <p className="muted">
                 {withGraphs
-                  ? 'Titles, axis titles and ranges, data sets, colours and symbols are taken from Prism where they could be read; the kind of graph and error bars are each table’s default. A report follows.'
+                  ? 'Titles, axis titles and ranges, data sets, colours and symbols are taken from the file where they could be read; the kind of graph and error bars are each table’s default. A report follows.'
                   : 'Each table gets its default graph, as New graph makes.'}
               </p>
             </>
@@ -137,7 +137,7 @@ export function PzfxImportDialog({
   )
 }
 
-/** What became of each Prism graph. */
+/** What became of each of the file's graphs. */
 function PzfxReportDialog({
   fileName,
   report,
@@ -150,7 +150,7 @@ function PzfxReportDialog({
   const label = { decoded: 'Read', default: 'Default graph', skipped: 'Not imported' }
   return (
     <Dialog
-      title={`Prism graphs in “${fileName}”`}
+      title={`Graphs in “${fileName}”`}
       onClose={onClose}
       wide
       footer={
@@ -159,13 +159,13 @@ function PzfxReportDialog({
         </button>
       }
     >
-      <ul className="import-report" aria-label="Prism graph report">
+      <ul className="import-report" aria-label="Graph report">
         {report.map((r, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: graphs may share names
           <li key={i}>
             <strong>{r.name}</strong>
             {r.table && r.table !== r.name ? ` (of “${r.table}”)` : ''} — {label[r.status]}
-            {r.matched.length > 0 && <div>From Prism: {r.matched.join(', ')}.</div>}
+            {r.matched.length > 0 && <div>From the file: {r.matched.join(', ')}.</div>}
             {r.defaulted.length > 0 && (
               <div className="defaulted">
                 {r.status === 'decoded' ? 'Default: ' : ''}

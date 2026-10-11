@@ -11,5 +11,5 @@
     ]
   },
   "params": {"equation":"agonist-response-variable-slope","constraints":[{"kind":"fit"},{"kind":"fit"},{"kind":"fit"},{"kind":"fit"}],"start":[[5,95,-6.5,1.1000000000000001]]},
-  "note": "Prism's 1/SD^2 weighting (SDs entered with the means)."
+  "note": "1/SD^2 weighting (SDs entered with the means)."
 }

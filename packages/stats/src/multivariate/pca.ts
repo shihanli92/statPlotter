@@ -6,17 +6,15 @@ import { norm2, qrFactor } from '../linalg/qr.ts'
 import { type ProgressFn, progressStride, reportProgress } from '../progress.ts'
 
 /**
- * Principal component analysis as GraphPad Prism documents it
- * (https://www.graphpad.com/guides/prism/latest/statistics/stat_pca_options_tab.htm and the
- * pages linked from it):
+ * Principal component analysis:
  *
  * - Data are standardized ((x − mean) / SD, SD with n − 1; "PCA on the correlation matrix",
- *   Prism's recommended default) or only centered ("PCA on the covariance matrix").
+ *   the recommended default) or only centered ("PCA on the covariance matrix").
  * - Eigenvalues are those of the correlation / covariance matrix (divisor n − 1), in descending
  *   order; proportion = eigenvalue / Σ eigenvalues.
  * - Loadings = eigenvector × √eigenvalue (the correlations, or covariances, between variables
  *   and components). Scores = standardized or centered data × eigenvectors.
- * - Component selection: parallel analysis (Prism's recommendation), eigenvalue > threshold
+ * - Component selection: parallel analysis (the recommended rule), eigenvalue > threshold
  *   (Kaiser rule, threshold 1 by default), the smallest number of components whose cumulative
  *   proportion reaches a target percent, a fixed number, or all components.
  *
@@ -24,7 +22,7 @@ import { type ProgressFn, progressStride, reportProgress } from '../progress.ts'
  * SVD of R, so eigenvalues come from singular values (as R's prcomp) without forming the
  * covariance matrix. Eigenvalues below p·n·ε·λ₁ are set to 0 (rank-deficient data, n ≤ p).
  *
- * Sign convention (Prism's is undocumented; LAPACK's is arbitrary): each eigenvector is
+ * Sign convention (ours; LAPACK's is arbitrary): each eigenvector is
  * oriented so that the sum of its elements is positive; when that sum is 0 (|sum| ≤ 1e−8),
  * its first element with |v| > 1e−8 is made positive. Scores and loadings follow.
  */
@@ -40,7 +38,7 @@ export interface PcaSelectOptions {
    * parallel: the upper percentile (default 95).
    */
   value?: number
-  /** Parallel analysis: number of simulated data sets (default 1000, as Prism). */
+  /** Parallel analysis: number of simulated data sets (default 1000). */
   simulations?: number
   /** Parallel analysis seed (default 1). Same generator as R's set.seed(seed, kind = "L'Ecuyer-CMRG"). */
   seed?: number
@@ -49,7 +47,7 @@ export interface PcaSelectOptions {
 export interface PcaOptions {
   /** Default true (PCA on the correlation matrix). */
   standardize?: boolean
-  /** Default { method: 'parallel' } (Prism's recommendation). */
+  /** Default { method: 'parallel' } (the recommended rule). */
   select?: PcaSelectOptions
   /** Hears how many of parallel analysis' simulations are done (roadmap 42). */
   progress?: ProgressFn
@@ -60,7 +58,7 @@ export interface PcaParallel {
   mean: number[]
   /** Upper percentile (default 95th) of each component's simulated eigenvalues. */
   percentile: number[]
-  /** Lower percentile (100 − upper, default 5th), which Prism also lists. */
+  /** Lower percentile (100 − upper, default 5th), also listed. */
   lower: number[]
   level: number
   simulations: number
@@ -79,7 +77,7 @@ export interface PcaResult {
   scores: number[][]
   /** Number of components retained by the selection rule (≤ rank). */
   selected: number
-  /** Number of components with a non-zero eigenvalue (Prism's "number of components"). */
+  /** Number of components with a non-zero eigenvalue (the "number of components"). */
   rank: number
   parallel?: PcaParallel
   means: number[]
@@ -191,8 +189,7 @@ export function pca(X: readonly (readonly number[])[], opts: PcaOptions = {}): P
 }
 
 /**
- * Horn's parallel analysis as Prism describes it
- * (https://www.graphpad.com/guides/prism/latest/statistics/stat_pca_options_tab.htm): each
+ * Horn's parallel analysis: each
  * simulated data set has n × p normal values with mean 0 and the SD of the corresponding input
  * variable, and is analysed exactly as the data (standardized or centered). The components
  * retained are the leading ones whose eigenvalue exceeds the upper percentile of the simulated

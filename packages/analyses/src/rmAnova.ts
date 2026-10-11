@@ -139,7 +139,7 @@ function oneWayBlocks(res: OneWayRMResult, titles: string[]): ResultBlock[] {
       )
     }
     if (res.table) {
-      // Effect sizes (Prism 11 for RM designs): partial η² against the residual (Keppel's R²).
+      // Effect sizes for RM designs: partial η² against the residual (Keppel's R²).
       const row = (name: string) => res.table!.find((x) => x.name === name)!
       const es = effectSizes(row('Treatment'), row('Residual'), row('Total').ss)
       blocks.push(
@@ -388,7 +388,7 @@ export function runTwoWayRM(
     ]),
   ]
   if (res.kind === 'anova') {
-    // Effect sizes (Prism 11 for RM designs): partial η² against each effect's own error term.
+    // Effect sizes for RM designs: partial η² against each effect's own error term.
     const ssTotal = totalSS(data.y)
     const by = (k: string) => res.sources.find((x) => x.key === k)
     const errorOf: Record<string, string> =
@@ -429,7 +429,7 @@ export function runTwoWayRM(
   for (const s of main) values[`p.${s.key}`] = pval(s.pCorrected ?? s.p)
 
   if (params.comparisons === 'none') return result({ sheets, diagnostics, values })
-  // Prism 8.4+ doesn't compare main-effect means of a repeated factor without sphericity (FAQ 2172).
+  // Main-effect means of a repeated factor aren't compared without sphericity.
   const repeatedMain =
     (params.comparisons === 'mainRows' && params.repeated !== 'columns') ||
     (params.comparisons === 'mainColumns' && params.repeated !== 'rows')

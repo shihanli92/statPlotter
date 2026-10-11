@@ -20,7 +20,7 @@ import { rowLabel } from './resultTable.ts'
 
 // ---------------------------------------------------------------------------------------------
 // Row statistics: mean, SD, SEM, N, CI … of each row, for each data set (its replicates) or
-// across all data sets (every value in the row), as Prism's "Row statistics".
+// across all data sets (every value in the row): "Row statistics".
 // ---------------------------------------------------------------------------------------------
 
 const RowParams = z.object({
@@ -115,7 +115,7 @@ function cellPart(ds: NormalizedDataSet, r: number) {
   const n = d.n[r]!
   const m = d.mean[r]!
   if (!Number.isFinite(m)) return { values: [] }
-  // A mean without N counts as one value (Prism plots entered means that way).
+  // A mean without N counts as one value (entered means are plotted that way).
   if (!Number.isFinite(n)) return { values: [m] }
   return { mean: m, sd: Number.isFinite(d.sd[r]!) ? d.sd[r]! : 0, n }
 }

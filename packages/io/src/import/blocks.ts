@@ -182,8 +182,8 @@ export type BlockGuess = Pick<SheetImportOptions, 'tableKind' | 'headerRow' | 'f
  * Import settings that fit a block: a header when its first row is text over numbers; row titles
  * (a grouped table) when the first column is text; X when the first column is numeric under an
  * X-like title (time, dose…). For grouped and XY tables, the replicate count is the spacing of
- * the data set titles in the header (Prism writes a title over the first of each data set's
- * columns and leaves the rest blank).
+ * the data set titles in the header (lab graphing tools write a title over the first of each data
+ * set's columns and leave the rest blank).
  */
 export function guessBlock(
   sheet: Sheet,

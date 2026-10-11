@@ -3,8 +3,8 @@ import { refinedMean, sum } from '../summation.ts'
 
 /**
  * Deming (model II) regression: a straight line when both X and Y are measured with error, the
- * ratio of the error variances being known. With λ = SD_X² / SD_Y² (Prism's λ: "enter the square
- * root of λ as the SD of the X values and 1.0 as the SD of the Y error") and δ = 1/λ, the
+ * ratio of the error variances being known. With λ = SD_X² / SD_Y² (to give λ, enter its square
+ * root as the SD of the X values and 1.0 as the SD of the Y error) and δ = 1/λ, the
  * maximum-likelihood slope (Deming 1943; Linnet 1990) is
  *
  *   b = [S_yy − δS_xx + √((S_yy − δS_xx)² + 4δS_xy²)] / (2S_xy),
@@ -13,12 +13,11 @@ import { refinedMean, sum } from '../summation.ts'
  * regression (perpendicular distances). The root is computed without cancellation: when
  * D = S_yy − δS_xx < 0, b = 2δS_xy / (√(D² + 4δS_xy²) − D).
  *
- * Standard errors follow GraphPad's FAQ 1690 ("How Prism computes the SE and CI of the slope and
- * intercept in Deming regression"), with r = S_xy² / (S_xx S_yy):
+ * Standard errors of the slope and intercept, with r = S_xy² / (S_xx S_yy):
  *   SE(slope) = √(b²(1 − r) / (r(n − 2))),  SE(intercept) = SE(slope)·√(Σxᵢ² / n),
  * CIs ± t(n − 2)·SE (1 − r is formed as the ordinary-regression residual SS over S_yy, which
- * is exact algebra and keeps its digits as r → 1). The SE of Y at X = x₀ is that of the intercept after shifting X by x₀
- * (FAQ 2230, Prism ≥ 9.4.1): SE(slope)·√(Σ(xᵢ − x₀)² / n). The test of slope = 0 is
+ * is exact algebra and keeps its digits as r → 1). The SE of Y at X = x₀ is that of the
+ * intercept after shifting X by x₀: SE(slope)·√(Σ(xᵢ − x₀)² / n). The test of slope = 0 is
  * t = b / SE(slope) on n − 2 df (algebraically the t test of the correlation).
  */
 export interface DemingOptions {

@@ -41,12 +41,12 @@ import {
 const Params = z.object({
   design: z.enum(['unpaired', 'paired']).default('unpaired'),
   distribution: z.enum(['gaussian', 'lognormal', 'nonparametric']).default('gaussian'),
-  /** Unpaired parametric tests: Welch (Prism's default), per-row pooled SD, or one SD for all. */
+  /** Unpaired parametric tests: Welch (the default), per-row pooled SD, or one SD for all. */
   variance: z.enum(['welch', 'individual', 'consistent']).default('welch'),
   /** Unpaired nonparametric test. */
   rankTest: z.enum(['mannWhitney', 'kolmogorovSmirnov']).default('mannWhitney'),
   ...familyParams,
-  /** Prism's "Compute the difference as": first data set − second, or second − first. */
+  /** "Compute the difference as": first data set − second, or second − first. */
   difference: z.enum(['aMinusB', 'bMinusA']).default('aMinusB'),
   /** Add a −log10(P) column (the volcano plot's Y). */
   reportLogP: z.boolean().default(false),
@@ -159,7 +159,7 @@ export const multipleTDef: AnalysisDef<Params> = {
     },
     { path: ['reportLogP'], label: 'Report −log10(P value)', kind: 'checkbox' },
   ],
-  // Volcano plot (Prism draws one by default): difference vs −log10(P), the flagged rows (discoveries
+  // Volcano plot (drawn by default): difference vs −log10(P), the flagged rows (discoveries
   // or below threshold) as one series and the rest as another.
   outputs: (_keys, params) => {
     const graph = {

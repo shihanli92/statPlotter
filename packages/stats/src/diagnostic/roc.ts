@@ -2,31 +2,28 @@ import { proportionCI } from '../contingency/proportion.ts'
 import { normalQuantile, normalSf } from '../dist/normal.ts'
 
 /**
- * Empirical ROC curve of a diagnostic test from control and patient values, as GraphPad Prism
- * computes it (https://www.graphpad.com/guides/prism/latest/statistics/stat_calcualtion_details_for_roc_cu.htm,
- * https://www.graphpad.com/support/faq/details-of-calculations-for-roc-curves/,
- * https://www.graphpad.com/guides/prism/latest/statistics/sensitivity_and_specificity.htm):
+ * Empirical ROC curve of a diagnostic test from control and patient values:
  *
  * - Thresholds: the pooled values sorted, adjacent values averaged ("each threshold value is
  *   midway between two values in the data"). Tied values are merged first, so every threshold
  *   lies strictly between two distinct values. Listed in ascending order.
  * - Direction 'higher' (patients have higher values): sensitivity = fraction of patients above
  *   the threshold, specificity = fraction of controls below it; 'lower' mirrors both. 'auto'
- *   (Prism's behaviour) uses 'higher' unless that gives an area below 0.5.
+ *   uses 'higher' unless that gives an area below 0.5.
  * - Sensitivity / specificity CIs: Clopper–Pearson ("the Clopper method"), no multiplicity
  *   correction. Likelihood ratio = sensitivity / (1 − specificity) (+∞ when specificity is 1).
  * - Area: trapezoidal area of the whole curve from (0, 0) to (1, 1) = the Mann–Whitney
  *   probability P(patient more abnormal) + ½ P(tie).
- * - SE of the area: Hanley & McNeil (1982) with Q1 and Q2 estimated from the data (the "more
- *   complicated equation" Prism links to, IBM SPSS's ROC algorithm "SE of the area under the ROC
- *   curve statistic, nonparametric assumption"): over the distinct values x,
+ * - SE of the area: Hanley & McNeil (1982) with Q1 and Q2 estimated from the data (IBM SPSS's
+ *   ROC algorithm "SE of the area under the ROC curve statistic, nonparametric assumption"):
+ *   over the distinct values x,
  *     Q1 = Σ n₋(=x)·[n₊(>x)² + n₊(>x)·n₊(=x) + n₊(=x)²/3] / (n₋·n₊²)
  *     Q2 = Σ n₊(=x)·[n₋(<x)² + n₋(<x)·n₋(=x) + n₋(=x)²/3] / (n₋²·n₊)
  *     SE = √([A(1 − A) + (n₊ − 1)(Q1 − A²) + (n₋ − 1)(Q2 − A²)] / (n₊·n₋))
  *   (₊ patients, ₋ controls; the same for either direction, since Var(1 − A) = Var(A)).
  * - CI of the area: A ± z·SE (z of the confidence level), truncated to [0, 1].
  * - P value (H0: area = 0.5): z = (A − 0.5) / SE₀ with SE₀ = √((n₊ + n₋ + 1) / (12·n₊·n₋)),
- *   i.e. Q1 = Q2 = 1/3 (Prism's FAQ writes 1/12 as 0.083333); two-tailed, normal distribution.
+ *   i.e. Q1 = Q2 = 1/3 (1/12 is often written 0.083333); two-tailed, normal distribution.
  */
 
 export interface RocPoint {
@@ -42,12 +39,12 @@ export interface RocPoint {
 }
 
 export interface RocResult {
-  /** Prism's sensitivity / specificity table: one row per threshold, ascending thresholds. */
+  /** The sensitivity / specificity table: one row per threshold, ascending thresholds. */
   points: RocPoint[]
   /**
    * The curve for plotting, as fractions: (1 − specificity, sensitivity) from (0, 0) to (1, 1)
-   * with both ends included (Prism's own results table leaves them out but computes the area
-   * over the whole curve).
+   * with both ends included (the results table leaves them out, but the area is computed over
+   * the whole curve).
    */
   curve: { x: number; y: number }[]
   auc: number
@@ -67,7 +64,7 @@ export interface RocOptions {
   confLevel?: number
   /** Default 'auto'. */
   direction?: 'auto' | 'higher' | 'lower'
-  /** Sensitivity / specificity CIs. Default 'clopperPearson' (Prism). */
+  /** Sensitivity / specificity CIs. Default 'clopperPearson'. */
   ciMethod?: 'wilsonBrown' | 'clopperPearson'
 }
 

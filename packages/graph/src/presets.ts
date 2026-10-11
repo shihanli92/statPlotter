@@ -36,7 +36,7 @@ import { newGraphNode, scaffoldFor } from './scaffold.ts'
 
 /** How a nested table's subjects are drawn (`points` and centre layers' position and style). */
 export interface NestedOptions {
-  /** One column per subject ('subjects', Prism's nested scatter) or all pooled. */
+  /** One column per subject ('subjects', the usual nested scatter) or all pooled. */
   layout: 'pooled' | 'subjects'
   /** How subjects are told apart. */
   mark: 'shape' | 'shade' | 'none'
@@ -44,7 +44,7 @@ export interface NestedOptions {
   subjectMeans: boolean
 }
 
-/** A new graph of a nested table: subjects side by side, shaded, as Prism does. */
+/** A new graph of a nested table: subjects side by side, shaded. */
 export const NESTED_DEFAULTS: NestedOptions = {
   layout: 'subjects',
   mark: 'shade',
@@ -966,7 +966,7 @@ const DEFAULT_PRESET: Record<TableKind, string> = {
 
 /**
  * The preset a new graph of a table starts from: its kind's usual one, or the natural one of the
- * node it comes from (a frequency distribution's table is a histogram, as in Prism).
+ * node it comes from (a frequency distribution's table is a histogram).
  */
 export function defaultPresetFor(
   table: Pick<DataTable, 'tableKind'> & { rowCount?: number; cellsTable?: boolean },

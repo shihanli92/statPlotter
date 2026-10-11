@@ -5,5 +5,5 @@
       [21, 59]
     ]
   },
-  "note": "Prism's odds-ratio example (the guide's CI 1.787-4.950 there is Woolf's)."
+  "note": "The Doll & Hill odds-ratio example (the published CI 1.787-4.950 there is Woolf's)."
 }

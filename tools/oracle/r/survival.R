@@ -1,42 +1,38 @@
-# Survival analysis (Kaplan-Meier and curve comparison) as GraphPad Prism documents it.
+# Survival analysis (Kaplan-Meier and curve comparison).
 #
-# Kaplan-Meier: survival::survfit. SE = Greenwood (Prism). CIs:
-#   asymmetric  survfit(conf.type = "log-log"): Prism's guide ("Interpreting results: survival
-#               proportions") says its asymmetrical CIs match survfit with Greenwood errors
-#               and conf.type = "log-log".
-#   symmetric   survfit(conf.type = "plain"): S +/- z SE truncated to [0, 1] (Prism).
+# Kaplan-Meier: survival::survfit. SE = Greenwood. CIs:
+#   asymmetric  survfit(conf.type = "log-log") with Greenwood errors.
+#   symmetric   survfit(conf.type = "plain"): S +/- z SE truncated to [0, 1].
 #   Conventions (TS and fixtures alike): while S = 1, SE = 0 and CI = [1, 1]; once S = 0,
 #   SE = 0 and CI = [0, 0] (survfit gives NaN/NA there). A time-0 row (survival 1) is
 #   prepended; then one row per distinct time (events and censorings), events before
-#   censorings at tied times (survfit and Prism).
+#   censorings at tied times (as survfit).
 # Median and its CI: quantile(survfit(conf.type = "log-log"), 0.5), i.e. the staircase
-#   crossing of 1/2 with the midpoint of a flat segment at exactly 1/2 (Prism follows Machin
-#   the same way), and the Brookmeyer-Crowley interval with the complementary log-log
-#   transform (Prism 10.5+: "Interpreting results: median survival times"), which is where the
+#   crossing of 1/2 with the midpoint of a flat segment at exactly 1/2 (as Machin), and the
+#   Brookmeyer-Crowley interval with the complementary log-log transform, which is where the
 #   log-log CI curves cross 1/2. The median CI always uses log-log, whatever the curve CI
-#   method. Undefined median -> NaN; upper limit never reached -> Inf (Prism "+infinity");
+#   method. Undefined median -> NaN; upper limit never reached -> Inf ("+infinity");
 #   lower limit never reached -> NaN.
-#   UNCERTAIN: how Prism treats S = 0 in the Brookmeyer-Crowley search (here, as in R, those
-#   points are ignored), and whether it averages at a flat 1/2 for the CI limits as R does.
-# Log-rank: survdiff(rho = 0) (Prism: "Mantel-Haenszel approach", also called Mantel-Cox),
-#   k groups by U' V^-1 U (Prism's recommended "match SAS and SPSS" option).
+#   UNCERTAIN: how to treat S = 0 in the Brookmeyer-Crowley search (here, as in R, those
+#   points are ignored), and whether to average at a flat 1/2 for the CI limits as R does.
+# Log-rank: survdiff(rho = 0) (the "Mantel-Haenszel approach", also called Mantel-Cox),
+#   k groups by U' V^-1 U (the recommended "match SAS and SPSS" option).
 # Gehan-Breslow-Wilcoxon: the weighted log-rank statistic with weight = number at risk and
 #   the same hypergeometric covariance with weights squared (SAS LIFETEST "Wilcoxon"). There
 #   is no R function with this exact variance (coin uses the permutation variance, survMisc
 #   is no longer on CRAN), so it is hand-coded; the unweighted version of the same code is
 #   checked against survdiff to 1e-12 and the weighted scores U against
 #   coin::logrank_test(type = "Gehan-Breslow") (its centred linear statistic is -U).
-# Log-rank test for trend: (c'U)^2 / c'Vc with scores c = 1..k (Prism uses column order,
-#   equally spaced), df 1 -- the SAS/SPSS form (Prism 6+). c'U is checked against coin's
+# Log-rank test for trend: (c'U)^2 / c'Vc with scores c = 1..k (column order, equally
+#   spaced), df 1 -- the SAS/SPSS form. c'U is checked against coin's
 #   linear-by-linear logrank statistic for an ordered factor.
-# Hazard ratio (2 groups; group 2 vs group 1), Prism's guide "Interpreting results: the
-#   hazard ratio" (Machin, Cheung & Parmar 2006, ch. 3):
+# Hazard ratio (2 groups; group 2 vs group 1) (Machin, Cheung & Parmar 2006, ch. 3):
 #   Mantel-Haenszel  L = (O2 - E2)/V, HR = exp(L), CI exp(L -/+ z/sqrt(V)), V = log-rank var
 #   log-rank         HR = (O2/E2)/(O1/E1), CI exp(log HR -/+ z sqrt(1/E1 + 1/E2))
-#   Prism reports both a ratio and its reciprocal; the fixtures hold group 2 / group 1.
-# Ratio of medians (Prism FAQ 718, Machin pp. 67-68): M2/M1, CI exp(log ratio -/+
+#   Both a ratio and its reciprocal are reported; the fixtures hold group 2 / group 1.
+# Ratio of medians (Machin pp. 67-68): M2/M1, CI exp(log ratio -/+
 #   z sqrt(1/O1 + 1/O2)); null when a median is undefined (or 0) or a group has no events.
-# z = qnorm(1 - (1 - confLevel)/2) throughout (Prism prints 1.96 for 95%).
+# z = qnorm(1 - (1 - confLevel)/2) throughout (1.96 for 95%).
 
 PACKAGES <- c("survival", "coin")
 suppressPackageStartupMessages({

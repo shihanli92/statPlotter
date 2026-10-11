@@ -13,8 +13,8 @@ describe('blandaltman vs R', () => {
 })
 
 describe('blandaltman invariants', () => {
-  it("reproduces Prism's sample limits from its bias and SD (z = 1.96 exactly)", () => {
-    // Prism's sample output: bias 0.238095, SD of bias 6.96351, limits -13.4104 to 13.8866.
+  it('reproduces published sample limits from their bias and SD (z = 1.96 exactly)', () => {
+    // A published sample output: bias 0.238095, SD of bias 6.96351, limits -13.4104 to 13.8866.
     const r = blandAltman([0.238095 + 6.96351, 0.238095 - 6.96351], [0, 0])
     expectClose(r.bias, 0.238095, { rtol: 1e-12 }, 'bias')
     expectClose(r.sd, 6.96351 * Math.SQRT2, { rtol: 1e-12 }, 'sd')

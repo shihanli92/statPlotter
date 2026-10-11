@@ -4,10 +4,10 @@ import { argmax, maxOf, profile, rateFromHalfLife, xAtLevel, xRange } from './in
 import { polynomialRegression } from './polynomial.ts'
 
 /**
- * More of Prism's built-in equations (Phase 14), each written in GraphPad's own form (Curve
- * Fitting Guide, "Equation: …" pages) and evaluated through the user-equation language, which
- * gives exact gradients by automatic differentiation. Parameter names and order follow the
- * guide. Initial-value rules are ours, in the spirit of Prism's (plateaus from the smallest and
+ * More of the built-in equations (Phase 14), each written in its published form and evaluated
+ * through the user-equation language, which gives exact gradients by automatic
+ * differentiation. Parameter names and order follow the published form. Initial-value rules
+ * are ours, in the same style as the others (plateaus from the smallest and
  * largest Y, half-way X from where Y crosses a level, rates from the half-life).
  */
 
@@ -517,7 +517,7 @@ Y = IF(X < X0, Y1, Y2)`,
     derived: (p) => ({ Intercept2: p[0]! + (p[1]! - p[3]!) * p[2]! }),
   }),
   lab({
-    // Curve Fitting Guide, "Equation: Finding the crossing point of two lines" (FAQ 912): one
+    // Finding the crossing point of two lines: one
     // line per data set, the crossing point shared, each data set its own slope.
     id: 'two-lines-crossing',
     name: 'Two intersecting lines — fit the crossing point',
@@ -536,7 +536,7 @@ Y = IF(X < X0, Y1, Y2)`,
       Slope: { description: 'Slope of each data set’s line' },
     },
     initial(x, y) {
-      // Prism's rules take the middle of the X and Y ranges for the crossing point; the slope is
+      // The rules take the middle of the X and Y ranges for the crossing point; the slope is
       // each data set's own least-squares slope (its sign matters for crossing lines).
       const pr = profile(x, y)
       const slope =
@@ -595,9 +595,9 @@ Y = IF(X < X0, Y1, Y2)`,
 ]
 
 /**
- * Enzyme inhibition (Prism's competitive, noncompetitive, uncompetitive and mixed models):
- * one data set per inhibitor concentration, whose value `I` is a data set constant (Prism reads
- * it from the column title); the kinetic constants are shared by default (a global fit).
+ * Enzyme inhibition (competitive, noncompetitive, uncompetitive and mixed models): one data
+ * set per inhibitor concentration, whose value `I` is a data set constant (read from the
+ * column title); the kinetic constants are shared by default (a global fit).
  */
 function inhibitionModels(): EquationDef[] {
   const I: ParamInfo = {

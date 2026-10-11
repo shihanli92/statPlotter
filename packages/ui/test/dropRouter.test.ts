@@ -110,7 +110,7 @@ describe('the import dialog’s missing codes and limits (roadmap 39)', () => {
     expect(cellRulesOf({ ...state, missing: ' ', limits: false })).toEqual({})
   })
 
-  it('describes what a Prism file’s graphs gave', () => {
+  it('describes what a .pzfx file’s graphs gave', () => {
     expect(
       describeGraphs({
         graphs: [],
@@ -124,7 +124,7 @@ describe('the import dialog’s missing codes and limits (roadmap 39)', () => {
         ],
       }),
     ).toBe(
-      '3 graphs: 1 drawn from Prism’s settings, 1 as the table’s default graph, 1 not imported.',
+      '3 graphs: 1 drawn from the file’s settings, 1 as the table’s default graph, 1 not imported.',
     )
   })
 })

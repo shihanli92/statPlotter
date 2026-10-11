@@ -7,7 +7,7 @@ import {
   userCurveModel,
 } from '../src/index.ts'
 
-// Roadmap 20: the user-equation language — Prism's special and distribution functions, lines
+// Roadmap 20: the user-equation language — the special and distribution functions, lines
 // for particular data sets, implicit and differential equations, rules for initial values. The
 // values of the functions and the fits are checked against R in equationFits.test.ts; this file
 // checks the language itself, gradients and the solvers.
@@ -151,7 +151,7 @@ Y = K*X*Amp`)
     expect(r.parameters).toEqual(['Amp'])
   })
 
-  it('gives each data set its own program and parameters (Prism’s total and nonspecific fit)', () => {
+  it('gives each data set its own program and parameters (a total and nonspecific fit)', () => {
     const r = ok(`specific=Bmax*X/(X+Kd)
 nonspecific=NS*X + Background
 <A>Y=specific+nonspecific
@@ -215,7 +215,7 @@ describe('implicit equations', () => {
     checkGrad(r.program, [0.2, 1, 3], [0.5])
   })
 
-  it('handles intermediates that use Y (Prism’s binding example)', () => {
+  it('handles intermediates that use Y (a binding example)', () => {
     const r = ok(`Free = X - Y
 Y = NS*Free + Bmax*Free/(Kd + Free)`)
     expect(r.parameters).toEqual(['NS', 'Bmax', 'Kd'])
@@ -319,7 +319,7 @@ describe('differential equations', () => {
 describe('rules for initial values', () => {
   const x = [1, 2, 3, 4, 5, 6]
   const y = [10, 12, 30, 70, 88, 90]
-  it('computes Prism’s quantities', () => {
+  it('computes the rule quantities', () => {
     const v = (rule: string, value = 1) => initialFromRule({ rule, value }, x, y)
     expect(v('value', 7)).toBe(7)
     expect(v('ymin')).toBe(10)

@@ -80,7 +80,7 @@ export type LayeredCase = [name: string, table: DataTable, graph: GraphNode]
 
 /**
  * Where a geom usually sits in the drawing order, back (0) to front: fills and bars behind,
- * points over them, error bars, centre lines and labels in front (Prism's and v1's order; XY
+ * points over them, error bars, centre lines and labels in front (the usual order and v1's; XY
  * symbols in front of their error bars). Until roadmap 33e the builder added each layer there;
  * now it adds in front (`newLayerIndex`), and the golden graphs keep the lists they were drawn
  * with.

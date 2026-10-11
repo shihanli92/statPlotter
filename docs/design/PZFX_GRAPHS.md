@@ -1,21 +1,21 @@
-# Prism graphs in .pzfx files (roadmap 39)
+# Graphs in .pzfx files (roadmap 39)
 
-What the binary section of a Prism XML project holds, as far as a time-boxed reading found it,
+What the binary section of an XML project (.pzfx) holds, as far as a time-boxed reading found it,
 and what the importer takes from it. Decisions 570–573 (DECISIONS.md (not in the public repository)); the code is
 `packages/io/src/import/pcff.ts` (records), `pzfxGraphs.ts` (fields) and `pzfxGraphMap.ts`
 (native graphs).
 
-This is not a published format. Everything here was inferred from Prism-made files: the 23 files
-of the pzfx R package in `packages/io/test/fixtures/pzfx/` (Prism 7–8, one table and one graph
-each, MIT licensed) and two of the user's own Prism 9.2 projects (several XY and grouped tables
-with a graph each and a layout), read in place and never copied: no value, title or name of
-theirs appears in the repository.
+This is not a published format. Everything here was inferred from real .pzfx files: the 23 files
+of the pzfx R package in `packages/io/test/fixtures/pzfx/` (saved by versions 7–8 of the program
+that writes them, one table and one graph each, MIT licensed) and two of the user's own projects
+saved by version 9.2 (several XY and grouped tables with a graph each and a layout), read in
+place and never copied: no value, title or name of theirs appears in the repository.
 
 ## 1. Where it is
 
-`<GraphPadPrismFile>` ends with `<Template dt:dt="bin.base64">`: base64 of zlib data (a 2-byte
+The file's root element ends with `<Template dt:dt="bin.base64">`: base64 of zlib data (a 2-byte
 zlib header, deflate, Adler-32). Inflated, it starts with the 8 ASCII bytes `PCFFGRA4` and holds
-the whole project as Prism keeps it: tables (again, without values), analyses, graphs, layouts,
+the whole project as the file keeps it: tables (again, without values), analyses, graphs, layouts,
 info sheets, the colour schemes and an Apple print-settings plist (macOS files).
 
 ## 2. Records
@@ -79,18 +79,18 @@ Payload: u16 graph index. Children, those read:
 | `0x0013` | u16 at 32: id of the **title** text | the graph title | high (in every graph, it names the text holding the graph's title, also when that isn't text 0) |
 | `0x0014` | u32 count, u32 table indices | the tables the graph draws | high (agrees with the data sets' columns everywhere) |
 | `0x0015` | u32 count, u32 data set ids | **data set order** | medium (always the plot records' ids; in XY files the plot records come in reverse) |
-| `0x0017` ×3 | axes X, Y, right Y: f64 at 0 and 8 the data's range, f64 at 16 and 24 the **axis range**, u16 at 48 the id of its **title** text (0xffff: none) | axis ranges and titles | high for the order and the title link (Prism's default titles "XTitle", "YTitle", "Y1Title" sit where expected); high for the range of numeric axes (round numbers around the data's range, the same 0…4000 on graphs of different data where the user set it); category axes hold positions 1…k |
+| `0x0017` ×3 | axes X, Y, right Y: f64 at 0 and 8 the data's range, f64 at 16 and 24 the **axis range**, u16 at 48 the id of its **title** text (0xffff: none) | axis ranges and titles | high for the order and the title link (the default titles "XTitle", "YTitle", "Y1Title" sit where expected); high for the range of numeric axes (round numbers around the data's range, the same 0…4000 on graphs of different data where the user set it); category axes hold positions 1…k |
 | `0x0020` (inside `0x0018`) | graph objects: u16 at 0 kind (2 text, 8 axis, 9 data set, 10 frame, 12 legend entry, 14 …), u16 at 28 **flags** | bit `0x0200` (with `0x0002`) = **hidden** | medium-high: set on every unused right-axis title and on titles a user evidently removed, never on a drawn one |
 | `0x002b` (in a text object) | u16 at 0 text id; child `0x002c` the **text** | titles | high |
 | `0x0028` (in a data set object) | u16 at 0 data set id, u16 at 4 **column id**, u16 at 60 **symbol**, six RGBA **colours** at 68 | data set → table column; symbol; colours | column: high (ids line up with the table's columns in every graph); symbol: medium, see below; colours: medium |
 
-**Symbols.** Codes 5, 1, 2 are what every file has for data sets A, B, C, which Prism draws by
+**Symbols.** Codes 5, 1, 2 are what every file has for data sets A, B, C, which are drawn by
 default as a filled circle, square and up-triangle; they are read as `circle`, `square`,
 `triangle`. Other codes seen (14, 15: on survival and line graphs) and every code not seen are
 not mapped: those data sets keep this app's default symbol.
 
 **Colours.** Six slots, each R, G, B and a byte that is `0xff` for "none". When a user colours a
-data set, all six are that colour; Prism's black-and-white defaults have a black border (slot 0)
+data set, all six are that colour; the black-and-white defaults have a black border (slot 0)
 and a grey fill (slot 1: `#a0a0a4`, `#808080`). Read as: the one colour when they agree, else
 the fill, else slot 0. Which slot is the bar fill, error bar or line is not known.
 
@@ -110,29 +110,29 @@ the fill, else slot 0. Which slot is the bar fill, error bar or line is not know
 ## 5. What the importer does
 
 `readPzfx(xml, { graphs: true })` returns the tables exactly as before plus `graphs`
-(`PzfxGraphImport`): per Prism graph, a native graph and a report line.
+(`PzfxGraphImport`): per graph in the file, a native graph and a report line.
 
 - A graph whose data sets are all columns of one imported table: that table's default graph
-  (`createGraphFor`), then its name, the data sets in Prism's order (`seriesSource.include` when
-  not all, or not in table order), the graph title and axis titles (null when hidden in Prism),
-  the Y range, the X range when both Prism's and this graph's X are numeric, the colours
+  (`createGraphFor`), then its name, the data sets in the file's order (`seriesSource.include` when
+  not all, or not in table order), the graph title and axis titles (null when hidden in the file),
+  the Y range, the X range when both the file's and this graph's X are numeric, the colours
   (`seriesOverrides[key].color`) and the symbols (`layers[points].series[key].style.shape`). The
   result is validated (`GraphNode`); a graph that doesn't validate is the default graph.
 - A graph of an analysis's results or of several tables: not imported (reported).
-- Prism drew an XY table's X values as categories: the graph keeps a numeric X (the report says
+- The file drew an XY table's X values as categories: the graph keeps a numeric X (the report says
   so).
 - The block missing or unreadable: the table kind's default graph for every imported table, and
   the reason.
 
 The import dialog's "Import graphs" is ticked when at least one graph decoded; unticked, the
 import is what it was before roadmap 39 (a default graph per table). The report lists every
-Prism graph: decoded (with what was matched and what is the default), default or skipped.
+graph in the file: decoded (with what was matched and what is the default), default or skipped.
 
 ## 6. Verifying and extending
 
 - `pnpm vitest run packages/io/test/pzfxGraphs.test.ts`: the record reader and decoder on
-  synthetic blocks written by the test, and the Prism-made fixtures.
-- To map another field, save the same Prism graph twice with one setting changed (a log Y axis,
+  synthetic blocks written by the test, and the real fixtures.
+- To map another field, save the same graph twice with one setting changed (a log Y axis,
   SEM error bars, bars instead of points), inflate both templates (base64 → zlib) and compare the
   records named above field by field. A field is mapped only when one change moves it and
   nothing else does.

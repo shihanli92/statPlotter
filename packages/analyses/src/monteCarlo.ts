@@ -27,14 +27,14 @@ import {
 import { buildTable, stableId } from './resultTable.ts'
 import { SIMULATIONS } from './simulate.ts'
 
-// Monte Carlo analysis (Prism's "Monte Carlo analysis"; Statistics Guide, "How to: Monte Carlo
-// analyses"): a simulation (Simulate XY / column data / contingency table) and an analysis of
+// Monte Carlo analysis: a simulation (Simulate XY / column data / contingency table) and an
+// analysis of
 // its table are rerun many times, each time with new random numbers, and chosen results of the
 // analysis are tabulated, one row per simulation — the Monte Carlo's result table, which other
-// analyses (descriptive statistics, frequency distribution) and graphs can use. As in Prism a
+// analyses (descriptive statistics, frequency distribution) and graphs can use. A
 // simulation can be counted as a "hit" when one or both of two conditions on its results hold
 // (e.g. P < 0.05, or a confidence interval containing the true value), and the fraction of hits
-// is reported with its confidence interval (Wilson/Brown, Prism's method for a proportion), out
+// is reported with its confidence interval (Wilson/Brown, the method for a proportion), out
 // of all simulations or of those where the results were determined. Summaries of each tabulated
 // value (mean, SD, percentiles, and for P values the fraction below α) are added.
 //
