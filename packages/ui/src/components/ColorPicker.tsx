@@ -338,7 +338,7 @@ export function ColorPopover({
     }
   }
   const onKey = (e: KeyboardEvent) => {
-    // Keys stay in the popover: the view's (nudges, Delete) and the dialog's (Enter = OK) never
+    // Keys stay in the popover: the view's (nudges, Delete) and the dialog's (⌘Enter = OK) never
     // see them.
     e.stopPropagation()
     if (e.key === 'Escape') {

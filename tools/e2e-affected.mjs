@@ -39,6 +39,8 @@ const GRAPH = [
   'layerOrder',
   // Roadmap 47: the list of layers' multi-select, Delete on layers and points, points formatted.
   'layerSelection',
+  // Roadmap 49b: one layer at a time in the Format view, its ‹ › arrows and menu of layers.
+  'layerSteps',
   'layouts',
   // Roadmap 47b: legend entries selected, moved, hidden and labelled; the legend's columns.
   'legendEditing',

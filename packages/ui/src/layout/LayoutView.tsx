@@ -94,11 +94,11 @@ import {
   axisPlace,
   describeTarget,
   type FormatTarget,
-  formatTargetFor,
   graphPlace,
   layerPlace,
   layerSeriesOf,
   placeName,
+  selectionTarget,
 } from '../graph/format/route.ts'
 import { graphChangeCommands } from '../graph/graphActions.ts'
 import { HoverCard, useHoverMark } from '../graph/HoverCard.tsx'
@@ -1103,7 +1103,9 @@ export function LayoutView({
   /** The Format dialog of the primary part of a graph on the page (its element's dialog and tab). */
   const elementFormat =
     primaryEl && selGraph
-      ? formatTargetFor(
+      ? // Roadmap 49b: several data sets of one layer selected: that layer's view of them.
+        selectionTarget(
+          elems.filter((k) => k.item === primaryEl.item).map((k) => k.path),
           primaryEl.path,
           selGraph,
           layerSeriesOf(psel.drill)?.layer,
@@ -2546,12 +2548,17 @@ export function LayoutView({
             placeName(formatHost.target, panelGraph, titlesOf(panelGraph))
           }
           scope={pageScope}
-          onSelect={(path, t) => {
-            // A part chosen in the panel: selected on the page, in the graph worked in.
+          onSelect={(path, t, more = []) => {
+            // A part chosen in the panel (roadmap 49b: a layer its arrows step to, with each data
+            // set it formats): selected on the page, in the graph worked in.
             const at = layout.items[ctxAt]
             if (!at) return
             const key = path ? pageElementKey(id, at.id, path) : itemKey(id, at.id)
-            setPageSel(single(key))
+            setPageSel(
+              path && more.length
+                ? selectionOf([key, ...more.map((p) => pageElementKey(id, at.id, p))], key)
+                : single(key),
+            )
             formatHost.setTarget(t, keyId(key))
           }}
           onOpenWindow={() => formatHost.openWindow()}

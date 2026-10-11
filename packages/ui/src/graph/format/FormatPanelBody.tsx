@@ -2,6 +2,7 @@ import { hasRightAxis } from '@ps/graph'
 import type { GraphNode } from '@ps/model'
 import { LiveFields } from '../../components/fields.tsx'
 import type { PanelContext } from '../inspector/context.ts'
+import { LayerSteps } from './LayerSteps.tsx'
 import { axisPlace, type FormatTarget, graphPlace, tabOf, tabsFor, withTab } from './route.ts'
 import { FormatSections } from './sections.tsx'
 
@@ -20,8 +21,11 @@ export function shownTarget(t: FormatTarget, graph: GraphNode): FormatTarget {
       return t.axis === 'y2' && !hasRightAxis(graph) ? axisPlace('y') : t
     case 'layer':
       return graph.layers.some((l) => l.id === t.layer) ? t : graphPlace()
-    case 'series':
-      return t.layer && !graph.layers.some((l) => l.id === t.layer) ? { ...t, layer: undefined } : t
+    case 'point': {
+      if (t.layer === undefined || graph.layers.some((l) => l.id === t.layer)) return t
+      const { layer: _, ...rest } = t
+      return rest
+    }
     case 'bracket':
       return graph.annotations[t.index]?.type === 'bracket' ? t : graphPlace('annotations')
     case 'object': {
@@ -128,7 +132,7 @@ export function FormatOptions({
   )
 }
 
-/** Tabs and options together: the docked panel's body. */
+/** Tabs (or a layer's arrows, roadmap 49b) and options together: the docked panel's body. */
 export function FormatPanelBody(props: {
   id: string
   /** The tablist's name and, without tabs, the options' (the id of their heading). */
@@ -137,12 +141,15 @@ export function FormatPanelBody(props: {
   ctx: PanelContext
   target: FormatTarget
   setTarget: (t: FormatTarget) => void
+  /** Roadmap 49b: a layer's arrows or menu chose another layer's view (selected by the host). */
+  onStep: (t: FormatTarget) => void
   reveal?: string | undefined
 }) {
-  const { id, label, labelledBy, ctx, target, setTarget, reveal } = props
+  const { id, label, labelledBy, ctx, target, setTarget, onStep, reveal } = props
   return (
     <>
       <FormatTabs id={id} label={label} target={target} graph={ctx.graph} setTarget={setTarget} />
+      <LayerSteps graph={ctx.graph} target={target} onStep={onStep} />
       <FormatOptions
         id={id}
         labelledBy={labelledBy}

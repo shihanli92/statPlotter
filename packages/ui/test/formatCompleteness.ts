@@ -38,7 +38,17 @@ const RENAMED: Record<string, readonly string[]> = {
   ],
   Bold: ['Bold title', 'Bold tick labels', 'Bold legend text', 'All text bold'],
   Italic: ['Italic title', 'Italic tick labels', 'Italic legend text', 'All text italic'],
-  Colour: ['Title colour', 'Tick label colour', 'Legend text colour', 'Colour of all text'],
+  Colour: [
+    'Title colour',
+    'Tick label colour',
+    'Legend text colour',
+    'Colour of all text',
+    // Roadmap 49b (decision 1236): a curve's or function's own colour, the row at the top of a
+    // layer's view, says it colours it in every layer.
+    'Curve colour (every layer)',
+    'Function colour (every layer)',
+  ],
+  'Data set colour': ['Data set colour (every layer)'],
   // An axis' fields named for it.
   'Line colour': ['Axis line colour'],
   'Length (pt)': ['Tick length (pt)'],
@@ -95,6 +105,40 @@ function withoutClearings(writes: string): string {
       return !m || !layers.has(m[1]!)
     })
     .join('|')
+}
+
+/** A data set's buttons and text that write nothing until used (matched by label alone). */
+const DATA_SET_ACTIONS = new Set([
+  'Use this format (except colour) for all data sets',
+  'Reset to default',
+  'Label beside the point',
+  'Whole data set',
+  'Reset to the data set’s style',
+])
+
+/**
+ * Roadmap 49b (decision 1236): stage-1 fields no place has any more because they never drew
+ * anything, now that a data set is formatted in the layers that can pick it:
+ * - the grand mean's per-data-set fields (its line, width, style, "draw for this data set"): it
+ *   is one line at the mean of every value, drawn with its layer's style alone (`reflineNode`);
+ * - a heat map's data set (its colour, labels, per-data-set cell fields, its "points", Copy this
+ *   format): the cells are drawn with the tile layer's style and statistic and the graph's
+ *   colour scale alone (`heatmapOf`), and a cell selects its layer, never a data set or point.
+ * Matched by their writes into those layers' per-data-set entries, and (a graph none of whose
+ * layers picks a data set) a data set's identity, points and actions.
+ */
+function dropped(graph: GraphNode, old: FieldEntry): boolean {
+  const alone = graph.layers
+    .filter((l) => l.geom === 'refline' || l.geom === 'tile')
+    .map((l) => `set:layers/{${l.id}}/series/`)
+  const noDataSets = !graph.layers.some((l) => l.geom !== 'tile' && l.geom !== 'refline')
+  const writes = old.writes.split('|')
+  if (old.writes === '') return noDataSets && DATA_SET_ACTIONS.has(old.label)
+  return writes.every(
+    (w) =>
+      alone.some((p) => w.startsWith(p)) ||
+      (noDataSets && (w.startsWith('set:seriesOverrides/') || w.startsWith('set:pointOverrides/'))),
+  )
 }
 
 /** Old labels that became one per element (matched by their start). */
@@ -173,25 +217,39 @@ export function formatCompletenessShard(shard: number, of: number): void {
         graph.annotations.forEach((a, index) => {
           out.push(a.type === 'bracket' ? { place: 'bracket', index } : { place: 'object', index })
         })
+        // Roadmap 49b: every layer reached as a user reaches it — the front layer's view, then
+        // › (`stepLayer`) through every layer to the back, the series picked kept where the layer
+        // landed on draws it — each for every series and for one (the one kept, else its first).
         let pointDone = false
-        for (const l of graph.layers) {
+        const front = graph.layers.at(-1)
+        let visited = 0
+        for (
+          let at: FormatTarget | null = front ? route.layerPlace(front.id) : null;
+          at?.place === 'layer';
+          at = route.stepLayer(graph, at, 1)
+        ) {
+          visited++
+          const l = graph.layers.find((x) => x.id === (at as { layer: string }).layer)!
           out.push(route.layerPlace(l.id))
           const first = seriesOfLayer(project, graph, l, () => undefined)[0]
-          if (!first) continue
+          if (!first || !route.picksSeries(l)) continue
           const pick: OneSeries =
-            first.kind === 'output'
+            route.oneSeriesOf(at) ??
+            (first.kind === 'output'
               ? { output: first.key }
               : first.kind === 'function'
                 ? { fn: first.key }
-                : { dataSet: first.key }
-          out.push(route.seriesPlace(pick, l.id))
-          if (first.kind === 'dataSet' && !pointDone) {
+                : { dataSet: first.key })
+          at = route.layerView(l.id, pick)
+          out.push(at)
+          if ('dataSet' in pick && !pointDone) {
             pointDone = true
-            out.push(route.seriesPlace({ dataSet: first.key, point: 'r0s0' }, l.id))
+            out.push(route.pointPlace(pick.dataSet, 'r0s0', l.id))
             if (route.singleMarkName(graph, 'r0') !== 'data point')
-              out.push(route.seriesPlace({ dataSet: first.key, point: 'r0' }, l.id))
+              out.push(route.pointPlace(pick.dataSet, 'r0', l.id))
           }
         }
+        expect(visited, graph.name).toBe(graph.layers.length)
         return out
       }
 
@@ -233,7 +291,7 @@ export function formatCompletenessShard(shard: number, of: number): void {
           )
         }
         for (const old of BASELINE[name] ?? [])
-          if (!now.some((n) => sameField(old, n)))
+          if (!dropped(graph, old) && !now.some((n) => sameField(old, n)))
             missing.push(`${name}: ${old.kind} “${old.label}” ${old.writes}`)
       }
       act(() => root.unmount())

@@ -79,7 +79,7 @@ import { projectSheets } from './export/workbooks.ts'
 import { useBatchExport } from './graph/batchExport.tsx'
 import { GraphBuilder } from './graph/builder/GraphBuilder.tsx'
 import { ExportStatus } from './graph/ExportStatus.tsx'
-import { type FormatTarget, seriesPlace } from './graph/format/route.ts'
+import { type FormatTarget, layerView } from './graph/format/route.ts'
 import { GraphView } from './graph/GraphView.tsx'
 import { plotFunctionNodes } from './graph/plotFunction.ts'
 import { importPreset } from './graph/presets/userPresetStore.ts'
@@ -934,7 +934,7 @@ function Shell() {
       ],
       'Plot a function',
     )
-    setPendingFormat({ graph: graph.id, target: seriesPlace({ fn }, 'functions') })
+    setPendingFormat({ graph: graph.id, target: layerView('functions', { fn }) })
     setSelected(graph.id)
   }
 

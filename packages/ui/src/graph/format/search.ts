@@ -1,6 +1,7 @@
+import { frontFirst } from '@ps/graph'
 import { capitalize } from '../../util.ts'
 import type { PanelContext } from '../inspector/context.ts'
-import { seriesOfLayer } from '../inspector/layers.ts'
+import { type SeriesItem, seriesOfLayer } from '../inspector/layers.ts'
 import { sameTarget } from './formatHost.ts'
 import {
   axisPlace,
@@ -9,9 +10,12 @@ import {
   graphPlace,
   LEGEND_PLACE,
   layerPlace,
-  pickKey,
+  layerView,
+  type OneSeries,
+  oneSeriesOf,
+  pickKeys,
+  picksSeries,
   placeName,
-  seriesPlace,
   TITLE_PLACE,
   tabsFor,
 } from './route.ts'
@@ -22,7 +26,7 @@ import { sectionsFor } from './sections.tsx'
 // wrapper, collapsed sections open) — the fields' own labels, their sections' titles and hints —
 // never a list kept by hand, so it follows the sections wherever they move. A result names
 // "Element › Section › Field"; choosing one shows the place, opens the section and focuses the
-// field (`revealField`).
+// field (`revealField`). Roadmap 49b: a layer's field jumps to that layer's view.
 
 /** A place of the graph to search: what it formats, by name. */
 export interface SearchPlace {
@@ -61,11 +65,21 @@ function seriesTitle(ctx: PanelContext, key: string): string | undefined {
   return undefined
 }
 
-/** The element a place formats, as results name it ("Y axis", "Layer “Points”"). */
+/** A layer's view of every series it draws (a layer's own fields, listed per layer). */
+const wholeLayer = (t: FormatTarget): boolean => t.place === 'layer' && !t.series
+
+/**
+ * The element a place formats, as results name it ("Y axis", "Layer “Points”"; a layer's view of
+ * one data set: "Data set “Control”").
+ */
 function elementOf(t: FormatTarget, ctx: PanelContext): string {
   const name = placeName(t, ctx.graph, (key) => seriesTitle(ctx, key))
+  if (t.place === 'layer' && t.series) {
+    const key = pickKeys(t.series)[0]
+    const title = key === undefined ? undefined : seriesTitle(ctx, key)
+    return `${capitalize(describeTarget(t, ctx.graph))} “${title ?? name}”`
+  }
   if (t.place === 'layer') return `Layer “${name}”`
-  if (t.place === 'series') return `${capitalize(describeTarget(t, ctx.graph))} “${name}”`
   if (t.place === 'bracket' || t.place === 'object') return `${name} ${t.index + 1}`
   return name
 }
@@ -73,9 +87,18 @@ function elementOf(t: FormatTarget, ctx: PanelContext): string {
 /** At most this many annotations are searched (each is a place of its own). */
 const MAX_ANNOTATIONS = 12
 
+/** The pick of a series item. */
+const pickOfItem = (item: SeriesItem): OneSeries =>
+  item.kind === 'output'
+    ? { output: item.key }
+    : item.kind === 'function'
+      ? { fn: item.key }
+      : { dataSet: item.key }
+
 /**
  * The places of a graph to search: the graph, its title, each axis, the legend, each layer, a
- * data set (the one shown, else the first), the annotations — those with sections.
+ * data set (roadmap 49b: the one shown in its layer, else the front-most layer's first), the
+ * annotations — those with sections.
  */
 export function searchPlaces(ctx: PanelContext, current?: FormatTarget): SearchPlace[] {
   const { graph } = ctx
@@ -83,21 +106,17 @@ export function searchPlaces(ctx: PanelContext, current?: FormatTarget): SearchP
   for (const tab of tabsFor(axisPlace('x'), graph)) targets.push(axisPlace(tab.id))
   targets.push(LEGEND_PLACE)
   for (const l of graph.layers) targets.push(layerPlace(l.id))
-  // One data set (its own fields: colour, labels, the axis it is on, its formats in each layer).
-  const shown = current?.place === 'series' ? pickKey(current.series) : undefined
-  for (const l of graph.layers) {
-    const items = seriesOfLayer(ctx.project, graph, l, ctx.lookup)
-    const item = items.find((i) => i.key === shown) ?? (shown === undefined ? items[0] : undefined)
-    if (!item) continue
-    const pick =
-      item.kind === 'output'
-        ? { output: item.key }
-        : item.kind === 'function'
-          ? { fn: item.key }
-          : { dataSet: item.key }
-    targets.push(seriesPlace(pick))
-    break
-  }
+  // One data set in one layer (its own fields: colour, labels, the axis it is on, its formats).
+  const shown = current && oneSeriesOf(current)
+  if (shown && current?.place === 'layer' && graph.layers.some((l) => l.id === current.layer))
+    targets.push(layerView(current.layer, shown))
+  else
+    for (const l of frontFirst(graph.layers)) {
+      const item = picksSeries(l) ? seriesOfLayer(ctx.project, graph, l, ctx.lookup)[0] : undefined
+      if (!item) continue
+      targets.push(layerView(l.id, pickOfItem(item)))
+      break
+    }
   graph.annotations.slice(0, MAX_ANNOTATIONS).forEach((a, index) => {
     targets.push(a.type === 'bracket' ? { place: 'bracket', index } : { place: 'object', index })
   })
@@ -106,17 +125,17 @@ export function searchPlaces(ctx: PanelContext, current?: FormatTarget): SearchP
     .map((target) => ({
       target,
       element: elementOf(target, ctx),
-      ...(target.place === 'layer' ? { layer: placeName(target, ctx.graph) } : {}),
+      ...(wholeLayer(target) ? { layer: placeName(target, ctx.graph) } : {}),
     }))
 }
 
 /**
  * Where a result jumps: its place, asking for its section to be open where a place takes one (the
- * graph, an axis, a layer, a data set).
+ * graph, an axis, a layer's view).
  */
 export function jumpTarget(e: SearchEntry): FormatTarget {
   const t = e.target
-  return t.place === 'graph' || t.place === 'axis' || t.place === 'layer' || t.place === 'series'
+  return t.place === 'graph' || t.place === 'axis' || t.place === 'layer'
     ? { ...t, section: e.section }
     : t
 }
@@ -243,7 +262,7 @@ const layersPath = (e: SearchEntry): string =>
 function resultKey(e: SearchEntry): string {
   const field = `${e.section}|${e.heading}|${e.label}|${e.nth}`
   if (e.shared) return `shared|${field}`
-  if (e.target.place === 'layer') return `layer|${field}`
+  if (wholeLayer(e.target)) return `layer|${field}`
   return `${e.element}|${e.heading}|${e.label}|${e.nth}`
 }
 
@@ -282,7 +301,7 @@ export function searchFields(
     const key = resultKey(entry)
     const g = groups.get(key)
     if (!g) groups.set(key, { entries: [entry], score, i })
-    else if (entry.target.place === 'layer' && !entry.shared) {
+    else if (wholeLayer(entry.target) && !entry.shared) {
       // Another layer with this field (each layer once).
       if (!g.entries.some((x) => sameTarget(x.target, entry.target))) g.entries.push(entry)
       g.score = Math.max(g.score, score)

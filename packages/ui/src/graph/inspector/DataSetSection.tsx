@@ -34,7 +34,14 @@ function autoItemColor(ctx: PanelContext, item: SeriesItem, dataSets: number): s
   return itemColor({ ...ctx, graph }, item, dataSets)
 }
 
-/** A series' colour, shared by every layer drawing it. */
+/** What a series' colour row is called (roadmap 49b: it colours it in every layer). */
+export const seriesColourLabel = (item: Pick<SeriesItem, 'kind'>): string =>
+  `${item.kind === 'dataSet' ? 'Data set' : item.kind === 'output' ? 'Curve' : 'Function'} colour (every layer)`
+
+/**
+ * A series' colour, shared by every layer drawing it: roadmap 49b's row at the top of a layer's
+ * view with one series picked ("Data set colour (every layer)").
+ */
 export function SeriesColor({
   ctx,
   item,
@@ -47,7 +54,7 @@ export function SeriesColor({
 }) {
   return (
     <ColorField
-      label={item.kind === 'dataSet' ? 'Data set colour' : 'Colour'}
+      label={seriesColourLabel(item)}
       value={itemColor(ctx, item, dataSets)}
       palette={ctx.palette}
       automatic={{

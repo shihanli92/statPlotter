@@ -62,8 +62,12 @@ import { CutoffFields, SignificancePanel } from './Volcano.tsx'
 
 // Format graph › Appearance, the selected layer's fields (roadmap 33c, design §7.2): a Stat row
 // and a Position row, then the sections of its geom — today's sections re-hosted per geom. They
-// format every series the layer draws or one (the layer's style, or that series' entry in it);
-// fields that differ between series show as mixed (decision 78).
+// format every series the layer draws or one (the layer's style, or that series' entry in it) —
+// roadmap 49b: or several data sets selected together (each one's entry); fields that differ
+// between series show as mixed (decision 78).
+
+/** The series a layer's fields format: every one (null), one (its key), several (their keys). */
+export type SeriesKeys = string | readonly string[] | null
 
 /** What a layer's fields edit, and how. */
 export interface LayerEdit {
@@ -71,8 +75,13 @@ export interface LayerEdit {
   layer: Layer
   /** The series formatted: every one the layer draws, or one. */
   items: readonly SeriesItem[]
-  /** The one series formatted, or null for all of them. */
+  /** The (first) series formatted, or null for all of them. */
   key: string | null
+  /**
+   * Roadmap 49b: the series formatted when not all of them — one, or several data sets selected
+   * together (their own entries written, each); null for all.
+   */
+  keys: readonly string[] | null
   /** Resolved looks of the series formatted (v1 sections), the first shown. */
   styles: readonly ResolvedSeriesStyle[]
   style: ResolvedSeriesStyle
@@ -96,27 +105,49 @@ function layerEdit(
   ctx: PanelContext,
   layer: Layer,
   items: readonly SeriesItem[],
-  key: string | null,
+  seriesKeys: SeriesKeys,
   common = false,
 ): LayerEdit {
-  const keys = key === null ? items.map((i) => i.key) : [key]
+  const chosen =
+    seriesKeys === null ? null : typeof seriesKeys === 'string' ? [seriesKeys] : [...seriesKeys]
+  const key = chosen?.[0] ?? null
+  const keys = chosen ?? items.map((i) => i.key)
   const styles = resolvedStyles(ctx.theme, ctx.graph, layer, keys.length ? keys : [''])
+  /** Each series formatted: the layer for all of them, else each one's own entry. */
+  const each = (f: (k: string | null) => Command[]): Command[] =>
+    chosen === null ? f(null) : chosen.flatMap((k) => f(k))
   return {
     ctx,
     layer,
     items,
     key,
+    keys: chosen,
     common,
     styles,
     style: styles[0]!,
     differs: (f) => differsAcross(styles, f),
     set: (field, value, label) =>
-      ctx.dispatch(styleCommands(ctx.graph, layer, key, [[field, value]]), label),
-    write: (changes, label) => ctx.dispatch(styleCommands(ctx.graph, layer, key, changes), label),
+      ctx.dispatch(
+        each((k) => styleCommands(ctx.graph, layer, k, [[field, value]])),
+        label,
+      ),
+    write: (changes, label) =>
+      ctx.dispatch(
+        each((k) => styleCommands(ctx.graph, layer, k, changes)),
+        label,
+      ),
     stat: keys[0] !== undefined ? statOf(layer, keys[0]) : layer.stat,
-    setStat: (stat, label) => ctx.dispatch(statCommands(ctx.graph, layer, key, stat), label),
+    setStat: (stat, label) =>
+      ctx.dispatch(
+        each((k) => statCommands(ctx.graph, layer, k, stat)),
+        label,
+      ),
   }
 }
+
+/** The keys of the series a layer's fields format (every one the layer draws, one, several). */
+export const editedKeys = (e: Pick<LayerEdit, 'keys' | 'items'>): readonly string[] =>
+  e.keys ?? e.items.map((i) => i.key)
 
 const pct = (v: number) => Math.round(v * 100)
 const CENTERS = [
@@ -135,8 +166,7 @@ const WHISKER_OPTIONS = Object.entries(WHISKER_LABELS).map(([value, label]) => (
 
 /** Whether the series formatted differ in a part of their statistic (all of them formatted). */
 const mixedStatOf = (e: LayerEdit, f: (s: Stat) => unknown) =>
-  e.key === null &&
-  e.items.some((i) => JSON.stringify(f(statOf(e.layer, i.key))) !== JSON.stringify(f(e.stat)))
+  editedKeys(e).some((k) => JSON.stringify(f(statOf(e.layer, k))) !== JSON.stringify(f(e.stat)))
 
 /** What error bars (or a band) show: SD, SEM, a CI… or none. */
 function ErrorKind({ e }: { e: LayerEdit }) {
@@ -162,9 +192,7 @@ function ErrorKind({ e }: { e: LayerEdit }) {
 function StatRow({ e }: { e: LayerEdit }) {
   const { layer, stat, styles, ctx } = e
   const frame = ctx.graph.frame
-  const mixedStat = (f: (s: Stat) => unknown) =>
-    e.key === null &&
-    e.items.some((i) => JSON.stringify(f(statOf(layer, i.key))) !== JSON.stringify(f(stat)))
+  const mixedStat = (f: (s: Stat) => unknown) => mixedStatOf(e, f)
   const summary = stat.kind === 'summary' ? stat : undefined
   const center = (c: Center, label: string) => {
     if (!summary) return
@@ -383,12 +411,20 @@ function StatRow({ e }: { e: LayerEdit }) {
   return (
     <Section title="Statistic">
       {rows}
-      {e.key !== null && JSON.stringify(stat) !== JSON.stringify(layer.stat) && (
+      {e.keys?.some((k) => JSON.stringify(statOf(layer, k)) !== JSON.stringify(layer.stat)) && (
         <button
           type="button"
           className="link"
           onClick={() =>
-            ctx.set(layerPath(layer.id, 'series', e.key!, 'stat'), undefined, 'Same as all')
+            ctx.dispatch(
+              (e.keys ?? []).map((k) => ({
+                type: 'node.set' as const,
+                id: ctx.graph.id,
+                path: layerPath(layer.id, 'series', k, 'stat'),
+                value: undefined,
+              })),
+              'Same as all',
+            )
           }
         >
           Same statistic as every data set
@@ -2068,7 +2104,7 @@ export function CommonLayerFields({
   ctx: PanelContext
   layer: Layer
   items: readonly SeriesItem[]
-  seriesKey: string | null
+  seriesKey: SeriesKeys
 }) {
   const e = layerEdit(ctx, layer, items, seriesKey, true)
   // Roadmap 46b: the Significance layer's Common settings are the graph's cut-offs.
@@ -2161,7 +2197,7 @@ export function LayerFields({
   ctx: PanelContext
   layer: Layer
   items: readonly SeriesItem[]
-  seriesKey: string | null
+  seriesKey: SeriesKeys
   /** The place's Common settings show this layer's `CommonLayerFields`. */
   common?: boolean
 }) {

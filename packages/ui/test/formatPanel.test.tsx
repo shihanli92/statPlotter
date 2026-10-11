@@ -15,7 +15,8 @@ import {
   type FormatTarget,
   graphPlace,
   LEGEND_PLACE,
-  seriesPlace,
+  layerView,
+  pointPlace,
 } from '../src/graph/format/route.ts'
 import { FORMAT_SECTIONS, placeOf, sectionsFor } from '../src/graph/format/sections.tsx'
 import type { AppServices } from '../src/services.ts'
@@ -329,18 +330,22 @@ describe('places by element (stage 2)', () => {
     expect(byLabel('Extra space between title and axis (pt)')).toBeTruthy()
   })
 
-  it('shows a data set by what draws it: Common first, its symbols open where picked', () => {
+  it('shows a data set in one layer: its colour row first, then that layer’s sections only', () => {
     localStorage.clear()
     const s = setup()
     const table = Object.values(s.store.getState().nodes).find((n) => n.kind === 'table')!
     const first = (table as { dataSets: { id: string }[] }).dataSets[0]!.id
-    render(s, { target: seriesPlace({ dataSet: first }, 'points'), scope: 'ds' })
+    render(s, { target: layerView('points', { dataSet: first }), scope: 'ds' })
     const t = toggles()
-    expect(Object.keys(t)[0]).toBe('Common')
-    // Picked in the points: Symbols open; the rest closed; no layer list, no drawing order.
-    expect(t).toMatchObject({ Common: true, Symbols: true, Advanced: false })
+    // Roadmap 49b: the points' own sections (Symbols open), no other layer's (no Error bars).
+    expect(Object.keys(t)[0]).toBe('Symbols')
+    expect(t).toMatchObject({ Symbols: true, Advanced: false })
+    expect(Object.keys(t)).not.toContain('Error bars')
     expect(panel().querySelector('[role="listbox"]')).toBeNull()
-    expect(byLabel('Data set colour')).toBeTruthy()
+    const colour = panel().querySelector('[data-format-section="colour"]')!
+    expect(colour.textContent).toContain('Data set colour (every layer)')
+    // The arrows head the view: ‹ 1 of n ▾ ›.
+    expect(panel().querySelector('.layer-steps')).not.toBeNull()
   })
 })
 
@@ -431,7 +436,8 @@ describe('the panel’s parts', () => {
     }
     expect(placeOf(axisPlace('y'))).toBe('axis')
     expect(placeOf(LEGEND_PLACE)).toBe('legend')
-    expect(placeOf(seriesPlace({ dataSet: 'a', point: 'r1s0' }))).toBe('point')
+    expect(placeOf(pointPlace('a', 'r1s0'))).toBe('point')
+    expect(placeOf(layerView('l', { dataSet: 'a' }))).toBe('layer')
     expect(sectionsFor(graphPlace()).map((x) => x.id)).toContain('size')
     // Every place opens on its Common settings (the graph: its layer list, then Common).
     for (const [place, list] of Object.entries(FORMAT_SECTIONS)) {

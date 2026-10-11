@@ -20,6 +20,7 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react'
+import { formatShortcut, isMacPlatform } from '../../commands/shortcut.ts'
 import { useRestoreFocus } from '../../components/Dialog.tsx'
 import { useUndoNotice } from '../../components/undoNotice.tsx'
 import { useResultLookup, useServices } from '../../context.tsx'
@@ -31,6 +32,7 @@ import { type PointRef, pointsFormatted, writePoints } from '../pointEdits.ts'
 import { PX_PER_PT, SceneSvg } from '../SceneSvg.tsx'
 import { FormatOptions, FormatTabs, shownTarget } from './FormatPanelBody.tsx'
 import { FormatSearch, useFieldReveal } from './FormatSearch.tsx'
+import { LayerSteps } from './LayerSteps.tsx'
 import {
   clickSelection,
   deselectTarget,
@@ -40,8 +42,10 @@ import {
   formatTargetFor,
   graphPlace,
   highlightOf,
+  layerOfTarget,
   layerPlace,
   layerSeriesOf,
+  targetPaths,
 } from './route.ts'
 import { jumpTarget } from './search.ts'
 
@@ -268,16 +272,19 @@ export function FormatDialog({
           e.stopPropagation()
           return
         }
-        if (
-          e.key === 'Enter' &&
-          !e.defaultPrevented &&
-          !e.nativeEvent.isComposing &&
-          !['BUTTON', 'SELECT', 'TEXTAREA', 'A', 'SUMMARY'].includes(el.tagName) &&
-          (el as HTMLInputElement).type !== 'color'
-        ) {
-          // Fields commit on Enter themselves (synchronously, into the draft) before this runs.
-          e.preventDefault()
-          ok()
+        // Enter in a field commits that field (into the draft) and the window stays open: a
+        // window of many fields is edited a field at a time (the user's report: a font size
+        // typed and Enter closed it). ⌘Enter / Ctrl+Enter is OK, as is the OK button.
+        if (e.key === 'Enter' && !e.defaultPrevented && !e.nativeEvent.isComposing) {
+          if (mod) {
+            e.preventDefault()
+            ok()
+          } else if (el.tagName === 'INPUT' && (el as HTMLInputElement).type !== 'checkbox') {
+            // Fields commit on Enter themselves (synchronously) before this runs; select the
+            // text so the next typing replaces the committed value.
+            e.preventDefault()
+            ;(el as HTMLInputElement).select?.()
+          }
         }
       }}
     >
@@ -319,6 +326,8 @@ export function FormatDialog({
         />
       </header>
       <FormatTabs id={tabsId} label={title} target={target} graph={graph} setTarget={setTarget} />
+      {/* Roadmap 49b: a layer's arrows; the preview highlights the layer landed on. */}
+      <LayerSteps graph={graph} target={target} onStep={setTarget} showName />
       <div className="format-body">
         <FormatOptions
           id={tabsId}
@@ -341,9 +350,7 @@ export function FormatDialog({
             // As on the canvas: a click on a point of the layer's data set being formatted picks
             // the point, Alt-click the whole layer.
             const sel = clickSelection(t, hit?.node.point, highlightOf(target), clicks, alt)
-            const layer =
-              layerSeriesOf(t)?.layer ??
-              (target.place === 'series' || target.place === 'layer' ? target.layer : undefined)
+            const layer = layerSeriesOf(t)?.layer ?? layerOfTarget(target)
             // Roadmap 47b: the legend first, then (once it is shown) one of its entries.
             const legendFirst =
               isLegendEntryPath(sel) && target.place !== 'legend' && entryOf(target) === undefined
@@ -360,7 +367,8 @@ export function FormatDialog({
       </div>
       <footer className="format-footer">
         <span className={error ? 'format-error' : 'muted'} role={error ? 'alert' : undefined}>
-          {error ?? 'OK applies all changes as one undo step; Cancel discards them.'}
+          {error ??
+            `OK (${formatShortcut('Mod+Enter', isMacPlatform())}) applies all changes as one undo step; Cancel discards them.`}
         </span>
         <button type="button" onClick={onClose}>
           Cancel
@@ -416,9 +424,10 @@ function Preview({
     ),
   )
   const place = hover.node ? cardPlace(scene.root, scene.width, hover.node, zoom * PX_PER_PT) : null
-  const highlight = highlightOf(target)
+  // Roadmap 49b: a view of several data sets highlights each one's marks.
+  const highlight = targetPaths(target)
   // biome-ignore lint/correctness/useExhaustiveDependencies: compared by value, not identity
-  const highlighted = useMemo(() => (highlight ? [highlight] : []), [JSON.stringify(highlight)])
+  const highlighted = useMemo(() => highlight, [JSON.stringify(highlight)])
   return (
     <section className="format-preview" aria-label="Preview">
       <div className="format-preview-head">

@@ -8,7 +8,7 @@ import {
   entryPlace,
   formatTargetFor,
   LEGEND_PLACE,
-  seriesPlace,
+  seriesTarget,
 } from '../src/graph/format/route.ts'
 import {
   barSelection,
@@ -324,7 +324,8 @@ describe('clicks in the legend: the legend, then an entry (roadmap 47b)', () => 
     const { g, scene, ds } = setup()
     const nodes = sceneIndex(scene().root).nodes
     const t = formatTargetFor(entry(ds[0]!), g(), undefined, entryTargetIn(nodes))
-    expect(t).toEqual({ ...seriesPlace({ dataSet: ds[0]! }), entry: ds[0] })
+    expect(t).toEqual({ ...seriesTarget(g(), { dataSet: ds[0]! }), entry: ds[0] })
+    expect(t.place).toBe('layer')
     expect(formatTargetFor(LEGEND, g())).toEqual(LEGEND_PLACE)
     // Other entries: a Significance class's or result line's layer, else the legend.
     expect(entryPlace('category/0', ['layers', 'wedges'], g())).toEqual({

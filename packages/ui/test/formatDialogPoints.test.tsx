@@ -9,7 +9,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { ServicesContext } from '../src/context.tsx'
 import { FormatDialog } from '../src/graph/format/FormatDialog.tsx'
-import { seriesPlace } from '../src/graph/format/route.ts'
+import { pointPlace } from '../src/graph/format/route.ts'
 import type { PointRef } from '../src/graph/pointEdits.ts'
 import { createServices } from '../src/services.ts'
 
@@ -62,7 +62,7 @@ describe('the Format dialog of several points', () => {
         <ServicesContext.Provider value={services}>
           <FormatDialog
             graphId={graph.id}
-            initial={seriesPlace({ dataSet: ds, point: 'r0s0' })}
+            initial={pointPlace(ds, 'r0s0')}
             points={points}
             onClose={() => {}}
           />

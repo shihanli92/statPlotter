@@ -3213,6 +3213,47 @@ dialog.format-dialog[open] {
   color: var(--text);
   background: var(--panel-2);
 }
+/* Roadmap 49b: a layer's view steps through the graph's layers: ‹ 2 of 5 ▾ ›. */
+.layer-steps {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  min-width: 0;
+}
+.format-panel .layer-steps {
+  padding: 6px 10px;
+}
+.layer-steps .layer-step {
+  min-width: 28px;
+  min-height: 24px;
+  padding: 0 6px;
+  font-size: 16px;
+  line-height: 1;
+}
+.layer-steps .layer-steps-menu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 24px;
+}
+.layer-steps-name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.layer-steps-count {
+  color: var(--muted);
+  white-space: nowrap;
+}
+/* The one data set's own colour, a row at the top of its layer's view. */
+.series-colour-row {
+  padding: 8px 0 4px;
+}
 .format-body {
   flex: 1;
   min-height: 0;

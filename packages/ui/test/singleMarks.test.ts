@@ -7,8 +7,8 @@ import {
   clickSelection,
   describeTarget,
   formatTargetFor,
+  pointPlace,
   selectionText,
-  seriesPlace,
   singleMarkName,
 } from '../src/graph/format/route.ts'
 import type { PanelContext } from '../src/graph/inspector/context.ts'
@@ -44,7 +44,7 @@ describe('selecting and formatting one bar', () => {
     const second = clickSelection(hit, bar.point, first)
     expect(second).toEqual(['pointOverrides', ds, 'r1'])
     const target = formatTargetFor(second, graph, 'bars')
-    expect(target).toEqual(seriesPlace({ dataSet: ds, point: 'r1' }, 'bars'))
+    expect(target).toEqual(pointPlace(ds, 'r1', 'bars'))
     expect(describeTarget(target, graph)).toBe('bar')
     // The halo covers that cell's bar and error bar, not the other bars.
     const match = selectionMatcher(second!)

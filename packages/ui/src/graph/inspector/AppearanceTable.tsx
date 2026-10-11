@@ -207,14 +207,17 @@ function layerField(e: LayerEdit, field: string): unknown {
   return mine ?? rawField(e, e.items[0]?.key ?? '', field)
 }
 
-/** The keys the table formats: one data set, or every one the layer draws. */
+/** The keys the table formats: one data set (or several, roadmap 49b), or every one drawn. */
 const keysOf = (e: LayerEdit): string[] =>
-  e.key !== null ? [e.key] : e.items.length ? e.items.map((i) => i.key) : ['']
+  e.keys ? [...e.keys] : e.items.length ? e.items.map((i) => i.key) : ['']
 
-/** Commands writing style fields: the layer's (data sets' own formats kept) or one data set's. */
+/**
+ * Commands writing style fields: the layer's (data sets' own formats kept), or the data sets'
+ * formatted (one, or several selected together: each one's own).
+ */
 export function writeCommands(e: LayerEdit, changes: readonly [string, unknown][]): Command[] {
   const { ctx, layer } = e
-  if (e.key !== null) return styleCommands(ctx.graph, layer, e.key, changes)
+  if (e.keys) return e.keys.flatMap((k) => styleCommands(ctx.graph, layer, k, changes))
   return changes.map(([field, value]) => ({
     type: 'node.set' as const,
     id: ctx.graph.id,

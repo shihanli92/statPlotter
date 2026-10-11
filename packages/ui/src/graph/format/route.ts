@@ -1,28 +1,31 @@
-import { hasRightAxis, layerTitle, type StylePath } from '@ps/graph'
-import type { GraphNode } from '@ps/model'
+import { dataOf, frontFirst, hasRightAxis, layerTitle, type StylePath } from '@ps/graph'
+import type { GraphNode, Layer } from '@ps/model'
 import { capitalize } from '../../util.ts'
 
 // Roadmap 46 (stage 2, decisions 910–919): the Format options are organised by element. A target
-// is a place — the graph, its title, an axis, the legend, a layer, a data set (or curve, function,
-// point), a bracket, a text box or line — chosen by what is selected (`formatTargetFor`), each
-// opening on its Common settings; `section` names a section to open and show (an axis title
-// clicked opens its axis' Title section).
+// is a place — the graph, its title, an axis, the legend, a layer, a point, a bracket, a text box
+// or line — chosen by what is selected (`formatTargetFor`), each opening on its Common settings;
+// `section` names a section to open and show (an axis title clicked opens its axis' Title
+// section). Roadmap 49b (decisions 1226–1238): a data set is formatted one layer at a time — a
+// mark clicked opens the layer that drew it with its data set picked, and the arrows step through
+// the graph's layers (`stepLayer`), so a layer's view is a layer plus a pick of its series.
 
 /** An axis of a graph. */
 export type AxisKey = 'x' | 'y' | 'y2'
 
-/**
- * Which series a place formats: every series of a layer (the picker's "All data sets"), one data
- * set (or one point of it), an analysis output or a function (by series id).
- */
-export type SeriesPick =
-  | { all: true }
-  | { dataSet: string; point?: string }
-  | { output: string }
-  | { fn: string }
+/** One series: a data set, an analysis output (curve) or a function (by series id). */
+export type OneSeries = { dataSet: string } | { output: string } | { fn: string }
 
-/** One series (not every series). */
-export type OneSeries = Exclude<SeriesPick, { all: true }>
+/** Roadmap 49b: several data sets of one layer, selected together (their fields shown mixed). */
+export interface SeveralSeries {
+  dataSets: readonly string[]
+}
+
+/**
+ * Which series a layer's view formats: every series it draws (the picker's "All data sets"), one,
+ * or several data sets selected together.
+ */
+export type SeriesPick = { all: true } | OneSeries | SeveralSeries
 
 /** Where the Format panel (and dialog) is: an element of the graph, and a section to show. */
 export type FormatTarget =
@@ -33,18 +36,25 @@ export type FormatTarget =
   /** `entry` (roadmap 47b): a legend entry selected that has no data set or layer of its own. */
   | { place: 'legend'; entry?: string }
   /**
-   * A layer for every data set it draws (Alt-click, the layer list, Add layer); `entry`: the
-   * legend entry (a Significance class, a result line) it was reached from.
+   * Roadmap 49b: one layer's view — its fields for every series it draws (no `series`), for one
+   * (a mark clicked: the data set, curve or function it draws) or for several data sets selected
+   * together; the arrows step to the other layers. `entry`: the legend entry it was reached from.
    */
-  | { place: 'layer'; layer: string; section?: string; entry?: string }
-  /**
-   * A data set (curve, function) in every layer drawing it, or one of its points; `layer` is the
-   * layer it was picked in (its section opens); `entry`: the legend entry it was reached from.
-   */
-  | { place: 'series'; series: OneSeries; layer?: string; section?: string; entry?: string }
+  | {
+      place: 'layer'
+      layer: string
+      series?: OneSeries | SeveralSeries
+      section?: string
+      entry?: string
+    }
+  /** One point (bar, slice…) of a data set; `layer`: the layer it was picked in, when known. */
+  | { place: 'point'; dataSet: string; point: string; layer?: string }
   | { place: 'bracket'; index: number }
   /** A text box, line, arrow or results table. */
   | { place: 'object'; index: number }
+
+/** A layer's view (roadmap 49b). */
+export type LayerTarget = Extract<FormatTarget, { place: 'layer' }>
 
 export const ALL_SERIES: SeriesPick = { all: true }
 
@@ -52,56 +62,168 @@ export const graphPlace = (section?: string): FormatTarget =>
   section ? { place: 'graph', section } : { place: 'graph' }
 export const axisPlace = (axis: AxisKey, section?: string): FormatTarget =>
   section ? { place: 'axis', axis, section } : { place: 'axis', axis }
+/** A layer's view for every series it draws. */
 export const layerPlace = (layer: string, section?: string): FormatTarget =>
   section ? { place: 'layer', layer, section } : { place: 'layer', layer }
 export const TITLE_PLACE: FormatTarget = { place: 'title' }
 export const LEGEND_PLACE: FormatTarget = { place: 'legend' }
 
-/** A series' place (every series of a layer: the layer's; no layer: the graph's). */
-export function seriesPlace(series: SeriesPick, layer?: string, section?: string): FormatTarget {
-  if ('all' in series) return layer ? layerPlace(layer, section) : graphPlace(section)
-  return {
-    place: 'series',
-    series,
-    ...(layer ? { layer } : {}),
-    ...(section ? { section } : {}),
-  }
+/** A point's place. */
+export const pointPlace = (dataSet: string, point: string, layer?: string): FormatTarget =>
+  layer === undefined
+    ? { place: 'point', dataSet, point }
+    : { place: 'point', dataSet, point, layer }
+
+/** A layer's view with a series pick (every series: the layer's own view). */
+export function layerView(layer: string, series: SeriesPick, section?: string): FormatTarget {
+  if ('all' in series) return layerPlace(layer, section)
+  return { place: 'layer', layer, series, ...(section ? { section } : {}) }
 }
 
-/** The ids of a graph's analysis outputs and functions. */
-function seriesKinds(graph: Pick<GraphNode, 'layers'>) {
-  const outputs = new Set<string>()
-  const functions = new Set<string>()
-  for (const l of graph.layers) {
-    if (l.data?.from === 'outputs') for (const s of l.data.series) outputs.add(s.id)
-    if (l.data?.from === 'functions') for (const f of l.data.functions) functions.add(f.id)
-  }
-  return { outputs, functions }
+/** The series a layer's view formats (every series: `{ all: true }`). */
+export const pickOfTarget = (t: FormatTarget): SeriesPick =>
+  t.place === 'layer' && t.series ? t.series : ALL_SERIES
+
+/** The one series a layer's view formats (none: every series, or several). */
+export const oneSeriesOf = (t: FormatTarget): OneSeries | undefined =>
+  t.place === 'layer' && t.series && !('dataSets' in t.series) ? t.series : undefined
+
+/** The layer a place is about: a layer's view's, a point's (when known). */
+export const layerOfTarget = (t: FormatTarget): string | undefined =>
+  t.place === 'layer' || t.place === 'point' ? t.layer : undefined
+
+type LayerLike = Pick<Layer, 'id' | 'geom' | 'stat' | 'data'>
+
+/**
+ * Whether a layer's view picks among its series (roadmap 49b): not a heat map, the grand mean or
+ * connecting lines (one look for the whole layer: the layer's options alone), not the
+ * Significance layer (coloured by class, roadmap 46b), not a line, band or label of typed values
+ * or results. An estimation plot's differences do (each data set's symbol and caps, decision
+ * 1233).
+ */
+export function picksSeries(layer: LayerLike): boolean {
+  if (['tile', 'refline', 'connector'].includes(layer.geom)) return false
+  if (layer.stat.kind === 'threshold') return false
+  return !(
+    layer.stat.kind === 'result' &&
+    (layer.data?.from === 'values' || layer.data?.from === 'analysis')
+  )
+}
+
+/** Whether a layer draws a series and its view can pick it (`picksSeries`). */
+export function drawsSeries(
+  graph: Pick<GraphNode, 'layers'>,
+  layer: LayerLike,
+  pick: SeriesPick,
+): boolean {
+  if (!picksSeries(layer)) return false
+  if ('all' in pick) return true
+  const data = dataOf(graph as GraphNode, layer)
+  if ('output' in pick)
+    return data.from === 'outputs' && data.series.some((s) => s.id === pick.output)
+  if ('fn' in pick) return data.from === 'functions' && data.functions.some((f) => f.id === pick.fn)
+  return data.from === 'table'
+}
+
+/** The layers drawing a series (`drawsSeries`), front first as every list shows them. */
+export function seriesLayers<L extends LayerLike>(
+  graph: { layers: readonly L[] },
+  pick: SeriesPick,
+): L[] {
+  return frontFirst(graph.layers).filter((l) =>
+    drawsSeries(graph as unknown as Pick<GraphNode, 'layers'>, l, pick),
+  )
+}
+
+/**
+ * The layer a series is formatted in when no mark says which (its identity, a legend entry, a
+ * label): the front-most layer drawing it of its own (not attached to another layer, nor drawing
+ * another's data: the points, not their error bars; the curve, not its band), else the front-most
+ * drawing it.
+ */
+export function homeLayer<L extends LayerLike & Pick<Layer, 'on'>>(
+  graph: { layers: readonly L[] },
+  pick: SeriesPick,
+): L | undefined {
+  const drawing = seriesLayers(graph, pick)
+  return drawing.find((l) => l.on === undefined && l.data?.from !== 'layer') ?? drawing[0]
+}
+
+/**
+ * A series' view (roadmap 49b): in `layer` when given (a mark clicked there; its own view when it
+ * can't pick the series), else in its home layer (`homeLayer`); none: the graph's data sets.
+ */
+export function seriesTarget(
+  graph: Pick<GraphNode, 'layers'>,
+  pick: SeriesPick,
+  layer?: string,
+  section?: string,
+): FormatTarget {
+  const at = layer === undefined ? undefined : graph.layers.find((l) => l.id === layer)
+  if (at) return drawsSeries(graph, at, pick) ? layerView(at.id, pick, section) : layerPlace(at.id)
+  const home = homeLayer(graph, pick)
+  if (home) return layerView(home.id, pick, section)
+  return graphPlace('dataSets')
+}
+
+/**
+ * Roadmap 49b: the layer `by` rows away from a view's layer in the Layers list's order (front
+ * first): −1 the layer in front (the row above), 1 the one behind; null past either end (no
+ * wrap). The series picked stay picked where that layer draws them, else every series.
+ */
+export function stepLayer(
+  graph: Pick<GraphNode, 'layers'>,
+  t: FormatTarget,
+  by: -1 | 1,
+): FormatTarget | null {
+  const rows = frontFirst(graph.layers)
+  const i = rows.findIndex((l) => l.id === layerOfTarget(t))
+  const next = i < 0 ? undefined : rows[i + by]
+  return next ? landOn(graph, t, next.id) : null
+}
+
+/** A view of another layer, keeping the series picked where it draws them (else every one). */
+export function landOn(
+  graph: Pick<GraphNode, 'layers'>,
+  t: FormatTarget,
+  id: string,
+): FormatTarget {
+  const layer = graph.layers.find((l) => l.id === id)
+  const pick: SeriesPick = t.place === 'point' ? { dataSet: t.dataSet } : pickOfTarget(t)
+  return layer && drawsSeries(graph, layer, pick) ? layerView(id, pick) : layerPlace(id)
 }
 
 /** Which series a key names: a data set, an analysis output or a function. */
-function pickOf(graph: Pick<GraphNode, 'layers'>, key: string, point?: string): OneSeries {
-  const { outputs, functions } = seriesKinds(graph)
-  if (outputs.has(key)) return { output: key }
-  if (functions.has(key)) return { fn: key }
-  return point === undefined ? { dataSet: key } : { dataSet: key, point }
+function pickOf(graph: Pick<GraphNode, 'layers'>, key: string): OneSeries {
+  for (const l of graph.layers) {
+    if (l.data?.from === 'outputs' && l.data.series.some((s) => s.id === key))
+      return { output: key }
+    if (l.data?.from === 'functions' && l.data.functions.some((f) => f.id === key))
+      return { fn: key }
+  }
+  return { dataSet: key }
 }
 
-/** The series key of a pick (none for all series). */
+/** The series key of a pick (none for all series or several). */
 export const pickKey = (p: SeriesPick): string | undefined =>
   'dataSet' in p ? p.dataSet : 'output' in p ? p.output : 'fn' in p ? p.fn : undefined
+
+/** The series keys a pick names (every series, none). */
+export const pickKeys = (p: SeriesPick): readonly string[] =>
+  'dataSets' in p ? p.dataSets : 'all' in p ? [] : [pickKey(p)!]
 
 /**
  * The place of a selected (or clicked) element, given its selection key or scene style target.
  *
- * A layer's marks of a data set (`['layers', id, 'series', key]`) → that data set, its section of
- * the layer open; a whole layer (`['layers', id]`) → that layer for every data set; a data set's
- * identity → its data set; a single point → that point (on `layer`, the layer it was picked in,
- * when known); an axis or its tick labels → that axis; an axis title → its axis' Title section;
- * the graph title → the title; legend → legend; a legend entry (roadmap 47b) → its data set's
- * place, its layer's (a Significance class, a result line), else the legend's, naming the entry
- * (`entryPlace`; `entryTarget` gives an entry's scene target, else the legend's); brackets → the
- * bracket; text, lines and arrows → that object; the frame, plot area and background → the
+ * A layer's marks of a data set (`['layers', id, 'series', key]`) → that layer's view with the
+ * data set picked (roadmap 49b; a layer that can't pick it: its own view); a whole layer
+ * (`['layers', id]`) → that layer for every data set; a data set's identity → its view in the
+ * front-most layer drawing it; a single point → that point (on `layer`, the layer it was picked
+ * in, when known); an axis or its tick labels → that axis; an axis title → its axis' Title
+ * section; the graph title → the title; legend → legend; a legend entry (roadmap 47b) → its data
+ * set's view, its layer's (a Significance class, a result line), else the legend's, naming the
+ * entry (`entryPlace`; `entryTarget` gives an entry's scene target, else the legend's); brackets
+ * → the bracket; text, lines and arrows → that object; the frame, plot area and background → the
  * graph's Frame section; anything else → the graph.
  */
 export function formatTargetFor(
@@ -116,18 +238,21 @@ export function formatTargetFor(
       const id = String(second)
       if (!graph.layers.some((l) => l.id === id)) return graphPlace()
       return third === 'series' && fourth !== undefined
-        ? seriesPlace(pickOf(graph, String(fourth)), id)
+        ? seriesTarget(graph, pickOf(graph, String(fourth)), id)
         : layerPlace(id)
     }
     case 'pointOverrides':
-    case 'pointLabel':
+    case 'pointLabel': {
       if (second === undefined) return graphPlace()
-      return seriesPlace(
-        pickOf(graph, String(second), third === undefined ? undefined : String(third)),
-        layer,
-      )
+      const pick = pickOf(graph, String(second))
+      if ('dataSet' in pick && third !== undefined)
+        return pointPlace(pick.dataSet, String(third), layer)
+      return seriesTarget(graph, pick, layer)
+    }
     case 'seriesOverrides':
-      return second !== undefined ? seriesPlace(pickOf(graph, String(second))) : graphPlace()
+      return second !== undefined
+        ? seriesTarget(graph, pickOf(graph, String(second)))
+        : graphPlace()
     case 'axes': {
       const which = second === 'x' || second === 'y' ? second : second === 'y2' ? 'y2' : null
       if (!which || (which === 'y2' && !hasRightAxis(graph))) return graphPlace('frame')
@@ -164,6 +289,31 @@ export function formatTargetFor(
   }
 }
 
+/**
+ * The place of a selection of several elements (roadmap 49b): the primary element's, except
+ * that marks of several data sets in the primary's layer are that layer's view of them together
+ * (fields that differ shown mixed); marks in other layers are left to the format bar, the arrows
+ * reaching their layers (decision 1229).
+ */
+export function selectionTarget(
+  paths: readonly StylePath[],
+  primary: StylePath | null | undefined,
+  graph: Pick<GraphNode, 'layers' | 'annotations' | 'frame' | 'axes'>,
+  layer?: string,
+  entryTarget?: (key: string) => StylePath | undefined,
+): FormatTarget {
+  const t = formatTargetFor(primary, graph, layer, entryTarget)
+  const one = oneSeriesOf(t)
+  if (t.place !== 'layer' || !one || !('dataSet' in one) || paths.length < 2) return t
+  const keys = [one.dataSet]
+  for (const p of paths) {
+    const m = layerSeriesOf(p)
+    if (m?.layer === t.layer && !keys.includes(m.key) && 'dataSet' in pickOf(graph, m.key))
+      keys.push(m.key)
+  }
+  return keys.length > 1 ? { ...t, series: { dataSets: keys } } : t
+}
+
 interface TabInfo<T extends string = string> {
   id: T
   label: string
@@ -172,7 +322,7 @@ interface TabInfo<T extends string = string> {
 /**
  * The tabs of a target's place, in order: the axes (X axis, Y axis — "Left Y axis" beside a right
  * one — and the right Y axis) switch between each other; every other place has none (an element
- * is chosen by selecting it, or by the data set picker of a data set or layer).
+ * is chosen by selecting it, a layer by its arrows, a data set by its layer's picker).
  */
 export function tabsFor(t: FormatTarget, graph?: Pick<GraphNode, 'frame' | 'layers' | 'axes'>) {
   if (t.place !== 'axis') return [] as TabInfo<AxisKey>[]
@@ -199,7 +349,7 @@ export function dialogTitle(t: FormatTarget, graph: Pick<GraphNode, 'annotations
   switch (t.place) {
     case 'graph':
     case 'layer':
-    case 'series':
+    case 'point':
       return 'Format graph'
     case 'title':
       return 'Format title'
@@ -227,21 +377,22 @@ export function deselectTarget(_t: FormatTarget): FormatTarget {
   return graphPlace()
 }
 
-/** The scene element to highlight in the preview for a target (null: nothing in particular). */
+/**
+ * The scene element to highlight in the preview for a target (null: nothing in particular); a
+ * view of several data sets: the first's marks (`targetPaths`: all of them).
+ */
 export function highlightOf(t: FormatTarget): StylePath | null {
   switch (t.place) {
     case 'graph':
       return null
     case 'title':
       return ['title']
-    case 'series': {
-      const s = t.series
-      if ('dataSet' in s && s.point) return ['pointOverrides', s.dataSet, s.point]
-      const key = pickKey(s)!
-      return t.layer ? ['layers', t.layer, 'series', key] : ['seriesOverrides', key]
+    case 'point':
+      return ['pointOverrides', t.dataSet, t.point]
+    case 'layer': {
+      const key = t.series ? pickKeys(t.series)[0] : undefined
+      return key === undefined ? ['layers', t.layer] : ['layers', t.layer, 'series', key]
     }
-    case 'layer':
-      return ['layers', t.layer]
     case 'axis':
       return ['axes', t.axis]
     case 'legend':
@@ -250,6 +401,20 @@ export function highlightOf(t: FormatTarget): StylePath | null {
     case 'object':
       return ['annotations', t.index]
   }
+}
+
+/**
+ * What a view selects on the canvas (roadmap 49b: the arrows' selection follows the layer landed
+ * on, as choosing it in the Layers list does): the layer's marks of each series picked, else the
+ * whole layer; another place, its element.
+ */
+export function targetPaths(t: FormatTarget): StylePath[] {
+  if (t.place !== 'layer') {
+    const h = highlightOf(t)
+    return h ? [h] : []
+  }
+  if (!t.series) return [['layers', t.layer]]
+  return pickKeys(t.series).map((k) => ['layers', t.layer, 'series', k])
 }
 
 /**
@@ -290,12 +455,16 @@ export function describeTarget(
       return t.section === 'title' ? `${AXIS_WORDS[t.axis]} title` : AXIS_WORDS[t.axis]
     case 'legend':
       return 'legend'
-    case 'layer':
-      return 'layer'
-    case 'series':
-      if ('output' in t.series) return 'curve'
-      if ('fn' in t.series) return 'function'
-      return t.series.point ? singleMarkName(graph, t.series.point) : 'data set'
+    case 'layer': {
+      const s = t.series
+      if (!s) return 'layer'
+      if ('dataSets' in s) return 'data sets'
+      if ('output' in s) return 'curve'
+      if ('fn' in s) return 'function'
+      return 'data set'
+    }
+    case 'point':
+      return singleMarkName(graph, t.point)
     case 'bracket':
       return 'bracket'
     case 'object':
@@ -305,8 +474,8 @@ export function describeTarget(
 
 /**
  * The heading of a place in the Format panel: "Graph", "Graph title", "Y axis" ("Left Y axis"
- * beside a right one), "Legend", a layer's name, a data set's ("Control"), "Data point of
- * “Control”", "Bracket", "Text box"…
+ * beside a right one), "Legend", a layer's name (roadmap 49b: a layer's view, whichever of its
+ * series is picked), "Data point of “Control”", "Bracket", "Text box"…
  */
 export function placeName(
   t: FormatTarget,
@@ -326,13 +495,9 @@ export function placeName(
       const l = graph.layers.find((x) => x.id === t.layer)
       return l ? layerTitle(l, graph.frame) : 'Layer'
     }
-    case 'series': {
-      const key = pickKey(t.series)!
-      const name = title(key)
-      const what = describeTarget(t, graph)
-      if ('dataSet' in t.series && t.series.point)
-        return `${capitalize(what)} of ${name ? `“${name}”` : 'a data set'}`
-      return name ?? capitalize(what)
+    case 'point': {
+      const name = title(t.dataSet)
+      return `${capitalize(describeTarget(t, graph))} of ${name ? `“${name}”` : 'a data set'}`
     }
     case 'bracket':
       return 'Bracket'
@@ -372,10 +537,11 @@ export function selectionText(
 }
 
 /**
- * Roadmap 47b: a legend entry's place — its data set's (curve's, function's) for an entry standing
- * for one (`target`, the entry's scene target: its identity), its layer's for a Significance class
- * or a result line, else the legend's (pie categories, guides) — naming the entry, so the panel
- * shows its legend-only actions.
+ * Roadmap 47b: a legend entry's place — its data set's (curve's, function's) view for an entry
+ * standing for one (`target`, the entry's scene target: its identity; roadmap 49b: in the
+ * front-most layer drawing it), its layer's for a Significance class or a result line, else the
+ * legend's (pie categories, guides) — naming the entry, so the panel shows its legend-only
+ * actions.
  */
 export function entryPlace(
   key: string,
@@ -384,9 +550,10 @@ export function entryPlace(
 ): FormatTarget {
   const [head, id] = target ?? []
   let place: FormatTarget = LEGEND_PLACE
-  if (head === 'seriesOverrides' && id !== undefined && target!.length === 2)
-    place = seriesPlace(pickOf(graph, String(id)))
-  else if (head === 'layers' && id !== undefined && target!.length === 2) {
+  if (head === 'seriesOverrides' && id !== undefined && target!.length === 2) {
+    const t = seriesTarget(graph, pickOf(graph, String(id)))
+    if (t.place === 'layer') place = t
+  } else if (head === 'layers' && id !== undefined && target!.length === 2) {
     const l = graph.layers.find((x) => x.id === String(id))
     if (l && (l.stat.kind === 'threshold' || l.stat.kind === 'result')) place = layerPlace(l.id)
   }
@@ -395,7 +562,7 @@ export function entryPlace(
 
 /** Roadmap 47b: the legend entry a place was reached from, if any. */
 export const entryOf = (t: FormatTarget): string | undefined =>
-  t.place === 'legend' || t.place === 'layer' || t.place === 'series' ? t.entry : undefined
+  t.place === 'legend' || t.place === 'layer' ? t.entry : undefined
 
 /** A layer's marks of one series (`['layers', id, 'series', key]`): the layer and key. */
 export function layerSeriesOf(

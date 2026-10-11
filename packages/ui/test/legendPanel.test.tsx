@@ -9,7 +9,7 @@ import { CommandsContext, createCommandRegistry } from '../src/commands/index.ts
 import { ServicesContext } from '../src/context.tsx'
 import { FormatBar } from '../src/formatBar/FormatBar.tsx'
 import { FormatPanel } from '../src/graph/format/FormatPanel.tsx'
-import { type FormatTarget, seriesPlace } from '../src/graph/format/route.ts'
+import { type FormatTarget, seriesTarget } from '../src/graph/format/route.ts'
 import { elementKey, type Selection, single } from '../src/selection/selection.ts'
 import type { AppServices } from '../src/services.ts'
 
@@ -132,7 +132,10 @@ describe('the Format panel and the format bar (roadmap 47b)', () => {
 
   it('heads an entry’s data set place with its legend-only actions', () => {
     const s = setup()
-    renderPanel(s, { ...seriesPlace({ dataSet: s.ds[1]! }), entry: s.ds[1] } as FormatTarget)
+    renderPanel(s, {
+      ...seriesTarget(s.g(), { dataSet: s.ds[1]! }),
+      entry: s.ds[1],
+    } as FormatTarget)
     expect(host!.textContent).toContain('Legend entry')
     act(() => button('Move earlier').click())
     expect(s.g().legend.order).toEqual([s.ds[1], s.ds[0], s.ds[2], s.ds[3]])

@@ -172,13 +172,13 @@ test('double-clicking a data set formats that data set', async ({ page }) => {
   const before = await shapes(svg)
   await point.dblclick()
   const d = await inWindow(page, 'Format graph')
-  // That data set, opening on its Common settings (its colour, its error bars), its Symbols open:
-  // the part double-clicked (decision 243). No layers, no drawing order (V1).
+  // Roadmap 49b: that data set in the layer double-clicked alone (decision 243): its colour row,
+  // the points' Symbols open, no other layer's section (the error bars are a step away, ‹). The
+  // Layers list stays closed, no drawing order (V1).
   await expect(seriesPicker(d)).toHaveValue(`dataSet:${first.slice('series/'.length)}`)
-  await expect(section(d, 'Common').getByLabel('Data set colour')).toBeVisible()
-  await expect(section(d, 'Common').getByLabel('Error bars')).toBeVisible()
+  await expect(d.getByLabel('Data set colour (every layer)')).toBeVisible()
   await expect(sectionToggle(d, 'Symbols')).toHaveAttribute('aria-expanded', 'true')
-  await expect(sectionToggle(d, 'Error bars')).toHaveAttribute('aria-expanded', 'false')
+  await expect(sectionToggle(d, 'Error bars')).toHaveCount(0)
   await expect(layerList(d)).toHaveCount(0)
   await expect(d.getByLabel('Drawing order')).toHaveCount(0)
   await expect(d.getByText('This point only')).toHaveCount(0)
@@ -198,6 +198,11 @@ test('double-clicking a data set formats that data set', async ({ page }) => {
     .locator(`path[data-id^="${second}/point/"]`)
     .evaluateAll((els) => els.map((e) => e.getAttribute('d')))
   expect(others.every((x) => before.includes(x))).toBe(true)
+  // The data set's error bars: the layer in front, the data set kept.
+  await d.getByRole('button', { name: 'Layer in front' }).click()
+  await expect(seriesPicker(d)).toHaveValue(`dataSet:${first.slice('series/'.length)}`)
+  await expect(sectionToggle(d, 'Error bars')).toHaveAttribute('aria-expanded', 'true')
+  await expect(section(d, 'Common').getByLabel('Error bars')).toBeVisible()
   expect(await shapes(svg)).toEqual(before)
   await ok(d)
   await expect.poll(() => shapes(svg)).not.toEqual(before)

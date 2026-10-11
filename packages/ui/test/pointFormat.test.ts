@@ -9,7 +9,7 @@ import {
   dialogTitle,
   formatTargetFor,
   highlightOf,
-  seriesPlace,
+  pointPlace,
 } from '../src/graph/format/route.ts'
 import { describePoint } from '../src/graph/inspector/PointPanel.tsx'
 import { selectionMatcher } from '../src/graph/SceneSvg.tsx'
@@ -76,7 +76,7 @@ describe('selecting a single point', () => {
   it('a selected point opens Format graph › Appearance scoped to that point', () => {
     const { graph, keys, project, table } = setup()
     const t = formatTargetFor(['pointOverrides', keys[0]!, 'r1s0'], graph, 'points')
-    expect(t).toEqual(seriesPlace({ dataSet: keys[0]!, point: 'r1s0' }, 'points'))
+    expect(t).toEqual(pointPlace(keys[0]!, 'r1s0', 'points'))
     expect(highlightOf(t)).toEqual(['pointOverrides', keys[0], 'r1s0'])
     expect(describeTarget(t, graph)).toBe('data point')
     expect(dialogTitle(t, graph)).toBe('Format graph')

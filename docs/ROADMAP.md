@@ -62,6 +62,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.1 | 48 | merge of 48, open source as statPlotter (not tagged) |
 | 0.3.2 | 48b | merge of 48b, the commercial product's name removed (not tagged) |
 | 0.3.3 | 49a | merge of 49a, aesthetics by data set or fixed (not tagged) |
+| 0.3.4 | 49b | merge of 49b, one layer at a time in the Format view (not tagged) |
 
 ## Phases
 
@@ -1886,9 +1887,43 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     outputs and functions), legend glyphs, styles, presets, Match format and the format painter
     (unit); the table's rows, modes, recipes, Reset, mixed values, one data set, By variable and
     the lists (happy-dom); Playwright `byGroup.spec.ts` (new: docked panel and window) in
-    Chromium, WebKit and Firefox. Left for 49b: fill and outline mapped separately (a second
-    colour channel with its own palette), ggplot-style merged or split legends.
+    Chromium, WebKit and Firefox. Left for 49c (first named 49b; decision 1237): fill and outline
+    mapped separately (a second colour channel with its own palette), ggplot-style merged or split
+    legends.
     **After 0.3.3 (no version change; decision 1225).** The public demo moves to Netlify
     (`statplotter.netlify.app`, the README's "Try it"): `netlify.toml` holds its build, the publish
     script's demo build matches it (`DEMO_BUILD`), `wrangler.jsonc` is gone, and
     docs/PUBLISHING.md says how the Netlify site is set up (previews off).
+
+49b. ✅ **One layer at a time in the Format view** — decisions 1226–1238 (the user's request:
+    "clicking on a layer will open controls from that layer only; small arrows to move through
+    the layers"; amends 910, 913). **One layer's view**: a mark clicked opens only the layer that
+    drew it, the data set (curve, function) it draws picked; a data set's identity, a legend entry
+    or a curve's label opens its home layer (the front-most of its own: the points, not their
+    error bars). The view is headed by the layer's name, **‹ › and "n of m ▾"**: the arrows step
+    through every layer of the graph in the Layers list's order, the front first ("Layer in
+    front", "Layer behind"; no wrap), the menu jumps to any layer; the data set stays picked where
+    the layer landed on draws it, else All data sets; the canvas selection (on pages too) follows,
+    the layer's marks highlighted; no shortcut (none free). Then the Data set picker (All · each),
+    **"Data set colour (every layer)"**, a row at the top when one is picked, and only that
+    layer's sections: Common, its fields (statistic, position, the Appearance table), labels, the
+    Layers list, Advanced, Copy this format. The stack of every layer's sections in a data set's
+    place is gone. Layers of their own (heat maps, the grand mean, connecting lines, the
+    Significance layer, lines at values) have no picker; an estimation plot's differences now
+    have one. **Several data sets** of one layer selected: that layer's view of them together,
+    fields that differ mixed, each data set's own entry written. Revert takes back the changes
+    made on the layer shown; "Open in window" opens the window at the same view, with the arrows
+    (the preview highlighting). Model: `FormatTarget`'s layer place takes an optional series pick
+    and a point is a place of its own (`route.ts`); every producer and consumer moved (routing,
+    legend entries, the search, the panel and window, the graph and page views). The completeness
+    check steps through the layers; its inventory drops only fields that drew nothing (the grand
+    mean's and a heat map's per-data-set fields) and renames the colour row. UI only: every golden
+    and v1 fixture byte-identical, the example fingerprints and `ANALYSES_VERSION` unchanged.
+    Tests: routing, the arrows' order, ends and kept or dropped data sets, the colour row, search
+    jumps, legend entries, several data sets, Revert across arrow moves (unit and happy-dom);
+    Playwright `layerSteps.spec.ts` (new: docked panel and window) and steps across format,
+    formatPanel, formatWindow and other specs in Chromium, WebKit and Firefox.
+    **Fix after 0.3.4 (no version change; decision 1239).** In the Format window, Enter in a field
+    commits the field and the window stays (the value selected for the next typing); ⌘Enter /
+    Ctrl+Enter is OK, as the footer says. Test: `formatWindow.spec.ts` (a font size and Enter, the
+    preview following and the graph waiting; Mod+Enter OK as one undo step).

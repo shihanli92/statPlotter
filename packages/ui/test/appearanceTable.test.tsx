@@ -15,12 +15,7 @@ import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { ConfirmContext } from '../src/components/modals.tsx'
 import { ServicesContext } from '../src/context.tsx'
 import { FormatPanel } from '../src/graph/format/FormatPanel.tsx'
-import {
-  type FormatTarget,
-  graphPlace,
-  layerPlace,
-  seriesPlace,
-} from '../src/graph/format/route.ts'
+import { type FormatTarget, graphPlace, layerPlace, layerView } from '../src/graph/format/route.ts'
 import type { AppServices } from '../src/services.ts'
 
 // Roadmap 49a: a layer's Appearance table in the Format panel — a row per aesthetic its geom
@@ -284,7 +279,7 @@ describe('the Appearance table', () => {
   it('one data set: its own values, written to its entry', () => {
     const s = setup()
     const [a] = s.ds as [string]
-    render(s, seriesPlace({ dataSet: a }, 'points'))
+    render(s, layerView('points', { dataSet: a }))
     choose('Shape', 'series')
     expect(s.layer('points').series?.[a]?.style).toEqual({ shape: { series: true } })
     expect(s.layer('points').style?.shape).toBeUndefined()

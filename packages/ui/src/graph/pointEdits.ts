@@ -165,9 +165,7 @@ export function pointsFormatted(
   target: FormatTarget,
   points: readonly PointRef[] | undefined,
 ): { shown: PointRef; all: readonly PointRef[] } | null {
-  const series = target.place === 'series' ? target.series : null
-  const shown: PointRef | null =
-    series && 'dataSet' in series && series.point ? [series.dataSet, series.point] : null
+  const shown: PointRef | null = target.place === 'point' ? [target.dataSet, target.point] : null
   if (!shown || !points || points.length < 2) return null
   return points.some((p) => p[0] === shown[0] && p[1] === shown[1]) ? { shown, all: points } : null
 }
@@ -206,10 +204,9 @@ export function pointsName(
   graph: Pick<GraphNode, 'frame' | 'layers'>,
   points: readonly PointRef[],
 ): string | null {
-  if (points.length < 2 || target.place !== 'series') return null
-  const s = target.series
-  if (!('dataSet' in s) || !s.point || !points.some(([d, p]) => d === s.dataSet && p === s.point))
-    return null
+  if (points.length < 2 || target.place !== 'point') return null
+  const s = target
+  if (!points.some(([d, p]) => d === s.dataSet && p === s.point)) return null
   const what = singleMarkName(graph, s.point).replace('data ', '')
   return `${points.length} ${what}${what === 'box' ? 'es' : 's'}`
 }

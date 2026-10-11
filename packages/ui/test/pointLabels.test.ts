@@ -16,7 +16,7 @@ import {
 } from '@ps/model'
 import { describe, expect, it } from 'vitest'
 import { fonts, projectOf } from '../../graph/test/helpers.ts'
-import { formatTargetFor, seriesPlace } from '../src/graph/format/route.ts'
+import { formatTargetFor, layerView, pointPlace, seriesTarget } from '../src/graph/format/route.ts'
 import {
   filterRows,
   labelCommands,
@@ -66,9 +66,7 @@ describe('selecting a point label', () => {
         .map((n) => n.prim!.type)
         .sort(),
     ).toEqual(['symbol', 'text'])
-    expect(formatTargetFor(label.target, labelled)).toEqual(
-      seriesPlace({ dataSet: ds, point: 'r1' }),
-    )
+    expect(formatTargetFor(label.target, labelled)).toEqual(pointPlace(ds, 'r1'))
     // The point's symbol targets its layer and data set.
     expect(all.find((n) => n.point === 'r1' && n.prim?.type === 'symbol')?.target).toEqual([
       'layers',
@@ -83,7 +81,8 @@ describe('selecting a point label', () => {
     const g = withOutputSeries(graph, newNodeId(), [{ key: 'volcano:flagged' as DataSetKey }]).graph
     const curves = g.layers.find((l) => l.id === 'curves')!
     const id = curves.data?.from === 'outputs' ? curves.data.series[0]!.id : ''
-    const curve = seriesPlace({ output: id })
+    const curve = seriesTarget(g, { output: id })
+    expect(curve).toEqual(layerView('curves', { output: id }))
     expect(formatTargetFor(['pointLabel', id, 'r3'], g)).toEqual(curve)
     expect(formatTargetFor(['pointOverrides', id, 'r3'], g)).toEqual(curve)
     // Escape from its label (the output as a "data set") stays on the output.

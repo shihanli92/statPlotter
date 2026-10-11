@@ -82,8 +82,8 @@ test('Open in window: a data set’s colour from the popover and a custom hex, p
   await dblclickOn(point(svg))
   const d = await openWindow(page)
   const title = (await d.locator('.format-header h2').textContent())!
-  const button = colourButton(d, 'Data set colour')
-  await expect(button).toHaveAccessibleName('Data set colour Automatic')
+  const button = colourButton(d, 'Data set colour (every layer)')
+  await expect(button).toHaveAccessibleName('Data set colour (every layer) Automatic')
 
   // The popover opens inside the dialog, under its button, on top: a press on it reaches it.
   await button.click()
@@ -130,7 +130,7 @@ test('Open in window: a data set’s colour from the popover and a custom hex, p
   await expect(pop).toHaveCount(0)
   await expect(d).toBeVisible()
   await expect(button).toBeFocused()
-  await expect(button).toHaveAccessibleName('Data set colour #123456')
+  await expect(button).toHaveAccessibleName('Data set colour (every layer) #123456')
 
   // A press elsewhere in the dialog closes it, nothing chosen.
   await button.click()
@@ -403,7 +403,7 @@ test('Open in window, moved by its title bar and in a narrow window: pop-ups sta
   const svg = await openGraph(page, SCATTER.example, SCATTER.graph)
   await dblclickOn(svg.locator('[data-id^="series/"][data-id$="/point/0"]').first())
   const d = await openWindow(page)
-  const button = colourButton(d, 'Data set colour')
+  const button = colourButton(d, 'Data set colour (every layer)')
   const pop = colourPopover(page)
   const check = async () => {
     await button.click()
@@ -439,4 +439,40 @@ test('Open in window, moved by its title bar and in a narrow window: pop-ups sta
   await check()
   await page.setViewportSize({ width: 1280, height: 720 })
   await expect(d).not.toHaveClass(/\bnarrow\b/)
+})
+
+test('Open in window: Enter in a field commits it and the window stays; Mod+Enter is OK', async ({
+  page,
+}) => {
+  const svg = await openGraph(page, SCATTER.example, SCATTER.graph)
+  // Every text's size as drawn, in the graph's own units (its viewBox), so the preview's scale
+  // doesn't count.
+  const textSizes = (scope: Locator) =>
+    scope.evaluate((root) =>
+      [...root.querySelectorAll('text')]
+        .map((t) => Math.round((t as SVGTextElement).getBBox().height * 10))
+        .join(','),
+    )
+  const before = await textSizes(svg)
+  const d = await openWindow(page)
+  const previewBefore = await textSizes(preview(page))
+  const size = d.getByLabel('Size of all text (pt)')
+  await size.fill('16')
+  await size.press('Enter')
+  // The user's report: Enter in a font size closed the window as OK. It commits the field
+  // (the preview follows), keeps the window, and selects the value for the next typing.
+  await expect(d).toBeVisible()
+  await expect(size).toBeFocused()
+  await expect(size).toHaveValue('16')
+  await expect.poll(() => textSizes(preview(page))).not.toBe(previewBefore)
+  // The value is selected: typing replaces it.
+  await page.keyboard.type('18')
+  await expect(size).toHaveValue('18')
+  expect(await textSizes(svg)).toBe(before)
+  // Mod+Enter is OK: one undo step.
+  await pressShortcut(page, 'Mod+Enter')
+  await expect(d).toBeHidden()
+  await expect.poll(() => textSizes(svg)).not.toBe(before)
+  await undo(page)
+  await expect.poll(() => textSizes(svg)).toBe(before)
 })

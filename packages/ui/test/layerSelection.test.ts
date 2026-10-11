@@ -374,7 +374,7 @@ describe('the Format panel on several points', () => {
       [A, 'r1s0'],
     ] as const
     const at = (point: string) =>
-      ({ place: 'series', series: { dataSet: A, point } }) as Parameters<typeof pointsName>[0]
+      ({ place: 'point', dataSet: A, point }) as Parameters<typeof pointsName>[0]
     expect(pointsName(at('r0s0'), graph, pts)).toBe('2 points')
     expect(pointsName(at('r2s0'), graph, pts)).toBeNull()
     expect(pointsName(at('r0s0'), graph, [pts[0]])).toBeNull()

@@ -9,7 +9,9 @@ import {
   formatTargetFor,
   graphPlace,
   highlightOf,
-  seriesPlace,
+  layerPlace,
+  layerView,
+  pointPlace,
   singleMarkName,
 } from '../src/graph/format/route.ts'
 import { layerPath, statCommands, styleCommands } from '../src/graph/inspector/layers.ts'
@@ -27,16 +29,16 @@ describe('format routing for the new charts', () => {
 
   it('functions open Appearance on that function; chart layers their layer', () => {
     const t = formatTargetFor(['layers', 'functions', 'series', fn], withFn)
-    expect(t).toEqual(seriesPlace({ fn }, 'functions'))
+    expect(t).toEqual(layerView('functions', { fn }))
     expect(highlightOf(t)).toEqual(['layers', 'functions', 'series', fn])
     expect(describeTarget(t, withFn)).toBe('function')
     expect(formatTargetFor(['layers', 'nothing'], withFn)).toEqual(graphPlace())
-    expect(formatTargetFor(['layers', 'labels'], pie)).toEqual(seriesPlace({ all: true }, 'labels'))
+    expect(formatTargetFor(['layers', 'labels'], pie)).toEqual(layerPlace('labels'))
   })
 
   it('names single marks: slices, bubbles', () => {
     expect(singleMarkName(pie, 'r1')).toBe('slice')
-    expect(describeTarget(seriesPlace({ dataSet: 'x', point: 'r1' }), pie)).toBe('slice')
+    expect(describeTarget(pointPlace('x', 'r1'), pie)).toBe('slice')
     const multi = createTable({ tableKind: 'multipleVariables', columns: 2 })
     expect(singleMarkName(presetGraph(multi, 'bubble'), 'r0')).toBe('bubble')
     expect(singleMarkName(withFn, 'r0')).toBe('data point')

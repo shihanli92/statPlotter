@@ -113,7 +113,7 @@ describe('Format dialogs from a layout page', () => {
     // The mark on top there (a point, or the error bar drawn over it): its layer and data set.
     expect(f).toMatchObject({
       graphId: graph.id,
-      target: { place: 'series', series: { dataSet: keys[1]! } },
+      target: { place: 'layer', series: { dataSet: keys[1]! } },
       what: 'data set',
     })
     expect(['points', 'error']).toContain((f!.target as { layer?: string }).layer)

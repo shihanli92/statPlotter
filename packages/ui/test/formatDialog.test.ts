@@ -1,5 +1,5 @@
 import { DocumentStore, DraftStore } from '@ps/engine'
-import { createGraphFor, layoutGraph, type SceneNode, type StylePath } from '@ps/graph'
+import { createGraphFor, frontFirst, layoutGraph, type SceneNode, type StylePath } from '@ps/graph'
 import { createTable, type DataSetKey, type GraphNode, newAnnotationId } from '@ps/model'
 import { describe, expect, it } from 'vitest'
 import { fonts, projectOf } from '../../graph/test/helpers.ts'
@@ -12,10 +12,14 @@ import {
   formatTargetFor,
   graphPlace,
   highlightOf,
+  homeLayer,
   LEGEND_PLACE,
   layerPlace,
+  layerView,
   placeName,
-  seriesPlace,
+  pointPlace,
+  seriesLayers,
+  seriesTarget,
   TITLE_PLACE,
   tabsFor,
   withTab,
@@ -80,15 +84,24 @@ describe('which place of the Format options an element opens (roadmap 46: by ele
   it('routes data, axes, titles, legend and annotations to their places', () => {
     const { graph, keys } = setup()
     const route = (t: StylePath | null) => formatTargetFor(t, graph)
-    // A layer's marks of a data set: the data set, its section of that layer open; a whole
-    // layer: that layer; a data set's identity: the data set.
+    // Roadmap 49b: a layer's marks of a data set: that layer's view, the data set picked; a whole
+    // layer: that layer for every data set; a data set's identity: its view in the front-most
+    // layer drawing it.
     for (const layer of ['points', 'error', 'center'])
-      expect(route(['layers', layer, 'series', keys[1]!])).toEqual(
-        seriesPlace({ dataSet: keys[1]! }, layer),
-      )
+      expect(route(['layers', layer, 'series', keys[1]!])).toEqual({
+        place: 'layer',
+        layer,
+        series: { dataSet: keys[1]! },
+      })
     expect(route(['layers', 'error'])).toEqual(layerPlace('error'))
-    expect(seriesPlace(ALL_SERIES, 'error')).toEqual(layerPlace('error'))
-    expect(route(['seriesOverrides', keys[1]!])).toEqual(seriesPlace({ dataSet: keys[1]! }))
+    expect(layerView('error', ALL_SERIES)).toEqual(layerPlace('error'))
+    // Its home layer: the front-most drawing it of its own (not error bars attached to points).
+    const front = homeLayer(graph, { dataSet: keys[1]! })!.id
+    expect(graph.layers.find((l) => l.id === front)?.on).toBeUndefined()
+    expect(seriesLayers(graph, { dataSet: keys[1]! }).map((l) => l.id)).toEqual(
+      frontFirst(graph.layers).map((l) => l.id),
+    )
+    expect(route(['seriesOverrides', keys[1]!])).toEqual(layerView(front, { dataSet: keys[1]! }))
     // Axes and their parts: that axis; its title opens its Title section.
     expect(route(['axes', 'x'])).toEqual(axisPlace('x'))
     expect(route(['axes', 'y', 'tickLabel'])).toEqual(axisPlace('y'))
@@ -112,7 +125,7 @@ describe('which place of the Format options an element opens (roadmap 46: by ele
         'seriesOverrides',
         keys[0]!,
       ]),
-    ).toEqual({ ...seriesPlace({ dataSet: keys[0]! }), entry: keys[0] })
+    ).toEqual({ ...seriesTarget(graph, { dataSet: keys[0]! }), entry: keys[0] })
     // Brackets and objects.
     expect(route(['annotations', 0])).toEqual({ place: 'bracket', index: 0 })
     expect(route(['annotations', 1])).toEqual({ place: 'object', index: 1 })
@@ -134,16 +147,19 @@ describe('which place of the Format options an element opens (roadmap 46: by ele
       seen.add(t.place)
       if (id.startsWith('legend')) expect(t.place).toBe('legend')
       else if (id.startsWith('axis/')) expect(t.place).toBe('axis')
-      else if (id.startsWith('series/')) expect(t.place).toBe('series')
-      else if (id === 'title') expect(t).toEqual(TITLE_PLACE)
+      else if (id.startsWith('series/')) {
+        // Roadmap 49b: a mark opens the layer that drew it, its data set picked.
+        expect(t.place).toBe('layer')
+        expect(t.place === 'layer' && t.series).toBeTruthy()
+      } else if (id === 'title') expect(t).toEqual(TITLE_PLACE)
     }
     expect([...seen].sort()).toEqual([
       'axis',
       'bracket',
       'graph',
+      'layer',
       'legend',
       'object',
-      'series',
       'title',
     ])
   })
@@ -151,12 +167,13 @@ describe('which place of the Format options an element opens (roadmap 46: by ele
   it('names places by element, tabs only between the axes; highlights the target', () => {
     const { graph, keys } = setup()
     expect(tabsFor(graphPlace(), graph)).toEqual([])
-    expect(tabsFor(seriesPlace({ dataSet: keys[0]! }), graph)).toEqual([])
+    expect(tabsFor(layerView('points', { dataSet: keys[0]! }), graph)).toEqual([])
     expect(tabsFor(axisPlace('x'), graph).map((t) => t.label)).toEqual(['X axis', 'Y axis'])
     expect(tabsFor(LEGEND_PLACE, graph)).toEqual([])
     expect(withTab(axisPlace('x', 'title'), 'y')).toEqual(axisPlace('y'))
     expect(dialogTitle(graphPlace(), graph)).toBe('Format graph')
-    expect(dialogTitle(seriesPlace({ dataSet: keys[0]! }), graph)).toBe('Format graph')
+    expect(dialogTitle(layerView('points', { dataSet: keys[0]! }), graph)).toBe('Format graph')
+    expect(dialogTitle(pointPlace(keys[0]!, 'r1s0'), graph)).toBe('Format graph')
     expect(dialogTitle(axisPlace('y'), graph)).toBe('Format axes')
     expect(dialogTitle(TITLE_PLACE, graph)).toBe('Format title')
     expect(dialogTitle({ place: 'object', index: 1 }, graph)).toBe('Format text')
@@ -165,20 +182,19 @@ describe('which place of the Format options an element opens (roadmap 46: by ele
     expect(placeName(graphPlace(), graph)).toBe('Graph')
     expect(placeName(axisPlace('y'), graph)).toBe('Y axis')
     expect(placeName(TITLE_PLACE, graph)).toBe('Graph title')
-    expect(placeName(seriesPlace({ dataSet: keys[0]! }, 'points'), graph, title)).toBe('Control')
-    expect(placeName(seriesPlace({ dataSet: keys[0]!, point: 'r1s0' }), graph, title)).toBe(
-      'Data point of “Control”',
-    )
+    // Roadmap 49b: a layer's view is headed by the layer's name, whichever data set it picks.
+    expect(placeName(layerView('points', { dataSet: keys[0]! }), graph, title)).toMatch(/^Points/)
+    expect(placeName(pointPlace(keys[0]!, 'r1s0'), graph, title)).toBe('Data point of “Control”')
     expect(placeName(layerPlace('points'), graph)).toMatch(/^Points/)
     expect(placeName({ place: 'object', index: 1 }, graph)).toBe('Text box')
     const bracket: FormatTarget = { place: 'bracket', index: 0 }
-    expect(highlightOf(seriesPlace({ dataSet: keys[0]! }))).toEqual(['seriesOverrides', keys[0]])
-    expect(highlightOf(seriesPlace({ dataSet: keys[0]! }, 'points'))).toEqual([
+    expect(highlightOf(layerView('points', { dataSet: keys[0]! }))).toEqual([
       'layers',
       'points',
       'series',
       keys[0],
     ])
+    expect(highlightOf(pointPlace(keys[0]!, 'r1s0'))).toEqual(['pointOverrides', keys[0], 'r1s0'])
     expect(highlightOf(layerPlace('points'))).toEqual(['layers', 'points'])
     expect(highlightOf(graphPlace('dataSets'))).toBeNull()
     expect(highlightOf(axisPlace('y'))).toEqual(['axes', 'y'])
@@ -189,10 +205,10 @@ describe('which place of the Format options an element opens (roadmap 46: by ele
 
 describe('a click on empty space in the preview', () => {
   it('deselects, as on the canvas: the graph’s place, nothing highlighted', () => {
-    const point = seriesPlace({ dataSet: 'ds1', point: 'r2s0' })
+    const point = pointPlace('ds1', 'r2s0')
     for (const t of [
       point,
-      seriesPlace({ dataSet: 'ds1' }, 'points'),
+      layerView('points', { dataSet: 'ds1' }),
       layerPlace('points'),
       axisPlace('y'),
       TITLE_PLACE,

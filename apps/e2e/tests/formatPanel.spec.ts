@@ -407,18 +407,19 @@ test('a colour field is one button opening the colour popover: a data set’s co
   const automatic = await fill()
   await dblclickOn(point)
   const panel = formatPanel(page)
-  await expect(heading(page)).toHaveText(/^Control$/)
-  const button = colourButton(panel, 'Data set colour')
+  // Roadmap 49b: the layer clicked (its name the heading), the data set picked.
+  await expect(heading(page)).toHaveText(/^Points/)
+  const button = colourButton(panel, 'Data set colour (every layer)')
   // Unset: Automatic, in the colour the style gives it.
-  await expect(button).toHaveAccessibleName('Data set colour Automatic')
+  await expect(button).toHaveAccessibleName('Data set colour (every layer) Automatic')
   await expect(button).toHaveAttribute('aria-expanded', 'false')
 
   // A palette colour: drawn at once, one step; the button says which colour.
-  await pickColour(panel, 'Data set colour', 'Palette colour 5')
+  await pickColour(panel, 'Data set colour (every layer)', 'Palette colour 5')
   await expect.poll(fill).not.toBe(automatic)
   const fifth = (await fill())!
   await expectUndo(page, 'Colour')
-  await expect(button).toHaveAccessibleName(`Data set colour ${fifth.toUpperCase()}`)
+  await expect(button).toHaveAccessibleName(`Data set colour (every layer) ${fifth.toUpperCase()}`)
 
   // From the keyboard: the list has the focus on the current colour; → then Enter picks the next,
   // the focus back on the button.
@@ -452,9 +453,9 @@ test('a colour field is one button opening the colour popover: a data set’s co
 
   // Automatic: the style's colour again (the override removed), a step of its own.
   await stepApart(page)
-  await pickColour(panel, 'Data set colour', 'Automatic')
+  await pickColour(panel, 'Data set colour (every layer)', 'Automatic')
   await expect.poll(fill).toBe(automatic)
-  await expect(button).toHaveAccessibleName('Data set colour Automatic')
+  await expect(button).toHaveAccessibleName('Data set colour (every layer) Automatic')
 
   // A custom colour typed as hex: drawn, and offered among the recent colours next time; a step
   // of its own, which Undo takes back to Automatic.

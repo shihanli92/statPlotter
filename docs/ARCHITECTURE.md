@@ -69,7 +69,8 @@ packages/
                 Match format, split graphs, the graph builder (`builder/`), inspector panels
       format/   The Format dialog (a draft, one step on OK) and the docked Format panel (roadmap 46:
                 straight to the document, one coalesced undo step per change, Revert through
-                `panelSteps.ts`), their sections by element, search and routes
+                `panelSteps.ts`), their sections by element, search and routes; a layer's
+                view with its ‹ › arrows through the layers (`LayerSteps.tsx`, roadmap 49b)
     formatBar/  The format bar under the graph and page views (roadmap 45), its groups folding
                 into More ▾ when narrow (roadmap 47)
     examples/   Example projects and the Examples dialog's cards, their thumbnails drawn ahead

@@ -149,9 +149,10 @@ import {
   layerOfSelection,
   layerPlace,
   layerSeriesOf,
+  layerView,
   placeName,
+  selectionTarget,
   selectionText,
-  seriesPlace,
   singleMarkName,
 } from './format/route.ts'
 import {
@@ -667,7 +668,8 @@ export function GraphView({
 
   /** The Format dialog for the current selection (the graph's when nothing is selected). */
   const formatSelected = () =>
-    formatTargetFor(selected, graph, layerSeriesOf(drill)?.layer, entryTarget)
+    // Roadmap 49b: several data sets of one layer selected: that layer's view of them together.
+    selectionTarget(paths, selected, graph, layerSeriesOf(drill)?.layer, entryTarget)
   const selectedTarget = formatSelected()
   const selectedWhat = describeTarget(selectedTarget, graph)
   // Roadmap 46: the Format panel follows the selection (its scope, by the primary key); Format…,
@@ -992,7 +994,7 @@ export function GraphView({
         onSelect: () => {
           const { cmds, target } = addFunctionCommands(graph)
           store.dispatch(cmds, 'Add function')
-          setFormat(seriesPlace({ fn: String(target[3]) }, String(target[1])))
+          setFormat(layerView(String(target[1]), { fn: String(target[3]) }))
         },
       })
     if (graph.frame === 'xy')
@@ -1191,7 +1193,7 @@ export function GraphView({
     // The Format menu's commands (they open on the selection, which is now what was clicked).
     if (target.place !== 'axis') items.push('format.axes')
     // A data set's or layer's own format is the first item; the whole graph's is one step away.
-    if (target.place === 'series' || target.place === 'layer')
+    if (target.place === 'point' || target.place === 'layer')
       items.push({ label: 'Format graph…', onSelect: () => setFormat(graphPlace()) })
     else if (target.place !== 'graph') items.push('format.graph')
     // Something moved on the canvas: back to where the layout puts it.
@@ -2056,10 +2058,17 @@ export function GraphView({
           setTarget={(t) => formatHost.setTarget(t)}
           name={panelName}
           scope={scopeOf(selected)}
-          onSelect={(path, t) => {
-            // A part chosen in the panel (a layer, a bracket of the list): selected on the canvas,
-            // the focus staying in the panel.
-            setSelState(path ? single(elementKey(graph.id, path)) : EMPTY_SELECTION)
+          onSelect={(path, t, more = []) => {
+            // A part chosen in the panel (a layer, a bracket of the list, a layer its arrows step
+            // to): selected on the canvas, the focus staying in the panel.
+            const key = (p: StylePath) => elementKey(graph.id, p)
+            setSelState(
+              !path
+                ? EMPTY_SELECTION
+                : more.length
+                  ? keysSelection([path, ...more].map(key), key(path))
+                  : single(key(path)),
+            )
             formatHost.setTarget(t, scopeOf(path))
           }}
           onOpenWindow={() => formatHost.openWindow()}

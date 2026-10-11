@@ -119,7 +119,7 @@ describe('a colour field in an open dialog', () => {
     expect(press(popover()!.querySelector('[role="listbox"]')!, 'Escape')).toBe(true)
     expect(popover()).toBeNull()
     expect(document.activeElement).toBe(button)
-    // The dialog's own handler (Enter = OK, in the Format dialog) never saw them.
+    // The dialog's own handler (⌘Enter = OK in the Format dialog; decision 1239) never saw them.
     expect(dialogKeys).not.toHaveBeenCalled()
   })
 

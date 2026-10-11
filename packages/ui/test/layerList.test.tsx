@@ -294,7 +294,7 @@ describe('the Format panel on several points', () => {
       [A, 'r1s0'],
       [B, 'r2s0'],
     ]
-    render(s, { place: 'series', series: { dataSet: A, point: 'r0s0' } } as FormatTarget, pts)
+    render(s, { place: 'point', dataSet: A, point: 'r0s0' } as FormatTarget, pts)
     expect(host!.querySelector('.point-banner strong')?.textContent).toBe('These 3 points')
     const hide = [...host!.querySelectorAll('label')].find((l) =>
       l.textContent?.startsWith('Hide this point'),
@@ -334,7 +334,7 @@ describe('the Format panel on several points', () => {
       ],
       'Format point',
     )
-    render(s, { place: 'series', series: { dataSet: A, point: 'r2s0' } } as FormatTarget, pts)
+    render(s, { place: 'point', dataSet: A, point: 'r2s0' } as FormatTarget, pts)
     const label = [...host!.querySelectorAll('label')].find((l) => l.textContent === 'Border (pt)')!
     const input = (label.querySelector('input') ??
       document.getElementById(label.htmlFor)) as HTMLInputElement

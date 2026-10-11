@@ -28,6 +28,7 @@ import {
   formatTargetFor,
   graphPlace,
   highlightOf,
+  targetPaths,
 } from './route.ts'
 import { jumpTarget } from './search.ts'
 
@@ -115,8 +116,15 @@ export function FormatPanel({
   name: string
   /** What is selected (a key): Revert's and the merged steps' scope. */
   scope: string
-  /** Selects a part of the graph on the canvas (null: nothing), to show `target`. */
-  onSelect: (path: (string | number)[] | null, target: FormatTarget) => void
+  /**
+   * Selects a part of the graph on the canvas (null: nothing), to show `target`; `more`: other
+   * parts selected with it (roadmap 49b: the marks of each data set a layer's view formats).
+   */
+  onSelect: (
+    path: (string | number)[] | null,
+    target: FormatTarget,
+    more?: readonly (string | number)[][],
+  ) => void
   onOpenWindow: () => void
   onClose: () => void
   /** Escape: the focus back on the canvas. */
@@ -350,6 +358,11 @@ export function FormatPanel({
         ctx={ctx}
         target={target}
         setTarget={setTarget}
+        onStep={(t) => {
+          // Roadmap 49b: the layer landed on selected on the canvas, its marks highlighted.
+          const [first = null, ...rest] = targetPaths(t)
+          onSelect(first, t, rest)
+        }}
         reveal={focus?.section}
       />
     </aside>
