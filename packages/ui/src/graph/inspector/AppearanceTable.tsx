@@ -10,6 +10,7 @@ import {
   overlayStyle,
   seriesColor,
   seriesPlaces,
+  treeStyle,
 } from '@ps/graph'
 import {
   type ColorRef,
@@ -176,6 +177,9 @@ export function appearanceRows(graph: PanelContext['graph'], layer: Layer): Appe
     case 'path':
     case 'segment':
       return LINE('stroke', BY_NO_NONE, FIXED)
+    case 'dendrogram':
+      // Roadmap 49c: a tree's lines, one look (a cut tree's clusters take their own colours).
+      return LINE('line', FIXED, FIXED)
     default:
       return []
   }
@@ -192,6 +196,8 @@ function rawField(e: LayerEdit, key: string, field: string): unknown {
   const mine = (layer.style as Record<string, unknown> | undefined)?.[field]
   if (mine !== undefined) return mine
   // Neither set: the defaults, which are never by data set.
+  if (layer.geom === 'dendrogram')
+    return (treeStyle(layer, ctx.theme) as unknown as Record<string, unknown>)[field]
   if (overlay(layer))
     return (overlayStyle(layer as never, key, ctx.theme) as Record<string, unknown>)[field]
   const at = styleSections(layer)[field]

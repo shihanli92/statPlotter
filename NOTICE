@@ -18,6 +18,7 @@ translation to be distributed under GPL-3.0-or-later.
 
 R (https://www.r-project.org), R 4.4.3 sources. Copyright (C) The R Core Team, Ross Ihaka and the
 original authors of the files cited. GNU General Public License, version 2 or later.
+  packages/stats/src/gpl/cutree.ts          src/library/stats/src/hclust-utils.c (cutree), R/hclust.R
   packages/stats/src/gpl/hclust.ts          src/library/stats/src/hclust.f (F. Murtagh), R/hclust.R
   packages/stats/src/gpl/lowess.ts          src/library/stats/src/lowess.c, R/lowess.R
   packages/stats/src/gpl/noncentralT.ts     src/nmath/pnt.c (AS 243, R. V. Lenth)

@@ -49,6 +49,7 @@ describe('the matrix’s layers of a mark per row', () => {
       'line',
       'tile',
       'label',
+      'dendrogram',
     ])
     expect(rowMarkLayer('mvTextNumber', 'category', 'points', 'identity')?.summary).toBe('violin')
     expect(rowMarkLayer('mvTextNumber', 'grouped', 'points', 'identity')).toBeDefined()

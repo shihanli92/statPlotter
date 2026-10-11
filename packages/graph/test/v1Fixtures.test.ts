@@ -25,7 +25,7 @@ const projects = (dir: string): [string, Record<string, unknown>][] =>
 
 const ALL = [...projects('golden'), ...projects('examples'), ...projects('exotic')]
 
-describe('v1 fixtures open as v2 projects', () => {
+describe('v1 fixtures open as current (v3) projects', () => {
   it.each(ALL)('%s', (name, raw) => {
     // A v1 document: every graph valid as v1.
     expect(raw.schemaVersion).toBe(1)
@@ -34,12 +34,12 @@ describe('v1 fixtures open as v2 projects', () => {
     )
     for (const g of v1Graphs) expect(GraphNodeV1.safeParse(g).error?.issues).toBeUndefined()
 
-    // Migrated: a valid v2 project; the migration is deterministic and leaves its input alone.
+    // Migrated: a valid v3 project (through v2); the migration is deterministic and leaves its input alone.
     const before = JSON.stringify(raw)
     const notes: MigrationNote[] = []
     const project = parseProject(raw, notes)
     expect(JSON.stringify(raw)).toBe(before)
-    expect(project.schemaVersion).toBe(2)
+    expect(project.schemaVersion).toBe(3)
     expect(parseProject(raw)).toEqual(project)
     const graphs = Object.values(project.nodes).filter((n) => n.kind === 'graph')
     expect(graphs).toHaveLength(v1Graphs.length)
@@ -49,7 +49,7 @@ describe('v1 fixtures open as v2 projects', () => {
       expect('graphType' in g || 'extraSeries' in g || 'functions' in g).toBe(false)
     }
 
-    // Saved and reopened: the same document (a v2 file needs no migration).
+    // Saved and reopened: the same document (a v3 file needs no migration).
     const reopened = parseProject(JSON.parse(JSON.stringify(project)))
     expect(reopened).toEqual(project)
     expect(migrateProject(project)).toBe(project)

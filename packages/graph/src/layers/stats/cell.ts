@@ -1,6 +1,6 @@
-import type { GraphNode, HeatmapStyle, Project, ResultLookup } from '@ps/model'
-import { type ClusterLinkage, type HClust, hclust, rowDistances } from '@ps/stats'
-import { cellStats, type GraphSeries, resolveSeries } from '../../data.ts'
+import type { GraphNode, HeatmapStyle, LayerOf, Project, ResultLookup, RichText } from '@ps/model'
+import { type ClusterLinkage, type HClust, hclust, rowDistances, zScores } from '@ps/stats'
+import { cellStats, type GraphSeries, resolveSeries, rowTitleOf, tableRow } from '../../data.ts'
 
 // The `cell` stat (heat maps): a value per row × data set (the mean of a cell's replicates),
 // optionally z-scored, with rows and columns ordered by hierarchical clustering (R's hclust,
@@ -35,6 +35,16 @@ export function heatmapData(
   return { series, rows, values: rows.map((r) => all[r]!) }
 }
 
+/** The values of a matrix's columns (each a data set's values down the rows). */
+export const columnsOf = (values: readonly (readonly number[])[], nc: number): number[][] =>
+  Array.from({ length: nc }, (_, j) => values.map((v) => v[j]!))
+
+/** The name of a matrix's row (its row title, else "Row n"), by its index into `data.rows`. */
+export const rowName = (data: HeatmapData, i: number): string | RichText => {
+  const s = data.series[0]!
+  return rowTitleOf(s, data.rows[i]!) ?? `Row ${tableRow(s, data.rows[i]!) + 1}`
+}
+
 /**
  * The order of a matrix's rows by hierarchical clustering (and the clustering), or null with a
  * warning when it can't be done (a distance undefined, too many rows).
@@ -58,4 +68,28 @@ export function clusterOrder(
     return null
   }
   return hclust(d, rows.length, (h.linkage ?? 'complete') as ClusterLinkage)
+}
+
+/**
+ * Roadmap 49c: the tree a dendrogram layer draws, as the matrix frame clusters it — the heat map's
+ * clustering of its axis (on the values shown: z-scores when the tiles standardize) when its tiles
+ * cluster that axis, else the layer's own of the values as entered — or null when the axis can't
+ * be clustered. For the Format view (the heights a cut is at, the clusters' count).
+ */
+export function treeOfLayer(
+  project: Project,
+  graph: GraphNode,
+  layer: LayerOf<'dendrogram'>,
+  result?: ResultLookup,
+): HClust | null {
+  const data = heatmapData(project, graph, result)
+  const tile = graph.layers.find(
+    (l): l is LayerOf<'tile'> => l.geom === 'tile' && l.visible !== false,
+  )
+  const by = tile?.stat.kind === 'cell' ? (tile.stat.standardize ?? 'none') : 'none'
+  const values = by === 'none' ? data.values : zScores(data.values, by)
+  const of = layer.stat.of
+  const items = of === 'rows' ? values : columnsOf(values, data.series.length)
+  const cluster = tile?.style?.cluster
+  return clusterOrder(items, cluster?.[of] ? cluster : layer.stat, of, [])
 }

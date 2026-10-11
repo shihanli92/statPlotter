@@ -95,14 +95,15 @@ export const layerOfTarget = (t: FormatTarget): string | undefined =>
 type LayerLike = Pick<Layer, 'id' | 'geom' | 'stat' | 'data'>
 
 /**
- * Whether a layer's view picks among its series (roadmap 49b): not a heat map, the grand mean or
- * connecting lines (one look for the whole layer: the layer's options alone), not the
+ * Whether a layer's view picks among its series (roadmap 49b): not a heat map, a dendrogram
+ * (roadmap 49c), the grand mean or connecting lines (one look for the whole layer: the layer's
+ * options alone), not the
  * Significance layer (coloured by class, roadmap 46b), not a line, band or label of typed values
  * or results. An estimation plot's differences do (each data set's symbol and caps, decision
  * 1233).
  */
 export function picksSeries(layer: LayerLike): boolean {
-  if (['tile', 'refline', 'connector'].includes(layer.geom)) return false
+  if (['tile', 'refline', 'connector', 'dendrogram'].includes(layer.geom)) return false
   if (layer.stat.kind === 'threshold') return false
   return !(
     layer.stat.kind === 'result' &&
@@ -539,7 +540,8 @@ export function selectionText(
 /**
  * Roadmap 47b: a legend entry's place — its data set's (curve's, function's) view for an entry
  * standing for one (`target`, the entry's scene target: its identity; roadmap 49b: in the
- * front-most layer drawing it), its layer's for a Significance class or a result line, else the
+ * front-most layer drawing it), its layer's for a Significance class, a result line or (roadmap
+ * 49c) a cut tree's cluster, else the
  * legend's (pie categories, guides) — naming the entry, so the panel shows its legend-only
  * actions.
  */
@@ -555,7 +557,9 @@ export function entryPlace(
     if (t.place === 'layer') place = t
   } else if (head === 'layers' && id !== undefined && target!.length === 2) {
     const l = graph.layers.find((x) => x.id === String(id))
-    if (l && (l.stat.kind === 'threshold' || l.stat.kind === 'result')) place = layerPlace(l.id)
+    // Roadmap 49c: a cut tree's cluster opens its tree.
+    if (l && (l.stat.kind === 'threshold' || l.stat.kind === 'result' || l.stat.kind === 'cluster'))
+      place = layerPlace(l.id)
   }
   return { ...place, entry: key } as FormatTarget
 }

@@ -1,0 +1,247 @@
+{
+ "schemaVersion": 2,
+ "meta": {
+  "title": "Untitled",
+  "created": "2026-10-11T00:00:00.000Z",
+  "modified": "2026-10-11T00:00:00.000Z",
+  "appVersion": "0.3.4"
+ },
+ "settings": {
+  "pValueStyle": "GP",
+  "pValueDigits": 4,
+  "defaultConfidenceLevel": 0.95,
+  "theme": "default"
+ },
+ "nodes": {
+  "t1": {
+   "kind": "table",
+   "id": "t1",
+   "name": "Sample variables",
+   "tableKind": "multipleVariables",
+   "yFormat": {
+    "type": "replicates",
+    "count": 1
+   },
+   "rowCount": 14,
+   "rowTitles": null,
+   "x": null,
+   "dataSets": [
+    {
+     "id": "a",
+     "title": "Group",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "text": [
+      "Low",
+      "High",
+      "Mid",
+      "Low",
+      "High",
+      "Mid",
+      "Low",
+      "High",
+      "Mid",
+      "Low",
+      "High",
+      "Mid",
+      null,
+      "Low"
+     ]
+    },
+    {
+     "id": "b",
+     "title": "Sex",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+       ]
+      }
+     ],
+     "text": [
+      "F",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "F",
+      "M",
+      "F",
+      "F"
+     ]
+    },
+    {
+     "id": "c",
+     "title": "Score",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        12,
+        18,
+        15,
+        10,
+        21,
+        14,
+        13,
+        19,
+        16,
+        11,
+        22,
+        15,
+        30,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "id": "d",
+     "title": "Age",
+     "subcolumns": [
+      {
+       "type": "number",
+       "values": [
+        34,
+        45,
+        52,
+        61,
+        29,
+        47,
+        55,
+        38,
+        41,
+        50,
+        33,
+        58,
+        44,
+        39
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": ""
+  },
+  "g1": {
+   "kind": "graph",
+   "id": "g1",
+   "name": "Sample variables",
+   "frame": "matrix",
+   "layers": [
+    {
+     "id": "tiles",
+     "geom": "tile",
+     "stat": {
+      "kind": "dotplot"
+     },
+     "aes": {
+      "group": "a"
+     },
+     "style": {
+      "cluster": {
+       "rows": true,
+       "dendrogram": 30
+      }
+     }
+    },
+    {
+     "id": "dots",
+     "geom": "points",
+     "stat": {
+      "kind": "dotplot"
+     },
+     "aes": {
+      "group": "a"
+     }
+    }
+   ],
+   "look": "heatmap.cells",
+   "preset": "dotPlot",
+   "seriesSource": {
+    "table": "t1",
+    "include": "all"
+   },
+   "seriesOverrides": {},
+   "size": {
+    "plotWidth": 72,
+    "plotHeight": 72
+   },
+   "axes": {
+    "x": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    },
+    "y": {
+     "type": "categorical",
+     "title": null,
+     "labels": "dataSetTitles",
+     "rotation": 0,
+     "tickStyle": {
+      "direction": "none"
+     }
+    }
+   },
+   "annotations": [],
+   "legend": {
+    "show": true,
+    "position": "right"
+   },
+   "title": {
+    "content": [
+     {
+      "text": "Sample variables"
+     }
+    ]
+   },
+   "style": {}
+  }
+ },
+ "order": [
+  "t1",
+  "g1"
+ ]
+}

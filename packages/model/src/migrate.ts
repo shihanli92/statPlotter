@@ -1,4 +1,5 @@
 import { type MigrationNote, v1to2 } from './migrations/v1to2.ts'
+import { v2to3 } from './migrations/v2to3.ts'
 import { CURRENT_SCHEMA_VERSION, Project } from './project.ts'
 import { repairProject } from './repairs.ts'
 
@@ -13,6 +14,8 @@ type Migration = (raw: RawProject, notes: MigrationNote[]) => RawProject
 const MIGRATIONS: Record<number, Migration> = {
   /** Roadmap 33b: graphs as a frame plus layers (`compileV1`). */
   1: v1to2,
+  /** Roadmap 49c: a heat map's dendrograms as layers of their own (`treesAsLayers`). */
+  2: v2to3,
 }
 
 export class UnsupportedVersionError extends Error {

@@ -127,7 +127,7 @@ test('Manage presets: a default, export, delete, import and rename', async ({ pa
   const text = await readFile((await (file as Download).path())!, 'utf8')
   expect(JSON.parse(text)).toMatchObject({
     format: 'plotting-software-preset',
-    version: 1,
+    version: 2,
     name: 'Lab bars',
     recipe: { tableKind: 'column', frame: 'category' },
   })

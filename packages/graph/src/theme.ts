@@ -72,6 +72,12 @@ export interface Theme {
   density: typeof DENSITY_THEME
   refline: StrokeStyle
   centroid: typeof CENTROID_THEME
+  /**
+   * Roadmap 49c: a dendrogram layer's defaults — its lines, its depth and gap beside a heat map
+   * and its cluster strip's width. The same in every context; a style's line widths don't reach
+   * it (trees drew 0.75 pt black under every style before they were layers).
+   */
+  dendrogram: typeof DENDROGRAM_THEME
 }
 
 const SERIES_LINE = { color: { series: true as const }, width: 1, dash: 'solid' as const }
@@ -118,6 +124,17 @@ export const DENSITY_THEME = {
 
 /** The grand mean line's default look: dashed, grey. */
 export const GRAND_MEAN_LINE: StrokeStyle = { color: { rgb: '#808080' }, width: 1, dash: 'dash' }
+
+/**
+ * Roadmap 49c: a tree's defaults — 0.75 pt black lines, 36 pt deep and 6 pt from a heat map (as
+ * roadmap 30 drew them), a cluster strip 8 pt wide.
+ */
+export const DENDROGRAM_THEME = {
+  line: { color: { rgb: '#000000' }, width: 0.75, dash: 'solid' } as StrokeStyle,
+  depth: 36,
+  gap: 6,
+  stripWidth: 8,
+} as const
 
 /** Group names at centroids: bold 10 pt text (over the point labels') with a white halo. */
 export const CENTROID_THEME = {
@@ -403,6 +420,7 @@ export const DEFAULT_THEME: Theme = {
   density: DENSITY_THEME,
   refline: GRAND_MEAN_LINE,
   centroid: CENTROID_THEME,
+  dendrogram: DENDROGRAM_THEME,
 }
 
 export const THEMES: Record<string, Theme> = { default: DEFAULT_THEME }

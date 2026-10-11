@@ -232,7 +232,9 @@ GraphNode (declarative, style-only) → layoutGraph (axes, ticks, legends, brack
   a graph of variables' points — hexagons (`hex`), contours and filled bands (`contour`), density
   images (`raster`), points coloured by their local density, histograms' bins — are computed in
   those coordinates; dot plots (`dotplot` on points and tiles) summarise number variables by the
-  levels of a text variable on the matrix frame (`frames/dotplot.ts`). Results on graphs
+  levels of a text variable on the matrix frame (`frames/dotplot.ts`). A heat map's trees are
+  dendrogram layers (roadmap 49c: the tiles' clustering drawn beside the map, cut as R's `cutree`),
+  and a dendrogram alone is the matrix frame without tiles (`frames/tree.ts`). Results on graphs
   (roadmap 35) are layers with an analysis source (`data: { from: 'analysis' }`, stat `result`:
   labels of an analysis' values from templates with fields, lines and bands at them, drop lines
   from fitted curves; `geoms/result.ts`, drawn by every frame with value axes), resolved against
@@ -251,7 +253,8 @@ GraphNode (declarative, style-only) → layoutGraph (axes, ticks, legends, brack
 - Graphs are a frame plus a list of layers (geom × stat × position); typed tables imply the
   mapping; multiple-variables tables map variables explicitly (schema v2, roadmap 33b).
 - Project file (`.psproj`): zip of JSON (`manifest.json` + one file per node), `schemaVersion` +
-  migration chain (v1 → v2: graphs to layers, with a report shown once after opening). Cached results are saved with the analyses version they were computed with;
+  migration chain (v1 → v2: graphs to layers, with a report shown once after opening; v2 → v3,
+  roadmap 49c: a heat map's dendrograms as layers of their own). Cached results are saved with the analyses version they were computed with;
   images placed on pages as `assets/<id>.png|jpg` (their bytes live beside the document);
   tables of more than 100,000 cells keep their columns in binary entries (roadmap 34e).
 - The full schema and every field's meaning: [DATA_MODEL.md](DATA_MODEL.md).
@@ -272,7 +275,8 @@ GraphNode (declarative, style-only) → layoutGraph (axes, ticks, legends, brack
   draw come from `@ps/stats` with oracle fixtures (suite `graphstats`: violin densities;
   `frequency`: histogram bins, checked against R's `cut()`; `ellipse` and `hull`: roadmap 34c's
   confidence ellipses and convex hulls, against ggplot2, car, MASS and `grDevices::chull`;
-  roadmap 35's `atrisk`: the number at risk against `survival::summary.survfit`;
+  roadmap 35's `atrisk`: the number at risk against `survival::summary.survfit`; roadmap 49c's
+  `cutree`: a dendrogram's clusters against R's `cutree`;
   roadmap 34g's `cytometry` (flowCore's logicle, arcsinh), `density2d` (MASS::kde2d, contours
   against `grDevices::contourLines`), `hexbin`, `dotplot` (Seurat's DotPlot) and `pretty`).
 - **Migration fixtures (roadmap 33b):** every golden graph, every synthetic example and exotic

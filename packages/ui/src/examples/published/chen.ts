@@ -1,4 +1,4 @@
-import type { FontRegistry } from '@ps/graph'
+import { type FontRegistry, withTrees } from '@ps/graph'
 import {
   type DataSetColumn,
   type DataTable,
@@ -895,21 +895,24 @@ export const CHEN: PaperSpec = {
           does: 'Rows and columns ordered by hierarchical clustering (Euclidean distance, complete linkage, R’s defaults) with dendrograms; a blue–white–red scale from −10 to 10 centred on 0.',
           apply: (g) => ({
             ...g,
-            layers: g.layers.map((l) =>
-              l.geom === 'tile'
-                ? {
-                    ...l,
-                    style: {
-                      ...l.style,
-                      cluster: {
-                        rows: true,
-                        columns: true,
-                        distance: 'euclidean',
-                        linkage: 'complete',
+            // Roadmap 49c: the trees of the clustered rows and columns, layers of their own.
+            layers: withTrees(
+              g.layers.map((l) =>
+                l.geom === 'tile'
+                  ? {
+                      ...l,
+                      style: {
+                        ...l.style,
+                        cluster: {
+                          rows: true,
+                          columns: true,
+                          distance: 'euclidean',
+                          linkage: 'complete',
+                        },
                       },
-                    },
-                  }
-                : l,
+                    }
+                  : l,
+              ),
             ),
             scales: {
               ...g.scales,

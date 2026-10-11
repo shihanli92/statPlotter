@@ -1,4 +1,4 @@
-import { type FontRegistry, presetGraph } from '@ps/graph'
+import { type FontRegistry, presetGraph, withTrees } from '@ps/graph'
 import type { GraphNode, Project } from '@ps/model'
 import {
   addLayer,
@@ -213,15 +213,21 @@ export function createMoreGraphsExample(fonts: FontRegistry): Project {
       'log₂ expression of ten genes in three wild-type and three knockout samples (one value per cell). Simulated data. The heat map shows each gene’s z-scores (row-scaled) on a blue–white–red scale, genes and samples ordered by hierarchical clustering (average linkage on 1 − Pearson r, as R’s hclust orders them), with the dendrograms beside the map (Format graph › Appearance). The samples separate by genotype.',
     ),
   )
-  const map = presetGraph(expression, 'heatmap', 'Gene expression (heat map)')
-  b.add({
-    ...withLayer(map, 'cells', (l) => ({
+  const map = withLayer(
+    presetGraph(expression, 'heatmap', 'Gene expression (heat map)'),
+    'cells',
+    (l) => ({
       ...l,
       stat: { kind: 'cell', standardize: 'row' },
       style: {
         cluster: { rows: true, columns: true, linkage: 'average', distance: 'pearson' },
       },
-    })),
+    }),
+  )
+  b.add({
+    ...map,
+    // Roadmap 49c: the trees of the clustered genes and samples, layers of their own.
+    layers: withTrees(map.layers),
     title: { content: [{ text: 'Gene expression (z-score)' }] },
     scales: { color: { colors: 'blueRed' } },
   })

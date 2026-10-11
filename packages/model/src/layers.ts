@@ -93,6 +93,11 @@ export const Geom = z.enum([
   'contour',
   /** Roadmap 34g: the points' 2D density as an image (a density heat image). */
   'raster',
+  /**
+   * Roadmap 49c: a hierarchical clustering's tree of a heat map's rows or columns, beside the map
+   * (its leaves at the cells), or alone (a dendrogram of a table's rows or columns).
+   */
+  'dendrogram',
 ])
 export type Geom = z.infer<typeof Geom>
 
@@ -210,6 +215,36 @@ const DotPlot = z.object({
  */
 const Threshold = z.object({ kind: z.literal('threshold') })
 
+/** Roadmap 49c: what a tree is of — the matrix's rows (a heat map's rows) or its columns. */
+export const TreeOf = z.enum(['rows', 'columns'])
+export type TreeOf = z.infer<typeof TreeOf>
+/** Most clusters a tree is cut into (as many as the rows clustered at most). */
+export const MAX_CLUSTERS = 2000
+/**
+ * Roadmap 49c: a tree cut into `k` clusters, or at a height `h` (every merge at or below it kept
+ * together), each leaf's cluster as R's `cutree` numbers them (in the order of the rows or columns).
+ */
+export const ClusterCut = z.union([
+  z.object({ k: z.number().int().min(1).max(MAX_CLUSTERS) }),
+  z.object({ h: z.number().min(0) }),
+])
+export type ClusterCut = z.infer<typeof ClusterCut>
+/**
+ * Roadmap 49c: the tree of a hierarchical clustering (R's `hclust`) of the matrix's rows or
+ * columns. Beside a heat map whose tile layer clusters them, the tree is the tile layer's (its
+ * distance and linkage order the cells, so the leaves always meet their cells); else (a dendrogram
+ * alone, or one added to a heat map not clustering them) the layer's own `distance` and `linkage`
+ * (absent: Euclidean, complete), and the cells then follow it. `cut`: into clusters (R's
+ * `cutree`), absent: not cut.
+ */
+const Cluster = z.object({
+  kind: z.literal('cluster'),
+  of: TreeOf,
+  distance: z.enum(['euclidean', 'pearson']).optional(),
+  linkage: z.enum(['complete', 'average', 'ward']).optional(),
+  cut: ClusterCut.optional(),
+})
+
 /**
  * Roadmap 35: values of an analysis' results (`data: { from: 'analysis' }`): labels, reference
  * lines and bands (`ResultStat`, results.ts).
@@ -235,6 +270,7 @@ export const Stat = z.discriminatedUnion('kind', [
   DotPlot,
   Result,
   Threshold,
+  Cluster,
 ])
 export type Stat = z.infer<typeof Stat>
 export type StatKind = Stat['kind']
@@ -483,6 +519,12 @@ export const DifferenceStyle = z
     border: StrokeStyle,
   })
   .partial()
+/**
+ * Heat-map tiles: the missing cells' colour, lines between the cells, and the clustering that
+ * orders the rows and columns (roadmap 30). Roadmap 49c (schema v3): the trees are layers of
+ * their own (`dendrogram`); the tile keeps what orders its cells — which axes are clustered, the
+ * distance and the linkage (v2's `cluster.dendrogram` depth moved to the trees' `depth`).
+ */
 export const TileStyle = z
   .object({
     missing: RGB,
@@ -490,7 +532,6 @@ export const TileStyle = z
     cluster: HeatmapStyle.pick({
       distance: true,
       linkage: true,
-      dendrogram: true,
     }).extend({ rows: z.boolean().optional(), columns: z.boolean().optional() }),
   })
   .partial()
@@ -567,6 +608,33 @@ export const RasterStyle = z
   .object({ ...DensityColors, opacity: z.number().min(0).max(1) })
   .partial()
 
+/**
+ * Roadmap 49c: a tree's size, place and lines. Beside a heat map: its `depth` (a row tree's width,
+ * a column tree's height, pt; absent 36), the `gap` to the map (absent 6) and its `side` (a row
+ * tree right (absent) or left of the map, a column tree above (absent) or below it). Alone (no
+ * tiles) the tree fills the plot: `side` 'top' (absent) stands it over its leaves along the bottom,
+ * 'right' beside its leaves down the left. Branch heights are R's merge heights (absent) or equal
+ * steps (each merge one step above its higher branch). A cut tree's branches below the cut take
+ * their cluster's colour (`colorBranches`, absent true; `clusterColors` by cluster number, absent
+ * the graph's palette in turn), and a `strip` (`stripWidth` pt, absent 8) shows each leaf's
+ * cluster between the tree and the map.
+ */
+export const DendrogramStyle = z
+  .object({
+    depth: z.number().min(4).max(400),
+    gap: z.number().min(0).max(100),
+    side: z.enum(['left', 'right', 'top', 'bottom']),
+    heights: z.enum(['merge', 'steps']),
+    line: StrokeStyle,
+    colorBranches: z.boolean(),
+    strip: z.boolean(),
+    stripWidth: z.number().min(1).max(50),
+    /** Cluster number ('1', '2'…) → its colour. */
+    clusterColors: z.record(z.string().regex(/^[1-9][0-9]{0,3}$/), ColorRef),
+  })
+  .partial()
+export type DendrogramStyle = z.infer<typeof DendrogramStyle>
+
 /** Per data set (or output, or function) within one layer. */
 const LayerSeries = <S extends z.ZodTypeAny>(style: S) =>
   z
@@ -634,6 +702,7 @@ export const Layer = z.discriminatedUnion('geom', [
   layer('hex', Hexbin, HexStyle),
   layer('contour', Density2d, ContourStyle),
   layer('raster', Density2d, RasterStyle),
+  layer('dendrogram', Cluster, DendrogramStyle),
 ])
 export type Layer = z.infer<typeof Layer>
 export type LayerOf<G extends Geom> = Extract<Layer, { geom: G }>

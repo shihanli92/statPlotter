@@ -1,0 +1,310 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="201.308pt" height="190.93pt" viewBox="0 0 201.308 190.93">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="8" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample contingency</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/cells">
+<g data-id="series/c/cell/0">
+<rect x="40.072" y="71.641" width="24.5" height="24.5" fill="#fde725" stroke="none"/>
+</g>
+<g data-id="series/a/cell/0">
+<rect x="64.072" y="71.641" width="24.5" height="24.5" fill="#414487" stroke="none"/>
+</g>
+<g data-id="series/b/cell/0">
+<rect x="88.072" y="71.641" width="24" height="24.5" fill="#365c8c" stroke="none"/>
+</g>
+<g data-id="series/c/cell/2">
+<rect x="40.072" y="95.641" width="24.5" height="24.5" fill="#7bd151" stroke="none"/>
+</g>
+<g data-id="series/a/cell/2">
+<rect x="64.072" y="95.641" width="24.5" height="24.5" fill="#481668" stroke="none"/>
+</g>
+<g data-id="series/b/cell/2">
+<rect x="88.072" y="95.641" width="24" height="24.5" fill="#472978" stroke="none"/>
+</g>
+<g data-id="series/c/cell/1">
+<rect x="40.072" y="119.641" width="24.5" height="24.5" fill="#440154" stroke="none"/>
+</g>
+<g data-id="series/a/cell/1">
+<rect x="64.072" y="119.641" width="24.5" height="24.5" fill="#4bc16d" stroke="none"/>
+</g>
+<g data-id="series/b/cell/1">
+<rect x="88.072" y="119.641" width="24" height="24.5" fill="#33b57a" stroke="none"/>
+</g>
+<g data-id="series/c/cell/3">
+<rect x="40.072" y="143.641" width="24.5" height="24" fill="#482070" stroke="none"/>
+</g>
+<g data-id="series/a/cell/3">
+<rect x="64.072" y="143.641" width="24.5" height="24" fill="#228d8c" stroke="none"/>
+</g>
+<g data-id="series/b/cell/3">
+<rect x="88.072" y="143.641" width="24" height="24" fill="#27808e" stroke="none"/>
+</g>
+</g>
+</g>
+<g data-id="dendrograms">
+<g data-id="dendrogram/rows/0">
+<polyline points="118.072,83.641 118.08,83.641 118.08,107.641 118.072,107.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/1">
+<polyline points="118.072,131.641 118.105,131.641 118.105,155.641 118.072,155.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/2">
+<polyline points="118.08,95.641 154.072,95.641 154.072,143.641 118.105,143.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/columns/0">
+<polyline points="76.072,65.641 76.072,65.416 100.072,65.416 100.072,65.641" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/columns/1">
+<polyline points="52.072,65.641 52.072,29.641 88.072,29.641 88.072,65.416" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+<g data-id="colorScale">
+<g data-id="colorScale/band/0">
+<rect x="166.072" y="165.641" width="10" height="2" fill="#450457" stroke="none"/>
+</g>
+<g data-id="colorScale/band/1">
+<rect x="166.072" y="164.141" width="10" height="2" fill="#460a5c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/2">
+<rect x="166.072" y="162.641" width="10" height="2" fill="#470f62" stroke="none"/>
+</g>
+<g data-id="colorScale/band/3">
+<rect x="166.072" y="161.141" width="10" height="2" fill="#481567" stroke="none"/>
+</g>
+<g data-id="colorScale/band/4">
+<rect x="166.072" y="159.641" width="10" height="2" fill="#481b6c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/5">
+<rect x="166.072" y="158.141" width="10" height="2" fill="#482070" stroke="none"/>
+</g>
+<g data-id="colorScale/band/6">
+<rect x="166.072" y="156.641" width="10" height="2" fill="#472575" stroke="none"/>
+</g>
+<g data-id="colorScale/band/7">
+<rect x="166.072" y="155.141" width="10" height="2" fill="#472a79" stroke="none"/>
+</g>
+<g data-id="colorScale/band/8">
+<rect x="166.072" y="153.641" width="10" height="2" fill="#462f7c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/9">
+<rect x="166.072" y="152.141" width="10" height="2" fill="#45347f" stroke="none"/>
+</g>
+<g data-id="colorScale/band/10">
+<rect x="166.072" y="150.641" width="10" height="2" fill="#443982" stroke="none"/>
+</g>
+<g data-id="colorScale/band/11">
+<rect x="166.072" y="149.141" width="10" height="2" fill="#433e85" stroke="none"/>
+</g>
+<g data-id="colorScale/band/12">
+<rect x="166.072" y="147.641" width="10" height="2" fill="#414287" stroke="none"/>
+</g>
+<g data-id="colorScale/band/13">
+<rect x="166.072" y="146.141" width="10" height="2" fill="#3f4788" stroke="none"/>
+</g>
+<g data-id="colorScale/band/14">
+<rect x="166.072" y="144.641" width="10" height="2" fill="#3e4b89" stroke="none"/>
+</g>
+<g data-id="colorScale/band/15">
+<rect x="166.072" y="143.141" width="10" height="2" fill="#3c508a" stroke="none"/>
+</g>
+<g data-id="colorScale/band/16">
+<rect x="166.072" y="141.641" width="10" height="2" fill="#3a548b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/17">
+<rect x="166.072" y="140.141" width="10" height="2" fill="#38588c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/18">
+<rect x="166.072" y="138.641" width="10" height="2" fill="#365d8c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/19">
+<rect x="166.072" y="137.141" width="10" height="2" fill="#34618d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/20">
+<rect x="166.072" y="135.641" width="10" height="2" fill="#32658d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/21">
+<rect x="166.072" y="134.141" width="10" height="2" fill="#30698d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/22">
+<rect x="166.072" y="132.641" width="10" height="2" fill="#2f6c8e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/23">
+<rect x="166.072" y="131.141" width="10" height="2" fill="#2d708e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/24">
+<rect x="166.072" y="129.641" width="10" height="2" fill="#2b748e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/25">
+<rect x="166.072" y="128.141" width="10" height="2" fill="#2a788e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/26">
+<rect x="166.072" y="126.641" width="10" height="2" fill="#287c8e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/27">
+<rect x="166.072" y="125.141" width="10" height="2" fill="#27808e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/28">
+<rect x="166.072" y="123.641" width="10" height="2" fill="#25848e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/29">
+<rect x="166.072" y="122.141" width="10" height="2" fill="#24878d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/30">
+<rect x="166.072" y="120.641" width="10" height="2" fill="#238b8d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/31">
+<rect x="166.072" y="119.141" width="10" height="2" fill="#228e8c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/32">
+<rect x="166.072" y="117.641" width="10" height="2" fill="#21928c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/33">
+<rect x="166.072" y="116.141" width="10" height="2" fill="#20968b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/34">
+<rect x="166.072" y="114.641" width="10" height="2" fill="#20998a" stroke="none"/>
+</g>
+<g data-id="colorScale/band/35">
+<rect x="166.072" y="113.141" width="10" height="2" fill="#1f9d89" stroke="none"/>
+</g>
+<g data-id="colorScale/band/36">
+<rect x="166.072" y="111.641" width="10" height="2" fill="#20a187" stroke="none"/>
+</g>
+<g data-id="colorScale/band/37">
+<rect x="166.072" y="110.141" width="10" height="2" fill="#22a485" stroke="none"/>
+</g>
+<g data-id="colorScale/band/38">
+<rect x="166.072" y="108.641" width="10" height="2" fill="#24a884" stroke="none"/>
+</g>
+<g data-id="colorScale/band/39">
+<rect x="166.072" y="107.141" width="10" height="2" fill="#26ab82" stroke="none"/>
+</g>
+<g data-id="colorScale/band/40">
+<rect x="166.072" y="105.641" width="10" height="2" fill="#2aaf7f" stroke="none"/>
+</g>
+<g data-id="colorScale/band/41">
+<rect x="166.072" y="104.141" width="10" height="2" fill="#30b37c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/42">
+<rect x="166.072" y="102.641" width="10" height="2" fill="#35b679" stroke="none"/>
+</g>
+<g data-id="colorScale/band/43">
+<rect x="166.072" y="101.141" width="10" height="2" fill="#3bba76" stroke="none"/>
+</g>
+<g data-id="colorScale/band/44">
+<rect x="166.072" y="99.641" width="10" height="2" fill="#42be72" stroke="none"/>
+</g>
+<g data-id="colorScale/band/45">
+<rect x="166.072" y="98.141" width="10" height="2" fill="#4ac16e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/46">
+<rect x="166.072" y="96.641" width="10" height="2" fill="#51c469" stroke="none"/>
+</g>
+<g data-id="colorScale/band/47">
+<rect x="166.072" y="95.141" width="10" height="2" fill="#59c765" stroke="none"/>
+</g>
+<g data-id="colorScale/band/48">
+<rect x="166.072" y="93.641" width="10" height="2" fill="#62c960" stroke="none"/>
+</g>
+<g data-id="colorScale/band/49">
+<rect x="166.072" y="92.141" width="10" height="2" fill="#6bcc5b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/50">
+<rect x="166.072" y="90.641" width="10" height="2" fill="#74cf55" stroke="none"/>
+</g>
+<g data-id="colorScale/band/51">
+<rect x="166.072" y="89.141" width="10" height="2" fill="#7dd250" stroke="none"/>
+</g>
+<g data-id="colorScale/band/52">
+<rect x="166.072" y="87.641" width="10" height="2" fill="#87d44a" stroke="none"/>
+</g>
+<g data-id="colorScale/band/53">
+<rect x="166.072" y="86.141" width="10" height="2" fill="#91d643" stroke="none"/>
+</g>
+<g data-id="colorScale/band/54">
+<rect x="166.072" y="84.641" width="10" height="2" fill="#9bd93c" stroke="none"/>
+</g>
+<g data-id="colorScale/band/55">
+<rect x="166.072" y="83.141" width="10" height="2" fill="#a5db35" stroke="none"/>
+</g>
+<g data-id="colorScale/band/56">
+<rect x="166.072" y="81.641" width="10" height="2" fill="#afdd2f" stroke="none"/>
+</g>
+<g data-id="colorScale/band/57">
+<rect x="166.072" y="80.141" width="10" height="2" fill="#bade29" stroke="none"/>
+</g>
+<g data-id="colorScale/band/58">
+<rect x="166.072" y="78.641" width="10" height="2" fill="#c5e023" stroke="none"/>
+</g>
+<g data-id="colorScale/band/59">
+<rect x="166.072" y="77.141" width="10" height="2" fill="#d0e11d" stroke="none"/>
+</g>
+<g data-id="colorScale/band/60">
+<rect x="166.072" y="75.641" width="10" height="2" fill="#dae31b" stroke="none"/>
+</g>
+<g data-id="colorScale/band/61">
+<rect x="166.072" y="74.141" width="10" height="2" fill="#e4e41e" stroke="none"/>
+</g>
+<g data-id="colorScale/band/62">
+<rect x="166.072" y="72.641" width="10" height="2" fill="#eee521" stroke="none"/>
+</g>
+<g data-id="colorScale/band/63">
+<rect x="166.072" y="71.641" width="10" height="1.5" fill="#f8e624" stroke="none"/>
+</g>
+<g data-id="colorScale/frame">
+<rect x="166.072" y="71.641" width="10" height="96" fill="none" stroke="#000000" stroke-width="0.5"/>
+</g>
+<g data-id="colorScale/tick/0">
+<line x1="176.072" y1="153.926" x2="179.072" y2="153.926" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/0">
+<text fill="#000000" xml:space="preserve"><tspan x="181.072" y="157.74" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10</tspan></text>
+</g>
+<g data-id="colorScale/tick/1">
+<line x1="176.072" y1="126.498" x2="179.072" y2="126.498" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/1">
+<text fill="#000000" xml:space="preserve"><tspan x="181.072" y="130.311" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">20</tspan></text>
+</g>
+<g data-id="colorScale/tick/2">
+<line x1="176.072" y1="99.069" x2="179.072" y2="99.069" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/2">
+<text fill="#000000" xml:space="preserve"><tspan x="181.072" y="102.883" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">30</tspan></text>
+</g>
+<g data-id="colorScale/tick/3">
+<line x1="176.072" y1="71.641" x2="179.072" y2="71.641" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="colorScale/label/3">
+<text fill="#000000" xml:space="preserve"><tspan x="181.072" y="75.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">40</tspan></text>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="10.174" y="87.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">North</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="15.062" y="111.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">East</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="8.326" y="135.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">South</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="12.215" y="159.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">West</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="40.761" y="180.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">High</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="65.983" y="180.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Low</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="91.21" y="180.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Mid</tspan></text>
+</g>
+</g>
+</g>
+</svg>

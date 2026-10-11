@@ -215,6 +215,8 @@ export const GEOM_LAYER_KIND: Readonly<Record<Geom, 'fill' | 'mark'>> = {
   path: 'mark',
   segment: 'mark',
   contour: 'mark',
+  // Roadmap 49c: a tree's lines, beside the map (or alone).
+  dendrogram: 'mark',
 }
 
 /**

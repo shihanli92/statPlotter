@@ -131,7 +131,10 @@ function dropped(graph: GraphNode, old: FieldEntry): boolean {
   const alone = graph.layers
     .filter((l) => l.geom === 'refline' || l.geom === 'tile')
     .map((l) => `set:layers/{${l.id}}/series/`)
-  const noDataSets = !graph.layers.some((l) => l.geom !== 'tile' && l.geom !== 'refline')
+  // Roadmap 49c: a heat map's trees draw no data sets either.
+  const noDataSets = !graph.layers.some(
+    (l) => l.geom !== 'tile' && l.geom !== 'refline' && l.geom !== 'dendrogram',
+  )
   const writes = old.writes.split('|')
   if (old.writes === '') return noDataSets && DATA_SET_ACTIONS.has(old.label)
   return writes.every(
@@ -148,7 +151,30 @@ const RENAMED_PATTERNS: readonly [string, RegExp][] = [
   ['', /^(Data set|Curve|Function)$/],
 ]
 
+/**
+ * Roadmap 49c (decision 1251): a heat map's trees are layers of their own. Its "Dendrogram depth
+ * (pt)" is each tree's size (a row tree's "Tree width (pt)", a column tree's "Tree height (pt)", writing its
+ * `depth`); "Cluster rows" / "Cluster columns" also add or remove the axis' tree (`graph.addLayer`,
+ * `graph.removeLayer` beside the same write).
+ */
+function movedField(old: FieldEntry, now: FieldEntry): boolean {
+  if (old.label === 'Dendrogram depth (pt)' && /\/style\/cluster\/dendrogram$/.test(old.writes))
+    return (
+      now.kind === old.kind &&
+      (now.label === 'Tree width (pt)' || now.label === 'Tree height (pt)') &&
+      /^set:layers\/\{(rowTree|columnTree)\d*\}\/style\/depth$/.test(now.writes)
+    )
+  if (/^set:layers\/\{[^}]*\}\/style\/cluster\/(rows|columns)$/.test(old.writes)) {
+    const own = now.writes
+      .split('|')
+      .filter((w) => w !== 'graph.addLayer' && w !== 'graph.removeLayer')
+    return now.kind === old.kind && now.label === old.label && own.join('|') === old.writes
+  }
+  return false
+}
+
 function sameField(old: FieldEntry, now: FieldEntry): boolean {
+  if (movedField(old, now)) return true
   if (old.writes !== now.writes && withoutClearings(old.writes) !== now.writes) return false
   if (
     REKINDED[`${old.kind}\u0000${old.label}`]?.some(

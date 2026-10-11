@@ -1,5 +1,4 @@
 import type { ColorMapName, ColorScale, HeatmapStyle, NumberDisplay, TextStyle } from '@ps/model'
-import type { HClust } from '@ps/stats'
 import { colorAlong } from '../../aesthetics.ts'
 import { COLOR_MAPS, textOn } from '../../color.ts'
 import { tableRow } from '../../data.ts'
@@ -15,19 +14,18 @@ import { cytoTicks, type Transform } from '../../transform.ts'
 import type { HeatmapData } from '../stats/cell.ts'
 
 // Heat-map tiles (roadmap 30): one cell per value coloured on a colour map, values printed in
-// the cells, dendrograms beside the map and the colour scale (a gradient bar drawn as thin
-// rectangles, so every renderer draws it alike).
+// the cells and the colour scale (a gradient bar drawn as thin rectangles, so every renderer
+// draws it alike). The trees beside the map are layers of their own (roadmap 49c,
+// `dendrogram.ts`).
 
-/** Space between the map and a dendrogram or the colour scale. */
-export const GAP = 6
+/** Space between the map (or a tree beside it) and the colour scale. */
 export const BAR_GAP = 12
 /** Colour bar: thickness, longest length, number of bands drawn and tick length. */
 const BAR_WIDTH = 10
 const BAR_LENGTH = 160
 const BAR_STEPS = 64
 const BAR_TICK = 3
-/** Default depth of a dendrogram (pt) and colour of missing cells. */
-export const DENDROGRAM = 36
+/** Colour of missing cells. */
 export const MISSING_COLOR = '#e0e0e0'
 export const LINE: Stroke = { color: '#000000', width: 0.75, dash: 'solid' }
 
@@ -73,34 +71,6 @@ export function heatScale(
     t,
     color: (v: number) => (Number.isFinite(v) ? colorAlong(colors, t(v), h.reverse) : missing),
   }
-}
-
-/**
- * A dendrogram's lines: one ⊓ per merge of `hc` (R's merge matrix), as [position, height]
- * points — the children's positions (leaves at their slot in `hc.order`, 0-based; clusters at the
- * middle of their children, as R's plot.hclust) up to the merge height and across.
- */
-export function dendrogramLines(hc: HClust): [number, number][][] {
-  const n = hc.order.length
-  const slot = new Array<number>(n)
-  hc.order.forEach((leaf, i) => {
-    slot[leaf] = i
-  })
-  const pos: number[] = []
-  const at = (c: number): [number, number] =>
-    c < 0 ? [slot[-c - 1]!, 0] : [pos[c - 1]!, hc.height[c - 1]!]
-  return hc.merge.map(([a, b], k) => {
-    const [pa, ha] = at(a)
-    const [pb, hb] = at(b)
-    const h = hc.height[k]!
-    pos.push((pa + pb) / 2)
-    return [
-      [pa, ha],
-      [pa, h],
-      [pb, h],
-      [pb, hb],
-    ]
-  })
 }
 
 /** The cells of a heat map (in display order) and the values printed in them. */

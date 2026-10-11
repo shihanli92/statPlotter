@@ -10,6 +10,7 @@ import { groupedExtentOf, layoutGrouped } from './frames/grouped.ts'
 import { layoutMatrix } from './frames/matrix.ts'
 import { layoutParts } from './frames/parts.ts'
 import { layoutSurvival, survivalExtentOf } from './frames/survival.ts'
+import { isTreeAlone, layoutTree } from './frames/tree.ts'
 import { layoutXY, xyExtentOf } from './frames/xy.ts'
 import { LayerKit } from './kit.ts'
 
@@ -54,6 +55,8 @@ function layoutFrame(kit: LayerKit): Scene {
     case 'matrix':
       // Roadmap 34g: a dot plot's layers (stat `dotplot`) summarise variables by groups.
       if (isDotPlot(graph.layers)) return layoutDotPlot(kit)
+      // Roadmap 49c: a dendrogram without a heat map (its tree fills the plot).
+      if (isTreeAlone(graph.layers)) return layoutTree(kit)
       return layoutMatrix(kit)
     case 'polar':
       return layoutParts(kit, false)

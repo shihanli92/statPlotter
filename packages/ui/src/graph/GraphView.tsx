@@ -111,7 +111,7 @@ import {
 import { requestReveal } from '../table/reveal.ts'
 import { errorMessage } from '../util.ts'
 import { GraphBuilder } from './builder/GraphBuilder.tsx'
-import { CanvasOverlay, InsertionLine, readoutAt } from './CanvasOverlay.tsx'
+import { CanvasOverlay, InsertionLine, readoutAt, TreeHandleRect } from './CanvasOverlay.tsx'
 import {
   type CanvasDrag,
   dragOutcome,
@@ -217,6 +217,7 @@ import {
   resetPaths,
 } from './selectionEdits.ts'
 import { swapMappedXY, swappable } from './swapXY.ts'
+import { treeHandle } from './treeDrag.ts'
 import {
   EmptyGraphNote,
   EVERY_POINT_HINT,
@@ -598,6 +599,19 @@ export function GraphView({
       (ev) => ({ kind: 'move', target, dx: 0, dy: 0, free: ev.altKey, constrain: ev.shiftKey }),
       single(elementKey(graph.id, ['annotations', selLine.index])),
     )
+  }
+  // Roadmap 49c: a selected heat map's tree has a handle on its outer edge, dragged to resize it.
+  const treeId =
+    !several && !edit && selected?.[0] === 'layers' && selected.length === 2
+      ? String(selected[1])
+      : null
+  const treeAt = treeId ? treeHandle(scene, outcome?.graph ?? graph, treeId) : null
+  const onPointerDownTree = (e: React.PointerEvent) => {
+    if (e.button !== 0 || !treeAt) return
+    e.preventDefault()
+    e.stopPropagation()
+    const layer = treeAt.layer
+    follow(e, (ev) => ({ kind: 'tree', layer, dx: 0, dy: 0, free: ev.altKey }), sel)
   }
   // The right-click / Add menu.
   const [menu, setMenu] = useState<CommandMenuState | null>(null)
@@ -1992,6 +2006,14 @@ export function GraphView({
                       onPointerDown={onPointerDownEnd}
                     />
                   )}
+                  {treeAt && (
+                    <TreeHandleRect
+                      handle={treeAt}
+                      k={k}
+                      active={drag?.kind === 'tree'}
+                      onPointerDown={onPointerDownTree}
+                    />
+                  )}
                 </>
               }
             />
@@ -2006,6 +2028,14 @@ export function GraphView({
             )}
             {drag?.kind === 'resize' && outcome?.readout && (
               <div className="drag-readout" style={readoutAt(scene, drag.handle, k)}>
+                {outcome.readout}
+              </div>
+            )}
+            {drag?.kind === 'tree' && outcome?.readout && treeAt && (
+              <div
+                className="drag-readout"
+                style={{ left: treeAt.x * k + 12, top: treeAt.y * k - 28 }}
+              >
                 {outcome.readout}
               </div>
             )}

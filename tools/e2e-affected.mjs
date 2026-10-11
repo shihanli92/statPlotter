@@ -25,6 +25,8 @@ const GRAPH = [
   'cellsTables',
   'combinations',
   'densityPlots',
+  // Roadmap 49c: dendrograms as layers (heat maps' trees, cuts, strips, a tree alone).
+  'dendrogram',
   'examples',
   'export',
   'figureExport',
@@ -133,7 +135,8 @@ const RULES = [
   // Statistics and analyses.
   // Roadmap 34g: densities, hexbins, dot plots and the cytometry transforms are stats too.
   // Roadmap 46b: a volcano plot's classes (thresholds) are stats too.
-  ['packages/stats/', [...ANALYSIS, 'densityPlots', 'referenceLines']],
+  // Roadmap 49c: a dendrogram's cut (R's cutree) is stats too.
+  ['packages/stats/', [...ANALYSIS, 'densityPlots', 'referenceLines', 'dendrogram']],
   ['packages/analyses/', ANALYSIS],
   ['packages/ui/src/analysis/', [...ANALYSIS, 'accessibility']],
   ['packages/ui/src/resultTables.ts', [...ANALYSIS, 'dataExport']],

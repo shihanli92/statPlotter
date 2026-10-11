@@ -12,6 +12,7 @@ import {
   MAX_LAYERS,
   SizeScale,
 } from './layers.ts'
+import { treesAsLayers } from './migrations/v2to3.ts'
 import { Dash } from './style.ts'
 import { type DataTable, TableKind } from './table.ts'
 
@@ -24,8 +25,12 @@ const VariableType = z.enum(['number', 'text'])
 // `.pspreset` file.
 
 export const PRESET_FORMAT = 'plotting-software-preset'
-/** Version of the preset file; newer files are refused. */
-export const PRESET_VERSION = 1
+/**
+ * Version of the preset file; newer files are refused. 2 (roadmap 49c): a heat map's dendrograms
+ * are layers of their own (a version 1 recipe's layers are read through `treesAsLayers`, as
+ * projects of schema v2 are migrated).
+ */
+export const PRESET_VERSION = 2
 export const PRESET_EXTENSION = 'pspreset'
 /** Longest preset name. */
 export const PRESET_NAME_MAX = 60
@@ -256,6 +261,14 @@ export function writePreset(p: UserPreset, opts: { exported?: boolean } = {}): s
   return `${JSON.stringify(file, null, 1)}\n`
 }
 
+/** A version 1 preset file's recipe with v2 layers made v3's (roadmap 49c, `treesAsLayers`). */
+function presetV1to2(raw: unknown): unknown {
+  const file = raw as { recipe?: { layers?: unknown; frame?: unknown } }
+  const recipe = file.recipe
+  if (typeof recipe !== 'object' || recipe === null || !Array.isArray(recipe.layers)) return raw
+  return { ...file, recipe: { ...recipe, layers: treesAsLayers(recipe.layers, recipe.frame) } }
+}
+
 /** A preset file read back and checked. Throws PresetError with a message for the user. */
 export function readPreset(text: string): UserPreset {
   let raw: unknown
@@ -269,7 +282,7 @@ export function readPreset(text: string): UserPreset {
   const version = (raw as { version?: unknown }).version
   if (typeof version === 'number' && version > PRESET_VERSION)
     throw new PresetError('This preset was saved by a newer version of the app.')
-  const parsed = PresetFile.safeParse(raw)
+  const parsed = PresetFile.safeParse(version === 1 ? presetV1to2(raw) : raw)
   if (!parsed.success) {
     const issue = parsed.error.issues[0]
     throw new PresetError(

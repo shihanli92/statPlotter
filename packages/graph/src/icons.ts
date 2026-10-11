@@ -180,6 +180,10 @@ function iconLayers(id: string, kind: TableKind, table: DataTable, frame?: Frame
             : { id: 'bars', geom: 'bar', stat: mean }
     extra.push(host)
     layer = { ...own, on: host.id, style: { text: { size: 6 } } } as Layer
+  } else if (id === 'rowTree' || id === 'columnTree') {
+    // Roadmap 49c: a tree filling the icon (the plot), turned as it stands beside a heat map's
+    // rows (across) or above its columns (upright).
+    layer = { ...own, style: { side: id === 'rowTree' ? 'right' : 'top' } } as Layer
   } else if (id === 'pairs' || id === 'grandMean' || id === 'subjectMeans')
     extra.push({ id: 'points', geom: 'points', stat: { kind: 'identity' }, style: { size: 3 } })
   else if (id === 'center' || id === 'joinMeans')

@@ -5,6 +5,7 @@ import {
   isCellsTable,
   type Layer,
   type LayerId,
+  type LayerOf,
   type Position,
   type StatKind,
   type VariableMapping,
@@ -179,6 +180,22 @@ export const PLOT_STYLES: readonly PlotStyle[] = [
     frames: ['matrix'],
     kinds: ['multipleVariables'],
   },
+  // Roadmap 49c: the trees of a heat map's clustered rows and columns (added, the tiles cluster
+  // that axis).
+  {
+    id: 'rowTree',
+    label: 'Row dendrogram',
+    family: 'special',
+    geom: 'dendrogram',
+    frames: ['matrix'],
+  },
+  {
+    id: 'columnTree',
+    label: 'Column dendrogram',
+    family: 'special',
+    geom: 'dendrogram',
+    frames: ['matrix'],
+  },
   // Connections.
   {
     id: 'joinMeans',
@@ -264,6 +281,17 @@ export const PLOT_STYLES: readonly PlotStyle[] = [
     frameChoice: 'bubble',
     stat: 'identity',
     kinds: ['multipleVariables'],
+  },
+  {
+    // Roadmap 49c: a tree of the table's rows alone (no heat map).
+    id: 'dendrogram',
+    label: 'Dendrogram',
+    family: 'special',
+    geom: 'dendrogram',
+    frames: ['matrix'],
+    frameChoice: 'dendrogram',
+    stat: 'cluster',
+    kinds: ['grouped', 'contingency', 'multipleVariables'],
   },
   {
     // Roadmap 34g: variables by the levels of a text variable (single-cell dot plots).
@@ -421,6 +449,12 @@ export function styleLayer(style: PlotStyle, frame: Frame, kind: MatrixKind): La
       return { id: 'tiles', geom: 'tile', stat: { kind: 'dotplot' }, aes: {} }
     case 'difference':
       return { id: 'diff', geom: 'difference', stat: { kind: 'difference', ci: 'pooled' } }
+    // Roadmap 49c: a tree of the rows (a dendrogram alone: of the rows too) or of the columns.
+    case 'rowTree':
+    case 'dendrogram':
+      return { id: 'rowTree', geom: 'dendrogram', stat: { kind: 'cluster', of: 'rows' } }
+    case 'columnTree':
+      return { id: 'columnTree', geom: 'dendrogram', stat: { kind: 'cluster', of: 'columns' } }
     default:
       throw new Error(`no layer for plot style ${style.id}`)
   }
@@ -466,6 +500,8 @@ export function styleOfLayer(layer: Layer, frame: Frame): PlotStyle | undefined 
       return (layer.style?.draw ?? 'lines') === 'lines' ? by('contours') : by('contourBands')
     case 'wedge':
       return by('wedges')
+    case 'dendrogram':
+      return layer.stat.of === 'rows' ? by('rowTree') : by('columnTree')
     default:
       return PLOT_STYLES.find((s) => s.geom === layer.geom)
   }
@@ -603,6 +639,19 @@ export function styleAllowed(style: PlotStyle, c: StyleContext): Allowed {
     return no('a dot plot draws dots and tiles of its statistics only')
   if (layer.geom === 'segment' && !c.ends)
     return no('needs two more number variables (X end, Y end)')
+  // Roadmap 49c: a dendrogram alone has no cells to label.
+  const tiles = c.layers.some((l) => l.geom === 'tile' && l.visible !== false)
+  if (c.frame === 'matrix' && layer.geom === 'label' && !tiles) return no('values label the cells')
+  // Roadmap 49c: one tree of the rows and one of the columns; one tree without a heat map.
+  if (layer.geom === 'dendrogram') {
+    const trees = c.layers.filter(
+      (l): l is LayerOf<'dendrogram'> => l.geom === 'dendrogram' && l.visible !== false,
+    )
+    const of = layer.stat.kind === 'cluster' ? layer.stat.of : 'rows'
+    if (trees.some((l) => l.stat.of === of)) return no(`the graph has a tree of the ${of}`)
+    if (trees.length && !c.layers.some((l) => l.geom === 'tile' && l.visible !== false))
+      return no('one tree without a heat map')
+  }
   // Roadmap 34f: a cells table offers no mark per row.
   return cellsAllowed(c.kind, c.frame, layer.geom, stat, c.cells)
 }
@@ -625,14 +674,23 @@ export function frameChoiceSelected(
   const rivals = stylesFor(c).filter((x) => x.frameChoice && x.frames[0] === frame)
   if (rivals.length < 2) return true
   // A histogram's bins and a dot plot's statistics (roadmap 34g) say which choice the graph is.
+  // Roadmap 49c: a dendrogram alone (a tree and no tiles).
   const owns = (s: PlotStyle) =>
     s.stat === 'bin'
       ? binned(c.layers)
       : s.stat === 'dotplot'
         ? c.layers.some((l) => l.stat.kind === 'dotplot')
-        : false
+        : s.stat === 'cluster'
+          ? !c.layers.some((l) => l.geom === 'tile') &&
+            c.layers.some((l) => l.geom === 'dendrogram')
+          : false
   if (owns(style)) return true
-  return !rivals.some(owns) && style.stat !== 'bin' && style.stat !== 'dotplot'
+  return (
+    !rivals.some(owns) &&
+    style.stat !== 'bin' &&
+    style.stat !== 'dotplot' &&
+    style.stat !== 'cluster'
+  )
 }
 
 /** The plot styles a graph of a table kind shows: its frames' own and its frame choices. */
@@ -750,6 +808,8 @@ export function withStyleLayer(
 ): Layer[] {
   const layers = [...c.layers]
   layers.splice(at, 0, layer)
+  // Roadmap 49c: a tree added to a heat map draws the tiles' clustering of its axis: they cluster it.
+  if (layer.geom === 'dendrogram') return withClustered(layers, layer.stat.of)
   const pair =
     (layer.geom === 'violin' || layer.geom === 'box') &&
     layers.some((l) => l.geom === 'violin') &&
@@ -768,6 +828,41 @@ export function withStyleLayer(
       return { ...l, stat: { ...l.stat, center: 'none' }, style: { ...style, quartiles: false } }
     return l
   })
+}
+
+/**
+ * Roadmap 49c: a layer list whose heat map (its first drawn tile layer) clusters the rows or the
+ * columns (`style.cluster[of]`), as turning clustering on does; the list itself when it has no
+ * tiles or they already do.
+ */
+export function withClustered(layers: readonly Layer[], of: 'rows' | 'columns'): Layer[] {
+  const tile = layers.find((l): l is LayerOf<'tile'> => l.geom === 'tile' && l.visible !== false)
+  if (!tile || tile.style?.cluster?.[of]) return [...layers]
+  const style = { ...tile.style, cluster: { ...tile.style?.cluster, [of]: true } }
+  return layers.map((l) => (l === tile ? { ...tile, style } : l))
+}
+
+/** Roadmap 49c: a new tree layer of the rows or the columns ("Row dendrogram"…). */
+export const treeLayer = (of: 'rows' | 'columns', layers: readonly Layer[] = []): Layer => ({
+  id: freshLayerId(of === 'rows' ? 'rowTree' : 'columnTree', layers),
+  geom: 'dendrogram',
+  stat: { kind: 'cluster', of },
+})
+
+/**
+ * Roadmap 49c: a layer list with a tree for each axis its heat map (its first drawn tile layer)
+ * clusters that no tree layer is of yet, added at the front, the rows' first — as turning
+ * clustering on adds them (and as the v2 → v3 migration added them).
+ */
+export function withTrees(layers: readonly Layer[]): Layer[] {
+  const tile = layers.find((l): l is LayerOf<'tile'> => l.geom === 'tile' && l.visible !== false)
+  const out = [...layers]
+  for (const of of ['rows', 'columns'] as const) {
+    if (!tile?.style?.cluster?.[of]) continue
+    if (out.some((l) => l.geom === 'dendrogram' && l.stat.of === of)) continue
+    out.push(treeLayer(of, out))
+  }
+  return out
 }
 
 // --- Names ------------------------------------------------------------------------------------
@@ -858,6 +953,12 @@ export function statText(layer: Pick<Layer, 'geom' | 'stat' | 'aes'>, frame: Fra
             : 'result value'
     case 'threshold':
       return 'significance'
+    case 'cluster':
+      return !s.cut
+        ? 'hierarchical clustering'
+        : 'k' in s.cut
+          ? `${s.cut.k} cluster${s.cut.k === 1 ? '' : 's'}`
+          : `cut at ${+s.cut.h.toPrecision(6)}`
   }
 }
 
@@ -890,6 +991,9 @@ export function layerTitle(layer: Layer, frame: Frame): string {
   }
   if (layer.data && layer.data.from !== 'table')
     return DATA_NAMES[layer.id] ?? `${layer.geom === 'band' ? 'Bands' : 'Curves'} (${layer.id})`
+  // Roadmap 49c: a tree by what it is of ("Row dendrogram").
+  if (layer.geom === 'dendrogram')
+    return layer.stat.of === 'rows' ? 'Row dendrogram' : 'Column dendrogram'
   const style = styleOfLayer(layer, frame)
   const base = style?.frameChoice
     ? {

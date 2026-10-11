@@ -4,6 +4,7 @@ import { layoutGraph, layoutLayers, pointsAsImages, type Scene, sceneToSvg } fro
 import { axisExtrasCases } from './axisExtrasCases.ts'
 import { byGroupCases } from './byGroupCases.ts'
 import { cutoffCases } from './cutoffCases.ts'
+import { dendrogramCases } from './dendrogramCases.ts'
 import {
   appearanceCases,
   cellsCases,
@@ -133,6 +134,14 @@ describe('golden SVGs: legends edited (roadmap 47b)', () => {
 describe('golden SVGs: lines at ± a value and volcano thresholds (roadmap 46b)', () => {
   it.each(cutoffCases())('%s', async (name, table, graph) => {
     const scene = layoutLayers({ project: projectOf(table), graph, fonts })
+    expect(scene.warnings).toEqual([])
+    await expect(svgOf(scene)).toMatchFileSnapshot(golden(name))
+  })
+})
+
+describe('golden SVGs: dendrograms as layers (roadmap 49c)', () => {
+  it.each(dendrogramCases())('%s', async (name, table, graph) => {
+    const scene = layoutGraph({ project: projectOf(table), graph, fonts })
     expect(scene.warnings).toEqual([])
     await expect(svgOf(scene)).toMatchFileSnapshot(golden(name))
   })

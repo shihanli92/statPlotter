@@ -1,0 +1,24 @@
+{
+  "input": {
+    "rows": [
+      [1],
+      [2],
+      [4],
+      [7],
+      [8],
+      [10],
+      [13],
+      [14],
+      [16],
+      [3]
+    ]
+  },
+  "params": {
+    "distance": "euclidean",
+    "linkage": "complete",
+    "k": [2, 3, 4, 5],
+    "h": [1, 2, 3],
+    "hAtMerge": [1, 5]
+  },
+  "note": "One column: 1-D points, ties at distances 1, 2, 3."
+}

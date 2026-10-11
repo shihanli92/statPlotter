@@ -1,0 +1,348 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="242.94pt" height="251.441pt" viewBox="0 0 242.94 251.441">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="12.423" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample variables</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/tiles">
+<g data-id="series/c/cell/lv_4c6f77">
+<rect x="33.623" y="29.641" width="36" height="24" fill="#bfbfd7" stroke="none"/>
+</g>
+<g data-id="series/c/cell/lv_48696768">
+<rect x="33.623" y="53.641" width="36" height="24" fill="#0000ff" stroke="none"/>
+</g>
+<g data-id="series/c/cell/lv_4d6964">
+<rect x="33.623" y="77.641" width="36" height="24" fill="#7070e8" stroke="none"/>
+</g>
+<g data-id="series/d/cell/lv_4c6f77">
+<rect x="69.623" y="29.641" width="36" height="24" fill="#3939f3" stroke="none"/>
+</g>
+<g data-id="series/d/cell/lv_48696768">
+<rect x="69.623" y="53.641" width="36" height="24" fill="#d3d3d3" stroke="none"/>
+</g>
+<g data-id="series/d/cell/lv_4d6964">
+<rect x="69.623" y="77.641" width="36" height="24" fill="#2323f8" stroke="none"/>
+</g>
+</g>
+<g data-id="layer/dots">
+<g data-id="series/c/dot/lv_4c6f77">
+<path d="M40.823,41.641a10.8,10.8 0 1,0 21.6,0a10.8,10.8 0 1,0 -21.6,0Z" fill="#bfbfd7" stroke="#bfbfd7" stroke-width="0.75"/>
+</g>
+<g data-id="series/c/dot/lv_48696768">
+<path d="M40.823,65.641a10.8,10.8 0 1,0 21.6,0a10.8,10.8 0 1,0 -21.6,0Z" fill="#0000ff" stroke="#0000ff" stroke-width="0.75"/>
+</g>
+<g data-id="series/c/dot/lv_4d6964">
+<path d="M40.823,89.641a10.8,10.8 0 1,0 21.6,0a10.8,10.8 0 1,0 -21.6,0Z" fill="#7070e8" stroke="#7070e8" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/dot/lv_4c6f77">
+<path d="M76.823,41.641a10.8,10.8 0 1,0 21.6,0a10.8,10.8 0 1,0 -21.6,0Z" fill="#3939f3" stroke="#3939f3" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/dot/lv_48696768">
+<path d="M76.823,65.641a10.8,10.8 0 1,0 21.6,0a10.8,10.8 0 1,0 -21.6,0Z" fill="#d3d3d3" stroke="#d3d3d3" stroke-width="0.75"/>
+</g>
+<g data-id="series/d/dot/lv_4d6964">
+<path d="M76.823,89.641a10.8,10.8 0 1,0 21.6,0a10.8,10.8 0 1,0 -21.6,0Z" fill="#2323f8" stroke="#2323f8" stroke-width="0.75"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="33.623" y1="101.641" x2="33.623" y2="29.641" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="10.444" y="45.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Low</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="8" y="69.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">High</tspan></text>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="12.898" y="93.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Mid</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="33.623" y1="101.641" x2="105.623" y2="101.641" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="37.255" y="114.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Score</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="77.837" y="114.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Age</tspan></text>
+</g>
+</g>
+<g data-id="legend">
+<g data-id="legend/dotplot/size">
+<g data-id="legend/dotplot/size/label">
+<text fill="#000000" xml:space="preserve"><tspan x="143.223" y="41.454" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Percent expressed</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/0">
+<g data-id="legend/dotplot/size/0/symbol">
+<path d="M117.623,58.441a10.8,10.8 0 1,0 21.6,0a10.8,10.8 0 1,0 -21.6,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/0/label">
+<text fill="#000000" xml:space="preserve"><tspan x="143.223" y="62.254" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">100%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/1">
+<g data-id="legend/dotplot/size/1/symbol">
+<path d="M120.323,81.341a8.1,8.1 0 1,0 16.2,0a8.1,8.1 0 1,0 -16.2,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/1/label">
+<text fill="#000000" xml:space="preserve"><tspan x="143.223" y="85.154" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">75%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/2">
+<g data-id="legend/dotplot/size/2/symbol">
+<path d="M123.023,99.441a5.4,5.4 0 1,0 10.8,0a5.4,5.4 0 1,0 -10.8,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/2/label">
+<text fill="#000000" xml:space="preserve"><tspan x="143.223" y="103.254" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">50%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/size/3">
+<g data-id="legend/dotplot/size/3/symbol">
+<path d="M125.723,115.441a2.7,2.7 0 1,0 5.4,0a2.7,2.7 0 1,0 -5.4,0Z" fill="none" stroke="#555555" stroke-width="0.75"/>
+</g>
+<g data-id="legend/dotplot/size/3/label">
+<text fill="#000000" xml:space="preserve"><tspan x="143.223" y="119.254" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">25%</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/color">
+<g data-id="legend/dotplot/color/label">
+<text fill="#000000" xml:space="preserve"><tspan x="143.223" y="135.254" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Average (scaled)</tspan></text>
+</g>
+</g>
+<g data-id="legend/dotplot/color/bar">
+<g data-id="legend/dotplot/color/bar/band/0">
+<rect x="117.623" y="237.441" width="10" height="2" fill="#d1d1d3" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/1">
+<rect x="117.623" y="235.941" width="10" height="2" fill="#ceced4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/2">
+<rect x="117.623" y="234.441" width="10" height="2" fill="#cbcbd5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/3">
+<rect x="117.623" y="232.941" width="10" height="2" fill="#c7c7d5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/4">
+<rect x="117.623" y="231.441" width="10" height="2" fill="#c4c4d6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/5">
+<rect x="117.623" y="229.941" width="10" height="2" fill="#c1c1d7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/6">
+<rect x="117.623" y="228.441" width="10" height="2" fill="#bebed7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/7">
+<rect x="117.623" y="226.941" width="10" height="2" fill="#babad8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/8">
+<rect x="117.623" y="225.441" width="10" height="2" fill="#b7b7d9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/9">
+<rect x="117.623" y="223.941" width="10" height="2" fill="#b4b4da" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/10">
+<rect x="117.623" y="222.441" width="10" height="2" fill="#b0b0da" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/11">
+<rect x="117.623" y="220.941" width="10" height="2" fill="#adaddb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/12">
+<rect x="117.623" y="219.441" width="10" height="2" fill="#aaaadc" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/13">
+<rect x="117.623" y="217.941" width="10" height="2" fill="#a6a6dc" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/14">
+<rect x="117.623" y="216.441" width="10" height="2" fill="#a3a3dd" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/15">
+<rect x="117.623" y="214.941" width="10" height="2" fill="#a0a0de" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/16">
+<rect x="117.623" y="213.441" width="10" height="2" fill="#9d9dde" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/17">
+<rect x="117.623" y="211.941" width="10" height="2" fill="#9999df" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/18">
+<rect x="117.623" y="210.441" width="10" height="2" fill="#9696e0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/19">
+<rect x="117.623" y="208.941" width="10" height="2" fill="#9393e0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/20">
+<rect x="117.623" y="207.441" width="10" height="2" fill="#8f8fe1" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/21">
+<rect x="117.623" y="205.941" width="10" height="2" fill="#8c8ce2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/22">
+<rect x="117.623" y="204.441" width="10" height="2" fill="#8989e2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/23">
+<rect x="117.623" y="202.941" width="10" height="2" fill="#8686e3" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/24">
+<rect x="117.623" y="201.441" width="10" height="2" fill="#8282e4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/25">
+<rect x="117.623" y="199.941" width="10" height="2" fill="#7f7fe5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/26">
+<rect x="117.623" y="198.441" width="10" height="2" fill="#7c7ce5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/27">
+<rect x="117.623" y="196.941" width="10" height="2" fill="#7878e6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/28">
+<rect x="117.623" y="195.441" width="10" height="2" fill="#7575e7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/29">
+<rect x="117.623" y="193.941" width="10" height="2" fill="#7272e7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/30">
+<rect x="117.623" y="192.441" width="10" height="2" fill="#6e6ee8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/31">
+<rect x="117.623" y="190.941" width="10" height="2" fill="#6b6be9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/32">
+<rect x="117.623" y="189.441" width="10" height="2" fill="#6868e9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/33">
+<rect x="117.623" y="187.941" width="10" height="2" fill="#6565ea" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/34">
+<rect x="117.623" y="186.441" width="10" height="2" fill="#6161eb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/35">
+<rect x="117.623" y="184.941" width="10" height="2" fill="#5e5eeb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/36">
+<rect x="117.623" y="183.441" width="10" height="2" fill="#5b5bec" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/37">
+<rect x="117.623" y="181.941" width="10" height="2" fill="#5757ed" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/38">
+<rect x="117.623" y="180.441" width="10" height="2" fill="#5454ed" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/39">
+<rect x="117.623" y="178.941" width="10" height="2" fill="#5151ee" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/40">
+<rect x="117.623" y="177.441" width="10" height="2" fill="#4d4def" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/41">
+<rect x="117.623" y="175.941" width="10" height="2" fill="#4a4af0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/42">
+<rect x="117.623" y="174.441" width="10" height="2" fill="#4747f0" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/43">
+<rect x="117.623" y="172.941" width="10" height="2" fill="#4444f1" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/44">
+<rect x="117.623" y="171.441" width="10" height="2" fill="#4040f2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/45">
+<rect x="117.623" y="169.941" width="10" height="2" fill="#3d3df2" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/46">
+<rect x="117.623" y="168.441" width="10" height="2" fill="#3a3af3" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/47">
+<rect x="117.623" y="166.941" width="10" height="2" fill="#3636f4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/48">
+<rect x="117.623" y="165.441" width="10" height="2" fill="#3333f4" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/49">
+<rect x="117.623" y="163.941" width="10" height="2" fill="#3030f5" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/50">
+<rect x="117.623" y="162.441" width="10" height="2" fill="#2d2df6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/51">
+<rect x="117.623" y="160.941" width="10" height="2" fill="#2929f6" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/52">
+<rect x="117.623" y="159.441" width="10" height="2" fill="#2626f7" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/53">
+<rect x="117.623" y="157.941" width="10" height="2" fill="#2323f8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/54">
+<rect x="117.623" y="156.441" width="10" height="2" fill="#1f1ff8" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/55">
+<rect x="117.623" y="154.941" width="10" height="2" fill="#1c1cf9" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/56">
+<rect x="117.623" y="153.441" width="10" height="2" fill="#1919fa" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/57">
+<rect x="117.623" y="151.941" width="10" height="2" fill="#1515fb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/58">
+<rect x="117.623" y="150.441" width="10" height="2" fill="#1212fb" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/59">
+<rect x="117.623" y="148.941" width="10" height="2" fill="#0f0ffc" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/60">
+<rect x="117.623" y="147.441" width="10" height="2" fill="#0c0cfd" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/61">
+<rect x="117.623" y="145.941" width="10" height="2" fill="#0808fd" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/62">
+<rect x="117.623" y="144.441" width="10" height="2" fill="#0505fe" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/band/63">
+<rect x="117.623" y="143.441" width="10" height="1.5" fill="#0202ff" stroke="none"/>
+</g>
+<g data-id="legend/dotplot/color/bar/frame">
+<rect x="117.623" y="143.441" width="10" height="96" fill="none" stroke="#000000" stroke-width="0.5"/>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/0">
+<line x1="127.623" y1="233.042" x2="130.623" y2="233.042" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/0">
+<text fill="#000000" xml:space="preserve"><tspan x="132.623" y="236.855" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−1.0</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/1">
+<line x1="127.623" y1="211.224" x2="130.623" y2="211.224" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/1">
+<text fill="#000000" xml:space="preserve"><tspan x="132.623" y="215.037" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">−0.5</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/2">
+<line x1="127.623" y1="189.406" x2="130.623" y2="189.406" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/2">
+<text fill="#000000" xml:space="preserve"><tspan x="132.623" y="193.219" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0.0</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/3">
+<line x1="127.623" y1="167.588" x2="130.623" y2="167.588" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/3">
+<text fill="#000000" xml:space="preserve"><tspan x="132.623" y="171.401" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0.5</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/tick/4">
+<line x1="127.623" y1="145.769" x2="130.623" y2="145.769" stroke="#000000" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="legend/dotplot/color/bar/label/4">
+<text fill="#000000" xml:space="preserve"><tspan x="132.623" y="149.583" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">1.0</tspan></text>
+</g>
+<g data-id="legend/dotplot/color/bar/label">
+<text fill="#000000" xml:space="preserve"></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

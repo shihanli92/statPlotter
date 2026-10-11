@@ -60,14 +60,14 @@ describe('templates, methods and project files of v1', () => {
   it('a v1 template opens as a new project: migrated, its graphs as they were', async () => {
     const file = readProjectFile(read('reuse/getting-started.pstemplate'))
     expect(file.template).toBe(true)
-    expect(file.project.schemaVersion).toBe(2)
+    expect(file.project.schemaVersion).toBe(3)
     const { out } = await renders(file.project)
     expect(out).toEqual(JSON.parse(read('reuse/renders.json').toString()).template)
   })
 
   it('a v1 method reads, migrated, and applies to a table of this version', async () => {
     const method = readMethod(read('reuse/dose-response.psmethod').toString())
-    expect(method.project.schemaVersion).toBe(2)
+    expect(method.project.schemaVersion).toBe(3)
     const graphs = Object.values(method.project.nodes).filter((n) => n.kind === 'graph')
     expect(graphs.length).toBeGreaterThan(0)
     for (const g of graphs) expect(GraphNode.safeParse(g).success).toBe(true)
@@ -91,7 +91,7 @@ describe('templates, methods and project files of v1', () => {
   it('a v1 project file (or a recovery copy, Save’s bytes) opens, and saves as v2', () => {
     const bytes = read('reuse/getting-started.psproj')
     const file = readProjectFile(new Uint8Array(bytes))
-    expect(file.project.schemaVersion).toBe(2)
+    expect(file.project.schemaVersion).toBe(3)
     expect(file.notes).toEqual([])
     const again = readProjectFile(writeProjectFile(file.project))
     // Saving stamps the time and version it was saved with; the document is the same.
@@ -101,10 +101,10 @@ describe('templates, methods and project files of v1', () => {
 
   it('a file of a newer format is refused with a message saying so', () => {
     const p = createProject()
-    const bytes = writeProjectFile({ ...p, schemaVersion: 3 as never })
+    const bytes = writeProjectFile({ ...p, schemaVersion: 4 as never })
     expect(() => readProjectFile(bytes)).toThrow(ProjectFileError)
     expect(() => readProjectFile(bytes)).toThrow(
-      'This project was saved by a newer version of the app (file format v3; this version reads up to v2). Open it in the newer version.',
+      'This project was saved by a newer version of the app (file format v4; this version reads up to v3). Open it in the newer version.',
     )
   })
 })

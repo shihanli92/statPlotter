@@ -1,3 +1,4 @@
+import { withTrees } from '@ps/graph'
 import { createTable, type DataTable, type Layer, type Project } from '@ps/model'
 import {
   type AnalysisSpec,
@@ -183,16 +184,19 @@ const binningMap: Format = {
   does: 'Rows and columns ordered by hierarchical clustering (Ward’s method, as the legend says) with dendrograms, and a two-colour scale from 0 (non-competing) to 1 (competing).',
   apply: (g) => ({
     ...g,
-    layers: g.layers.map((l) =>
-      l.geom === 'tile'
-        ? ({
-            ...l,
-            style: {
-              ...l.style,
-              cluster: { rows: true, columns: true, distance: 'euclidean', linkage: 'ward' },
-            },
-          } as Layer)
-        : l,
+    // Roadmap 49c: the trees of the clustered rows and columns, layers of their own.
+    layers: withTrees(
+      g.layers.map((l) =>
+        l.geom === 'tile'
+          ? ({
+              ...l,
+              style: {
+                ...l.style,
+                cluster: { rows: true, columns: true, distance: 'euclidean', linkage: 'ward' },
+              },
+            } as Layer)
+          : l,
+      ),
     ),
     scales: {
       ...g.scales,

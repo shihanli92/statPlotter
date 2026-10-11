@@ -1,4 +1,5 @@
 import { mean, sd } from '../descriptive/basic.ts'
+import { cutHeightK, cutreeK } from '../gpl/cutree.ts'
 import { type HclustMethod, hclustR } from '../gpl/hclust.ts'
 // The distance kernels are translated from R's C code: in gpl/ (audit 2).
 import { euclidean, pearson } from '../gpl/rowDistance.ts'
@@ -76,6 +77,26 @@ export function hclust(d: ArrayLike<number>, n: number, linkage: ClusterLinkage)
   const r = hclustR(d, n, METHOD[linkage])
   return { merge: r.merge, height: r.height, order: r.order.map((i) => i - 1) }
 }
+
+/** Roadmap 49c: a tree cut into `k` clusters, or at a height `h`. */
+export type TreeCut = { k: number } | { h: number }
+
+/**
+ * Roadmap 49c: R's `cutree(hc, k = k)` or `cutree(hc, h = h)` — each object's cluster (by its
+ * 0-based index), numbered 1… in the order the objects come, as R numbers them. A cut at a height
+ * keeps together every merge at or below it (R's k from h). Throws a RangeError for a k outside
+ * 1…n, as R stops.
+ */
+export function cutree(hc: HClust, cut: TreeCut): number[] {
+  const n = hc.order.length
+  if (n === 0) return []
+  const k = 'k' in cut ? cut.k : cutHeightK(hc.height, cut.h)
+  return cutreeK(hc.merge, k)
+}
+
+/** Roadmap 49c: the number of clusters a cut leaves (R's k from h; k itself). */
+export const cutCount = (hc: HClust, cut: TreeCut): number =>
+  'k' in cut ? cut.k : hc.order.length ? cutHeightK(hc.height, cut.h) : 0
 
 /**
  * Z-scores (x − mean) / SD by row or by column (SD with n − 1, over the non-missing values).

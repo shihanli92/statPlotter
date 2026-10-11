@@ -4,6 +4,7 @@ import {
   type Geom,
   type GraphNode,
   type Layer,
+  type LayerOf,
   type Position,
   type StatKind,
   TableKind,
@@ -180,6 +181,9 @@ const GEOM_STATS_OWN: Readonly<Record<Geom, Rows>> = {
   hex: { multipleVariables: ['hexbin'] },
   contour: { multipleVariables: ['density2d'] },
   raster: { multipleVariables: ['density2d'] },
+  // Roadmap 49c: the trees of a heat map's clustered rows and columns, or a tree alone, of the
+  // tables heat maps draw.
+  dendrogram: each(['grouped', 'contingency', 'multipleVariables', 'mvTextText'], ['cluster']),
 }
 
 /** Stats each geom allows per table kind (design §3.2), results' included (roadmap 35). */
@@ -241,8 +245,14 @@ export function frameAllowed(frame: Frame, kind: MatrixKind, geom: Geom, stat: S
   // Roadmap 34g: a dot plot (variables by groups) is a grid of dots and tiles.
   if (stat === 'dotplot')
     return frame === 'matrix' ? OK : no('dot plots are grids of variables by groups')
-  if (frame === 'matrix' && !(geom === 'tile' || (geom === 'label' && stat === 'cell')))
-    return no('a heat map draws tiles and their values')
+  // Roadmap 49c: trees stand beside heat maps, or alone on their frame.
+  if (geom === 'dendrogram' && frame !== 'matrix')
+    return no('dendrograms are of heat maps’ rows and columns')
+  if (
+    frame === 'matrix' &&
+    !(geom === 'tile' || geom === 'dendrogram' || (geom === 'label' && stat === 'cell'))
+  )
+    return no('a heat map draws tiles, their values and dendrograms')
   if (stat === 'cell' && frame !== 'matrix') return no('cell values label heat maps')
   if (stat === 'centroid' && frame !== 'xy')
     return no('group names at their centres are on XY graphs')
@@ -400,6 +410,13 @@ export function checkLayers(
       a = no('a dot plot draws dots and tiles of its statistics only')
     if (a.allowed && l.stat.kind === 'dotplot' && !l.aes?.group)
       a = no('needs a text variable to group by')
+    // Roadmap 49c: one tree of the rows and one of the columns beside a heat map; one tree alone.
+    if (a.allowed && l.geom === 'dendrogram') {
+      const trees = drawn.filter((x): x is LayerOf<'dendrogram'> => x.geom === 'dendrogram')
+      if (trees.find((x) => x.stat.of === l.stat.of) !== l)
+        a = no(`one tree of the ${l.stat.of} per graph`)
+      else if (!whole && trees[0] !== l) a = no('one tree without a heat map')
+    }
     if (a.allowed && l.aes && l.geom === 'line' && !mapped)
       a = no('lines by group join mapped points')
     // A graph of variables' overlays, paths and vectors follow its mapped points (roadmap 34c).
@@ -597,6 +614,15 @@ export const ROW_MARK_LAYERS: readonly RowMarkLayer[] = [
     frames: ['matrix'],
     kinds: ['multipleVariables'],
     too: 'too many values to label',
+    instead: 'Count two text variables, or use violins.',
+  },
+  // Roadmap 49c: a tree of every row (at most 2,000 rows are clustered).
+  {
+    geom: 'dendrogram',
+    stats: ['cluster'],
+    frames: ['matrix'],
+    kinds: ['multipleVariables'],
+    too: 'too many rows to cluster',
     instead: 'Count two text variables, or use violins.',
   },
 ]

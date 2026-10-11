@@ -373,12 +373,14 @@ describe('style presets', () => {
       expect.arrayContaining(['box', 'floating', 'connected']),
     )
     expect(presetsFor('column').map((p) => p.id)).not.toContain('connected')
-    // Contingency tables graph as bars of the counts (side by side or stacked), or a heat map.
+    // Contingency tables graph as bars of the counts (side by side or stacked), or a heat map
+    // (roadmap 49c: or a tree of their rows).
     expect(presetsFor('contingency').map((p) => p.id)).toEqual([
       'bars',
       'stacked',
       'stackedPercent',
       'heatmap',
+      'dendrogram',
     ])
     expect(presetsFor('xy').map((p) => p.id)).toEqual([
       'meanSd',

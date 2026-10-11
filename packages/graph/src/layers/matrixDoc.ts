@@ -47,7 +47,8 @@ const RULES: readonly string[] = [
   'Positions: grouped graphs place points, bars, boxes, violins, lines, bands, error bars, labels and centre lines side by side (dodge) or at the row’s centre (aligned); on category graphs only the subjects of nested groups stand side by side; elsewhere marks sit at their slot or X.',
   'Only bars and XY areas stack (areas by value, not as percents); attached layers (error bars, labels) take their host’s position.',
   `Stacked bars draw no ${UNSTACKED.bar.join(' or ')} layers; stacked areas no ${UNSTACKED.area.join(', ')} layers of the table.`,
-  'Heat maps (matrix) draw tiles and the values of their cells; pies (polar) slices and their labels; tiles, slices, cell values and shares of the whole (fraction) are drawn on nothing else (shares also as 100% bars).',
+  'Heat maps (matrix) draw tiles, the values of their cells and (roadmap 49c) the dendrograms of their clustered rows and columns; pies (polar) slices and their labels; tiles, slices, cell values, dendrograms and shares of the whole (fraction) are drawn on nothing else (shares also as 100% bars).',
+  'Dendrograms (roadmap 49c, dendrogram × cluster) draw the tree of a hierarchical clustering of the matrix’s rows or columns: beside a heat map whose tiles cluster that axis, the tiles’ tree (its leaves at the cells); else their own clustering (the cells follow it); without tiles, one tree alone fills the plot. A graph has at most one tree of the rows and one of the columns (one tree without tiles); they have no legend glyph (a cut tree’s clusters have entries of their own), no value-axis extent and nothing stands on them.',
   'A graph has at most one difference layer, one tile, slice or 100% bars layer (with at most one labels layer, attached to it: their values and labels sit nowhere else) and one layer of mapped points; lines by group need mapped points.',
 ]
 

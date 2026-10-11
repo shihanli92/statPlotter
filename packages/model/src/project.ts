@@ -33,8 +33,11 @@ export const ProjectSettings = z.object({
 })
 export type ProjectSettings = z.infer<typeof ProjectSettings>
 
-/** Schema v2 (roadmap 33b): graphs as a frame plus layers; v1 files migrate (`migrate.ts`). */
-export const CURRENT_SCHEMA_VERSION = 2
+/**
+ * Schema v3 (roadmap 49c): a heat map's dendrograms are layers of their own; v2 (roadmap 33b:
+ * graphs as a frame plus layers) and v1 files migrate (`migrate.ts`).
+ */
+export const CURRENT_SCHEMA_VERSION = 3
 
 const ProjectObject = z.object({
   schemaVersion: z.literal(CURRENT_SCHEMA_VERSION),

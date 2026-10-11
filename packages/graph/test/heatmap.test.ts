@@ -13,7 +13,6 @@ import {
   applyPreset,
   COLOR_MAPS,
   colorAt,
-  dendrogramLines,
   heatmapData,
   heatScale,
   layoutGraph,
@@ -31,7 +30,8 @@ import { byId, fonts, nodes, prim, projectOf, sampleTable } from './helpers.ts'
 /**
  * A new heat map of a table with the heat map options `h` set where a graph holds them: the
  * cells layer's style (missing colour, border, clustering) and stat (standardizing), a values
- * layer for cell labels, and the graph's colour scale.
+ * layer for cell labels, a tree layer for each clustered axis (roadmap 49c: its depth the
+ * `dendrogram` option), and the graph's colour scale.
  */
 function heatmap(table: DataTable, h: HeatmapStyle = {}, patch: Partial<GraphNode> = {}) {
   let g = graphOf(table, 'heatmap', () => patch)
@@ -42,7 +42,6 @@ function heatmap(table: DataTable, h: HeatmapStyle = {}, patch: Partial<GraphNod
     ...(clusterColumns !== undefined ? { columns: clusterColumns } : {}),
     ...(distance !== undefined ? { distance } : {}),
     ...(linkage !== undefined ? { linkage } : {}),
-    ...(dendrogram !== undefined ? { dendrogram } : {}),
   }
   const style = {
     ...(missing !== undefined ? { missing } : {}),
@@ -58,6 +57,14 @@ function heatmap(table: DataTable, h: HeatmapStyle = {}, patch: Partial<GraphNod
     const values: Layer = { id: 'values', geom: 'label', stat: { kind: 'cell' }, on: 'cells' }
     g = addLayers(g, [Object.keys(rest).length ? ({ ...values, style: rest } as Layer) : values])
   }
+  const tree = (of: 'rows' | 'columns'): Layer => ({
+    id: of === 'rows' ? 'rowTree' : 'columnTree',
+    geom: 'dendrogram',
+    stat: { kind: 'cluster', of },
+    ...(dendrogram !== undefined ? { style: { depth: dendrogram } } : {}),
+  })
+  if (clusterRows) g = addLayers(g, [tree('rows')])
+  if (clusterColumns) g = addLayers(g, [tree('columns')])
   const color: ColorScale = {
     ...(colors !== undefined ? { colors } : {}),
     ...(reverse !== undefined ? { reverse } : {}),
@@ -195,34 +202,6 @@ describe('colour maps and scales', () => {
     expect(m.t(5)).toBe(1)
     // No midpoint and all positive: the range's middle.
     expect(heatScale({ colors: 'purpleGreen' }, [2, 6]).mid).toBe(4)
-  })
-})
-
-describe('dendrograms', () => {
-  it('draws a ⊓ per merge, children at their leaves’ slots or their middles', () => {
-    // Leaves 0 and 1 merge at 1, then leaf 2 joins at 3: order 2, 0, 1.
-    const lines = dendrogramLines({
-      merge: [
-        [-1, -2],
-        [-3, 1],
-      ],
-      height: [1, 3],
-      order: [2, 0, 1],
-    })
-    expect(lines).toEqual([
-      [
-        [1, 0],
-        [1, 1],
-        [2, 1],
-        [2, 0],
-      ],
-      [
-        [0, 0],
-        [0, 3],
-        [1.5, 3],
-        [1.5, 1],
-      ],
-    ])
   })
 })
 

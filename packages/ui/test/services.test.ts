@@ -43,7 +43,7 @@ describe('load', () => {
       ),
     )
     const view = load(services, writeProjectFile(v1))
-    expect(services.store.getState().schemaVersion).toBe(2)
+    expect(services.store.getState().schemaVersion).toBe(3)
     expect(view.notes).toEqual([
       expect.objectContaining({ kind: 'approximated', graph: 'Bars with mean symbols' }),
     ])

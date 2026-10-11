@@ -61,7 +61,7 @@ interface DataSetRef { node: NodeId; key: DataSetKey }
 
 ```ts
 interface Project {
-  schemaVersion: 2           // CURRENT_SCHEMA_VERSION (model/src/project.ts); v1 files migrate (§9)
+  schemaVersion: 3           // CURRENT_SCHEMA_VERSION (model/src/project.ts); v1 and v2 files migrate (§9)
   meta: { title: string; created: string; modified: string; appVersion: string }  // ISO times
   settings: ProjectSettings
   nodes: Record<NodeId, DocNode>
@@ -1020,6 +1020,7 @@ type Geom = 'points' | 'bar' | 'errorbar' | 'center' | 'box' | 'violin' | 'line'
   | 'area' | 'band' | 'connector' | 'refline' | 'difference' | 'tile' | 'wedge' | 'label'
   | 'polygon' | 'path' | 'segment'                     // roadmap 34c (§6.1e)
   | 'hex' | 'contour' | 'raster'                        // roadmap 34g (§6.1i)
+  | 'dendrogram'                                        // roadmap 49c: a clustering's tree (§6.1p)
 type Stat =
   | { kind: 'identity' }                                // each value; cells; outputs; functions
   | { kind: 'summary'; center: 'mean' | 'median' | 'geomean'; error?: ErrorStat; by?: 'series' | 'subject' | 'all' }
@@ -1035,6 +1036,7 @@ type Stat =
   | { kind: 'dotplot'; threshold?; average?; scale? }   // 34g: a dot plot's statistics (§6.1i)
   | ResultStat                                          // 35: labels, lines, bands of results (§6.1j); 46b: y = a·x + b (§6.1l)
   | { kind: 'threshold' }                               // 46b: points classed by the graph's cut-offs (§6.1m)
+  | { kind: 'cluster'; of: 'rows' | 'columns'; distance?; linkage?; cut?: { k } | { h } }  // 49c: a tree (§6.1p)
 type Position =
   | { kind: 'identity' } | { kind: 'dodge'; by?: 'series' | 'subject' } | { kind: 'aligned' }
   | { kind: 'stack'; percent?: boolean; gap?: Pt }      // bars; XY areas (by value, roadmap 33d)
@@ -2014,6 +2016,59 @@ PresetRecipe.shapes?, PresetRecipe.dashes?              // a preset's (§9.4)
   keep their by-data-set values), Match format (`style` whole), the format painter (a data set's
   shape by data set is copied as such) and Change layers (layers kept keep their styles).
 
+### 6.1p Dendrograms as layers (roadmap 49c)
+
+A hierarchical clustering's tree is a layer of its own (decisions 1240–1253; schema v3, §9):
+
+```ts
+// Layer { geom: 'dendrogram', stat: Cluster, style?: DendrogramStyle }
+interface Cluster {
+  kind: 'cluster'
+  of: 'rows' | 'columns'                                // the matrix's rows (a heat map's rows) or its columns
+  distance?: 'euclidean' | 'pearson'                    // used where the tiles don't cluster this axis
+  linkage?: 'complete' | 'average' | 'ward'             // (absent: Euclidean, complete)
+  cut?: { k: number } | { h: number }                   // into k clusters (1–2000), or at a height (≥ 0)
+}
+interface DendrogramStyle {                             // sparse over `Theme.dendrogram`
+  depth?: number              // beside a heat map: a row tree's width, a column tree's height (4–400 pt; 36)
+  gap?: number                // to the map (0–100 pt; 6)
+  side?: 'left' | 'right' | 'top' | 'bottom'  // rows: right (absent) or left; columns: top (absent) or bottom;
+                              // alone: 'top' leaves along the bottom, 'right' leaves down the left
+  heights?: 'merge' | 'steps' // R's merge heights (absent), or equal steps (one above the higher branch)
+  line?: StrokeStyle          // 0.75 pt black
+  colorBranches?: boolean     // a cut tree's branches below the cut in their cluster's colour (absent: true)
+  strip?: boolean; stripWidth?: number   // a band of each leaf's cluster colour (8 pt)
+  clusterColors?: Record<'1' | '2' | …, ColorRef>  // by cluster number (absent: the palette in turn)
+}
+// TileStyle.cluster: { rows?, columns?, distance?, linkage? } — v2's `dendrogram` depth is gone
+```
+
+- **Who owns the order** (decision 1241): a heat map's tile layer — the first drawn — clusters
+  the axes it says (`cluster.rows`, `.columns`) on the values shown (z-scores when it
+  standardizes), and a tree of that axis draws that tree, its leaves at the cells. A tree of an
+  axis the tiles don't cluster clusters it itself (its stat's distance and linkage) and the cells
+  follow; a hidden tree clusters nothing. At most one drawn tree per axis (the matrix refuses a
+  second); the frame draws the first.
+- **Beside a heat map** (`frames/matrix.ts`): a row tree `gap` right (or left) of the map, a
+  column tree above (or below) it, `depth` deep; a cut tree's strip first (then 2 pt to the
+  tree). Names on a tree's side step out beyond it (the axis' offset); a right tree pushes the
+  colour scale out, and a legend (cut trees' clusters) stands beyond both.
+- **Alone** (no drawn tiles, `frames/tree.ts`): one tree fills the plot, its leaves along the
+  bottom (`top`, `bottom`) or down the left (`left`, `right`), named by the rows' titles (else
+  "Row n") or the data sets'; the heights on the other axis (an automatic continuous axis from 0,
+  "Height"; none for equal steps); a strip between the plot and the names. Its clustering is the
+  stat's, of the values as entered.
+- **Cuts**: each leaf's cluster as R's `cutree` numbers it (`@ps/stats` `cutree`, oracle suite
+  `cutree`); a k beyond the leaves cuts each apart (a warning). Branches below the cut take their
+  cluster's colour (a branch into a cluster coloured, a merge above the cut in the line's).
+  Legend entries `@<layer>/<n>` ("Cluster n"; "Row / Column cluster n" when both are cut), a
+  group per tree, unless the layer's `legend` is 'hide'.
+- **Scene**: `dendrogram/rows|columns/<merge>` polylines (a merge of several colours a group of
+  `…/a`, `…/bar`, `…/b`), `…/strip/<leaf>` bands, targeting `['layers', id]`; drawn in the
+  layer's group by layer, in the `dendrograms` plane by data set. Graph view: a selected tree's
+  outer edge has a handle; dragging it sets `depth` (one step, `canvasDrag` `tree`).
+- `graphRefs`: a tree refers to nothing outside its graph.
+
 ### 6.2 Style cascade
 
 ```
@@ -2057,7 +2112,8 @@ baseline), errorbar (direction, capWidth, line, x), center (line, width), box (f
 width, capWidth, centerLine, outlier symbol), violin (fill, border, width, quartiles,
 quartileLine, centerLine), line (stroke, gaps, fade), area / band (opacity, baseline, gaps),
 connector and refline (line), difference (guides, symbol, line, capWidth), tile (missing, border,
-cluster), wedge (fill, border), label (value, position, format, text, content, digits). Roadmap
+cluster), dendrogram (depth, gap, side, heights, line, cut colours and strip; roadmap 49c, §6.1p),
+wedge (fill, border), label (value, position, format, text, content, digits). Roadmap
 49a: a points', box outliers' or difference's shape and a line's, error bar's or centre line's
 dash may be the data set's (`{ series: true }`, §6.1o).
 
@@ -2247,6 +2303,7 @@ Stats each geom allows per table kind (— = not offered):
 | hex | — | — | — | — | — | — | hexbin* | — | — | — | — |
 | contour | — | — | — | — | — | — | density2d* | — | — | — | — |
 | raster | — | — | — | — | — | — | density2d* | — | — | — | — |
+| dendrogram | — | — | cluster | cluster | — | — | cluster | — | — | — | cluster |
 
 - A stat marked * needs raw values: it is refused for entered means (mean / SD / N formats), as are before-after lines.
 - Analysis outputs and functions draw lines, points and bands (identity) on any xy graph.
@@ -2263,7 +2320,8 @@ Stats each geom allows per table kind (— = not offered):
 - Positions: grouped graphs place points, bars, boxes, violins, lines, bands, error bars, labels and centre lines side by side (dodge) or at the row’s centre (aligned); on category graphs only the subjects of nested groups stand side by side; elsewhere marks sit at their slot or X.
 - Only bars and XY areas stack (areas by value, not as percents); attached layers (error bars, labels) take their host’s position.
 - Stacked bars draw no points or line layers; stacked areas no points, line, step, errorbar, band, path, polygon layers of the table.
-- Heat maps (matrix) draw tiles and the values of their cells; pies (polar) slices and their labels; tiles, slices, cell values and shares of the whole (fraction) are drawn on nothing else (shares also as 100% bars).
+- Heat maps (matrix) draw tiles, the values of their cells and (roadmap 49c) the dendrograms of their clustered rows and columns; pies (polar) slices and their labels; tiles, slices, cell values, dendrograms and shares of the whole (fraction) are drawn on nothing else (shares also as 100% bars).
+- Dendrograms (roadmap 49c, dendrogram × cluster) draw the tree of a hierarchical clustering of the matrix’s rows or columns: beside a heat map whose tiles cluster that axis, the tiles’ tree (its leaves at the cells); else their own clustering (the cells follow it); without tiles, one tree alone fills the plot. A graph has at most one tree of the rows and one of the columns (one tree without tiles); they have no legend glyph (a cut tree’s clusters have entries of their own), no value-axis extent and nothing stands on them.
 - A graph has at most one difference layer, one tile, slice or 100% bars layer (with at most one labels layer, attached to it: their values and labels sit nowhere else) and one layer of mapped points; lines by group need mapped points.
 
 Variables mapped to appearance (roadmap 34b), by the layers they act on (— = not offered; Multiple variables: its XY graph):
@@ -2291,6 +2349,7 @@ Cells tables (roadmap 34f): a multiple-variables table of more than 20,000 rows,
 | line (identity) | XY | Multiple variables | too many rows to join in lines by group | Use ellipses, hulls or group names. |
 | tile (identity, cell) | heat map | Multiple variables | too many rows for a heat map of every value | Count two text variables, or use violins. |
 | label (cell) | heat map | Multiple variables | too many values to label | Count two text variables, or use violins. |
+| dendrogram (cluster) | heat map | Multiple variables | too many rows to cluster | Count two text variables, or use violins. |
 
 - Labels from a variable are offered on cells tables of at most 1,000 rows (group names instead).
 - Such layers already on a graph keep drawing; Format › Layers says why they are slow and offers the summary in their place (or hides them).
@@ -2710,8 +2769,10 @@ Decisions 215–226.
     values shown (`stats` `rowDistances` + `hclust`, R's `dist` / `1 − cor` and `hclust` merge
     order, heights and order; `ward` = R's "ward.D2"), with `distance` ('euclidean', 'pearson')
     and `linkage` ('complete', 'average', 'ward'); the rows' dendrogram stands right of the map,
-    the columns' above it, `dendrogram` points deep (default 36); at most 2,000 rows or columns
-    are clustered, and a matrix with an undefined distance is left in table order (warnings);
+    the columns' above it, `dendrogram` points deep (default 36) — since roadmap 49c the trees
+    are layers of their own (§6.1p; v1's `dendrogram` becomes their `depth`); at most 2,000 rows
+    or columns are clustered, and a matrix with an undefined distance is left in table order
+    (warnings);
   - `labels`: values in the cells (in `format`, black or white by the cell's luminance), where
     they fit;
   - `colorBar`: the colour scale (shown by default) right of the map (upright, high at the top)
@@ -3289,7 +3350,7 @@ the save's time, so a save is reproducible.
   reading the results sheet's 'Number of pairs' row on a layer drawing a t test's results (the
   paired t test's ready "t, df and P" label before audit 2) reads its 'df' row.
   A file of a newer format is refused: "This project was saved by a newer version of the app
-  (file format v3; this version reads up to v2). Open it in the newer version."
+  (file format v4; this version reads up to v3). Open it in the newer version."
 - **v1 → v2 (roadmap 33b): graphs to layers** (`model/src/migrations/v1to2.ts`). Each graph node
   is checked against the v1 schema (an invalid one fails as v1 validation did, at its path) and
   compiled (`compileV1`, with its data table when that is its source) into frame and layers
@@ -3305,6 +3366,17 @@ the save's time, so a save is reproducible.
   change; chart options of another family). Templates (the same format), methods (their
   embedded project, `readMethod` → `parseProject`) and recovery copies (Save's bytes) migrate
   the same way. Once saved, older apps refuse the file with their newer-version message.
+- **v2 → v3 (roadmap 49c): a heat map's trees as layers** (`model/src/migrations/v2to3.ts`,
+  `treesAsLayers`, decision 1242). In v2 a tile layer's `style.cluster` ordered the cells (`rows`,
+  `columns`, `distance`, `linkage`) and drew a tree beside the map for each clustered axis,
+  `dendrogram` points deep. Each graph of the matrix frame gains a `dendrogram` layer per axis the
+  tiles v2 drew from (the first drawn tile layer, else the first) cluster — ids `rowTree`,
+  `columnTree` (numbered when taken), at the front, the rows' first, `style.depth` v2's
+  `dendrogram` when set, hidden when that tile is hidden — unless the graph is a dot plot (which
+  drew no trees) or has 32 layers; every tile layer loses `cluster.dendrogram`. It works on raw
+  JSON and depends on nothing that changes later; nothing drawn changes, so it reports no notes.
+  Fixtures: `graph/test/fixtures/v2/` (v2 projects and a version 1 preset written by 0.3.4 with
+  the SVGs it drew; `v2Fixtures.test.ts`), and the v1 fixtures through both steps (goldens).
 - **Saving never leaves a half-written file.** Desktop (`save_project_file`,
   `apps/desktop/src-tauri/src/save.rs`): the bytes, first parsed with `readProjectFile`, are
   written to `name.psproj.tmp` in the same folder, flushed and read back byte for byte; the
@@ -3637,7 +3709,7 @@ A user preset (`.pspreset`, JSON; `model/src/presetFile.ts`) is a graph's layers
 (decision 255), made by `presetRecipe(graph, tableKind)`:
 
 ```
-{ format: 'plotting-software-preset', version: 1, name, created, appVersion,
+{ format: 'plotting-software-preset', version: 2, name, created, appVersion,
   recipe: {
     tableKind,                    // the kind it was made for
     frame, look?,
@@ -3655,7 +3727,9 @@ Not kept: titles, axes and their ranges, annotations and brackets, labels, point
 data sets' identities and their own formats or stats, layers drawing analysis outputs or
 functions (and layers on them). `readPreset` checks the file with zod (`PresetRecipe` validates
 each layer as the document does, and the layers' references, `layerIssues`); a `version` above
-1 is refused as made by a newer app, anything else that isn't a preset with the reason.
+2 is refused as made by a newer app, anything else that isn't a preset with the reason. Version 2
+(roadmap 49c): a heat map's trees are layers; a version 1 file's layers are read through the
+v2 → v3 migration's `treesAsLayers` (§9), so a clustered heat map's preset keeps its trees.
 Names: 1–60 characters, none of `/ \ : * ? " < > |`, not starting with a dot, unique ignoring
 case (`presetNameProblem`); an import that clashes takes "Name (2)". In `@ps/graph`,
 `presetFits(recipe, kind, table?)` (every layer allowed by the matrix in its frame; variable
@@ -3736,6 +3810,7 @@ forms, 1e-8 for special-function P values, and exact for exact permutation P val
 | Wilcoxon signed-rank | `coin::wilcoxsign_test(zero.method = "Wilcoxon" / "Pratt")` | |
 | Roadmap 18 (`contingency_extra`, `deming`, `poisson`, `nlweights`, `qq`, `pcr`, `smoothing`, `coxcurves`, `rmthreeway`, `rm_effect_sizes`, `power`; new cases in `linear`, `logistic`, `curvefit`) | `chisq.test`/`fisher.test` + `p.adjust`; closed-form Deming checked by `optimize`/`prcomp`; `glm(poisson)`; `nls` with `weights`/1/f^(K/2) residuals, `deriv3` Hougaard, `pspearman`; `qnorm`; `prcomp` + `lm`; `lowess`, `splinefun`, `ns`, Akima from the paper; `survfit(coxph, stype = 1)`; `car::Anova` (idata), REML (`ref_rm.R`) + `lmer`; `aov(Error())`; `power.t.test`/`power.anova.test`/`power.prop.test` | rtol 1e-10, except Hougaard 1e-6 (central differences), Deming offset case 1e-9 (R's sums of squares at 1e6 offset), Cox Breslow tied case 1e-9 (survfit's KP iteration) |
 | Roadmap 30 (`plotstats`, `cluster`) | geometric mean / SD factor / CI via `log` + `t.test`, `quantile(type = 6)` whiskers, Tukey whiskers from type 6 quartiles; `dist` / `1 - cor(use = "pairwise.complete.obs")`, `hclust` (complete, average, ward.D2) merge, height and order, row and column z-scores | rtol 1e-10; merge and order exact (ties included) |
+| Roadmap 49c (`cutree`, 16 cases from `gen_cases_cutree.R`: every linkage and distance, every k of a 12-row tree, heights below, between, at and above the merges, duplicate rows' zero heights, integer data's tied heights, one column, n = 2 and 3) | `hclust` as `cluster` (merge, height, order), `cutree(hc, k)` and `cutree(hc, h)` (k from h: `n + 1 - which.max(c(height, Inf) > h)`) | memberships exact; heights rtol 1e-10; cuts at merge heights cut at the tree's own (ties) |
 | Roadmap 34g (`cytometry`, `density2d`, `hexbin`, `dotplot`, `pretty`, `contour`; cases from `gen_cases_cytometry.R` and `gen_cases_density.R`: data values from −2·10⁵ to 10⁶ and zero, six logicle parameter sets, cofactors 5 and 150; two clusters of 150 and 2,000 points, a skewed cloud, a ridge, five points, wider limits, bandwidth multipliers 0.5–2, grids 25–100, X's quartiles equal and both variables' (IQR 0: `bw.nrd0` × 4; audit 2); hexbin lattices of 10–50 bins, shapes 0.6–1.4, given bounds and a regular lattice of ties; 300 cells × 5 genes × 6 groups with missing values, thresholds 0 and 1, one and two groups, a constant gene, levels without cells (first, middle, last; one level left among empty ones; audit 2); 12 ranges for pretty; grids whose cells are saddles (one cell with its corners' mean above and below the level, a checkerboard of peaks and dips, 3xy tilted; audit 2), written by hand in `cases/contour`) | `flowCore::logicleTransform` and `inverseLogicleTransform` (Bioconductor, in the renv project) and `asinh`; `ggplot2:::precompute_2d_bw` + `MASS::kde2d`; the binned estimate reimplemented in base R (its binning checked against `KernSmooth:::linbin2D`); bilinear interpolation, `quantile(type = 7)`; `pretty(range(z), 10)`; `grDevices::contourLines` (suite `contour`: R's lines compared in order, so how a saddle's crossings join counts); `hexbin::hexbin` + `hcell2xy`; dot plots reimplemented in base R as Seurat 5's `DotPlot` computes them (checked once against `Seurat::DotPlot`'s plot data outside the renv project) | rtol 1e-10; logicle also atol 1e-12 × M near the scale's zero (inverse: 1e-14 × T; the largest error measured is 1.8e-15 × T); densities and contour points atol 1e-14 × the largest density / 1e-12 × the grid's span; hexbin cells and counts exact; scaled averages atol 1e-12 |
 | Roadmap 35 (`atrisk`: five cases — events and censorings at the times asked, times out of order and past the last subject, every subject censored, 120 and 40 subjects at a graph's ticks) | `survival::summary(survfit(Surv(time, event) ~ 1), times, extend = TRUE)$n.risk`, checked against the subjects with time ≥ t | exact (rtol 1e-10) |
 | Roadmap 34c (`ellipse`, `hull`; cases from `gen_cases_ellipse.R`: 30 rows, iris setosa, n = 3 and 4, heavy tails, a 1e6 offset, levels 0.68–0.99) | ellipses: `stats::cov.wt` / `MASS::cov.trob` / `colMeans` + `cov / n` with `qf`, the outline `(cos, sin) %*% chol(shape)`, checked in the script against `ggplot2:::calculate_ellipse` (norm, t), `car::ellipse` (Mahalanobis radius of every point) and `car::dataEllipse` (norm); hulls `grDevices::chull` | rtol 1e-10 (outline points also atol 1e-10 × the ellipse's size); cov.trob's iteration count exact; hull corners exact as a clockwise cycle (R's first corner isn't documented: compared from R's first) |
@@ -3754,6 +3829,14 @@ project that saves and reopens unchanged and renders byte-identically (goldens a
 SVGs, the rest against the hashes; until roadmap 33d each also laid out as the v1 layout of its
 v1 graph, the shadow comparison, except the behaviour changes the migration reports). Every
 example built now is its v1 document migrated (`ui/test/v1Examples.test.ts`).
+
+**v2 migration fixtures** (roadmap 49c, `graph/test/fixtures/v2/`, written by the 0.3.4 code,
+its generator kept as `generator.txt`): eight v2 projects of clustered heat maps (both trees by
+layer, a deeper row tree with values, a column tree by data set on z-scores, a hidden heat map, a
+hidden clustered tile under a plain one, a dot plot's tiles with clustering, a multiple-variables
+map with its scale below, a contingency map on 1 − r) with the SVGs 0.3.4 drew, and a version 1
+preset file. Each migrates to a valid v3 project, stable, drawn byte for byte by data set and with
+the same primitives in order by layer (`v2Fixtures.test.ts`).
 
 Required edge cases per test: n = 2, unequal n, ties, all-equal values (SD = 0), zero differences
 (Wilcoxon), large offset + tiny variance (1e9 + noise, numerical stability), empty and excluded

@@ -431,6 +431,24 @@ const DEFS: PresetDef[] = [
     look: () => 'heatmap.cells',
     layers: () => [{ id: 'cells', geom: 'tile', stat: { kind: 'cell' } }],
   },
+  {
+    // Roadmap 49c: a tree of the table's rows alone, leaves along the bottom (R's plot.hclust).
+    id: 'dendrogram',
+    label: 'Dendrogram',
+    description:
+      'A hierarchical clustering of the rows (R’s hclust: Euclidean distance, complete linkage) drawn as a tree, its leaves along the bottom',
+    tableKinds: ['grouped', 'multipleVariables', 'contingency'],
+    frame: () => 'matrix',
+    look: () => 'heatmap.cells',
+    layers: () => [
+      {
+        id: 'rowTree',
+        geom: 'dendrogram',
+        stat: { kind: 'cluster', of: 'rows' },
+        style: { side: 'top' },
+      },
+    ],
+  },
   // --- XY tables ----------------------------------------------------------------------------------
   {
     id: 'each',

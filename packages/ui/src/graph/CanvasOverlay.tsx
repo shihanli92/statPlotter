@@ -3,6 +3,7 @@ import type { CSSProperties, PointerEvent } from 'react'
 import type { Guide } from '../layout/snap.ts'
 import { handleSides, type ResizeHandle, resizeHandles } from './resize.ts'
 import { HALO } from './SceneSvg.tsx'
+import type { TreeHandle } from './treeDrag.ts'
 
 // What is drawn over a graph while arranging it on the canvas (roadmaps 22, 23): the plot's
 // resize handles and snap guides, on the graph view and on graphs placed on layout pages.
@@ -107,6 +108,47 @@ export function CanvasOverlay({
           </rect>
         ))}
     </>
+  )
+}
+
+/**
+ * Roadmap 49c: a selected heat map tree's handle, on the middle of its outer edge: dragged out
+ * from the map the tree gets deeper, in shallower (one undo step).
+ */
+export function TreeHandleRect({
+  handle,
+  k,
+  active,
+  onPointerDown,
+}: {
+  handle: TreeHandle
+  k: number
+  active: boolean
+  onPointerDown: (e: PointerEvent) => void
+}) {
+  const size = HANDLE_PX / k
+  const across = handle.side === 'left' || handle.side === 'right'
+  return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: a pointer shortcut; the size is also in the tree's Format view
+    <rect
+      className={`resize-handle tree-handle${active ? ' active' : ''}`}
+      data-testid="tree-handle"
+      data-side={handle.side}
+      x={handle.x - size / 2}
+      y={handle.y - size / 2}
+      width={size}
+      height={size}
+      rx={1 / k}
+      strokeWidth={1 / k}
+      style={{ cursor: across ? 'ew-resize' : 'ns-resize' }}
+      onPointerDown={onPointerDown}
+      onClick={(e) => e.stopPropagation()}
+      onDoubleClick={(e) => e.stopPropagation()}
+    >
+      <title>
+        {`Drag to change the dendrogram’s ${across ? 'width' : 'height'} (Alt: not rounded to half a point)`}
+      </title>
+    </rect>
   )
 }
 

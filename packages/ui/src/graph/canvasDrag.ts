@@ -15,6 +15,7 @@ import {
 } from './legendEdits.ts'
 import { type ResizeHandle, resizePlot, resizeReadout, type SizeTarget } from './resize.ts'
 import { moveEdits, moveLabel } from './selectionEdits.ts'
+import { besideTree, draggedDepth } from './treeDrag.ts'
 
 // A drag on a graph (roadmap 22) — an element moved or the plot resized from a handle — and what
 // it does, shared by the graph view and graphs placed on layout pages.
@@ -49,7 +50,20 @@ export type CanvasDrag =
       keepScale?: boolean
     }
   | EntryDrag
+  | TreeDrag
   | MarqueeDrag
+
+/**
+ * Roadmap 49c: a heat map's tree (a dendrogram layer) resized by dragging its outer edge's handle;
+ * (dx, dy) the move in graph points, Alt: no rounding to half a point.
+ */
+export interface TreeDrag {
+  kind: 'tree'
+  layer: string
+  dx: number
+  dy: number
+  free: boolean
+}
 
 /**
  * Roadmap 47b: a selected legend entry dragged to another place in its group of entries (the
@@ -163,6 +177,32 @@ export function dragOutcome(
       commits,
       label: 'Move legend entry',
       ...(at ? { insertion: at.insertion.line } : {}),
+    }
+  }
+  if (d.kind === 'tree') {
+    // Roadmap 49c: the tree's depth, one edit of its layer's style.
+    const l = besideTree(graph, d.layer)
+    const depth = l ? draggedDepth(l, d.dx, d.dy, d.free) : undefined
+    const label = 'Dendrogram size'
+    const path = ['layers', { id: d.layer }, 'style', 'depth'] as unknown as StylePath
+    const commits = l && depth !== undefined ? [{ path, value: depth, label }] : []
+    const next =
+      l && depth !== undefined
+        ? {
+            ...graph,
+            layers: graph.layers.map((x) =>
+              x === l ? ({ ...l, style: { ...l.style, depth } } as typeof x) : x,
+            ),
+          }
+        : graph
+    return {
+      graph: next,
+      guides: [],
+      readout:
+        depth !== undefined ? `${l?.stat.of === 'rows' ? 'Width' : 'Height'} ${depth} pt` : null,
+      commit: commits[0] ?? { path, value: undefined, label },
+      commits,
+      label,
     }
   }
   if (d.kind === 'resize') {

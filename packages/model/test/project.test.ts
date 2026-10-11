@@ -204,13 +204,13 @@ describe('migrations', () => {
 
   it('passes current-version files through unchanged', () => {
     const p = createProject()
-    expect(p.schemaVersion).toBe(2)
+    expect(p.schemaVersion).toBe(3)
     expect(migrateProject(p)).toBe(p)
   })
 
   it('says which version wrote a newer file and which this one reads', () => {
-    expect(() => migrateProject({ schemaVersion: 3 })).toThrow(
-      'This project was saved by a newer version of the app (file format v3; this version reads up to v2). Open it in the newer version.',
+    expect(() => migrateProject({ schemaVersion: 4 })).toThrow(
+      'This project was saved by a newer version of the app (file format v4; this version reads up to v3). Open it in the newer version.',
     )
   })
 
@@ -241,7 +241,7 @@ describe('migrations', () => {
     }
     const notes: MigrationNote[] = []
     const p = parseProject(JSON.parse(JSON.stringify(raw)), notes)
-    expect(p.schemaVersion).toBe(2)
+    expect(p.schemaVersion).toBe(3)
     const g = p.nodes['g1' as NodeId] as GraphNode
     expect(g).toMatchObject({ frame: 'category', look: 'column.bar', drawOrder: 'series' })
     expect(g.layers.map((l) => l.id)).toEqual(['bars', 'points', 'error'])

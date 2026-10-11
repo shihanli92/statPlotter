@@ -3,7 +3,7 @@ import {
   binsFill,
   bubbleVariables,
   COLOR_MAPS,
-  DENDROGRAM,
+  clusterColor,
   ELLIPSE_LABELS,
   GRADIENT_COLORS,
   GRAND_MEAN_LINE,
@@ -16,13 +16,19 @@ import {
   type ResolvedSeriesStyle,
   stacked,
   stackedArea,
+  treeClusters,
+  treeLayer,
+  treeOfLayer,
+  treeStyle,
   UNSTACKED,
   WHISKER_LABELS,
 } from '@ps/graph'
 import {
   type ColorMapName,
+  type GraphNode,
   type Layer,
   type LayerOf,
+  MAX_CLUSTERS,
   type NumberDisplay,
   type Position,
   plainText,
@@ -202,6 +208,8 @@ function StatRow({ e }: { e: LayerEdit }) {
   }
   const rows: ReactNode[] = []
   if (layer.geom === 'bar' && stat.kind === 'bin') rows.push(<BinFields key="bin" e={e} />)
+  // Roadmap 49c: a tree's clustering and cut.
+  if (layer.geom === 'dendrogram') rows.push(<TreeStatRows key="tree" e={e} />)
   // Roadmap 34g: hexagons, densities and dot plots.
   rows.push(...densityStatRows(e))
   switch (layer.geom) {
@@ -1802,53 +1810,28 @@ function TileFields({ e }: { e: LayerEdit }) {
           <Checkbox
             label="Cluster rows"
             checked={!!cluster.rows}
-            onChange={(v) => setCluster('rows', v || undefined, 'Cluster rows')}
+            onChange={(v) => ctx.dispatch(clusterCommands(graph, tile, 'rows', v), 'Cluster rows')}
           />
           <Checkbox
             label="Cluster columns"
             checked={!!cluster.columns}
-            onChange={(v) => setCluster('columns', v || undefined, 'Cluster columns')}
+            onChange={(v) =>
+              ctx.dispatch(clusterCommands(graph, tile, 'columns', v), 'Cluster columns')
+            }
           />
         </div>
         {clustered && (
-          <>
-            <div className="field-row">
-              <Select
-                label="Distance"
-                value={cluster.distance ?? 'euclidean'}
-                options={[
-                  { value: 'euclidean', label: 'Euclidean' },
-                  { value: 'pearson', label: '1 − Pearson r' },
-                ]}
-                onChange={(v) =>
-                  setCluster('distance', v === 'euclidean' ? undefined : v, 'Distance')
-                }
-              />
-              <Select
-                label="Linkage"
-                value={cluster.linkage ?? 'complete'}
-                options={[
-                  { value: 'complete', label: 'Complete' },
-                  { value: 'average', label: 'Average (UPGMA)' },
-                  { value: 'ward', label: 'Ward (ward.D2)' },
-                ]}
-                onChange={(v) => setCluster('linkage', v === 'complete' ? undefined : v, 'Linkage')}
-              />
-            </div>
-            <NumberInput
-              label="Dendrogram depth (pt)"
-              value={cluster.dendrogram ?? DENDROGRAM}
-              min={4}
-              max={200}
-              onChange={(v) =>
-                setCluster('dendrogram', v === DENDROGRAM ? undefined : v, 'Dendrogram')
-              }
+          <div className="field-row">
+            <ClusterMethod
+              value={cluster}
+              onChange={(field, v, label) => setCluster(field, v, label)}
             />
-          </>
+          </div>
         )}
         <p className="muted">
-          Rows (and columns) are ordered as R’s hclust orders them, clustered on the values shown;
-          the rows’ dendrogram stands right of the map, the columns’ above it.
+          Rows (and columns) are ordered as R’s hclust orders them, clustered on the values shown.
+          Their trees are layers of their own (Row dendrogram, Column dendrogram): their size, side
+          and cut are theirs.
         </p>
       </Section>
       <Section title="Values in the cells and colour scale">
@@ -1908,6 +1891,367 @@ function TileFields({ e }: { e: LayerEdit }) {
       </Section>
     </>
   )
+}
+
+/** A clustering's distance and linkage (R's dist / 1 − cor and hclust methods). */
+function ClusterMethod({
+  value,
+  onChange,
+}: {
+  value: { distance?: 'euclidean' | 'pearson' | undefined; linkage?: string | undefined }
+  onChange: (field: 'distance' | 'linkage', v: string | undefined, label: string) => void
+}) {
+  return (
+    <>
+      <Select
+        label="Distance"
+        value={value.distance ?? 'euclidean'}
+        options={[
+          { value: 'euclidean', label: 'Euclidean' },
+          { value: 'pearson', label: '1 − Pearson r' },
+        ]}
+        onChange={(v) => onChange('distance', v === 'euclidean' ? undefined : v, 'Distance')}
+      />
+      <Select
+        label="Linkage"
+        value={value.linkage ?? 'complete'}
+        options={[
+          { value: 'complete', label: 'Complete' },
+          { value: 'average', label: 'Average (UPGMA)' },
+          { value: 'ward', label: 'Ward (ward.D2)' },
+        ]}
+        onChange={(v) => onChange('linkage', v === 'complete' ? undefined : v, 'Linkage')}
+      />
+    </>
+  )
+}
+
+/**
+ * Roadmap 49c: a heat map's clustering of its rows or columns turned on — with its tree, a layer
+ * of its own (Row / Column dendrogram) added at the front unless one is there — or off, its trees
+ * removed with it (a tree left would cluster the axis by itself). One step.
+ */
+export function clusterCommands(
+  graph: GraphNode,
+  tile: Layer,
+  of: 'rows' | 'columns',
+  on: boolean,
+): Command[] {
+  const set: Command = {
+    type: 'node.set',
+    id: graph.id,
+    path: layerPath(tile.id, 'style', 'cluster', of),
+    value: on || undefined,
+  }
+  const trees = graph.layers.filter((l) => l.geom === 'dendrogram' && l.stat.of === of)
+  if (on)
+    return trees.length
+      ? [set]
+      : [set, { type: 'graph.addLayer', id: graph.id, layer: treeLayer(of, graph.layers) }]
+  return [
+    set,
+    ...trees.map((l): Command => ({ type: 'graph.removeLayer', id: graph.id, layer: l.id })),
+  ]
+}
+
+/** Roadmap 49c: a tree's heat map — the graph's first drawn tile layer, if any. */
+const heatMapOf = (graph: GraphNode) =>
+  graph.layers.find((l): l is LayerOf<'tile'> => l.geom === 'tile' && l.visible !== false)
+
+/** A height as a cut's default and in words: 4 significant digits. */
+const roundHeight = (h: number) => +h.toPrecision(4)
+
+/**
+ * Roadmap 49c: a tree's clustering — what it is of (alone), its distance and linkage (beside a
+ * heat map clustering that axis, the heat map's, shared with its other tree) — and its cut into
+ * clusters (R's cutree: into k, or at a height, with the clusters it leaves).
+ */
+function TreeStatRows({ e }: { e: LayerEdit }) {
+  const { ctx } = e
+  const layer = e.layer as LayerOf<'dendrogram'>
+  const stat = layer.stat
+  const tile = heatMapOf(ctx.graph)
+  const owner = tile?.style?.cluster?.[stat.of] ? tile : undefined
+  const hc = treeOfLayer(ctx.project, ctx.graph, layer, ctx.lookup)
+  const n = hc?.order.length ?? 0
+  const top = hc?.height.length ? hc.height[hc.height.length - 1]! : 0
+  const cut = stat.cut
+  const withStat = (patch: Record<string, unknown>, label: string) => {
+    const next = { ...stat, ...patch } as Record<string, unknown>
+    for (const k of Object.keys(next)) if (next[k] === undefined) delete next[k]
+    e.setStat(next as Stat, label)
+  }
+  // Two clusters: a cut half way between the two highest merges.
+  const height2 = hc && hc.height.length > 1 ? (top + hc.height[hc.height.length - 2]!) / 2 : top
+  return (
+    <>
+      {!tile && (
+        <Select
+          label="Tree of"
+          value={stat.of}
+          options={[
+            { value: 'rows', label: 'The rows' },
+            { value: 'columns', label: 'The data sets (columns)' },
+          ]}
+          onChange={(v) => withStat({ of: v }, 'Tree of')}
+        />
+      )}
+      <div className="field-row">
+        <ClusterMethod
+          value={owner?.style?.cluster ?? stat}
+          onChange={(field, v, label) =>
+            owner
+              ? ctx.set(layerPath(owner.id, 'style', 'cluster', field), v, label)
+              : withStat({ [field]: v }, label)
+          }
+        />
+      </div>
+      {owner && (
+        <p className="muted">
+          The heat map’s clustering, which orders its cells (its other tree’s too).
+        </p>
+      )}
+      <div className="field-row">
+        <Select
+          label="Cut the tree"
+          value={cut ? ('k' in cut ? 'k' : 'h') : 'none'}
+          options={[
+            { value: 'none', label: 'Not cut' },
+            { value: 'k', label: 'Into clusters' },
+            { value: 'h', label: 'At a height' },
+          ]}
+          onChange={(v) =>
+            withStat(
+              {
+                cut:
+                  v === 'k'
+                    ? { k: Math.min(2, Math.max(1, n)) }
+                    : v === 'h'
+                      ? { h: roundHeight(height2) }
+                      : undefined,
+              },
+              v === 'none' ? 'Uncut tree' : 'Cut the tree',
+            )
+          }
+        />
+        {cut && 'k' in cut && (
+          <NumberInput
+            label="Clusters"
+            value={cut.k}
+            min={1}
+            max={Math.max(1, Math.min(n, MAX_CLUSTERS))}
+            step={1}
+            onChange={(v) => withStat({ cut: { k: Math.max(1, Math.round(v)) } }, 'Clusters')}
+          />
+        )}
+        {cut && 'h' in cut && (
+          <NumberInput
+            label="Height"
+            value={cut.h}
+            min={0}
+            onChange={(v) => withStat({ cut: { h: Math.max(0, v) } }, 'Cut height')}
+          />
+        )}
+      </div>
+      {cut && hc && (
+        <p className="muted">
+          {'h' in cut
+            ? `${treeClusters(hc, cut, [])?.count ?? 0} clusters at this height (merges from 0 to ${roundHeight(top)}).`
+            : `Clusters as R’s cutree numbers them, in the order of the ${stat.of === 'rows' ? 'rows' : 'data sets'}.`}
+        </p>
+      )}
+    </>
+  )
+}
+
+/**
+ * Roadmap 49c: a tree's size and place — beside a heat map its side, depth and gap (the outer
+ * edge can be dragged on the canvas too), alone where its leaves are (the axes swapped with it) —
+ * its branch heights, and a cut tree's colours and strip.
+ */
+function DendrogramFields({ e }: { e: LayerEdit }) {
+  const { ctx } = e
+  const { graph, theme, palette } = ctx
+  const layer = e.layer as LayerOf<'dendrogram'>
+  const tree = treeStyle(layer, theme)
+  const alone = !heatMapOf(graph)
+  const of = layer.stat.of
+  const own = layer.style ?? {}
+  const d = theme.dendrogram
+  const set = (field: string, v: unknown, label: string) => e.set(field, v, label)
+  const down = tree.side === 'left' || tree.side === 'right'
+  const hc = layer.stat.cut ? treeOfLayer(ctx.project, graph, layer, ctx.lookup) : null
+  const count = hc ? (treeClusters(hc, layer.stat.cut, [])?.count ?? 0) : 0
+  /** A dendrogram alone turned: its side, the axes and the plot's sides swapped, one step. */
+  const leaves = (v: 'bottom' | 'left') => {
+    if ((v === 'left') === down) return
+    const cmds: Command[] = [
+      ...styleCommands(graph, layer, null, [['side', v === 'left' ? 'right' : 'top']]),
+      { type: 'node.set', id: graph.id, path: ['axes', 'x'], value: graph.axes.y },
+      { type: 'node.set', id: graph.id, path: ['axes', 'y'], value: graph.axes.x },
+      {
+        type: 'node.set',
+        id: graph.id,
+        path: ['size'],
+        value: {
+          ...graph.size,
+          plotWidth: graph.size.plotHeight,
+          plotHeight: graph.size.plotWidth,
+        },
+      },
+    ]
+    ctx.dispatch(cmds, v === 'left' ? 'Leaves down the left' : 'Leaves along the bottom')
+  }
+  return (
+    <>
+      <Section title="Size and place">
+        {alone ? (
+          <Select
+            label="Leaves"
+            value={down ? 'left' : 'bottom'}
+            options={[
+              { value: 'bottom', label: 'Along the bottom (the tree above)' },
+              { value: 'left', label: 'Down the left (the tree beside)' },
+            ]}
+            onChange={leaves}
+          />
+        ) : (
+          <>
+            <Select
+              label="Side"
+              value={
+                of === 'rows'
+                  ? tree.side === 'left'
+                    ? 'left'
+                    : 'right'
+                  : tree.side === 'bottom'
+                    ? 'bottom'
+                    : 'top'
+              }
+              options={
+                of === 'rows'
+                  ? [
+                      { value: 'right', label: 'Right of the map' },
+                      { value: 'left', label: 'Left of the map (row names on the far side)' },
+                    ]
+                  : [
+                      { value: 'top', label: 'Above the map' },
+                      { value: 'bottom', label: 'Below the map (column names beyond it)' },
+                    ]
+              }
+              onChange={(v) =>
+                set('side', v === (of === 'rows' ? 'right' : 'top') ? undefined : v, 'Tree side')
+              }
+            />
+            <div className="field-row">
+              <NumberInput
+                label={of === 'rows' ? 'Tree width (pt)' : 'Tree height (pt)'}
+                value={tree.depth}
+                min={4}
+                max={400}
+                onChange={(v) => set('depth', v === d.depth ? undefined : v, 'Dendrogram size')}
+              />
+              <NumberInput
+                label="Gap to the map (pt)"
+                value={tree.gap}
+                min={0}
+                max={100}
+                onChange={(v) => set('gap', v === d.gap ? undefined : v, 'Dendrogram gap')}
+              />
+            </div>
+          </>
+        )}
+        <Select
+          label="Branch heights"
+          value={tree.heights}
+          options={[
+            { value: 'merge', label: 'Merge heights (R’s hclust)' },
+            { value: 'steps', label: 'Equal steps' },
+          ]}
+          onChange={(v) => set('heights', v === 'merge' ? undefined : v, 'Branch heights')}
+        />
+      </Section>
+      {layer.stat.cut && (
+        <Section title="Cluster colours">
+          <Checkbox
+            label="Branches below the cut in their cluster’s colour"
+            checked={tree.colorBranches}
+            onChange={(v) => set('colorBranches', v ? undefined : false, 'Cluster colours')}
+          />
+          <div className="field-row">
+            <Checkbox
+              label={
+                alone ? 'Cluster strip by the leaves' : 'Cluster strip between the tree and the map'
+              }
+              checked={tree.strip}
+              onChange={(v) => set('strip', v || undefined, 'Cluster strip')}
+            />
+            {tree.strip && (
+              <NumberInput
+                label="Strip width (pt)"
+                value={tree.stripWidth}
+                min={1}
+                max={50}
+                onChange={(v) =>
+                  set('stripWidth', v === d.stripWidth ? undefined : v, 'Strip width')
+                }
+              />
+            )}
+          </div>
+          {count > 0 && (
+            <fieldset className="field cluster-colors">
+              <legend>Cluster colours</legend>
+              {Array.from({ length: Math.min(count, MAX_CLUSTER_SWATCHES) }, (_, i) => {
+                const c = i + 1
+                const mine = tree.clusterColors[String(c)]
+                return (
+                  <ColorField
+                    key={c}
+                    label={`Cluster ${c}`}
+                    value={clusterColor(tree, palette, c)}
+                    palette={palette}
+                    automatic={{
+                      on: !mine,
+                      label: 'The palette’s',
+                      css: clusterColor({ ...tree, clusterColors: {} }, palette, c),
+                      onPick: () =>
+                        set(
+                          'clusterColors',
+                          withoutKey(own.clusterColors, String(c)),
+                          'Cluster colour',
+                        ),
+                    }}
+                    onChange={(_, ref) =>
+                      set(
+                        'clusterColors',
+                        { ...own.clusterColors, [String(c)]: ref },
+                        'Cluster colour',
+                      )
+                    }
+                  />
+                )
+              })}
+              {count > MAX_CLUSTER_SWATCHES && (
+                <p className="muted">
+                  Clusters past {MAX_CLUSTER_SWATCHES} take the palette in turn.
+                </p>
+              )}
+            </fieldset>
+          )}
+        </Section>
+      )}
+    </>
+  )
+}
+
+/** Most cluster colours offered to pick (the others follow the palette). */
+const MAX_CLUSTER_SWATCHES = 24
+
+/** A record without a key (undefined when nothing is left). */
+function withoutKey<T>(o: Readonly<Record<string, T>> | undefined, key: string) {
+  if (!o) return undefined
+  const { [key]: _, ...rest } = o
+  return Object.keys(rest).length ? rest : undefined
 }
 
 /**
@@ -2006,6 +2350,8 @@ function GeomSections({ e }: { e: LayerEdit }) {
       return <DifferenceFields e={e} />
     case 'tile':
       return <TileFields e={e} />
+    case 'dendrogram':
+      return <DendrogramFields e={e} />
     case 'wedge':
       return <SliceFields e={e} />
     case 'label':
@@ -2083,6 +2429,8 @@ export function layerPart(layer: Layer): { title: string; noun: string } {
       return { title: 'Density image', noun: 'the density image' }
     case 'tile':
       return { title: 'Heat map', noun: 'the heat map' }
+    case 'dendrogram':
+      return { title: 'Dendrogram', noun: 'the dendrogram' }
     case 'refline':
       return { title: 'Grand mean', noun: 'the grand mean' }
     default:

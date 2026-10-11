@@ -1,0 +1,10 @@
+[
+ "heatmap-both-by-layer",
+ "heatmap-rows-depth-values",
+ "heatmap-columns-by-data-set",
+ "heatmap-hidden-tile",
+ "heatmap-two-tiles",
+ "dotplot-tile-cluster",
+ "mv-heatmap-bottom-scale",
+ "contingency-heatmap-both"
+]

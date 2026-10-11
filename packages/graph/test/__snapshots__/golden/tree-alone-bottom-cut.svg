@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="211.815pt" height="254.989pt" viewBox="0 0 211.815 254.989">
+<g data-id="graph">
+<g data-id="title">
+<text fill="#000000" xml:space="preserve"><tspan x="72.974" y="20.674" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">Sample grouped</tspan></text>
+</g>
+<g data-id="series">
+<g data-id="layer/rowTree">
+<g data-id="dendrogram/rows/strip/0">
+<rect x="55.815" y="199.785" width="21.071" height="8" fill="#0072b2" stroke="none"/>
+</g>
+<g data-id="dendrogram/rows/strip/1">
+<rect x="76.387" y="199.785" width="21.071" height="8" fill="#0072b2" stroke="none"/>
+</g>
+<g data-id="dendrogram/rows/strip/2">
+<rect x="96.958" y="199.785" width="21.071" height="8" fill="#0072b2" stroke="none"/>
+</g>
+<g data-id="dendrogram/rows/strip/3">
+<rect x="117.53" y="199.785" width="21.071" height="8" fill="#0072b2" stroke="none"/>
+</g>
+<g data-id="dendrogram/rows/strip/4">
+<rect x="138.101" y="199.785" width="21.071" height="8" fill="#d55e00" stroke="none"/>
+</g>
+<g data-id="dendrogram/rows/strip/5">
+<rect x="158.673" y="199.785" width="21.071" height="8" fill="#009e73" stroke="none"/>
+</g>
+<g data-id="dendrogram/rows/strip/6">
+<rect x="179.244" y="199.785" width="20.571" height="8" fill="#009e73" stroke="none"/>
+</g>
+<g data-id="dendrogram/rows/0">
+<polyline points="107.244,197.785 107.244,173.636 127.815,173.636 127.815,197.785" fill="none" stroke="#0072b2" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/1">
+<polyline points="168.958,197.785 168.958,173.636 189.53,173.636 189.53,197.785" fill="none" stroke="#009e73" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/2">
+<polyline points="86.673,197.785 86.673,153.256 117.53,153.256 117.53,173.636" fill="none" stroke="#0072b2" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/3">
+<polyline points="66.101,197.785 66.101,117.69 102.101,117.69 102.101,153.256" fill="none" stroke="#0072b2" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/4">
+<g data-id="dendrogram/rows/4/a">
+<polyline points="148.387,197.785 148.387,113.434" fill="none" stroke="#d55e00" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/4/bar">
+<polyline points="148.387,113.434 179.244,113.434" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/4/b">
+<polyline points="179.244,113.434 179.244,173.636" fill="none" stroke="#009e73" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+<g data-id="dendrogram/rows/5">
+<g data-id="dendrogram/rows/5/a">
+<polyline points="84.101,117.69 84.101,43.153" fill="none" stroke="#0072b2" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/5/bar">
+<polyline points="84.101,43.153 163.815,43.153" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+<g data-id="dendrogram/rows/5/b">
+<polyline points="163.815,43.153 163.815,113.434" fill="none" stroke="#000000" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/tick/0">
+<line x1="55.815" y1="197.785" x2="51.815" y2="197.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/0">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="201.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">0.0</tspan></text>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="55.815" y1="170.785" x2="51.815" y2="170.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/1">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="174.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">2.5</tspan></text>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="55.815" y1="143.785" x2="51.815" y2="143.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/2">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="147.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">5.0</tspan></text>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="55.815" y1="116.785" x2="51.815" y2="116.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/3">
+<text fill="#000000" xml:space="preserve"><tspan x="33.524" y="120.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">7.5</tspan></text>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="55.815" y1="89.785" x2="51.815" y2="89.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/4">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="93.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">10.0</tspan></text>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="55.815" y1="62.785" x2="51.815" y2="62.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/5">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="66.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">12.5</tspan></text>
+</g>
+<g data-id="axis/y/tick/6">
+<line x1="55.815" y1="35.785" x2="51.815" y2="35.785" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tickLabel/6">
+<text fill="#000000" xml:space="preserve"><tspan x="27.406" y="39.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">15.0</tspan></text>
+</g>
+<g data-id="axis/y/title">
+<text fill="#000000" transform="rotate(-90 14.703 116.785)" xml:space="preserve"><tspan x="-3.962" y="120.945" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">Height</tspan></text>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/tickLabel/0">
+<text fill="#000000" transform="rotate(-45 66.101 212.785)" xml:space="preserve"><tspan x="30.018" y="216.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gene 6</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/1">
+<text fill="#000000" transform="rotate(-45 86.673 212.785)" xml:space="preserve"><tspan x="50.59" y="216.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gene 2</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/2">
+<text fill="#000000" transform="rotate(-45 107.244 212.785)" xml:space="preserve"><tspan x="71.161" y="216.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gene 1</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/3">
+<text fill="#000000" transform="rotate(-45 127.815 212.785)" xml:space="preserve"><tspan x="91.732" y="216.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gene 3</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/4">
+<text fill="#000000" transform="rotate(-45 148.387 212.785)" xml:space="preserve"><tspan x="112.304" y="216.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gene 4</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/5">
+<text fill="#000000" transform="rotate(-45 168.958 212.785)" xml:space="preserve"><tspan x="132.875" y="216.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gene 5</tspan></text>
+</g>
+<g data-id="axis/x/tickLabel/6">
+<text fill="#000000" transform="rotate(-45 189.53 212.785)" xml:space="preserve"><tspan x="153.447" y="216.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">Gene 7</tspan></text>
+</g>
+</g>
+</g>
+</svg>

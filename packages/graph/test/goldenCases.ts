@@ -120,6 +120,7 @@ function depth(layer: Pick<Layer, 'geom'>, frame: Frame): number {
     case 'center':
       return 8
     case 'label':
+    case 'dendrogram':
       return 9
   }
 }

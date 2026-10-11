@@ -6,6 +6,7 @@ import {
   type GraphLook,
   type GraphNode,
   type Layer,
+  type LayerOf,
   type LevelMeasure,
   levelsInTable,
   newNodeId,
@@ -230,8 +231,31 @@ export function scaffoldFor(table: DataTable, spec: GraphSpec): Scaffold {
         }
       }
       const rows = Math.max(table.rowCount, 1)
-      const cell = Math.max(8, Math.min(24, 216 / Math.max(cols, rows)))
       const bare = { tickStyle: { direction: 'none' as const } }
+      // Roadmap 49c: a dendrogram alone — its leaves (the rows or the variables) named along the
+      // bottom (or down the left), the merge heights up the other axis ("Height", as R's plot).
+      const tree = spec.layers.find((l): l is LayerOf<'dendrogram'> => l.geom === 'dendrogram')
+      if (tree && !spec.layers.some((l) => l.geom === 'tile')) {
+        const leaves = tree.stat.of === 'rows' ? rows : cols
+        const along = Math.min(432, Math.max(144, 14 * leaves))
+        const down = tree.style?.side === 'left' || tree.style?.side === 'right'
+        const names: AxisSpec = {
+          type: 'categorical',
+          title: null,
+          labels: 'dataSetTitles',
+          rotation: 0,
+          ...bare,
+        }
+        const height = titled('Height')
+        return {
+          size: down
+            ? { plotWidth: 180, plotHeight: along }
+            : { plotWidth: along, plotHeight: 162 },
+          axes: down ? { x: height, y: names } : { x: names, y: height },
+          legend: { show: false, position: 'right' },
+        }
+      }
+      const cell = Math.max(8, Math.min(24, 216 / Math.max(cols, rows)))
       return {
         size: {
           plotWidth: Math.min(432, Math.max(72, cell * cols)),

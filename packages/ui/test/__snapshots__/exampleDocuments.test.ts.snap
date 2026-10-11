@@ -1,36 +1,36 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`example documents > chen 1`] = `"3fef107cd2dbff0567cf9788c736bb4f959a9c6b48370b251c10820fc65078cf"`;
+exports[`example documents > chen 1`] = `"6a312bce879f54a75d756287ca47d90b41e8f5f567e855b9b4a82f72944f1016"`;
 
-exports[`example documents > clinical 1`] = `"b5bc58f78c92b9385d8cd5ef0167c0ae4b93d5296a4a9831cb13090e5c1f2b50"`;
+exports[`example documents > clinical 1`] = `"506667f38da152aa57435743835b8cf8d7dee609110432af04b8983a201f9285"`;
 
-exports[`example documents > curve-fitting 1`] = `"8b6daba36d30f467e1b62a33b3effb2fea1f744b65c62d1e9896fe42d4c4071f"`;
+exports[`example documents > curve-fitting 1`] = `"47423430440398c7c92b36c2ef8b4f2bb289a4e1927c88bd47f83c62c66e4d5b"`;
 
-exports[`example documents > data-processing 1`] = `"86e6b29565c42485b4316c6cd41cf7d35d03296ddb22c801afb737c8391f0007"`;
+exports[`example documents > data-processing 1`] = `"cd5bef772fe1c6e457e421340151668eaf959705233b9a50517dfe836b79f284"`;
 
-exports[`example documents > formatting 1`] = `"55ae363134cc1481769e87322e47d3ce4de129cf37f60f464560fa9c0d298137"`;
+exports[`example documents > formatting 1`] = `"a79753e5ebcd63b64c18831ca6c773f22c0a7daedc222512e729b843c320671e"`;
 
-exports[`example documents > getting-started 1`] = `"78618e8ae660af36c3b250a1af06b1f5ab7c981c6662f8136abb48c5297ca229"`;
+exports[`example documents > getting-started 1`] = `"03dd8739d6326f7b277b57b48c70b8a9b47a2f1e0c3ea2d6eb0bb2fef3a65147"`;
 
-exports[`example documents > grouped 1`] = `"6bd060f2aa09d0b97f61addaa588bb5bbc5272f8a28553f5ba74bcbdd2ad1cba"`;
+exports[`example documents > grouped 1`] = `"dcd99e1f64353ec063820ed7dea4c71b75b36b7f538d77f5b34947b834069aae"`;
 
-exports[`example documents > hoffmann 1`] = `"7fcd3abd8511eaffc0514d5a22e13c3576038e3a48c64338c04e79424b9bdcf7"`;
+exports[`example documents > hoffmann 1`] = `"1aeb7a5630cae09f82fb5d25a12546f39a94073d293035413fbc63e44ed348e9"`;
 
-exports[`example documents > johnston 1`] = `"509aa102c5cf598bdf539226a57ffcbdcb5649735f59bf32e5d76c776b29355a"`;
+exports[`example documents > johnston 1`] = `"18eec98bf896a5f821c44959957b4a7dd8e5e1842b335ef06a28a25a5000a4b6"`;
 
-exports[`example documents > more-graphs 1`] = `"e307dfb40cbab2d2d95d7b4d666143b47ea2966a0a7d12f37e3211a519614299"`;
+exports[`example documents > more-graphs 1`] = `"27d3f0c0ba65756de98daf9c03e929afc0bbcad8388d9246388763879dcfe258"`;
 
-exports[`example documents > multiple-variables 1`] = `"c24b48ff101dc938852217b4eab538017d443c37a1107baaf973da8cc1b8165c"`;
+exports[`example documents > multiple-variables 1`] = `"79730d05d683fffe345f263760fffb77798705d8b092271d06b2bfe7fbf535a5"`;
 
-exports[`example documents > parts-of-whole 1`] = `"db2ab76c457074f57c6ba49cb6ff77698709c62b8e0022a80a6cb3a2201f5644"`;
+exports[`example documents > parts-of-whole 1`] = `"949281e2f464185671bed1517fa907b519e247a2878d460ca8ebc781dabaf67a"`;
 
-exports[`example documents > single-cell 1`] = `"bedd03df42467a6585fd3c4f75a981d54cceaf86fe34339fab56928f1a0f1b25"`;
+exports[`example documents > single-cell 1`] = `"cb2fbfc387b33f1df5a8b1090de885dbecc02c079b1051990a6a6f4d4484860f"`;
 
-exports[`example documents > stucchi 1`] = `"3debaaaaa9f0b4da6fdef24844b693efb623d670493a0e1867c3787781543894"`;
+exports[`example documents > stucchi 1`] = `"1649bafd6f251fc5f131cb2556bc6b257f78e5017dad9cbd8427f44cd7b910cd"`;
 
-exports[`example documents > swaminathan 1`] = `"7aaeddbba68b9ddcab73bfa240476ec7af35378c79abfe8973e1ff2922ec2cc2"`;
+exports[`example documents > swaminathan 1`] = `"612c05fe2276e2cc55edae6b289d1b7670e54ae7fd0804286e82da1bcdcd8a0f"`;
 
-exports[`example documents > tawk 1`] = `"a901c24e429e2b9f7cdabe4265dcbecf0a28a6787b6571e2da9f4f2f7e9bc2fd"`;
+exports[`example documents > tawk 1`] = `"f4b036fa694c9a5d1ec441a8864c5eefd84551001a65da4a2b01f5075dd90466"`;
 
 exports[`sample tables > column 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[34.1,38.5,29.8,41.2,35.6,32.3,36.9,30.4]}],"title":"Control"},{"id":"id2","subcolumns":[{"type":"number","values":[45.2,52.8,48.1,39.7,50.3,47.6,44.9,51.5]}],"title":"Treated"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":8,"rowTitles":null,"tableKind":"column","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
 

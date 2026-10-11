@@ -63,6 +63,9 @@ export function statFor(geom: Geom, kind: StatKind): Stat {
     case 'dotplot':
     case 'threshold':
       return { kind }
+    // Roadmap 49c: a tree of the rows (beside the heat map, the tiles' own clustering of them).
+    case 'cluster':
+      return { kind, of: 'rows' }
     case 'result':
       // Roadmap 35: a label, a line at a value, a band between two (`ZORDER_RESULT`'s values).
       return geom === 'label'

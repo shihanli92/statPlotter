@@ -63,6 +63,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.2 | 48b | merge of 48b, the commercial product's name removed (not tagged) |
 | 0.3.3 | 49a | merge of 49a, aesthetics by data set or fixed (not tagged) |
 | 0.3.4 | 49b | merge of 49b, one layer at a time in the Format view (not tagged) |
+| 0.3.5 | 49c | merge of 49c, dendrograms as layers (not tagged) |
 
 ## Phases
 
@@ -1887,7 +1888,7 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     outputs and functions), legend glyphs, styles, presets, Match format and the format painter
     (unit); the table's rows, modes, recipes, Reset, mixed values, one data set, By variable and
     the lists (happy-dom); Playwright `byGroup.spec.ts` (new: docked panel and window) in
-    Chromium, WebKit and Firefox. Left for 49c (first named 49b; decision 1237): fill and outline
+    Chromium, WebKit and Firefox. Left for 49d (first named 49b, then 49c; decisions 1237, 1253): fill and outline
     mapped separately (a second colour channel with its own palette), ggplot-style merged or split
     legends.
     **After 0.3.3 (no version change; decision 1225).** The public demo moves to Netlify
@@ -1927,3 +1928,42 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     commits the field and the window stays (the value selected for the next typing); ⌘Enter /
     Ctrl+Enter is OK, as the footer says. Test: `formatWindow.spec.ts` (a font size and Enter, the
     preview following and the graph waiting; Mod+Enter OK as one undo step).
+
+49c. ✅ **Dendrograms as layers** — decisions 1240–1253 (the user's request: "dendrograms as their
+    own layer, available as part of the heat map; allow adjustment of the height/width", with
+    cutting the tree into clusters and dendrograms alone; amends 225). **Trees as layers**: geom
+    `dendrogram`, stat `cluster` (of the rows or the columns; its own distance and linkage where
+    the tiles don't cluster that axis; a cut), named "Row dendrogram" / "Column dendrogram": in
+    the Layers list, Add layer (Special), the ‹ › steps and their own Format view, selected on the
+    canvas, hidden, removed, moved in the list. The heat map keeps the clustering that orders its
+    cells (rows, columns, distance, linkage); a tree draws that tree, so its leaves meet their
+    cells, and clustering an axis on adds its tree (off removes it), one step. **Size and place,
+    per tree**: a row tree right or left of the map, a column tree above or below it (the names
+    step out beyond it), its depth (width or height, pt) and gap to the map — the depth also
+    dragged from a handle on the tree's outer edge on the graph view, one undo step — and branch
+    heights as R's merge heights or equal steps; its line in the Appearance table. **Cuts**: into
+    k clusters or at a height, each leaf's cluster exactly R's `cutree` (translated to
+    `stats/src/gpl/cutree.ts`; oracle suite `cutree`, 16 fixtures: every linkage and distance,
+    ties); branches below the cut in their cluster's colour (the palette's, or each cluster's
+    own), an optional cluster strip between tree and map, the clusters in the legend when it
+    shows. **A dendrogram alone**: the preset and the builder's frame choice "Dendrogram"
+    (grouped, multiple-variables and contingency tables): its tree fills the plot over its leaves
+    along the bottom, or beside them down the left, the leaves named by the rows or data sets, the
+    merge heights up the other axis. **Schema v3**: v2 files' trees (the tile's
+    `cluster.dendrogram` depth) become tree layers (`migrations/v2to3.ts`; user preset files
+    version 2), drawing exactly as before: v2 fixtures written by 0.3.4 with its SVGs (byte for
+    byte by data set; by layer the same primitives in order, the trees' marks in their layers'
+    groups), and every golden of the v1 fixtures through v1 → v2 → v3 byte for byte. Older apps
+    refuse v3 files with their newer-version message. Example fingerprints re-recorded (every
+    document's `schemaVersion`; the three clustered heat maps' two tree layers; `v1Examples`
+    proves them equal to their v1 documents migrated); `ANALYSES_VERSION` unchanged. New goldens
+    (`tree-rows-left-columns-bottom`, `-depths-gaps-steps`, `-cut-strip-legend`,
+    `-cut-colours-left`, `-by-data-set`, `-alone-bottom-cut`, `-alone-left-steps`,
+    `-alone-left-merge`); every existing golden byte-identical. Tests: cutree against R, the
+    tree's geometry (sides, depths, gaps, equal steps, cuts and their colours, strips), the
+    owner of each axis' tree, legend entries, a tree alone both ways, the matrix's rules, plot
+    styles, presets, the migration's edges and its v2 fixtures, the canvas drag (unit); the
+    heat map's clustering adding and removing trees and a tree's Format view (happy-dom);
+    Playwright `dendrogram.spec.ts` (new) in Chromium, WebKit and Firefox. Not done: the tree's
+    handle on graphs placed on layout pages (its Format field there), the format bar's line group
+    for a tree, hover cards on trees.

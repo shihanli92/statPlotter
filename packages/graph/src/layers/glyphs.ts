@@ -55,6 +55,8 @@ export const LEGEND_GLYPHS: Readonly<Record<Geom, LegendGlyph | null>> = {
   hex: null,
   contour: null,
   raster: null,
+  // Roadmap 49c: a tree is no data set's; a cut tree's clusters have entries of their own.
+  dendrogram: null,
 }
 
 /**
