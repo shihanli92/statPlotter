@@ -160,6 +160,8 @@ const CELL_MENU = [
   'edit.fillDown',
   'edit.fillRight',
   'edit.fillSeries',
+  '-',
+  'analyze.compareColumns',
 ]
 
 /** A column header's right-click menu (roadmap 29). */
@@ -176,6 +178,8 @@ const HEADER_MENU = [
   '-',
   'edit.moveColumnsLeft',
   'edit.moveColumnsRight',
+  '-',
+  'analyze.compareColumns',
 ]
 
 /** The row numbers' right-click menu. */
@@ -224,12 +228,15 @@ export function TableView({
   onError,
   source,
   onOpen,
+  onCompare,
 }: {
   id: NodeId
   onError: ShowError
   source?: DataTable
   /** Opens another node (e.g. a table made by Extract and rearrange). */
   onOpen?: (id: NodeId) => void
+  /** Roadmap 51a: Compare these columns… (Guide me on the selected data sets). */
+  onCompare?: (dataSets: string[]) => void
 }) {
   const { store } = useServices()
   const confirm = useConfirm()
@@ -1006,6 +1013,20 @@ export function TableView({
       enabled: !readOnly,
       hint: `A new ${group} after the last one`,
       run: addColumn,
+    },
+    {
+      // Roadmap 51a: the chooser, on the columns selected (two or more).
+      id: 'analyze.compareColumns',
+      label: 'Compare these columns…',
+      menu: { menu: 'analyze', group: GROUPS.analyze.analyze, order: 16 },
+      enabled:
+        !!onCompare &&
+        (table.tableKind === 'column' || table.tableKind === 'nested') &&
+        selectedIds.length >= 2,
+      disabledReason: 'Select two or more columns of a column table',
+      hint: 'Guide me through comparing the selected columns',
+      keywords: ['compare', 'guide', 'which test'],
+      run: () => onCompare?.(selectedIds),
     },
     {
       id: 'edit.deleteColumns',

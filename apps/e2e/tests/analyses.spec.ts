@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 import { expect, openExample, test } from './fixtures.ts'
 import {
+  allAnalyses,
   analyze,
   cell,
   dialog,
@@ -241,9 +242,13 @@ test('multiple linear regression on a multiple-variables table', async ({ page }
 // Roadmap 43 (UX review F20): the common analyses of the table's kind first, then every one by
 // category; a search box filters by names and keywords, ↑ / ↓ and Enter pick.
 test('the Analyze dialog: the Common group first, a search picked with Enter', async ({ page }) => {
+  // Roadmap 51a (U2, U3): Guide me first in a project; each analysis listed once and selected
+  // once; the search finds the chooser's questions too, and what another table kind answers.
   await newTable(page, { kind: 'Column', sample: true })
   await tool(page, 'Analyze…').click()
   const d = dialog(page, /^Analyze “/)
+  await expect(d.getByRole('tab', { name: 'Guide me' })).toHaveAttribute('aria-selected', 'true')
+  await allAnalyses(d)
   const list = d.getByRole('listbox', { name: 'Analyses' })
   await expect(list.getByRole('group').first()).toHaveAccessibleName('Common')
   await expect(list.getByRole('group', { name: 'Common' }).getByRole('option')).toHaveText([
@@ -252,15 +257,22 @@ test('the Analyze dialog: the Common group first, a search picked with Enter', a
     'Descriptive statistics',
     'Normality and lognormality tests',
   ])
-  // The full list by category below.
-  await expect(
-    list.getByRole('group', { name: 'Column analyses' }).getByRole('option', { name: 't test' }),
-  ).toBeVisible()
+  // The full list by category below, each analysis once; the list opens on one row.
+  const column = list.getByRole('group', { name: 'Column analyses' })
+  await expect(column.getByRole('option', { name: 'Mann-Whitney test' })).toBeVisible()
+  await expect(column.getByRole('option', { name: 't test', exact: true })).toHaveCount(0)
+  await expect(list.getByRole('option', { selected: true })).toHaveText(['t test'])
   const search = d.getByRole('combobox', { name: 'Search analyses' })
   await expect(search).toBeFocused()
   await page.keyboard.type('anova')
-  await expect(list.getByRole('group')).toHaveCount(1)
-  await expect(list.getByRole('option').first()).toHaveText('One-way ANOVA (and nonparametric)')
+  // The chooser's questions first, then this table's analyses.
+  await expect(list.getByRole('group')).toHaveCount(2)
+  await expect(
+    list.getByRole('group', { name: 'Questions' }).getByRole('option').first(),
+  ).toHaveText('Are the groups different?')
+  const analyses = list.getByRole('group', { name: 'Analyses for this table' })
+  await expect(analyses.getByRole('option').first()).toHaveText('One-way ANOVA (and nonparametric)')
+  await page.keyboard.press('ArrowDown')
   await page.keyboard.press('Enter')
   await expect(list.getByRole('option', { selected: true })).toHaveText(
     'One-way ANOVA (and nonparametric)',
@@ -271,6 +283,10 @@ test('the Analyze dialog: the Common group first, a search picked with Enter', a
   await expect(list.getByRole('option', { selected: true })).toHaveText(
     'One-way ANOVA (and nonparametric)',
   )
+  // A question another table kind answers: greyed, with what it needs.
+  await search.fill('ic50')
+  await expect(d.getByText('Need another table kind')).toBeVisible()
+  await expect(d.getByText('Fit a dose-response curve (EC50 / IC50)')).toBeVisible()
   await search.fill('zzz')
   await expect(d.getByText('No analysis matches “zzz”.')).toBeVisible()
   await expect(search).toHaveAttribute('aria-expanded', 'false')
@@ -325,7 +341,7 @@ test('nested t test and fraction of total', async ({ page }) => {
 
 test('a simulation with no table open, then a Monte Carlo analysis of it', async ({ page }) => {
   // No table: the simulation gets one of its own, in the same undo step.
-  await runMenu(page, 'Analyze', 'Simulate column data…')
+  await runMenu(page, 'Analyze', 'Simulate and generate', 'Simulate column data…')
   const sim = dialog(page, /^Analyze “/)
   await expect(sim.getByRole('group', { name: 'Data sets to analyze' })).toHaveCount(0)
   await sim.getByRole('textbox', { name: 'Values in column 1' }).fill('6')
@@ -343,7 +359,7 @@ test('a simulation with no table open, then a Monte Carlo analysis of it', async
   ).toHaveText('')
 
   // Monte Carlo: repeat the simulation and a t test; tabulate P values and hits.
-  await runMenu(page, 'Analyze', 'Monte Carlo analysis…')
+  await runMenu(page, 'Analyze', 'Simulate and generate', 'Monte Carlo analysis…')
   const mc = dialog(page, /^Analyze “/)
   await mc.getByRole('textbox', { name: 'Number of simulations' }).fill('50')
   await mc.getByRole('textbox', { name: 'Number of simulations' }).blur()
@@ -374,7 +390,8 @@ test('chained analyses: a transform, then a t test of its table', async ({ page 
   )
   await runMenu(page, 'Analyze', 'Analyze this table…')
   const d = dialog(page, 'Analyze “Transform of Data 1”')
-  await d.getByRole('option', { name: 't test', exact: true }).first().click()
+  await allAnalyses(d)
+  await d.getByRole('option', { name: 't test', exact: true }).click()
   await d.getByRole('button', { name: 'OK' }).click()
   await expectUpToDate(page)
   // R: t.test(log10(Treated), log10(Control), var.equal = TRUE): t = 6.0346.
@@ -401,7 +418,8 @@ test('a long analysis: progress, Cancel and Run again; a change stops it', async
   await openSheet(page, 'T cells', 'Data Tables')
   await tool(page, 'Analyze…').click()
   const d = dialog(page, /^Analyze “/)
-  await d.getByRole('option', { name: 'Principal component analysis', exact: true }).first().click()
+  await allAnalyses(d)
+  await d.getByRole('option', { name: 'Principal component analysis', exact: true }).click()
   // Parallel analysis of 30,000 rows with 10,000 simulations: minutes of computing.
   // The number variables are ticked, the text ones offered but not (phase 42: a text variable
   // would leave every row out).

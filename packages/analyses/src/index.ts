@@ -5,6 +5,7 @@ import { correlationDef } from './correlation.ts'
 import { aggregateDef, filterRowsDef, percentagesDef, survivalTimeDef } from './dataManipulation.ts'
 import { fractionOfTotalDef, rowStatsDef } from './dataProcessing.ts'
 import { descriptive } from './descriptive.ts'
+import { attachExplanations } from './explain/index.ts'
 import { aucDef, frequencyDef } from './frequency.ts'
 import { GRAPH_RESULTS } from './graphResults.ts'
 import { linearRegressionDef } from './linear.ts'
@@ -119,6 +120,9 @@ for (const d of ANALYSES) {
   if (g) d.graphResults = g as AnalysisDef<unknown>['graphResults']
 }
 
+// Roadmap 51a: every analysis' explanations (its form's text, `cards`; `explain/`).
+attachExplanations(ANALYSES)
+
 const byId: Map<string, AnalysisDef<unknown>> = new Map(ANALYSES.map((d) => [d.id, d]))
 
 export const registry = {
@@ -136,6 +140,17 @@ export {
   matchingRows,
   TIME_UNITS,
 } from './dataManipulation.ts'
+export {
+  CARD_FAMILIES,
+  CARDS_OF,
+  explainedForm,
+  FORM_TEXT,
+  fieldText,
+  METHOD_CARDS,
+  methodCard,
+  withNames,
+} from './explain/index.ts'
+export * from './guide/index.ts'
 export { labelOf, type MonteCarloParams, runSimulation } from './monteCarlo.ts'
 export {
   type Constraint,

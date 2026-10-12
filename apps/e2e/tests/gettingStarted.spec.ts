@@ -42,11 +42,16 @@ test('the checklist on a new project: Show me does each step, and each ticks its
   await expect(step(page, 'graph')).toHaveClass(/\bdone\b/)
   await expect(showMe(page, 'graph')).toHaveCount(0)
 
-  // 3: Analyze… on the table.
+  // 3: Guide me… on the table (roadmap 51a): the chooser, then the full list.
   await showMe(page, 'analysis').click()
   const analyze = dialog(page, /^Analyze “/)
   await expect(analyze).toBeVisible()
-  await analyze.getByRole('option', { name: 'Descriptive statistics', exact: true }).first().click()
+  await expect(analyze.getByRole('tab', { name: 'Guide me' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
+  await analyze.getByRole('tab', { name: 'All analyses' }).click()
+  await analyze.getByRole('option', { name: 'Descriptive statistics', exact: true }).click()
   await analyze.getByRole('button', { name: 'OK', exact: true }).click()
   await expect(analyze).toBeHidden()
   await expect(count(page)).toHaveText('3 of 5')

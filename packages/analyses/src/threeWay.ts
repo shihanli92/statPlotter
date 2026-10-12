@@ -83,7 +83,11 @@ const Params = z.object({
 })
 type Params = z.infer<typeof Params>
 
-const ONE_FACTOR_METHODS = ALL_PAIRS_METHODS.filter((m) => m.value !== 'tukey').map((m) =>
+// Roadmap 51a (decision 1281): Newman-Keuls left out too: the params never accepted it, so the
+// dialog refused it on OK.
+const ONE_FACTOR_METHODS = ALL_PAIRS_METHODS.filter(
+  (m) => m.value !== 'tukey' && m.value !== 'newman-keuls',
+).map((m) =>
   m.value === 'holm-sidak' ? { ...m, label: 'Holm-Šidák (step-down, recommended)' } : m,
 )
 

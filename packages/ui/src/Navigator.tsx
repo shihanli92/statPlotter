@@ -7,7 +7,8 @@ import {
   stepSheetCommands,
 } from '@ps/engine'
 import { type DocNode, type FolderId, type NodeId, newFolderId } from '@ps/model'
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { ResultsPrompt, tableWithoutResults } from './analysis/ResultsPrompt.tsx'
 import {
   type Command,
   GROUPS,
@@ -138,7 +139,10 @@ export function Navigator({
   onShow,
   onApplyStyle,
   onExport,
+  onGuide,
 }: {
+  /** Roadmap 51a: Guide me on a question about a table (the empty Results' prompt). */
+  onGuide?: (tableId: NodeId, entry: string) => void
   /** The open sheet. */
   selected: NodeId | null
   onSelect: (id: NodeId | null) => void
@@ -172,6 +176,7 @@ export function Navigator({
   // Roadmap 47: the sheets selected (several, or the open one alone), beside the open one.
   const { selection: sel, set: setSel } = useNavSelection(selected, project)
   const nav = useRef<HTMLElement>(null)
+  const promptTable = tableWithoutResults(project, selected)
   const search = useRef<HTMLInputElement>(null)
   // A click right after a drag is the drag's end, not a selection.
   const dragged = useRef(false)
@@ -1108,22 +1113,30 @@ export function Navigator({
         />
       ) : sections ? (
         sections.map((sec) => (
-          <div
-            key={sec.kind}
-            className={`nav-section${drag?.moving && drag.at?.kind === 'folder' && drag.at.folder === null && drag.at.key === `section:${sec.kind}` ? ' drop-into' : ''}`}
-            data-folder-drop=""
-            data-key={`section:${sec.kind}`}
-          >
-            <h3>{sec.title}</h3>
-            {sec.items.length > 0 && (
-              <div role="tree" aria-label={sec.title} aria-multiselectable="true">
-                {sec.items.map((it) =>
-                  it.type === 'folder' ? renderFolder(it, sec.kind) : renderSheet(it),
-                )}
-              </div>
-            )}
-            {!sec.items.length && <p className="nav-empty">No data tables yet.</p>}
-          </div>
+          <Fragment key={sec.kind}>
+            <div
+              className={`nav-section${drag?.moving && drag.at?.kind === 'folder' && drag.at.folder === null && drag.at.key === `section:${sec.kind}` ? ' drop-into' : ''}`}
+              data-folder-drop=""
+              data-key={`section:${sec.kind}`}
+            >
+              <h3>{sec.title}</h3>
+              {sec.items.length > 0 && (
+                <div role="tree" aria-label={sec.title} aria-multiselectable="true">
+                  {sec.items.map((it) =>
+                    it.type === 'folder' ? renderFolder(it, sec.kind) : renderSheet(it),
+                  )}
+                </div>
+              )}
+              {!sec.items.length && <p className="nav-empty">No data tables yet.</p>}
+            </div>
+            {/* Roadmap 51a: where Results will be, while the open table has none. */}
+            {sec.kind === 'table' &&
+              onGuide &&
+              promptTable &&
+              !sections.some((s) => s.kind === 'analysis') && (
+                <ResultsPrompt table={promptTable} onAsk={onGuide} />
+              )}
+          </Fragment>
         ))
       ) : (
         <div

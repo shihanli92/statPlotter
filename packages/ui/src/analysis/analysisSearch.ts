@@ -1,4 +1,5 @@
-import type { AnalysisDef, TableKind } from '@ps/model'
+import { entriesFor, GUIDE_ENTRIES, methodCard, NEEDS_LINE, registry } from '@ps/analyses'
+import type { AnalysisDef, FormField, GuideEntry, TableKind } from '@ps/model'
 import { paletteScore, rankPalette } from '../commands/index.ts'
 
 // Roadmap 43 (UX review F20): the Analyze dialog's list opens with the analyses most asked of a
@@ -72,6 +73,7 @@ export const ANALYSIS_KEYWORDS: Readonly<Record<string, readonly string[]>> = {
 }
 
 /** A group of the list: its heading and its analyses (no heading: search results). */
+// Roadmap 51a (U2): each analysis is listed once; the Common ones under Common only.
 export interface AnalysisGroup {
   title: string | null
   defs: readonly AnalysisDef[]
@@ -101,7 +103,7 @@ export function analysisGroups(
       id: def.id,
       label: def.title,
       section: def.category,
-      keywords: ANALYSIS_KEYWORDS[def.id],
+      keywords: analysisWords(def),
       enabled: true,
     }))
     const words = query.trim().split(/\s+/)
@@ -110,11 +112,119 @@ export function analysisGroups(
     )
     return [{ title: null, defs: found.map((e) => e.def) }]
   }
-  const categories = [...new Set(defs.map((d) => d.category))]
+  const pinned = common.length && common.length < defs.length ? common : []
+  const rest = defs.filter((d) => !pinned.includes(d))
+  const categories = [...new Set(rest.map((d) => d.category))]
   return [
-    ...(common.length && common.length < defs.length
-      ? [{ title: COMMON_TITLE, defs: common }]
-      : []),
-    ...categories.map((c) => ({ title: c, defs: defs.filter((d) => d.category === c) })),
+    ...(pinned.length ? [{ title: COMMON_TITLE, defs: pinned }] : []),
+    ...categories.map((c) => ({ title: c, defs: rest.filter((d) => d.category === c) })),
   ]
+}
+
+// ---- Search by question, across table kinds (roadmap 51a, U3; design §3.6) -------------------
+
+/** The method cards' names an analysis offers (its default and every option's method). */
+function cardNames(def: AnalysisDef): string[] {
+  const ids = new Set<string>()
+  try {
+    for (const id of def.cards?.(def.params.parse({})) ?? []) ids.add(id)
+  } catch {}
+  for (const f of def.form as readonly FormField[])
+    if (f.kind === 'select' || f.kind === 'radio')
+      for (const o of f.options) if (o.explain?.method) ids.add(o.explain.method)
+  return [...ids].flatMap((id) => {
+    const c = methodCard(id)
+    return c ? [c.name, c.shortName] : []
+  })
+}
+
+/** Words an analysis is found by: its keywords and its methods' names. */
+const analysisWords = (def: AnalysisDef) => [
+  ...(ANALYSIS_KEYWORDS[def.id] ?? []),
+  ...cardNames(def),
+]
+
+/** Every query word matches the entry's label, keywords or section. */
+const matchesAll = (e: Parameters<typeof paletteScore>[0], query: string) =>
+  query
+    .trim()
+    .split(/\s+/)
+    .every((w) => paletteScore(e, w) > 1)
+
+/** An analysis or a question another table kind answers, with what it needs. */
+export interface ElsewhereMatch {
+  id: string
+  label: string
+  needs: TableKind
+  line: string
+  /** The question, when the match is one (else an analysis). */
+  entry?: GuideEntry
+  def?: AnalysisDef
+}
+
+export interface SearchResults {
+  /** The questions of this table's kind (open the chooser there). */
+  questions: GuideEntry[]
+  /** The analyses offered for this table, best first. */
+  here: AnalysisDef[]
+  /** Questions and analyses of other table kinds (greyed, with what they need). */
+  elsewhere: ElsewhereMatch[]
+}
+
+/**
+ * The dialog's search (design §3.6): the chooser's questions and their keywords, the analyses of
+ * this table (titles, keywords, methods' names) and, greyed, what other table kinds answer.
+ * Words match in any order and by their start ("surv", "dose resp").
+ */
+export function searchAnalyses(
+  offered: readonly AnalysisDef[],
+  kind: TableKind,
+  query: string,
+): SearchResults {
+  if (!query.trim()) return { questions: [], here: [], elsewhere: [] }
+  const entryOf = (e: GuideEntry) => ({
+    id: e.id,
+    label: e.question,
+    section: 'Question',
+    keywords: e.keywords,
+    enabled: true,
+    entry: e,
+  })
+  const questions = rankPalette(entriesFor(kind).map(entryOf), query)
+    .filter((e) => matchesAll(e, query))
+    .map((e) => e.entry)
+  const here = [...(analysisGroups(offered, kind, query)[0]?.defs ?? [])]
+  const otherDefs = registry
+    .list()
+    .filter((d) => !d.accepts.includes(kind) && d.inputs.min > 0)
+    .map((def) => ({
+      id: def.id,
+      label: def.title,
+      section: def.category,
+      keywords: analysisWords(def),
+      enabled: true,
+      def,
+    }))
+  const otherQuestions = GUIDE_ENTRIES.filter((e) => !e.kinds.includes(kind)).map(entryOf)
+  const elsewhere: ElsewhereMatch[] = [
+    ...rankPalette(otherQuestions, query)
+      .filter((e) => matchesAll(e, query))
+      .map((e) => ({
+        id: `q:${e.id}`,
+        label: e.label,
+        needs: e.entry.kinds[0]!,
+        line: NEEDS_LINE[e.entry.kinds[0]!],
+        entry: e.entry,
+      })),
+    ...rankPalette(otherDefs, query)
+      .filter((e) => matchesAll(e, query))
+      .map((e) => ({
+        id: `a:${e.id}`,
+        label: e.label,
+        needs: e.def.accepts[0]!,
+        line: NEEDS_LINE[e.def.accepts[0]!],
+        def: e.def,
+      })),
+  ]
+  return { questions, here, elsewhere }
 }

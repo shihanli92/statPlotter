@@ -21,6 +21,8 @@ import {
   type TableKind,
 } from '@ps/model'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { AnalyzeTab } from './analysis/AnalyzeDialog.tsx'
+import { COMMON_ANALYSES } from './analysis/analysisSearch.ts'
 import { ResultsView } from './analysis/ResultsView.tsx'
 import {
   type Command,
@@ -131,6 +133,10 @@ import { createSerializer } from './worker/serialize.ts'
 const AnalyzeDialog = lazyComponent(() =>
   import('./analysis/AnalyzeDialog.tsx').then((m) => m.AnalyzeDialog),
 )
+// Roadmap 51a: Help › Choosing an analysis.
+const ChoosingHelp = lazyComponent(() =>
+  import('./analysis/ChoosingHelp.tsx').then((m) => m.ChoosingHelp),
+)
 const AboutDialog = lazyComponent(() =>
   import('./components/HelpDialogs.tsx').then((m) => m.AboutDialog),
 )
@@ -166,8 +172,18 @@ const UpdateCheck = lazyComponent(() =>
 
 type DialogState =
   | null
-  | { kind: 'newTable' }
-  | { kind: 'analyze'; tableId: NodeId; analysisId?: string; draftTable?: DataTable }
+  | { kind: 'newTable'; initialKind?: TableKind }
+  | {
+      kind: 'analyze'
+      tableId: NodeId
+      analysisId?: string
+      draftTable?: DataTable
+      /** Roadmap 51a: the tab, the chooser's question and the data sets it starts with. */
+      tab?: AnalyzeTab
+      entry?: string
+      dataSets?: string[]
+    }
+  | { kind: 'choosing' }
   | { kind: 'editAnalysis'; analysisId: NodeId }
   | {
       kind: 'import'
@@ -187,31 +203,6 @@ type DialogState =
   | { kind: 'about' }
   | { kind: 'recover'; records: RecoveryRecord[] }
   | { kind: 'migrated'; notes: MigrationNote[] }
-
-/**
- * Analyze menu shortcuts to common analyses: each opens the Analyze dialog on the current table
- * with the first of its analyses that the table's kind accepts.
- */
-const QUICK_ANALYSES: { label: string; ids: string[]; keywords?: string[] }[] = [
-  { label: 't test…', ids: ['ttest'], keywords: ['unpaired', 'paired', 'welch'] },
-  { label: 'One-way ANOVA…', ids: ['oneWayAnova'], keywords: ['kruskal', 'tukey'] },
-  { label: 'Two-way ANOVA…', ids: ['twoWayAnova'] },
-  {
-    label: 'Nonlinear regression (curve fit)…',
-    ids: ['nonlinearFit', 'nonlinearFitMV'],
-    keywords: ['fit', 'dose response', 'nls'],
-  },
-  { label: 'Simple linear regression…', ids: ['linearRegression'] },
-  { label: 'Correlation…', ids: ['correlation'], keywords: ['pearson', 'spearman'] },
-  { label: 'Descriptive statistics…', ids: ['descriptive'], keywords: ['mean', 'sd', 'median'] },
-  { label: 'Chi-square and Fisher’s exact test…', ids: ['contingency'] },
-  {
-    label: 'Survival curves…',
-    ids: ['survival', 'survivalFromVariables'],
-    keywords: ['kaplan meier', 'log-rank'],
-  },
-  { label: 'Multiple linear regression…', ids: ['multipleRegression'] },
-]
 
 /** Roadmap 38: analyses making tables that follow their source (Analyze › Data manipulation). */
 const DATA_ANALYSES: { label: string; ids: string[]; hint: string; keywords?: string[] }[] = [
@@ -959,8 +950,20 @@ function Shell() {
     analyzeKind ? ids.find((id) => registry.get(id)?.accepts.includes(analyzeKind)) : undefined
 
   /** The Analyze dialog on the current table, `analysisId` preselected. */
-  const analyze = (analysisId?: string) => {
-    if (tableForAnalyze) setDialog({ kind: 'analyze', tableId: tableForAnalyze, analysisId })
+  const analyze = (
+    analysisId?: string,
+    opts: { tab?: AnalyzeTab; entry?: string; dataSets?: string[]; tableId?: NodeId } = {},
+  ) => {
+    const tableId = opts.tableId ?? tableForAnalyze
+    if (!tableId) return
+    setDialog({
+      kind: 'analyze',
+      tableId,
+      ...(analysisId ? { analysisId } : {}),
+      ...(opts.tab ? { tab: opts.tab } : {}),
+      ...(opts.entry ? { entry: opts.entry } : {}),
+      ...(opts.dataSets ? { dataSets: opts.dataSets } : {}),
+    })
   }
 
   /** An analysis that needs no data: on the current table, or on a new empty one. */
@@ -1007,6 +1010,13 @@ function Shell() {
       {
         id: `analyze.recent.${id}`,
         label: `${def.title}…`,
+        // Roadmap 51a (U5): the Analyze menu lists them too, under Recent analyses.
+        menu: {
+          menu: 'analyze',
+          group: GROUPS.analyze.quick,
+          order: 50,
+          submenu: 'Recent analyses',
+        },
         enabled: noData ? true : !!tableForAnalyze && !!applicable([id]),
         hideInPalette: true,
         hint: def.description,
@@ -1275,16 +1285,54 @@ function Shell() {
       keywords: ['statistics', 'test'],
       run: () => analyze(),
     },
+    // Roadmap 51a: the chooser, and the full list (U5: Guide me…, All analyses…, the common
+    // analyses of this table's kind, the recent ones, then every analysis by category).
+    {
+      id: 'analyze.guide',
+      label: 'Guide me…',
+      menu: { menu: 'analyze', group: GROUPS.analyze.analyze, order: 12 },
+      enabled: !!tableForAnalyze,
+      disabledReason: 'Open a data table first',
+      keywords: ['choose', 'which test', 'which analysis', 'help me choose', 'question'],
+      hint: 'Questions about your experiment lead to an analysis, with the reasons',
+      run: () => analyze(undefined, { tab: 'guide' }),
+    },
+    {
+      id: 'analyze.all',
+      label: 'All analyses…',
+      menu: { menu: 'analyze', group: GROUPS.analyze.analyze, order: 14 },
+      enabled: !!tableForAnalyze,
+      disabledReason: 'Open a data table first',
+      keywords: ['list', 'analyses'],
+      run: () => analyze(undefined, { tab: 'all' }),
+    },
     ...recentAnalysisCommands,
-    ...QUICK_ANALYSES.map((q, i): Command => {
-      const id = applicable(q.ids)
+    ...(analyzeKind ? (COMMON_ANALYSES[analyzeKind] ?? []) : []).flatMap((id, i): Command[] => {
+      const def = registry.get(id)
+      return def
+        ? [
+            {
+              id: `analyze.common.${id}`,
+              label: `${def.title}…`,
+              menu: { menu: 'analyze', group: GROUPS.analyze.quick, order: i },
+              enabled: !!tableForAnalyze,
+              hideInPalette: true,
+              hint: def.description,
+              run: () => analyze(id),
+            },
+          ]
+        : []
+    }),
+    ...registry.list().map((d, i): Command => {
+      const noData = NO_DATA_ANALYSES.find((a) => a.id === d.id)
       return {
-        id: `analyze.quick.${q.ids[0]}`,
-        label: q.label,
-        menu: { menu: 'analyze', group: GROUPS.analyze.quick, order: i },
-        enabled: !!id && !!tableForAnalyze,
-        keywords: q.keywords,
-        run: () => analyze(id),
+        id: `analyze.category.${d.id}`,
+        label: `${d.title}…`,
+        menu: { menu: 'analyze', group: GROUPS.analyze.all, order: i, submenu: d.category },
+        enabled: noData ? true : !!tableForAnalyze && !!applicable([d.id]),
+        hideInPalette: true,
+        hint: d.description,
+        run: () => (noData ? analyzeWithoutData(d.id, noData.kind) : analyze(d.id)),
       }
     }),
     // Roadmap 38: tables derived from the current table that follow it (Data manipulation).
@@ -1306,15 +1354,7 @@ function Shell() {
         run: () => analyze(id),
       }
     }),
-    ...NO_DATA_ANALYSES.map(
-      (a, i): Command => ({
-        id: `analyze.simulate.${a.id}`,
-        label: a.label,
-        menu: { menu: 'analyze', group: GROUPS.analyze.simulate, order: i },
-        keywords: ['simulate', 'random', 'generate'],
-        run: () => analyzeWithoutData(a.id, a.kind),
-      }),
-    ),
+
     // Help
     {
       id: 'help.palette',
@@ -1332,6 +1372,14 @@ function Shell() {
       shortcut: 'Mod+/',
       keywords: ['keys', 'hotkeys'],
       run: () => setDialog({ kind: 'shortcuts' }),
+    },
+    {
+      id: 'help.choosingAnalysis',
+      label: 'Choosing an analysis',
+      menu: { menu: 'help', group: GROUPS.help.commands, order: 40 },
+      keywords: ['which test', 'statistics guide', 'method', 'help me choose'],
+      hint: 'The questions Guide me asks, and every method’s card',
+      run: () => setDialog({ kind: 'choosing' }),
     },
     {
       id: 'help.about',
@@ -1465,6 +1513,7 @@ function Shell() {
                   onShow={() => setShowNavigator(true)}
                   onApplyStyle={(graphs) => styles.openFor(graphs, 'navigator')}
                   onExport={batchExport.exportSheets}
+                  onGuide={(tableId, entry) => analyze(undefined, { tab: 'guide', entry, tableId })}
                 />
                 <GettingStarted
                   selected={selected}
@@ -1520,7 +1569,20 @@ function Shell() {
                   </div>
                 )}
                 {node?.kind === 'table' && (
-                  <TableView key={node.id} id={node.id} onError={showError} onOpen={setSelected} />
+                  <TableView
+                    key={node.id}
+                    id={node.id}
+                    onError={showError}
+                    onOpen={setSelected}
+                    onCompare={(dataSets) =>
+                      analyze(undefined, {
+                        tab: 'guide',
+                        entry: 'groupsDiffer',
+                        dataSets,
+                        tableId: node.id,
+                      })
+                    }
+                  />
                 )}
                 {node?.kind === 'analysis' && (
                   <ResultsView
@@ -1573,6 +1635,7 @@ function Shell() {
               <CommandPalette extras={paletteExtras()} onClose={() => setDialog(null)} />
             )}
             {dialog?.kind === 'shortcuts' && <ShortcutsDialog onClose={() => setDialog(null)} />}
+            {dialog?.kind === 'choosing' && <ChoosingHelp onClose={() => setDialog(null)} />}
             {batchExport.dialog}
             {reuse.dialog}
             {styles.dialog}
@@ -1601,6 +1664,7 @@ function Shell() {
             )}
             {dialog?.kind === 'newTable' && (
               <NewTableDialog
+                {...(dialog.initialKind ? { initialKind: dialog.initialKind } : {})}
                 onClose={() => setDialog(null)}
                 onCreated={setSelected}
                 onNotice={showNotice}
@@ -1659,6 +1723,10 @@ function Shell() {
                 tableId={dialog.tableId}
                 analysisId={dialog.analysisId}
                 draftTable={dialog.draftTable}
+                {...(dialog.tab ? { tab: dialog.tab } : {})}
+                {...(dialog.entry ? { entry: dialog.entry } : {})}
+                {...(dialog.dataSets ? { dataSets: dialog.dataSets } : {})}
+                onNewTable={(initialKind) => setDialog({ kind: 'newTable', initialKind })}
                 onClose={() => setDialog(null)}
                 onCreated={(id) => {
                   // Offered again by the toolbar's Analyze ▾ (roadmap 43).

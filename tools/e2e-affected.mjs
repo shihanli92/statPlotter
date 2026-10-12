@@ -72,6 +72,8 @@ const TABLE = [
   'tables',
 ]
 const ANALYSIS = [
+  // Roadmap 51a: Guide me, the explanations, search by question, Help › Choosing an analysis.
+  'analysisGuide',
   'analyses',
   'dataManipulation',
   'examples',

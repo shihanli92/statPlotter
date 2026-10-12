@@ -1,5 +1,5 @@
-import type { FormField, ShowIf } from '@ps/model'
-import { type ReactNode, useId } from 'react'
+import type { FormField, FormOption, OptionExplain, ShowIf } from '@ps/model'
+import { type ReactNode, useId, useState } from 'react'
 import { Field, NumberBox } from '../components/fields.tsx'
 
 type Params = Record<string, unknown>
@@ -40,6 +40,55 @@ export function setPath(obj: Params, path: readonly string[], value: unknown): P
   }
 }
 
+/** Roadmap 51a: an option's tag reason, as a sentence ("Recommended: …"). */
+export const tagText = (e: OptionExplain | undefined): string | null =>
+  e?.tag
+    ? `${e.tag.kind === 'recommended' ? 'Recommended' : 'Not recommended'}: ${e.tag.why}.`
+    : null
+
+/** An option's line and its tag's reason. */
+const optionText = (o: FormOption) =>
+  [o.explain?.line, tagText(o.explain)].filter(Boolean).join(' ')
+
+/**
+ * Roadmap 51a: ⓘ beside a question, showing its card and its options' cards under it (the side
+ * panel arrives with the new dialog, 51b).
+ */
+function Info({ field, label }: { field: FormField; label: string }) {
+  const [open, setOpen] = useState(false)
+  const id = useId()
+  const options = 'options' in field ? field.options.filter((o) => o.explain?.card) : []
+  if (!field.explain?.card && !options.length) return null
+  return (
+    <>
+      <button
+        type="button"
+        className="info-button"
+        aria-expanded={open}
+        aria-controls={id}
+        aria-label={`About “${label}”`}
+        title={`About “${label}”`}
+        onClick={(e) => {
+          e.preventDefault()
+          setOpen(!open)
+        }}
+      >
+        ⓘ
+      </button>
+      {open && (
+        <span id={id} className="explain-card" role="note">
+          {field.explain?.card && <span className="explain-para">{field.explain.card}</span>}
+          {options.map((o) => (
+            <span key={String(o.value)} className="explain-para">
+              <strong>{o.label}:</strong> {o.explain!.card}
+            </span>
+          ))}
+        </span>
+      )}
+    </>
+  )
+}
+
 /** Renders an analysis' declarative form against a params object. */
 export function ParamsForm({
   fields,
@@ -60,10 +109,12 @@ export function ParamsForm({
       {fields.map((f, i) => {
         const conditions = f.showIf ? (Array.isArray(f.showIf) ? f.showIf : [f.showIf]) : []
         if (!conditions.every((c: ShowIf) => c.in.includes(getPath(value, c.path)))) return null
-        // The radio buttons' shared name.
+        // The radio buttons' shared name, and the ids of the lines that describe them.
         const name = `${base}-${i}`
+        const lineId = `${name}-line`
         const current = getPath(value, f.path)
         const update = (v: unknown) => onChange(setPath(value, f.path, v))
+        const line = f.explain?.line
         switch (f.kind) {
           case 'custom': {
             const Editor = custom[f.component]
@@ -76,42 +127,100 @@ export function ParamsForm({
                   onChange={onChange}
                   context={context}
                 />
+                {line && <div className="help explain">{line}</div>}
               </div>
             ) : null
           }
           case 'checkbox':
             return (
-              <label key={f.path.join('.')} className="check field">
-                <input
-                  type="checkbox"
-                  checked={!!current}
-                  onChange={(e) => update(e.target.checked)}
-                />
-                {f.label}
-                {f.help && <span className="help">{f.help}</span>}
-              </label>
+              <div key={f.path.join('.')} className="field check-field">
+                <label className="check">
+                  <input
+                    type="checkbox"
+                    checked={!!current}
+                    aria-describedby={line ? lineId : undefined}
+                    onChange={(e) => update(e.target.checked)}
+                  />
+                  {f.label}
+                </label>
+                {line && (
+                  <div id={lineId} className="help explain">
+                    {line}
+                    <Info field={f} label={f.label} />
+                  </div>
+                )}
+              </div>
             )
           case 'radio':
             return (
-              <fieldset key={f.path.join('.')} className="field radio">
+              <fieldset
+                key={f.path.join('.')}
+                className="field radio"
+                aria-describedby={line ? lineId : undefined}
+              >
                 <legend>{f.label}</legend>
-                {f.options.map((o) => (
-                  <label key={String(o.value)} className="check">
-                    <input
-                      type="radio"
-                      name={name}
-                      checked={current === o.value}
-                      onChange={() => update(o.value)}
-                    />
-                    {o.label}
-                  </label>
-                ))}
-                {f.help && <div className="help">{f.help}</div>}
+                {line && (
+                  <div id={lineId} className="help explain">
+                    {line}
+                    <Info field={f} label={f.label} />
+                  </div>
+                )}
+                {f.options.map((o, k) => {
+                  const text = optionText(o)
+                  const oid = `${name}-o${k}`
+                  return (
+                    <div key={String(o.value)} className="radio-option">
+                      <label className="check">
+                        <input
+                          type="radio"
+                          name={name}
+                          checked={current === o.value}
+                          aria-describedby={text ? oid : undefined}
+                          onChange={() => update(o.value)}
+                        />
+                        {o.label}
+                      </label>
+                      {text && (
+                        <div id={oid} className="option-line">
+                          {text}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
               </fieldset>
             )
-          case 'select':
+          case 'select': {
+            const chosen = f.options.find((o) => o.value === current)
+            // The reason beside every "(recommended)" the list shows, and the chosen one's line.
+            const tagged = f.options.filter((o) => o.explain?.tag && o !== chosen)
             return (
-              <Field key={f.path.join('.')} label={f.label} help={f.help}>
+              <Field
+                key={f.path.join('.')}
+                label={f.label}
+                help={
+                  line || chosen?.explain || tagged.length ? (
+                    <>
+                      {line && (
+                        <span className="explain">
+                          {line}
+                          <Info field={f} label={f.label} />
+                        </span>
+                      )}
+                      {chosen?.explain && (
+                        <span className="option-line">
+                          {chosen.label}: {optionText(chosen)}
+                        </span>
+                      )}
+                      {tagged.map((o) => (
+                        <span key={String(o.value)} className="option-line">
+                          {o.label}: {tagText(o.explain)}
+                        </span>
+                      ))}
+                    </>
+                  ) : undefined
+                }
+              >
                 {(id, describedBy) => (
                   <select
                     id={id}
@@ -130,9 +239,10 @@ export function ParamsForm({
                 )}
               </Field>
             )
+          }
           case 'number':
             return (
-              <Field key={f.path.join('.')} label={f.label} help={f.help}>
+              <Field key={f.path.join('.')} label={f.label} help={line}>
                 {(id, describedBy) => (
                   <NumberBox
                     id={id}

@@ -166,7 +166,6 @@ export const pcaDef: AnalysisDef<PcaParams> = {
       path: ['pcr'],
       label: 'Principal component regression (PCR)',
       kind: 'checkbox',
-      help: 'Regress an outcome variable on the retained components; the outcome is left out of the PCA.',
     },
     {
       path: ['pcrY'],
@@ -181,7 +180,6 @@ export const pcaDef: AnalysisDef<PcaParams> = {
       label: 'Group by',
       kind: 'custom',
       component: 'dataset.pickText',
-      help: 'A text variable among the data sets chosen (left out of the PCA): the score plot and biplot colour its groups.',
     },
     {
       path: ['ellipses'],

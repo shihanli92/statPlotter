@@ -1,0 +1,296 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`the guide’s trees > are listed with their params (a change to a tree is a reviewed diff) 1`] = `
+"groupsDiffer | groups=one values=measure → oneSample {"test":"t","hypothetical":100}
+groupsDiffer | groups=one values=scores → oneSample {"test":"wilcoxon","hypothetical":100}
+groupsDiffer | groups=two matched=no values=measure scatter=yes → ttest {"design":"unpaired","unpaired":{"assumeEqualSD":false}}
+groupsDiffer | groups=two matched=no values=measure scatter=no → ttest {"design":"unpaired","unpaired":{"assumeEqualSD":true}}
+groupsDiffer | groups=two matched=no values=factor → transform {"y":"log10"}
+groupsDiffer | groups=two matched=no values=scores → mannWhitney {"pMethod":"exactWhenPossible"}
+groupsDiffer | groups=two matched=no values=shape → kolmogorovSmirnov {}
+groupsDiffer | groups=two matched=yes values=measure → ttest {"design":"paired","paired":{"measure":"difference"}}
+groupsDiffer | groups=two matched=yes values=factor → ttest {"design":"paired","paired":{"measure":"ratio"}}
+groupsDiffer | groups=two matched=yes values=scores → wilcoxon {"pMethod":"exactWhenPossible","zeroHandling":"wilcoxon"}
+groupsDiffer | groups=many matched=no values=measure scatter=yes comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=no values=measure scatter=yes comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=no values=measure scatter=yes comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=no values=measure scatter=no comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=no values=measure scatter=no comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=no values=measure scatter=no comparisons=trend → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"trend","control":""}
+groupsDiffer | groups=many matched=no values=measure scatter=no comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=no values=measure scatter=unsure comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=no values=measure scatter=unsure comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=no values=measure scatter=unsure comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=no values=factor → transform {"y":"log10"}
+groupsDiffer | groups=many matched=no values=scores comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=no values=scores comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=no values=scores comparisons=none → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=yes values=measure comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=yes values=measure comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=yes values=measure comparisons=none → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=yes values=scores comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=yes values=scores comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=yes values=scores comparisons=none → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=one values=measure → oneSample {"test":"t","hypothetical":100}
+vsControl | groups=one values=scores → oneSample {"test":"wilcoxon","hypothetical":100}
+vsControl | groups=two matched=no values=measure scatter=yes → ttest {"design":"unpaired","unpaired":{"assumeEqualSD":false}}
+vsControl | groups=two matched=no values=measure scatter=no → ttest {"design":"unpaired","unpaired":{"assumeEqualSD":true}}
+vsControl | groups=two matched=no values=factor → transform {"y":"log10"}
+vsControl | groups=two matched=no values=scores → mannWhitney {"pMethod":"exactWhenPossible"}
+vsControl | groups=two matched=no values=shape → kolmogorovSmirnov {}
+vsControl | groups=two matched=yes values=measure → ttest {"design":"paired","paired":{"measure":"difference"}}
+vsControl | groups=two matched=yes values=factor → ttest {"design":"paired","paired":{"measure":"ratio"}}
+vsControl | groups=two matched=yes values=scores → wilcoxon {"pMethod":"exactWhenPossible","zeroHandling":"wilcoxon"}
+vsControl | groups=many matched=no values=measure scatter=yes comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=no values=measure scatter=yes comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=no values=measure scatter=yes comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=no values=measure scatter=no comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=no values=measure scatter=no comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=no values=measure scatter=no comparisons=trend → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"trend","control":""}
+vsControl | groups=many matched=no values=measure scatter=no comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=no values=measure scatter=unsure comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=no values=measure scatter=unsure comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=no values=measure scatter=unsure comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=no values=factor → transform {"y":"log10"}
+vsControl | groups=many matched=no values=scores comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=no values=scores comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=no values=scores comparisons=none → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=yes values=measure comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=yes values=measure comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=yes values=measure comparisons=none → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=yes values=scores comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=yes values=scores comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=yes values=scores comparisons=none → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+trend | matched=no → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","comparisons":"trend"}
+trend | matched=yes → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","comparisons":"allPairs"}
+setValue | values=measure → oneSample {"test":"t","hypothetical":100}
+setValue | values=scores → oneSample {"test":"wilcoxon","hypothetical":100}
+describe |  → descriptive {"quartiles":true,"ci":true}
+normalOdd | look=shape → normality {"dagostino":false,"andersonDarling":false,"shapiroWilk":true,"kolmogorovSmirnov":false,"qqPlot":true}
+normalOdd | look=outliers → identifyOutliers {"method":"rout","q":1}
+goTogether | shape=straight → correlation {"method":"pearson"}
+goTogether | shape=monotone → correlation {"method":"spearman"}
+methodsAgree |  → blandAltman {"measure":"difference","order":"bMinusA"}
+roc | direction=higher → roc {"direction":"higher"}
+roc | direction=lower → roc {"direction":"lower"}
+distributions |  → kolmogorovSmirnov {}
+plan |  → powerAnalysis {}
+twoFactors | repeated=none comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=allCells kind=allPairs → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"allCells","kind":"allPairs","family":"perBlock","allPairsMethod":"tukey","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=allCells kind=vsControl → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"allCells","kind":"vsControl","family":"perBlock","allPairsMethod":"tukey","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=mainColumns kind=allPairs → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"mainColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"tukey","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=mainColumns kind=vsControl → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"mainColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"tukey","controlMethod":"dunnett"}
+twoFactors | repeated=none comparisons=none → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=columns comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=columns comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=columns comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=columns comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=columns comparisons=none → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=rows comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=rows comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=rows comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=rows comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=rows comparisons=none → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=both comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=both comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=both comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=both comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=both comparisons=none → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+timeCourse | second=yes comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+timeCourse | second=yes comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+timeCourse | second=yes comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+timeCourse | second=yes comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+timeCourse | second=yes comparisons=none → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+timeCourse | second=one → needs column
+rowsTwo | matched=no values=measure → multipleT {"design":"unpaired","distribution":"gaussian","variance":"welch","approach":"fdr","fdrMethod":"bky"}
+rowsTwo | matched=no values=factor → multipleT {"design":"unpaired","distribution":"lognormal","variance":"welch","approach":"fdr","fdrMethod":"bky"}
+rowsTwo | matched=no values=scores → multipleT {"design":"unpaired","distribution":"nonparametric","variance":"welch","approach":"fdr","fdrMethod":"bky"}
+rowsTwo | matched=yes values=measure → multipleT {"design":"paired","distribution":"gaussian","variance":"welch","approach":"fdr","fdrMethod":"bky"}
+rowsTwo | matched=yes values=factor → multipleT {"design":"paired","distribution":"lognormal","variance":"welch","approach":"fdr","fdrMethod":"bky"}
+rowsTwo | matched=yes values=scores → multipleT {"design":"paired","distribution":"nonparametric","variance":"welch","approach":"fdr","fdrMethod":"bky"}
+rowsMany | values=measure → multipleOneWay {"gaussian":true,"equalSD":"yes","comparisons":"allPairs"}
+rowsMany | values=scores → multipleOneWay {"gaussian":false,"comparisons":"allPairs"}
+threeFactors | groups=four → threeWayAnova {}
+threeFactors | groups=other → needs multipleVariables
+describeRows |  → rowStats {}
+doseResponse | direction=rises xScale=log normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-normalized-response","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-normalized-response","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-response","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-response","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=log normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-response","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-response","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=rises xScale=dose normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-response","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-response","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=log normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+doseResponse | direction=falls xScale=dose normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+standardCurve | straight=yes → linearRegression {"interpolate":true}
+standardCurve | straight=no → nonlinearFit {"equation":"agonist-conc-response-variable-slope","interpolate":true}
+otherCurve | experiment=saturation → nonlinearFit {"equation":"one-site-specific","replicates":"each"}
+otherCurve | experiment=competition → nonlinearFit {"equation":"one-site-fit-logic50","replicates":"each"}
+otherCurve | experiment=association → nonlinearFit {"equation":"association-one-conc","replicates":"each"}
+otherCurve | experiment=dissociation → nonlinearFit {"equation":"dissociation-one-phase","replicates":"each"}
+otherCurve | experiment=enzyme → nonlinearFit {"equation":"michaelis-menten","replicates":"each"}
+otherCurve | experiment=decay → nonlinearFit {"equation":"one-phase-decay","replicates":"each"}
+otherCurve | experiment=growth → nonlinearFit {"equation":"exponential-growth","replicates":"each"}
+otherCurve | experiment=logistic → nonlinearFit {"equation":"logistic-growth","replicates":"each"}
+otherCurve | experiment=peak → nonlinearFit {"equation":"gaussian","replicates":"each"}
+otherCurve | experiment=other → nonlinearFit {}
+straightLine | setX=set replicates=each → linearRegression {"replicates":"each"}
+straightLine | setX=set replicates=mean → linearRegression {"replicates":"mean"}
+straightLine | setX=both want=strength shape=straight → correlation {"method":"pearson"}
+straightLine | setX=both want=strength shape=monotone → correlation {"method":"spearman"}
+straightLine | setX=both want=agree → deming {}
+compareCurves | shape=lines → linearRegression {"compare":true}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-normalized-response","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-normalized-response","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-response","compareParams":["LogEC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-response","compareParams":["LogEC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=log normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"agonist-conc-response","compareParams":["EC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"agonist-conc-response","compareParams":["EC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"agonist-conc-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=rises xScale=dose normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"agonist-conc-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-response","compareParams":["LogIC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-response","compareParams":["LogIC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=log normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=yes slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-normalized-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=variable compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=variable compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=variable compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=variable compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response-variable-slope","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=standard compare=yes replicates=each → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":["IC50"],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=standard compare=yes replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":["IC50"],"replicates":"mean","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=standard compare=no replicates=each → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":[],"replicates":"each","ciMethod":"profile"}
+compareCurves | shape=curves direction=falls xScale=dose normalized=no slope=standard compare=no replicates=mean → nonlinearFit {"equation":"inhibitor-conc-response","compareParams":[],"replicates":"mean","ciMethod":"profile"}
+xyTogether | shape=straight → correlation {"method":"pearson"}
+xyTogether | shape=monotone → correlation {"method":"spearman"}
+yesNo |  → simpleLogistic {"ciMethod":"profile"}
+auc |  → areaUnderCurve {}
+smooth |  → fitSpline {"method":"lowess"}
+outcomeGroup | paired=yes → needs nothing yet
+outcomeGroup | paired=no size=twoByTwo report=risk → contingency {"test":"fisher","trend":false,"riskEstimates":true,"oddsRatio":false}
+outcomeGroup | paired=no size=twoByTwo report=odds → contingency {"test":"fisher","trend":false,"riskEstimates":false,"oddsRatio":true}
+outcomeGroup | paired=no size=larger ordered=yes → contingency {"test":"chiSquare","trend":true}
+outcomeGroup | paired=no size=larger ordered=no which=overall → contingency {"test":"chiSquare","trend":false,"pairwise":"none","pairwiseMethod":"bonferroni"}
+outcomeGroup | paired=no size=larger ordered=no which=pairs → contingency {"test":"chiSquare","trend":false,"pairwise":"all","pairwiseMethod":"bonferroni"}
+trendCounts |  → contingency {"test":"chiSquare","trend":true}
+diagnosticTest | result=yesNo → contingency {"test":"fisher","diagnostic":true,"trend":false}
+diagnosticTest | result=measurement → needs column
+curvesDiffer |  → survival {}
+medianSurvival |  → survival {}
+expectedProportions |  → goodnessOfFit {}
+fractions |  → fractionOfTotal {"display":"percent"}
+predictOutcome | outcomeKind=measurement → multipleRegression {"y":"<Age>"}
+predictOutcome | outcomeKind=yesNo → logisticRegression {"y":"<Died>","ciMethod":"profile"}
+predictOutcome | outcomeKind=count → poissonRegression {"y":"<Age>"}
+predictOutcome | outcomeKind=time → coxRegression {"time":"<Age>","event":"<Died>"}
+factorsAffect |  → multifactorAnova {"y":"<Age>","factors":["<Group>"]}
+pca |  → pca {"standardize":true,"select":"parallel"}
+coxCovariates |  → coxRegression {"time":"<Age>","event":"<Died>"}
+kmFromRows |  → survivalFromVariables {"time":"<Age>","status":"<Died>"}
+curvePerGroup |  → nonlinearFitMV {"x":"<Age>","y":"<Dose>","group":"<Group>"}
+nestedGroups | groups=two → nestedT {}
+nestedGroups | groups=many comparisons=allPairs → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+nestedGroups | groups=many comparisons=vsControl → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+nestedGroups | groups=many comparisons=none → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}"
+`;

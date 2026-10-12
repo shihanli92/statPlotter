@@ -167,7 +167,6 @@ export const smoothingDef: AnalysisDef<Params> = {
       min: 10,
       max: 10000,
       step: 50,
-      help: 'At least four per data point. LOWESS curves join the fitted values at the data.',
     },
     { path: ['table'], label: 'Create a table of the curve’s XY coordinates', kind: 'checkbox' },
   ],

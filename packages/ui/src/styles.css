@@ -4940,3 +4940,308 @@ dialog.palette::backdrop {
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- Roadmap 51a: explanations and the guided chooser ---------- */
+
+/* The Analyze dialog, wider (design §10.2: min(1200px, 94vw); three panels arrive with 51b). */
+dialog.dialog.wide:has(.analyze) {
+  width: min(1200px, 94vw);
+}
+.analyze-tabs {
+  padding: 0 0 0 2px;
+  margin-bottom: 12px;
+}
+.analyze-panel .analyze-options {
+  max-height: 58vh;
+}
+.analyze-options .list-item.question::before {
+  content: "? ";
+  color: var(--muted);
+}
+.analyze-elsewhere ul {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.analyze-elsewhere li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 4px 8px;
+}
+.analyze-elsewhere .help,
+.guide-elsewhere .help {
+  font-size: 11px;
+}
+
+/* Explanation lines under questions and options; ⓘ and its card. */
+.params-form .explain {
+  display: block;
+}
+.params-form .option-line,
+.guide-question .option-line {
+  display: block;
+  margin: 0 0 2px 22px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.field .help .option-line {
+  margin-left: 0;
+}
+.radio-option {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.radio-option.unavailable label {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+.check-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.check-field > .help {
+  margin-left: 22px;
+}
+.info-button {
+  border: none;
+  background: none;
+  padding: 0 4px;
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.explain-card {
+  display: block;
+  margin: 4px 0;
+  padding: 6px 8px;
+  border-left: 2px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 12px;
+}
+.explain-para {
+  display: block;
+}
+.explain-para + .explain-para {
+  margin-top: 4px;
+}
+
+/* Method cards: About this method, How to read this, Help. */
+.about-method,
+.how-to-read {
+  margin: 10px 0;
+}
+.about-method > summary,
+.how-to-read > summary {
+  cursor: pointer;
+  color: var(--accent);
+}
+.how-to-read {
+  padding: 0 4px;
+}
+.method-card {
+  margin: 8px 0 14px;
+  font-size: 12px;
+  max-width: 72ch;
+}
+.method-card h3,
+.method-card h4,
+.method-card h5 {
+  margin: 0 0 4px;
+}
+.method-card p,
+.method-card ul {
+  margin: 4px 0;
+}
+.method-card .card-question {
+  font-style: italic;
+}
+.card-more summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.card-more code {
+  font-size: 11px;
+}
+
+/* The chooser (Guide me). */
+.guide-rail h4 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.guide-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.guide-elsewhere {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.guide-elsewhere summary {
+  cursor: pointer;
+  color: var(--accent);
+}
+.guide-elsewhere ul {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+}
+.guide-elsewhere li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  margin-bottom: 8px;
+}
+.guide-detail {
+  max-height: 64vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.guide-facts {
+  margin-top: 0;
+}
+.guide-groups {
+  border: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.guide-groups legend {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.guide-title {
+  margin: 4px 0 8px;
+  font-size: 14px;
+}
+.guide-question {
+  border: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.guide-question legend {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.guide-question > .help,
+.guide-fact .help {
+  font-size: 12px;
+  color: var(--muted);
+}
+.guide-hint {
+  font-size: 12px;
+  padding: 3px 6px;
+  border-left: 2px solid var(--border);
+}
+.guide-fact {
+  margin: 0 0 8px;
+}
+.guide-ask {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin: 2px 0 4px 22px;
+  font-size: 12px;
+}
+.guide-number {
+  width: 8em;
+}
+.guide-recommendation {
+  margin: 8px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.guide-recommendation h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.guide-recommendation p {
+  margin: 4px 0;
+}
+.guide-method {
+  font-size: 12px;
+  color: var(--muted);
+}
+.guide-actions {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+.guide-alternatives h4 {
+  margin: 8px 0 4px;
+  font-size: 12px;
+}
+.guide-alternatives ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+/* The navigator's empty Results: questions to ask of the open table. */
+.results-prompt h4 {
+  margin: 10px 14px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.results-prompt p {
+  margin: 4px 14px;
+  font-size: 12px;
+}
+.results-prompt ul {
+  list-style: none;
+  margin: 2px 14px 8px;
+  padding: 0;
+}
+.results-prompt li {
+  margin: 3px 0;
+  font-size: 12px;
+}
+.results-prompt button.link {
+  text-align: left;
+}
+
+/* Help › Choosing an analysis. */
+dialog.dialog.wide:has(.choosing-help) {
+  width: min(960px, 94vw);
+}
+dialog.dialog:has(.choosing-help) .dialog-body {
+  max-height: 78vh;
+  overflow-y: auto;
+}
+.help-entry h3 {
+  margin: 14px 0 4px;
+  font-size: 14px;
+}
+.help-question ul {
+  margin: 2px 0 6px;
+  padding-left: 18px;
+}
+.help-leaf {
+  margin: 2px 0;
+  font-size: 12px;
+}
+.help-cards-title {
+  margin-top: 24px;
+  font-size: 16px;
+}

@@ -509,9 +509,18 @@ interface AnalysisNode {
            pools?: DataSetKey[][] }  // roadmap 35: each pool's data sets (2–64) as one, under its first's key; ≤ 32 pools
   params: unknown                    // validated by the plugin's zod schema
   notes?: string                     // free text above the results (roadmap 31); absent = none
+  origin?: { guide?: { entry: string; answers: Record<string, string>; followed: boolean } }
+                                     // roadmap 51a: set up with Guide me (absent: by hand)
 }
 ```
 
+- **`origin.guide`** (roadmap 51a, decision 1280): the analysis was set up with the guided
+  chooser (Analyze › Guide me): `entry` is the question's id (`GUIDE_ENTRIES`, e.g.
+  `vsControl`), `answers` the answers by question id (with the values asked for, such as the
+  control's data set key), `followed` whether OK ran the recommended params unchanged. Written
+  when an analysis is created after Use this, never changed afterwards; information only (the
+  results' How to read this names the question). Optional, so no schema version and no
+  migration: earlier files have none, and readers without it behave as before.
 - One analysis reads from **one** source node (a table or another analysis), selecting data sets.
 - **Input modifiers** (roadmap 35, `modifyInput`, `model/src/analysisInput.ts`): `atX` keeps each
   data set's replicates at the rows whose X is that value, as a column table's data set (the run
@@ -553,6 +562,30 @@ The plugin contract (`AnalysisDef` in `model/src/analysis.ts`) also carries `cat
 `description`, and a declarative `form: FormField[]` (select / radio / checkbox / number fields
 addressed by path into the params, with optional `showIf`). The UI renders every analysis dialog
 from it.
+
+**Explanations (roadmap 51a, design `docs/design/ANALYSIS_GUIDE.md` §2, decisions 1276–1278).**
+Code, not document data: they never enter a project file and change no result.
+
+```ts
+interface MethodCard {              // one per method (a test or a correction), METHOD_CARDS
+  id; name; shortName; question
+  nullHypothesis: string | null     // the null in words and what P is; null: a tool that tests nothing
+  useWhen; instead: { card; when }[]; assumptions: string[]; reading
+  more: { formula; r; notes? }      // behind "More"
+  references: { text; doi? }[]      // 1–3 (0 for tools)
+}
+FormField.explain?: { line: string /* ≤ 90 */; card?: string /* ≤ 500 */ }
+FormOption.explain?: { line; card?; tag?: { kind: 'recommended' | 'notRecommended'; why }; method? }
+AnalysisDef.cards?(params): string[]   // the cards of the method the params choose, test first
+```
+
+`FormField.help` is gone: its nine strings became `explain.line`s. The text is written by family
+in `analyses/src/explain/forms/*.ts` (and the cards in `explain/cards/*.ts`) and attached to the
+definitions' forms when the registry is built (`attachExplanations`), shared fields' text in one
+place (`forms/shared.ts`). The guided chooser's trees are data too (`model/src/guide.ts`:
+`TableFacts`, `GuideEntry`, `GuideQuestion`, `GuideLeaf`, `GuideElsewhere`; the trees in
+`analyses/src/guide/`, decision 1279): a tree reads only the table's shape (`tableFacts`), never a
+result, and each leaf's params are parsed by its analysis' schema.
 
 One plugin per *dialog*, not per test variant: the dialog structure lab users know.
 

@@ -196,7 +196,7 @@ function Shell({
   useCommands('app', [
     cmd('insert.table'),
     cmd('insert.graph', kind !== null),
-    cmd('analyze.analyze', kind !== null),
+    cmd('analyze.guide', kind !== null),
     cmd('format.graph', kind !== null),
     cmd('file.export', kind !== null),
   ])
@@ -381,10 +381,10 @@ describe('the getting-started card', () => {
         { type: 'node.add', node: g },
       ]),
     )
-    // Analyze… on the table (shown first: the command then enabled).
+    // Guide me… on the table (roadmap 51a; shown first: the command then enabled).
     click(showMe('analysis'))
     await settle()
-    expect(m.ran).toEqual([{ id: 'analyze.analyze', selected: t.id }])
+    expect(m.ran).toEqual([{ id: 'analyze.guide', selected: t.id }])
     // The Format panel and Export… on the graph (shown first).
     click(showMe('format'))
     await settle()

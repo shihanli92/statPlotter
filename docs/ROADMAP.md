@@ -66,6 +66,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.5 | 49c | merge of 49c, dendrograms as layers (not tagged) |
 | 0.3.6 | 49d | merge of 49d, fill and outline mapped separately (not tagged) |
 | 0.3.7 | 50 | merge of 50, zoom and pan with the mouse (not tagged) |
+| 0.3.8 | 51a | merge of 51a, explanations and a guided chooser (not tagged) |
 
 ## Phases
 
@@ -2054,3 +2055,62 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     styles (and Tawk's and Johnston's format notes) only; `ANALYSES_VERSION` unchanged. Tests: `newLooks`, the builder's preview
     against Create for every preset, Add layer's looks (unit); `graphBuilder.spec.ts` (the Bars
     with points preview and graph) and `examples.spec.ts` in Chromium, WebKit and Firefox.
+
+51a. ✅ **Explanations and a guided chooser** — decisions 1276–1285 (design
+    [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md) §2–§3, approved 2026-10-12; the first of
+    51a → 51c → 51b → 51d → 51e). **Every method has a card** (88 `MethodCard`s: what it asks, the
+    null in words and what P is, when to use it and its neighbours instead, its assumptions in
+    experiment terms, how to read it; the formula, R call and one to three references behind
+    "More"; the compare-groups cards as the design gives them), and **every field and option of
+    the 54 analyses has its text** (405 fields, 599 options: a line under each, a longer card
+    behind ⓘ, and "Recommended: why" beside every "(recommended)"), in `@ps/analyses`
+    (`explain/`), attached to the forms when the registry is built; `AnalysisDef.cards(params)`
+    names the method the options choose. One source for the Analyze form (the lines, ⓘ, About
+    this method), the results' **How to read this** (the cards' null and reading with the data
+    sets' names), the chooser and **Help › Choosing an analysis** (generated from the trees and
+    the cards). The text is true of 0.3.8: where 51c changes a default it says what the app does
+    now and recommends the better choice in words (Student's t test still the starting choice,
+    Welch's recommended; Kruskal-Wallis' approximate P; Dunn's comparisons Bonferroni-adjusted;
+    the survival results listing every test; one-tailed P in the observed direction).
+    **The guided chooser** (`analyses/src/guide/`, types in `model/src/guide.ts`): 40 questions
+    by table kind (the rails of design §3.4), follow-up questions in the experiment's words (same
+    subjects? measurements, values that change by a factor, or scores? can scatter differ? which
+    comparisons?), counting questions answered from the table's shape (`TableFacts`: groups,
+    values, raw or mean/SD/N, complete rows, 2 × 2, X's range — never a test), answers the table
+    rules out greyed with the reason, then a recommendation: the method, a reason for these
+    answers, "You will get", the method line and up to two alternatives with when to choose
+    them; **Use this** fills All analyses with its params (288 paths through the trees end in 38
+    analyses with params; 4 in another table kind). It never runs anything and never shows a
+    statistic. **Entry points**: the Analyze dialog's **Guide me** tab beside **All analyses**
+    (the dialog widened to min(1200 px, 94vw); it opens on the tab last used in the project,
+    first time Guide me; an analysis asked for by name opens the list), the navigator's empty
+    Results (a table with no analyses: "What do you want to know about “…”?" and its kind's first
+    three questions), **Compare these columns…** on selected columns, Analyze › Guide me… and
+    the getting-started checklist's "Run an analysis". **Search by question across table
+    kinds** (U3): the chooser's questions, this table's analyses (by titles, keywords and their
+    methods' names, words in any order and by their start) and, greyed, what another table kind
+    answers, with a New table… of that kind; questions of other kinds also under the chooser's
+    "Not here?". **U2**: the list opens on the last analysis used for the table's kind (else its
+    first common one), each analysis listed once (the common ones under Common only). **U5**:
+    the Analyze menu is Analyze…, Guide me…, All analyses…, the table kind's common analyses
+    (the dialog's Common, one source), Recent analyses ▸ and every analysis in a submenu per
+    category (the fixed quick list and the top-level simulations went). An analysis made after
+    Use this records `origin.guide` (its question, answers, and whether the params were kept;
+    optional, DATA_MODEL §5.1). Three-way ANOVA's comparisons no longer offer Newman-Keuls, which
+    its params never accepted (decision 1281). No statistic, default or result changes:
+    `ANALYSES_VERSION` unchanged, every golden, fixture and example fingerprint byte-identical.
+    Deferred: S38's "Y = log10(Y)" label (it is also Transform's result text, so 51c renames it
+    with its version bump; the form's line says log is base 10), the survival questions that
+    need 51c's params (trend, pairs, early weighting, the reference group), a 2 × 2's roles
+    (first row and column until 51c), the chips and side panel (51b). Tests: `explain.test.ts`
+    (every analysis' cards for every combination of its options, every field and option's line,
+    tags with reasons, lengths, cards complete and reachable, the writing style of §2.4),
+    `guide.test.ts` (every path ends in a recommendation or another kind; every recommendation
+    and alternative parses with no unknown key, accepts its question's kinds and runs on a
+    fixture table; every answer reachable; a snapshot of every path's params; the walk and the
+    facts), the search, the opening analysis and the list once (unit); the Guide me tab and the
+    form's lines, ⓘ and reasons (happy-dom); Playwright `analysisGuide.spec.ts` (new: Guide me →
+    the recommendation → Use this → Analyze → results and How to read this; Not here? → a new XY
+    table; search by question by keyboard; the empty Results' questions and Help) and the specs
+    whose dialog and menu changed (`analyses`, `shell`, `gettingStarted`) in Chromium, WebKit
+    and Firefox.

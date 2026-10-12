@@ -311,12 +311,23 @@ export async function analyze(
   await tool(page, 'Analyze…').click()
   const d = dialog(page, /^Analyze “/)
   await expect(d).toBeVisible()
-  // The first: a common analysis is listed in the Common group and in its category (roadmap 43).
-  await d.getByRole('option', { name: title, exact: true }).first().click()
+  await allAnalyses(d)
+  await d.getByRole('option', { name: title, exact: true }).click()
   await configure?.(d)
   await d.getByRole('button', { name: 'OK', exact: true }).click()
   await expect(d).toBeHidden()
   await expectUpToDate(page)
+}
+
+/**
+ * Roadmap 51a: the Analyze dialog's All analyses tab (Analyze… opens on Guide me the first time
+ * in a project, and on the tab last used after that).
+ */
+export async function allAnalyses(d: Locator): Promise<void> {
+  await expect(d).toBeVisible()
+  const tab = d.getByRole('tab', { name: 'All analyses', exact: true })
+  if ((await tab.count()) && (await tab.getAttribute('aria-selected')) !== 'true') await tab.click()
+  await expect(d.getByRole('combobox', { name: 'Search analyses' })).toBeVisible()
 }
 
 /** The results view shows finished results with no error banner. */

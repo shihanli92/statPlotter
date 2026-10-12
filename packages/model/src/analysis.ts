@@ -33,6 +33,23 @@ export const AnalysisNode = z.object({
   params: z.unknown(),
   /** Free text about the analysis (roadmap 31), edited above its results; absent = none. */
   notes: z.string().optional(),
+  /**
+   * Roadmap 51a: how the analysis was set up. `guide`: from the guided chooser (Guide me) — the
+   * question's entry id, the answers by question id, and whether Analyze ran the recommended
+   * method unchanged (`followed`) or the options were changed after "Use this". Absent: made by
+   * hand (the list, a menu, a bracket…). Information only: it never changes what is computed.
+   */
+  origin: z
+    .object({
+      guide: z
+        .object({
+          entry: z.string(),
+          answers: z.record(z.string(), z.string()),
+          followed: z.boolean(),
+        })
+        .optional(),
+    })
+    .optional(),
 })
 export type AnalysisNode = z.infer<typeof AnalysisNode>
 
@@ -151,17 +168,83 @@ export interface ShowIf {
   in: readonly unknown[]
 }
 
+// ---------------------------------------------------------------------------------------------
+// Roadmap 51a: explanations (docs/design/ANALYSIS_GUIDE.md §2). Code, not document data: they
+// never enter a project file, and changing them changes no result.
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * A method's plain-language card: what it asks, when to use it instead of its neighbours, how to
+ * read it; the formula and the R call behind "More". Placeholders `{A}`, `{B}` and `{control}`
+ * stand for the user's group names where a card is shown with data (results' How to read this).
+ */
+export interface MethodCard {
+  /** 'welchT', 'tukey', 'kruskalWallis'. */
+  id: string
+  /** "Welch’s t test": also what a recommendation and Help show. */
+  name: string
+  /** "Welch’s t": a short label. */
+  shortName: string
+  /** What it asks, one sentence (≤ 160 characters). */
+  question: string
+  /**
+   * The null hypothesis in words, and what P is (≤ 220 characters); null for a method that tests
+   * nothing (a transform, a curve drawn through the points, a simulation).
+   */
+  nullHypothesis: string | null
+  /** The situations it fits (≤ 320 characters). */
+  useWhen: string
+  /** Neighbours and when to prefer them (card ids). */
+  instead: readonly { card: string; when: string }[]
+  /** In experiment terms (each ≤ 160 characters). */
+  assumptions: readonly string[]
+  /** How to read the result (≤ 600 characters). */
+  reading: string
+  /** Behind "More": the formula, the R call, notes. */
+  more: { formula: string; r: string; notes?: string }
+  /** One to three (none for tools that compute no statistic). */
+  references: readonly { text: string; doi?: string }[]
+}
+
+/** A field's text: one line always shown under the question; a longer card behind ⓘ. */
+export interface FieldExplain {
+  /** ≤ 90 characters. */
+  line: string
+  /** ≤ 500 characters. */
+  card?: string
+}
+
+/** An option's text: one line under it, a card behind ⓘ, the reason for a tag. */
+export interface OptionExplain {
+  /** ≤ 90 characters. */
+  line: string
+  /** ≤ 400 characters. */
+  card?: string
+  /** "(recommended)" or "(not recommended)" in its label, with why (≤ 160 characters). */
+  tag?: { kind: 'recommended' | 'notRecommended'; why: string }
+  /** The method card this option selects (a test or a correction), if any. */
+  method?: string
+}
+
+/** One choice of a select or radio field. */
+export interface FormOption {
+  value: string | number | boolean
+  label: string
+  explain?: OptionExplain
+}
+
 /** Declarative parameter form, rendered by the UI's generic analysis dialog. */
 export type FormField = {
   /** Path into the params object. */
   path: readonly string[]
   label: string
-  help?: string
+  /** Roadmap 51a: what the question asks, in a line (and a card behind ⓘ). */
+  explain?: FieldExplain
   /** Show only when other fields have one of these values (all conditions must hold). */
   showIf?: ShowIf | readonly ShowIf[]
 } & (
-  | { kind: 'select'; options: readonly { value: string | number | boolean; label: string }[] }
-  | { kind: 'radio'; options: readonly { value: string | number | boolean; label: string }[] }
+  | { kind: 'select'; options: readonly FormOption[] }
+  | { kind: 'radio'; options: readonly FormOption[] }
   | { kind: 'checkbox' }
   | { kind: 'number'; min?: number; max?: number; step?: number }
   /** A plugin-specific editor the UI provides under this component id. */
@@ -273,4 +356,10 @@ export interface AnalysisDef<P = unknown> {
     params: P,
     context: { tableKind: TableKind; dataSets: readonly DataSetKey[] },
   ) => ResultTemplate[]
+  /**
+   * Roadmap 51a: the method cards of the method these params choose (`MethodCard.id`s), the test
+   * first, then its comparisons, e.g. `['oneWayAnova', 'tukey']`. A pure function of params,
+   * shown by the dialog's About this method, the results' How to read this and Help.
+   */
+  cards?: (params: P) => readonly string[]
 }

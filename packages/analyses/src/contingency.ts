@@ -117,7 +117,7 @@ export const contingencyDef: AnalysisDef<Params> = {
       label: 'Chi-square test for trend (tables with two outcome columns and three or more rows)',
       kind: 'checkbox',
     },
-    { ...TAILS_FIELD, help: 'Applies to 2×2 tables.' },
+    TAILS_FIELD,
     {
       path: ['riskEstimates'],
       label: 'Relative risk, difference between proportions and NNT (2×2)',
@@ -144,7 +144,6 @@ export const contingencyDef: AnalysisDef<Params> = {
         { value: 'all', label: 'Compare every pair of rows' },
         { value: 'control', label: 'Compare each row with a control row' },
       ],
-      help: 'Each pair of rows is tested on its own with the test chosen above.',
     },
     {
       path: ['pairwiseControl'],

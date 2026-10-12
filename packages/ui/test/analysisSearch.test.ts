@@ -1,11 +1,13 @@
 import { registry } from '@ps/analyses'
 import type { TableKind } from '@ps/model'
 import { describe, expect, it } from 'vitest'
+import { openingAnalysis } from '../src/analysis/AnalyzeDialog.tsx'
 import {
   ANALYSIS_KEYWORDS,
   analysisGroups,
   COMMON_ANALYSES,
   COMMON_TITLE,
+  searchAnalyses,
 } from '../src/analysis/analysisSearch.ts'
 import { needsHint } from '../src/analysis/needs.ts'
 
@@ -24,21 +26,26 @@ describe('the Analyze dialog’s list', () => {
     for (const id of Object.keys(ANALYSIS_KEYWORDS)) expect(registry.get(id), id).toBeDefined()
   })
 
-  it('opens with the Common group of the table’s kind, then every analysis by category', () => {
+  it('opens with the Common group of the table’s kind, then every other analysis by category', () => {
     const groups = titles('column')
     expect(groups[0]).toEqual([COMMON_TITLE, ['ttest', 'oneWayAnova', 'descriptive', 'normality']])
-    // The full category list follows, each analysis once, in the registry's order.
+    // Roadmap 51a (U2): every analysis once — the common ones under Common only.
     const rest = groups.slice(1)
-    expect(rest.map((g) => g[0])).toEqual([...new Set(offered('column').map((d) => d.category))])
-    expect(rest.flatMap((g) => g[1])).toEqual(
+    const listed = groups.flatMap((g) => g[1])
+    expect(new Set(listed).size).toBe(listed.length)
+    expect([...listed].sort()).toEqual(
       offered('column')
-        .slice()
-        .sort(
-          (a, b) =>
-            rest.findIndex((g) => g[0] === a.category) - rest.findIndex((g) => g[0] === b.category),
-        )
-        .map((d) => d.id),
+        .map((d) => d.id)
+        .sort(),
     )
+    expect(rest.flatMap((g) => g[1])).not.toContain('ttest')
+    expect(rest.map((g) => g[0])).toEqual([
+      ...new Set(
+        offered('column')
+          .filter((d) => !groups[0]![1].includes(d.id))
+          .map((d) => d.category),
+      ),
+    ])
     expect(titles('xy')[0]).toEqual([
       COMMON_TITLE,
       ['linearRegression', 'nonlinearFit', 'correlation'],
@@ -71,6 +78,52 @@ describe('the Analyze dialog’s list', () => {
     expect(titles('xy', 'ic50')[0]![1]).toEqual(['nonlinearFit'])
     expect(titles('multipleVariables', 'pca')[0]![1][0]).toBe('pca')
     expect(titles('column', 'zzz')).toEqual([[null, []]])
+  })
+})
+
+// Roadmap 51a (U3, design §3.6): search by question, across table kinds.
+describe('search by question', () => {
+  const search = (kind: TableKind, q: string) => searchAnalyses(offered(kind), kind, q)
+
+  it('finds the chooser’s questions by their words, in any order and by their start', () => {
+    expect(search('column', 'compare groups').questions.map((e) => e.id)).toContain('groupsDiffer')
+    expect(search('column', 'same animals').questions.map((e) => e.id)).toContain('groupsDiffer')
+    expect(search('xy', 'dose resp').questions[0]?.id).toBe('doseResponse')
+    expect(search('xy', 'resp dose').questions[0]?.id).toBe('doseResponse')
+    expect(search('grouped', 'time course').questions[0]?.id).toBe('timeCourse')
+  })
+
+  it('finds this table’s analyses by their methods’ names too', () => {
+    expect(search('column', 'dunnett').here.map((d) => d.id)).toContain('oneWayAnova')
+    expect(search('column', 'kruskal').here.map((d) => d.id)).toContain('oneWayAnova')
+  })
+
+  it('lists, greyed, what another table kind answers, with what it needs', () => {
+    const ic50 = search('column', 'ic50')
+    expect(ic50.here).toEqual([])
+    expect(ic50.elsewhere.map((m) => m.label)).toContain('Fit a dose-response curve (EC50 / IC50)')
+    expect(ic50.elsewhere.find((m) => m.def?.id === 'nonlinearFit')?.needs).toBe('xy')
+    const surv = search('column', 'surv')
+    expect(surv.elsewhere.some((m) => m.needs === 'survival')).toBe(true)
+    expect(surv.elsewhere[0]?.line).toMatch(/table/)
+    expect(search('column', 'fisher').elsewhere.map((m) => m.def?.id)).toContain('contingency')
+    expect(search('column', 'pca').elsewhere.map((m) => m.def?.id)).toContain('pca')
+    // Nothing at all: the dialog says so (and offers Guide me).
+    expect(search('column', 'zzzz')).toEqual({ questions: [], here: [], elsewhere: [] })
+  })
+})
+
+// Roadmap 51a (U2): the list opens on the analysis asked for, else the last one used for this
+// kind, else the kind's first common one.
+describe('the analysis the list opens on', () => {
+  it('is asked for, else used last for this kind, else the first common one', () => {
+    const defs = offered('column')
+    expect(openingAnalysis(defs, 'column', 'mannWhitney', ['ttest'])).toBe('mannWhitney')
+    expect(openingAnalysis(defs, 'column', undefined, ['nonlinearFit', 'wilcoxon'])).toBe(
+      'wilcoxon',
+    )
+    expect(openingAnalysis(defs, 'column', 'nonlinearFit', [])).toBe('ttest')
+    expect(openingAnalysis(offered('xy'), 'xy')).toBe('linearRegression')
   })
 })
 

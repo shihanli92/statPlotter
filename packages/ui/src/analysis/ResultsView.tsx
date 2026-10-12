@@ -1,4 +1,4 @@
-import { registry } from '@ps/analyses'
+import { guideEntry, registry } from '@ps/analyses'
 import {
   blockRows,
   type ResultsExportOptions,
@@ -34,6 +34,7 @@ import { SheetNotes } from '../reuse/SheetNotes.tsx'
 import { TableView } from '../table/TableView.tsx'
 import { errorMessage } from '../util.ts'
 import { JobStatus } from './JobStatus.tsx'
+import { MethodCards } from './MethodCards.tsx'
 import { needsHint } from './needs.ts'
 
 /** Numbers line up in a monospace column; words (names, Yes/No) read as normal text. */
@@ -323,6 +324,25 @@ export function ResultsView({
   }
   const firstError = result?.diagnostics.findIndex((d) => d.level === 'error') ?? -1
 
+  // Roadmap 51a: How to read this — the method cards' null hypothesis and reading, with the
+  // analyzed data sets' names; and, when Guide me set it up, the question it answers.
+  const howTo = useMemo(() => {
+    const def = registry.get(node.analysisId)
+    const parsed = def?.params.safeParse(node.params)
+    const ids = parsed?.success ? (def?.cards?.(parsed.data) ?? []) : []
+    const src = project.nodes[node.input.source]
+    const titleOf = (k: string | undefined) =>
+      src?.kind === 'table' ? src.dataSets.find((d) => d.id === k)?.title : undefined
+    const p = (parsed?.success ? parsed.data : {}) as { control?: unknown }
+    const [a, b] = [titleOf(node.input.dataSets[0]), titleOf(node.input.dataSets[1])]
+    const control = typeof p.control === 'string' ? titleOf(p.control) : undefined
+    return {
+      ids,
+      names: { ...(a ? { A: a } : {}), ...(b ? { B: b } : {}), ...(control ? { control } : {}) },
+    }
+  }, [node, project])
+  const guided = node.origin?.guide
+
   return (
     <div className="results-view" ref={viewRef}>
       {menu && <CommandMenu menu={menu} onClose={() => setMenu(null)} />}
@@ -353,6 +373,18 @@ export function ResultsView({
         </span>
       </div>
       <SheetNotes node={node} />
+      {howTo.ids.length > 0 && (
+        <details className="how-to-read">
+          <summary>How to read this</summary>
+          {guided && (
+            <p className="muted">
+              Set up with Guide me: “{guideEntry(guided.entry)?.question ?? guided.entry}”
+              {guided.followed ? '' : ', then changed in the options'}.
+            </p>
+          )}
+          <MethodCards ids={howTo.ids} names={howTo.names} mode="reading" />
+        </details>
+      )}
       {limitNote && (
         <div className="banner info limit-note" role="note">
           {limitNote}

@@ -101,7 +101,10 @@ export function NewTableDialog({
   onClose,
   onCreated,
   onNotice,
+  initialKind,
 }: {
+  /** Roadmap 51a: the kind it opens at (a question another table kind answers). */
+  initialKind?: Kind
   onClose: () => void
   onCreated: (id: NodeId) => void
   /** Says what Create made (roadmap 43): the table and the graph it gets. */
@@ -112,7 +115,7 @@ export function NewTableDialog({
   // Roadmap 43: a first table starts with sample data (something to analyze and graph at once).
   const firstTable = useDoc(sampleByDefault)
   const [name, setName] = useState(defaultName)
-  const [kind, setKind] = useState<Kind>('column')
+  const [kind, setKind] = useState<Kind>(initialKind ?? 'column')
   const [format, setFormat] = useState<'replicates' | SummaryPreset>('replicates')
   const [replicates, setReplicates] = useState(3)
   const [columns, setColumns] = useState(3)

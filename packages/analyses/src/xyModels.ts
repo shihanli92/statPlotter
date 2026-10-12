@@ -99,7 +99,6 @@ export const demingDef: AnalysisDef<DemingParams> = {
       label: 'SD of Y errors',
       kind: 'number',
       min: 0,
-      help: 'Only the ratio λ = (SD of X / SD of Y)² matters.',
       showIf: { path: ['errors'], in: ['sd'] },
     },
     { path: ['xForY'], label: 'Report Y (with its CI) when X =', kind: 'number' },

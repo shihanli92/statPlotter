@@ -98,7 +98,6 @@ export function meanPointRows(ds: NormalizedDataSet): XYPoint[] {
 export const INTERPOLATE_FIELD = {
   path: ['interpolate'],
   label: 'Interpolate unknowns from the standard curve',
-  help: 'Rows below the standards with a Y but no X get an X from the curve; rows with an X but no Y get a Y.',
   kind: 'checkbox',
 } as const
 

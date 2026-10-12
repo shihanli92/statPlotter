@@ -161,7 +161,7 @@ export function GettingStarted({
     if (step === 'graph' || step === 'analysis') {
       const table = tableToUse()
       if (!table) return void registry.run('insert.table')
-      return runOn(step === 'graph' ? 'insert.graph' : 'analyze.analyze', table)
+      return runOn(step === 'graph' ? 'insert.graph' : 'analyze.guide', table)
     }
     const graph = graphToUse()
     if (!graph) return showMe('graph')

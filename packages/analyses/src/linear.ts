@@ -130,7 +130,6 @@ export const linearRegressionDef: AnalysisDef<Params> = {
         { value: 'each', label: 'Consider each replicate Y value as an individual point' },
         { value: 'mean', label: 'Only consider the mean Y value of each point' },
       ],
-      help: 'Fit the means when the replicates are not independent (e.g. repeated measurements of one animal per X).',
     },
     {
       path: ['compare'],

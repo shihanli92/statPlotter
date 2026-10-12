@@ -59,7 +59,9 @@ packages/
   io/         CSV/XLSX/pzfx import, CSV/TSV/XLSX/HTML export, clipboard text, project file
   ui/         React: app shell and commands, navigator, grid, analysis dialogs, results, graph
               view and Format dialogs, canvas editing, layouts, examples, worker runner
-    analysis/   Analyze dialog, parameter forms, results view, job status
+    analysis/   Analyze dialog (Guide me and All analyses), parameter forms with their
+                explanation lines, results view (How to read this), job status, the method
+                cards, Help › Choosing an analysis (roadmap 51a)
     commands/   The one command registry: menus, toolbar, ⌘K palette, shortcuts, native menus,
                 the keys each view handles itself (`viewKeys.ts`)
     components/ Shared widgets: dialogs, menus, menu bar, toolbar, colour picker, toasts, help
@@ -151,8 +153,18 @@ interface AnalysisDef<P> {
   producesTable?: boolean             // result.table can feed other analyses and graphs
   outputs?(inputKeys, p): OutputDecl[] // graphable outputs and output graphs it declares
   graphResults?(p, { tableKind, dataSets }): ResultTemplate[]  // roadmap 35: ready labels, lines, bands
+  cards?(p): string[]                 // roadmap 51a: the method cards the params choose, test first
 }
 ```
+
+Roadmap 51a: every form field and option carries its text (`FormField.explain`, `FormOption
+.explain`: a line, a card behind ⓘ, the reason beside a "(recommended)"), and every method a
+`MethodCard` (what it asks, when to use it instead of its neighbours, how to read it; the
+formula and R call behind "More"). The text is written by family in `analyses/src/explain/` and
+attached to the definitions when the registry is built; the guided chooser's trees
+(`analyses/src/guide/`, types in `model/src/guide.ts`) read only the table's shape and end in an
+analysis with its params. One source for the dialog, the results' How to read this, the chooser
+and Help (design: [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md)).
 
 `AnalysisResult` carries status and diagnostics, result sheets, values, comparisons (for
 brackets), graphable outputs and an optional produced table in one serializable object, since it

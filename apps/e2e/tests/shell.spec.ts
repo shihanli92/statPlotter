@@ -270,10 +270,20 @@ test.describe('menus', () => {
     // Column table: column analyses on, others off; the table's Edit items.
     let analyze = await openMenu(page, 'Analyze')
     await expect(menuItem(analyze, 'Analyze…')).toBeEnabled()
+    await expect(menuItem(analyze, 'Guide me…')).toBeEnabled()
+    // Roadmap 51a (U5): the common analyses of the table's kind, then every one by category.
     await expect(menuItem(analyze, 't test…')).toBeEnabled()
-    await expect(menuItem(analyze, 'Two-way ANOVA…')).toBeDisabled()
-    await expect(menuItem(analyze, 'Nonlinear regression (curve fit)…')).toBeDisabled()
-    await expect(menuItem(analyze, 'Monte Carlo analysis…')).toBeEnabled()
+    await expect(menuItem(analyze, 'Two-way ANOVA…')).toHaveCount(0)
+    await menuItem(analyze, 'Grouped analyses').hover()
+    await expect(menuItem(menuPanel(page, 'Grouped analyses'), 'Two-way ANOVA…')).toBeDisabled()
+    await page.keyboard.press('Escape')
+    await page.keyboard.press('Escape')
+    analyze = await openMenu(page, 'Analyze')
+    await menuItem(analyze, 'Simulate and generate').hover()
+    await expect(
+      menuItem(menuPanel(page, 'Simulate and generate'), 'Monte Carlo analysis…'),
+    ).toBeEnabled()
+    await page.keyboard.press('Escape')
     await page.keyboard.press('Escape')
     const edit = await openMenu(page, 'Edit')
     await expect(menuItem(edit, 'Exclude / include values')).toBeEnabled()
@@ -287,7 +297,10 @@ test.describe('menus', () => {
     await newTable(page, { kind: 'XY' })
     analyze = await openMenu(page, 'Analyze')
     await expect(menuItem(analyze, 'Nonlinear regression (curve fit)…')).toBeEnabled()
-    await expect(menuItem(analyze, 't test…')).toBeDisabled()
+    await expect(menuItem(analyze, 't test…')).toHaveCount(0)
+    await menuItem(analyze, 'Column analyses').hover()
+    await expect(menuItem(menuPanel(page, 'Column analyses'), 't test…')).toBeDisabled()
+    await page.keyboard.press('Escape')
     await page.keyboard.press('Escape')
 
     // A graph: no table commands; Format has the graph's.
@@ -339,9 +352,21 @@ test('with no table open, table commands are disabled', async ({ page }) => {
   await page.keyboard.press('Escape')
   const analyze = await openMenu(page, 'Analyze')
   await expect(menuItem(analyze, 'Analyze…')).toBeDisabled()
-  await expect(menuItem(analyze, 'One-way ANOVA…')).toBeDisabled()
-  // Simulations need no data: they make a table of their own.
-  await expect(menuItem(analyze, 'Simulate column data…')).toBeEnabled()
+  await expect(menuItem(analyze, 'Guide me…')).toBeDisabled()
+  // Roadmap 51a (U5): every analysis by category; simulations need no data (they make a table
+  // of their own).
+  await menuItem(analyze, 'Column analyses').hover()
+  await expect(
+    menuItem(menuPanel(page, 'Column analyses'), 'One-way ANOVA (and nonparametric)…'),
+  ).toBeDisabled()
+  await page.keyboard.press('Escape')
+  await page.keyboard.press('Escape')
+  const again = await openMenu(page, 'Analyze')
+  await menuItem(again, 'Simulate and generate').hover()
+  await expect(
+    menuItem(menuPanel(page, 'Simulate and generate'), 'Simulate column data…'),
+  ).toBeEnabled()
+  await page.keyboard.press('Escape')
   await page.keyboard.press('Escape')
   const edit = await openMenu(page, 'Edit')
   await expect(menuItem(edit, 'Undo')).toBeDisabled()

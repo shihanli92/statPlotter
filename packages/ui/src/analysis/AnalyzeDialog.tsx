@@ -1,4 +1,4 @@
-import { registry } from '@ps/analyses'
+import { entriesFor, registry, tableFacts } from '@ps/analyses'
 import {
   type Command,
   compatibleTables,
@@ -13,18 +13,23 @@ import {
   type GraphNode,
   type NodeId,
   newNodeId,
+  normalizeColumn,
+  type TableKind,
 } from '@ps/model'
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Dialog, NoticeDialog } from '../components/Dialog.tsx'
 import type { ShowError } from '../components/Toasts.tsx'
 import { useUndoNotice } from '../components/undoNotice.tsx'
 import { useDoc, useResultState, useServices, useSourceTable } from '../context.tsx'
 import { showOnGraphsCommands } from '../graph/results/resultActions.ts'
+import { recentAnalyses } from '../recentChoices.ts'
 import { sourceProblem } from '../resultTables.ts'
 import { errorMessage } from '../util.ts'
-import { analysisGroups } from './analysisSearch.ts'
+import { analysisGroups, COMMON_ANALYSES, searchAnalyses } from './analysisSearch.ts'
 import { DataSourceField, remapSelection } from './DataSourceField.tsx'
 import { defaultSelection } from './defaultSelection.ts'
+import { type GuideChoice, GuidePanel } from './GuidePanel.tsx'
+import { MethodCards } from './MethodCards.tsx'
 import { variableInfo } from './mvFields.tsx'
 import { ParamsForm } from './ParamsForm.tsx'
 import { allFields } from './simulationFields.tsx'
@@ -33,6 +38,39 @@ type Params = Record<string, unknown>
 
 /** Every custom form editor, by component id. */
 const FIELDS = allFields()
+
+/** Roadmap 51a: the dialog's two tabs. */
+export type AnalyzeTab = 'guide' | 'all'
+
+// Roadmap 51a (design §3.1, §3.3): view state, never in the document — the tab last used in
+// each project (by its creation time), and the chooser's question, answers and data sets per
+// table, kept for the session.
+const lastTabs = new Map<string, AnalyzeTab>()
+const guideMemory = new Map<
+  string,
+  { entry: string | null; answers: Record<string, string>; selection: string[] }
+>()
+
+/**
+ * Roadmap 51a (U2): the analysis the list opens on: the one asked for, else the last one used
+ * that this table's kind offers, else its first common analysis, else the first.
+ */
+export function openingAnalysis(
+  defs: readonly { id: string }[],
+  kind: TableKind,
+  wanted?: string,
+  recent: readonly string[] = [],
+): string {
+  const offered = (id: string | undefined) => !!id && defs.some((d) => d.id === id)
+  if (offered(wanted)) return wanted!
+  const used = recent.find((id) => offered(id))
+  if (used) return used
+  const common = (COMMON_ANALYSES[kind] ?? []).find((id) => offered(id))
+  return common ?? defs[0]?.id ?? ''
+}
+
+/** Plain values compared deeply (the params Use this wrote, and those submitted). */
+const sameValue = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b)
 
 /**
  * Creates an analysis of a table (mode 'create') or edits an existing one ('edit'). One dialog
@@ -44,6 +82,12 @@ type Props = (
       tableId: NodeId
       /** Preselect this analysis (Analyze menu, palette) if the table's kind allows it. */
       analysisId?: string
+      /** Roadmap 51a: the tab to open on (absent: the one last used in this project). */
+      tab?: AnalyzeTab
+      /** Roadmap 51a: the chooser's question to open (Guide me on a question). */
+      entry?: string
+      /** Roadmap 51a: the data sets the chooser starts with (Compare these columns…). */
+      dataSets?: string[]
       /**
        * A table not yet in the project (analyses that need no data, e.g. simulations, started
        * with no table open): added together with the analysis, in the same undo step.
@@ -55,6 +99,8 @@ type Props = (
   onClose: () => void
   onCreated?: (id: NodeId) => void
   onError: ShowError
+  /** Roadmap 51a: a question needs another table kind: the New table dialog at that kind. */
+  onNewTable?: (kind: TableKind) => void
 }
 
 export function AnalyzeDialog(props: Props) {
@@ -120,29 +166,113 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   )
   const wanted = props.mode === 'create' ? props.analysisId : undefined
   const [defId, setDefId] = useState(
-    existing?.analysisId ??
-      (wanted && defs.some((d) => d.id === wanted) ? wanted : defs[0]?.id) ??
-      '',
+    () => existing?.analysisId ?? openingAnalysis(defs, table.tableKind, wanted, recentAnalyses()),
   )
   const def = registry.get(defId)
+
+  // Roadmap 51a: Guide me (the chooser) or All analyses. Editing, an analysis asked for by name
+  // and a table made for an analysis that needs no data open on the list.
+  const projectKey = useDoc((d) => d.meta.created)
+  const guided = props.mode === 'create' && !draft && entriesFor(table.tableKind).length > 0
+  const [tab, setTabState] = useState<AnalyzeTab>(() => {
+    if (!guided) return 'all'
+    if (props.mode === 'create' && props.tab) return props.tab
+    if (props.mode === 'create' && props.entry) return 'guide'
+    if (wanted && defs.some((d) => d.id === wanted)) return 'all'
+    return lastTabs.get(projectKey) ?? 'guide'
+  })
+  const setTab = (t: AnalyzeTab) => {
+    setTabState(t)
+    lastTabs.set(projectKey, t)
+  }
+  const remembered = guideMemory.get(table.id)
+  const startEntry = props.mode === 'create' ? props.entry : undefined
+  const [guide, setGuideState] = useState(() => ({
+    entry: startEntry ?? remembered?.entry ?? null,
+    answers: startEntry && startEntry !== remembered?.entry ? {} : (remembered?.answers ?? {}),
+    selection:
+      (props.mode === 'create' ? props.dataSets : undefined) ??
+      remembered?.selection ??
+      table.dataSets.slice(0, 64).map((d) => d.id as string),
+  }))
+  const setGuide = (g: Partial<typeof guide>) => {
+    const next = { ...guide, ...g }
+    setGuideState(next)
+    guideMemory.set(table.id, next)
+  }
+  const guideInput = useMemo(
+    () =>
+      guide.selection.flatMap((k) => {
+        const n = normalizeColumn(table, k)
+        return n ? [n] : []
+      }),
+    [table, guide.selection],
+  )
+  const facts = useMemo(() => tableFacts(table.tableKind, guideInput), [table, guideInput])
+  // What Use this wrote, to record on OK whether it was kept (`origin.guide.followed`).
+  const fromGuide = useRef<GuideChoice | null>(null)
 
   // Roadmap 43: the list's search (a combobox over it: type to filter, ↑ / ↓ to move, Enter to
   // pick) and its Common group first.
   const [query, setQuery] = useState('')
-  const groups = useMemo(
-    () => analysisGroups(defs, table.tableKind, query),
-    [defs, table.tableKind, query],
+  // Roadmap 51a (U3): a query finds the chooser's questions, this table's analyses and, greyed,
+  // what other table kinds answer.
+  const found = useMemo(
+    () => searchAnalyses(defs, table.tableKind, draft ? '' : query),
+    [defs, table.tableKind, query, draft],
   )
-  const rows = groups.flatMap((g) => g.defs)
+  type Row =
+    | { kind: 'def'; def: (typeof defs)[number] }
+    | { kind: 'question'; id: string; label: string }
+  const groups: { title: string | null; rows: Row[] }[] = useMemo(() => {
+    if (!query.trim())
+      return analysisGroups(defs, table.tableKind, '').map((g) => ({
+        title: g.title,
+        rows: g.defs.map((d): Row => ({ kind: 'def', def: d })),
+      }))
+    if (draft)
+      return analysisGroups(defs, table.tableKind, query).map((g) => ({
+        title: g.title,
+        rows: g.defs.map((d): Row => ({ kind: 'def', def: d })),
+      }))
+    return [
+      {
+        title: 'Questions',
+        rows: found.questions.map((e): Row => ({ kind: 'question', id: e.id, label: e.question })),
+      },
+      {
+        title: 'Analyses for this table',
+        rows: found.here.map((d): Row => ({ kind: 'def', def: d })),
+      },
+    ].filter((g) => g.rows.length)
+  }, [defs, table.tableKind, query, found, draft])
+  const rows = groups.flatMap((g) => g.rows)
   const [active, setActive] = useState(() =>
     Math.max(
       0,
-      rows.findIndex((d) => d.id === defId),
+      rows.findIndex((r) => r.kind === 'def' && r.def.id === defId),
     ),
   )
   const at = Math.min(active, Math.max(0, rows.length - 1))
   const listId = useId()
+  const tabId = useId()
   const listRef = useRef<HTMLDivElement>(null)
+  // Roadmap 51a: each tab puts the focus where its work starts (the search; the chosen question
+  // or the first), after the dialog has opened (its own focus comes after this effect).
+  const searchRef = useRef<HTMLInputElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (tab === 'all') searchRef.current?.focus()
+      else
+        panelRef.current
+          ?.querySelector<HTMLButtonElement>(
+            '.guide-entries [aria-pressed="true"], .guide-entries button',
+          )
+          ?.focus()
+    }, 0)
+    return () => clearTimeout(t)
+  }, [tab])
   useEffect(() => {
     listRef.current?.querySelector(`[data-row="${at}"]`)?.scrollIntoView?.({ block: 'nearest' })
   }, [at])
@@ -276,6 +406,18 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
           pluginVersion: def.version,
           input: { source: table.id, dataSets },
           params: parsed.data,
+          // Roadmap 51a: set up with Guide me (and whether its params were kept).
+          ...(fromGuide.current && fromGuide.current.analysisId === def.id
+            ? {
+                origin: {
+                  guide: {
+                    entry: fromGuide.current.entry,
+                    answers: fromGuide.current.answers,
+                    followed: sameValue(fromGuide.current.params, parsed.data),
+                  },
+                },
+              }
+            : {}),
         }
         const chosen = offered.filter((t) => showOn.has(t.id))
         store.dispatch(
@@ -319,13 +461,232 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   }
 
   const pickRow = (i: number) => {
-    const d = rows[i]
-    if (!d) return
+    const r = rows[i]
+    if (!r) return
     setActive(i)
-    if (d.id !== defId) pickDef(d.id)
+    if (r.kind === 'question') {
+      setGuide({ entry: r.id, answers: {} })
+      setTab('guide')
+    } else if (r.def.id !== defId) pickDef(r.def.id)
+  }
+
+  /** Roadmap 51a: Use this: the recommended analysis and params, on the list's tab. */
+  const useChoice = (c: GuideChoice) => {
+    const d = registry.get(c.analysisId)
+    if (!d) return
+    const parsed = d.params.safeParse(c.params)
+    const p = (parsed.success ? parsed.data : d.params.parse({})) as Params
+    setDefId(d.id)
+    setParams(p)
+    const chosen = d.numbersByDefault
+      ? guide.selection.filter((k) => !table.dataSets.find((x) => x.id === k)?.text)
+      : guide.selection
+    const n = Math.min(d.inputs.max, chosen.length)
+    setSelected(n >= d.inputs.min ? chosen.slice(0, n) : defaultSelection(d, table))
+    fromGuide.current = { ...c, params: p }
+    const i = rows.findIndex((r) => r.kind === 'def' && r.def.id === d.id)
+    if (i >= 0) setActive(i)
+    setTab('all')
   }
   const optionId = (i: number) => `${listId}-${i}`
   let row = -1
+
+  const onSearchKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    const n = Math.max(1, rows.length)
+    if (e.key === 'ArrowDown') setActive((at + 1) % n)
+    else if (e.key === 'ArrowUp') setActive((at - 1 + n) % n)
+    else if (e.key === 'Home' && !query) setActive(0)
+    else if (e.key === 'End' && !query) setActive(rows.length - 1)
+    else if (e.key === 'Enter') pickRow(at)
+    else return
+    e.preventDefault()
+  }
+  const elsewhere = query.trim() ? found.elsewhere : []
+  const newTable = (kind: TableKind) => {
+    props.onClose()
+    props.onNewTable?.(kind)
+  }
+  const cards = (() => {
+    const p = def.params.safeParse(params)
+    return p.success ? (def.cards?.(p.data) ?? []) : []
+  })()
+  const titleOf = (k: string | undefined) => table.dataSets.find((d) => d.id === k)?.title
+  const control = typeof params.control === 'string' ? titleOf(params.control) : undefined
+  const nameA = titleOf(selected[0])
+  const nameB = titleOf(selected[1])
+  const names = {
+    ...(nameA ? { A: nameA } : {}),
+    ...(nameB ? { B: nameB } : {}),
+    ...(control ? { control } : {}),
+  }
+
+  const list = (
+    <div className="analyze">
+      <div className="analyze-list">
+        <input
+          type="text"
+          ref={searchRef}
+          className="analyze-search"
+          role="combobox"
+          aria-label="Search analyses"
+          // No matches: no list to control (the message below says so).
+          aria-expanded={rows.length > 0}
+          aria-controls={rows.length ? listId : undefined}
+          aria-autocomplete="list"
+          aria-activedescendant={rows.length ? optionId(at) : undefined}
+          placeholder="Search analyses or questions…"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value)
+            setActive(0)
+          }}
+          onKeyDown={onSearchKey}
+        />
+        {rows.length > 0 && (
+          <div
+            className="analyze-options"
+            role="listbox"
+            id={listId}
+            aria-label="Analyses"
+            ref={listRef}
+          >
+            {groups.map((g) => (
+              // biome-ignore lint/a11y/useSemanticElements: a group of a listbox's options (no fieldset there)
+              <div key={g.title ?? 'matches'} role="group" aria-label={g.title ?? 'Matches'}>
+                {g.title && (
+                  <div className="analyze-group" aria-hidden="true">
+                    {g.title}
+                  </div>
+                )}
+                {g.rows.map((r) => {
+                  const i = ++row
+                  const on = r.kind === 'def' && r.def.id === defId
+                  return (
+                    // biome-ignore lint/a11y/useKeyWithClickEvents: the search field has the keys (combobox)
+                    <div
+                      key={r.kind === 'def' ? r.def.id : `q:${r.id}`}
+                      id={optionId(i)}
+                      data-row={i}
+                      role="option"
+                      tabIndex={-1}
+                      aria-selected={on}
+                      className={`list-item ${on ? 'on' : ''} ${i === at ? 'active' : ''} ${r.kind === 'question' ? 'question' : ''}`}
+                      title={r.kind === 'def' && g.title === null ? r.def.category : undefined}
+                      onClick={() => pickRow(i)}
+                    >
+                      {r.kind === 'def' ? r.def.title : r.label}
+                    </div>
+                  )
+                })}
+              </div>
+            ))}
+          </div>
+        )}
+        {elsewhere.length > 0 && (
+          <div className="analyze-elsewhere">
+            <div className="analyze-group">Need another table kind</div>
+            <ul>
+              {elsewhere.slice(0, 8).map((m) => (
+                <li key={m.id} className="muted">
+                  <span>{m.label}</span>
+                  <span className="help">{m.line}</span>
+                  {props.onNewTable && (
+                    <button type="button" className="link" onClick={() => newTable(m.needs)}>
+                      New table…
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {!rows.length && !elsewhere.length && (
+          <p className="muted analyze-empty">
+            No analysis matches “{query}”.
+            {guided && (
+              <>
+                {' '}
+                <button type="button" className="link" onClick={() => setTab('guide')}>
+                  Guide me
+                </button>
+              </>
+            )}
+          </p>
+        )}
+      </div>
+      <div className="analyze-detail">
+        <p className="muted">{def.description}</p>
+        {usesData && others.length > 0 && (
+          <DataSourceField
+            tables={[original, ...others]}
+            value={source.id}
+            match={source.match}
+            onChange={changeSource}
+            warnings={retargeted?.warnings ?? []}
+          />
+        )}
+        {usesData && (
+          <fieldset className="field">
+            <legend>Data sets to analyze</legend>
+            {table.dataSets.map((ds) => (
+              <label key={ds.id} className="check">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(ds.id)}
+                  onChange={(e) => toggle(ds.id, e.target.checked)}
+                />
+                {ds.title || '(untitled)'}
+              </label>
+            ))}
+            <div className={`help ${countOk ? '' : 'error'}`}>{countHint}</div>
+          </fieldset>
+        )}
+        <ParamsForm
+          fields={def.form}
+          value={params}
+          onChange={setParams}
+          custom={FIELDS}
+          context={{
+            dataSets: table.dataSets
+              .filter((d) => selected.includes(d.id))
+              .map((d) => ({ key: d.id, title: d.title, ...variableInfo(d) })),
+            rows: Array.from({ length: table.rowCount }, (_, i) => ({
+              index: i,
+              title: table.rowTitles?.[i] || `Row ${i + 1}`,
+            })),
+          }}
+        />
+        {offered.length > 0 && tableGraphs && (
+          <fieldset className="field">
+            <legend>Show on graph</legend>
+            {offered.map((t) => (
+              <label key={t.id} className="check">
+                <input
+                  type="checkbox"
+                  checked={showOn.has(t.id)}
+                  onChange={(e) => {
+                    const next = new Set(showOn)
+                    if (e.target.checked) next.add(t.id)
+                    else next.delete(t.id)
+                    setShowOn(next)
+                  }}
+                />
+                {t.offer}
+              </label>
+            ))}
+            <div className="help">On the graphs of “{table.name}”, live.</div>
+          </fieldset>
+        )}
+        {/* Roadmap 51a: the method's cards, below the options (the side panel is 51b's). */}
+        {cards.length > 0 && (
+          <details className="about-method">
+            <summary>About this method</summary>
+            <MethodCards ids={cards} names={names} />
+          </details>
+        )}
+      </div>
+    </div>
+  )
 
   return (
     <Dialog
@@ -334,142 +695,60 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
       wide
       okLabel="OK"
       onOk={submit}
-      okDisabled={!countOk}
+      okDisabled={!countOk || tab === 'guide'}
     >
-      <div className="analyze">
-        <div className="analyze-list">
-          <input
-            type="text"
-            className="analyze-search"
-            role="combobox"
-            aria-label="Search analyses"
-            // No matches: no list to control (the message below says so).
-            aria-expanded={rows.length > 0}
-            aria-controls={rows.length ? listId : undefined}
-            aria-autocomplete="list"
-            aria-activedescendant={rows.length ? optionId(at) : undefined}
-            placeholder="Search analyses…"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value)
-              setActive(0)
-            }}
-            onKeyDown={(e) => {
-              const n = Math.max(1, rows.length)
-              if (e.key === 'ArrowDown') setActive((at + 1) % n)
-              else if (e.key === 'ArrowUp') setActive((at - 1 + n) % n)
-              else if (e.key === 'Home' && !query) setActive(0)
-              else if (e.key === 'End' && !query) setActive(rows.length - 1)
-              else if (e.key === 'Enter') pickRow(at)
-              else return
-              e.preventDefault()
-            }}
-          />
-          {rows.length > 0 && (
-            <div
-              className="analyze-options"
-              role="listbox"
-              id={listId}
-              aria-label="Analyses"
-              ref={listRef}
+      {guided && (
+        <div className="tabs analyze-tabs" role="tablist" aria-label="Choose an analysis">
+          {(
+            [
+              ['guide', 'Guide me'],
+              ['all', 'All analyses'],
+            ] as const
+          ).map(([t, label]) => (
+            <button
+              key={t}
+              type="button"
+              role="tab"
+              id={`${tabId}-${t}`}
+              aria-selected={tab === t}
+              aria-controls={`${tabId}-panel`}
+              className={tab === t ? 'on' : ''}
+              onClick={() => setTab(t)}
             >
-              {groups.map((g) => (
-                // biome-ignore lint/a11y/useSemanticElements: a group of a listbox's options (no fieldset there)
-                <div key={g.title ?? 'matches'} role="group" aria-label={g.title ?? 'Matches'}>
-                  {g.title && (
-                    <div className="analyze-group" aria-hidden="true">
-                      {g.title}
-                    </div>
-                  )}
-                  {g.defs.map((d) => {
-                    const i = ++row
-                    return (
-                      // biome-ignore lint/a11y/useKeyWithClickEvents: the search field has the keys (combobox)
-                      <div
-                        key={d.id}
-                        id={optionId(i)}
-                        data-row={i}
-                        role="option"
-                        tabIndex={-1}
-                        aria-selected={d.id === defId}
-                        className={`list-item ${d.id === defId ? 'on' : ''} ${i === at ? 'active' : ''}`}
-                        title={g.title === null ? d.category : undefined}
-                        onClick={() => pickRow(i)}
-                      >
-                        {d.title}
-                      </div>
-                    )
-                  })}
-                </div>
-              ))}
-            </div>
-          )}
-          {!rows.length && <p className="muted analyze-empty">No analysis matches “{query}”.</p>}
+              {label}
+            </button>
+          ))}
         </div>
-        <div className="analyze-detail">
-          <p className="muted">{def.description}</p>
-          {usesData && others.length > 0 && (
-            <DataSourceField
-              tables={[original, ...others]}
-              value={source.id}
-              match={source.match}
-              onChange={changeSource}
-              warnings={retargeted?.warnings ?? []}
-            />
-          )}
-          {usesData && (
-            <fieldset className="field">
-              <legend>Data sets to analyze</legend>
-              {table.dataSets.map((ds) => (
-                <label key={ds.id} className="check">
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(ds.id)}
-                    onChange={(e) => toggle(ds.id, e.target.checked)}
-                  />
-                  {ds.title || '(untitled)'}
-                </label>
-              ))}
-              <div className={`help ${countOk ? '' : 'error'}`}>{countHint}</div>
-            </fieldset>
-          )}
-          <ParamsForm
-            fields={def.form}
-            value={params}
-            onChange={setParams}
-            custom={FIELDS}
-            context={{
-              dataSets: table.dataSets
-                .filter((d) => selected.includes(d.id))
-                .map((d) => ({ key: d.id, title: d.title, ...variableInfo(d) })),
-              rows: Array.from({ length: table.rowCount }, (_, i) => ({
-                index: i,
-                title: table.rowTitles?.[i] || `Row ${i + 1}`,
-              })),
-            }}
+      )}
+      <div
+        ref={panelRef}
+        className="analyze-panel"
+        {...(guided
+          ? { role: 'tabpanel', id: `${tabId}-panel`, 'aria-labelledby': `${tabId}-${tab}` }
+          : {})}
+      >
+        {tab === 'guide' ? (
+          <GuidePanel
+            kind={table.tableKind}
+            tableName={table.name}
+            facts={facts}
+            groups={guideInput.map((d) => ({ key: d.ref.key as string, title: d.title }))}
+            choices={table.dataSets.map((d) => ({ key: d.id as string, title: d.title }))}
+            entryId={guide.entry}
+            answers={guide.answers}
+            selection={guide.selection}
+            onEntry={(entry) =>
+              setGuide({ entry, answers: entry === guide.entry ? guide.answers : {} })
+            }
+            onAnswers={(answers) => setGuide({ answers })}
+            onSelection={(selection) => setGuide({ selection })}
+            onUse={useChoice}
+            onShowAll={() => setTab('all')}
+            onNewTable={newTable}
           />
-          {offered.length > 0 && tableGraphs && (
-            <fieldset className="field">
-              <legend>Show on graph</legend>
-              {offered.map((t) => (
-                <label key={t.id} className="check">
-                  <input
-                    type="checkbox"
-                    checked={showOn.has(t.id)}
-                    onChange={(e) => {
-                      const next = new Set(showOn)
-                      if (e.target.checked) next.add(t.id)
-                      else next.delete(t.id)
-                      setShowOn(next)
-                    }}
-                  />
-                  {t.offer}
-                </label>
-              ))}
-              <div className="help">On the graphs of “{table.name}”, live.</div>
-            </fieldset>
-          )}
-        </div>
+        ) : (
+          list
+        )}
       </div>
     </Dialog>
   )

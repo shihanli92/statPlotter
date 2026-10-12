@@ -164,7 +164,6 @@ export const goodnessOfFitDef: AnalysisDef<Params> = {
         { value: 'binomial', label: 'Binomial test (recommended)' },
         { value: 'chiSquare', label: 'Chi-square test' },
       ],
-      help: 'With more than two categories the chi-square test is used.',
     },
   ],
   run(input, params) {

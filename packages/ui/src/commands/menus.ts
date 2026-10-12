@@ -69,14 +69,17 @@ export const GROUPS = {
     page: 20,
   },
   analyze: {
-    /** Analyze… (app), Edit parameters… (results / graph views). */
+    /** Analyze…, Guide me…, All analyses… (app), Edit parameters… (results / graph views). */
     analyze: 10,
     /** Apply analyses and graphs to…, Save as method…, Apply method… (app, roadmap 31). */
     reuse: 15,
-    /** Quick analyses by name (app: from the analyses registry). */
+    /**
+     * The common analyses of the table's kind (the dialog's Common, one source), then Recent
+     * analyses ▸ (app; roadmap 51a, U5).
+     */
     quick: 20,
-    /** Simulate data, Monte Carlo (app). */
-    simulate: 30,
+    /** Every analysis, a submenu per category (app; roadmap 51a). */
+    all: 30,
   },
   format: {
     /** Format graph…, Format axes…, Duplicate as… (graph / layout views). */
