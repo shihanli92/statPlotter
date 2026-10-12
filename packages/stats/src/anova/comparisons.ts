@@ -232,7 +232,8 @@ export interface DunnRow {
 }
 
 export interface DunnOptions {
-  adjust?: 'bonferroni' | 'sidak' | 'none'
+  /** Roadmap 51c (S11): Holm's step-down too. */
+  adjust?: 'bonferroni' | 'sidak' | 'holm' | 'none'
   alpha?: number
   /** Comparisons in the family (default pairs.length). */
   familySize?: number

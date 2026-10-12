@@ -16,14 +16,19 @@ import {
   twoWayRM,
   twoWayRMComparisons,
 } from '@ps/stats'
-import type { z } from 'zod'
+import { z } from 'zod'
 import {
   type allPairsMethod,
   comparisonTable,
+  comparisonTestValue,
   type controlMethod,
+  type DifferenceAs,
+  interactionNote,
   METHOD_TITLE,
   oneWayPairs,
   pairComparisons,
+  pairLabel,
+  signedRows,
   TWO_WAY_FAMILY_SUFFIX,
   totalSS,
   twoWayComparison,
@@ -36,6 +41,7 @@ import {
   kv,
   labelTable,
   num,
+  PAIRED_NEEDS_RAW,
   pSig,
   psum,
   pval,
@@ -45,6 +51,7 @@ import {
   shortText,
   significant,
   table,
+  testValue,
   text,
 } from './common.ts'
 
@@ -69,12 +76,54 @@ const RM_ERRORS: Record<string, string> = {
   degenerate: 'The data have no variability to analyze.',
 }
 
-function mixedNote(diagnostics: Diagnostic[]) {
-  diagnostics.push({
-    level: 'info',
-    message:
-      'Some values are missing, so a mixed-effects model (REML) was fit instead of repeated-measures ANOVA. With no missing values it gives the same results.',
-  })
+/**
+ * Roadmap 51c (S5): how matched values are analyzed — repeated-measures ANOVA with complete
+ * data and a mixed-effects model when values are missing ('auto'), ANOVA of the complete
+ * subjects only, or the mixed-effects model always.
+ */
+export const rmMethod = z.enum(['auto', 'anova', 'mixed']).default('auto')
+export type RMMethod = z.infer<typeof rmMethod>
+export const RM_METHOD_FIELD = {
+  path: ['rmMethod'],
+  label: 'Analyze the matched values with',
+  kind: 'radio',
+  options: [
+    {
+      value: 'auto',
+      label: 'Repeated-measures ANOVA, or a mixed-effects model when values are missing',
+    },
+    { value: 'anova', label: 'Repeated-measures ANOVA of the complete subjects only' },
+    { value: 'mixed', label: 'A mixed-effects model always' },
+  ],
+} as const
+
+const DDF_NAME = { satterthwaite: 'Satterthwaite', containment: 'Containment' } as const
+
+/**
+ * S5: what a mixed-effects fit changes, said as a warning when values were missing (the user
+ * chose repeated measures, and got a model with other assumptions), as information when chosen.
+ */
+function mixedNote(diagnostics: Diagnostic[], chosen: boolean, ddf: RMDdfName) {
+  const what = `It assumes equal correlation between all pairs of conditions (sphericity); the Geisser-Greenhouse correction does not apply. Denominator df: ${DDF_NAME[ddf]}.`
+  diagnostics.push(
+    chosen
+      ? { level: 'info', message: `A mixed-effects model (REML) was fit, as chosen. ${what}` }
+      : {
+          level: 'warning',
+          message: `Some values are missing, so a mixed-effects model (REML) was fit instead of repeated-measures ANOVA. ${what}`,
+        },
+  )
+}
+
+type RMDdfName = 'satterthwaite' | 'containment'
+
+/** S5: complete subjects only ('anova' with missing values): how many were left out. */
+function droppedSubjectsNote(diagnostics: Diagnostic[], dropped: number) {
+  if (dropped > 0)
+    diagnostics.push({
+      level: 'warning',
+      message: `${dropped} subject${dropped > 1 ? 's' : ''} with a missing value ${dropped > 1 ? 'were' : 'was'} left out: repeated-measures ANOVA analyzes complete subjects only.`,
+    })
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -88,6 +137,9 @@ interface OneWayRMParams {
   allPairsMethod: AllPairs
   controlMethod: VsControl
   confidenceLevel: number
+  rmMethod: RMMethod
+  ddf: RMDdfName
+  differenceAs: DifferenceAs
 }
 
 /** Rows (subjects) × columns (treatments), NaN where missing; rows with no values dropped. */
@@ -169,6 +221,8 @@ function oneWayBlocks(res: OneWayRMResult, titles: string[]): ResultBlock[] {
     blocks.push(
       kv('Mixed-effects model (REML) — fixed effect (type III)', [
         ...fTest(res.treatment.F, res.treatment.dfn, res.treatment.dfd, res.treatment.p),
+        ['Sphericity', text('Assumed (equal correlations); no Geisser-Greenhouse correction')],
+        ['Denominator df', text(DDF_NAME[res.ddf])],
       ]),
       kv('Was the matching effective? (likelihood ratio)', [
         ['Chi square', num(m.matching.chi2)],
@@ -203,14 +257,25 @@ export function runOneWayRM(
   params: OneWayRMParams,
   diagnostics: Diagnostic[],
 ): AnalysisResult {
-  const rows = subjectRows(input)
-  if (!rows)
-    return failure('Repeated measures ANOVA needs raw values, not summary data.', diagnostics)
+  const all = subjectRows(input)
+  if (!all)
+    return failure(
+      `Repeated measures ANOVA needs raw values, not summary data.${PAIRED_NEEDS_RAW}`,
+      diagnostics,
+    )
+  // S5: ANOVA of the complete subjects only, when chosen.
+  const rows =
+    params.rmMethod === 'anova' ? all.filter((r) => r.every((v) => !Number.isNaN(v))) : all
+  droppedSubjectsNote(diagnostics, all.length - rows.length)
   if (rows.length < 2) return failure('Need at least two subjects (rows).', diagnostics)
   const titles = input.map((d) => d.title)
-  const res = oneWayRM(rows, { sphericity: params.sphericity })
+  const res = oneWayRM(rows, {
+    sphericity: params.sphericity,
+    ddf: params.ddf,
+    method: params.rmMethod === 'mixed' ? 'mixed' : 'auto',
+  })
   if (res.error) return failure(RM_ERRORS[res.error] ?? res.error, diagnostics)
-  if (res.kind === 'mixed') mixedNote(diagnostics)
+  if (res.kind === 'mixed') mixedNote(diagnostics, params.rmMethod === 'mixed', params.ddf)
   const sheets: AnalysisResult['sheets'] = [
     { key: 'results', title: 'Table of results', blocks: oneWayBlocks(res, titles) },
   ]
@@ -221,6 +286,7 @@ export function runOneWayRM(
     F: num(res.treatment.F),
     dfn: num(res.corrected?.dfn ?? res.treatment.dfn),
     dfd: num(res.corrected?.dfd ?? res.treatment.dfd),
+    ...testValue(res.kind === 'mixed' ? 'Mixed-effects model' : 'Repeated-measures ANOVA'),
   }
 
   const { pairs } = oneWayPairs(input, params.comparisons, params.control)
@@ -228,12 +294,18 @@ export function runOneWayRM(
   if (pairs.length) {
     const method = params.comparisons === 'vsControl' ? params.controlMethod : params.allPairsMethod
     const mc = rmComparisons(rows, res, pairs, { method, confLevel: params.confidenceLevel })
-    const labels = pairs.map(([i, j]) => `${titles[i]} vs. ${titles[j]}`)
+    const labels = pairs.map(([i, j]) => pairLabel(titles[i]!, titles[j]!, params.differenceAs))
     sheets.push({
       key: 'comparisons',
       title: 'Multiple comparisons',
       blocks: [
-        comparisonTable(METHOD_TITLE[method] ?? method, labels, mc, params.confidenceLevel, method),
+        comparisonTable(
+          METHOD_TITLE[method] ?? method,
+          labels,
+          signedRows(mc, params.differenceAs),
+          params.confidenceLevel,
+          method,
+        ),
       ],
     })
     comparisons = pairComparisons(
@@ -241,6 +313,7 @@ export function runOneWayRM(
       pairs,
       mc.map((r) => r.p),
     )
+    Object.assign(values, comparisonTestValue(method))
   }
   return result({ sheets, diagnostics, values, comparisons })
 }
@@ -260,6 +333,9 @@ interface TwoWayRMParams {
   allPairsMethod: AllPairs
   controlMethod: VsControl
   confidenceLevel: number
+  rmMethod: RMMethod
+  ddf: RMDdfName
+  differenceAs: DifferenceAs
 }
 
 const VARIANCE_NAMES: Record<string, string> = {
@@ -318,7 +394,10 @@ export function runTwoWayRM(
   diagnostics: Diagnostic[],
 ): AnalysisResult {
   if (input.some((d) => d.data.shape !== 'replicates'))
-    return failure('Repeated measures need raw values, not summary data.', diagnostics)
+    return failure(
+      `Repeated measures need raw values, not summary data.${PAIRED_NEEDS_RAW}`,
+      diagnostics,
+    )
   const rowCount = input[0]?.rowCount ?? 0
   const rows = Array.from({ length: rowCount }, (_, r) => r).filter((r) =>
     input.some(
@@ -327,17 +406,27 @@ export function runTwoWayRM(
   )
   if (rows.length < 2)
     return failure('Two-way ANOVA needs at least two rows with data.', diagnostics)
-  const data = longFormat(input, rows, params.repeated)
+  const long = longFormat(input, rows, params.repeated)
+  // S5: ANOVA of the complete subjects only, when chosen.
+  const { data, dropped } =
+    params.rmMethod === 'anova'
+      ? completeSubjects(long, params.repeated, rows.length, input.length)
+      : { data: long, dropped: 0 }
+  droppedSubjectsNote(diagnostics, dropped)
   const res = twoWayRM(data, params.repeated, {
     sphericity: params.sphericity,
     interaction: params.interaction,
+    ddf: params.ddf,
+    method: params.rmMethod === 'mixed' ? 'mixed' : 'auto',
   })
   if (res.error) return failure(RM_ERRORS[res.error] ?? res.error, diagnostics)
-  if (res.kind === 'mixed' && params.interaction) mixedNote(diagnostics)
+  const missing = data.y.length < neededValues(data, params.repeated, rows.length, input.length)
+  if (res.kind === 'mixed' && params.interaction && (missing || params.rmMethod === 'mixed'))
+    mixedNote(diagnostics, !missing, params.ddf)
   else if (res.kind === 'mixed') {
     diagnostics.push({
       level: 'info',
-      message: 'The main-effects-only model is fit as a mixed-effects model (REML).',
+      message: `The main-effects-only model is fit as a mixed-effects model (REML). Denominator df: ${DDF_NAME[params.ddf]}.`,
     })
   }
   const level = params.confidenceLevel
@@ -383,8 +472,17 @@ export function runTwoWayRM(
       ],
       [
         'Assume sphericity?',
-        text(res.sphericity === 'assumed' ? 'Yes' : 'No (Geisser-Greenhouse)'),
+        text(
+          res.kind === 'mixed'
+            ? 'Yes (mixed-effects model: the Geisser-Greenhouse correction does not apply)'
+            : res.sphericity === 'assumed'
+              ? 'Yes'
+              : 'No (Geisser-Greenhouse)',
+        ),
       ],
+      ...(res.kind === 'mixed'
+        ? ([['Denominator df', text(DDF_NAME[res.ddf])]] as [string, ResultValue][])
+        : []),
     ]),
   ]
   if (res.kind === 'anova') {
@@ -427,20 +525,19 @@ export function runTwoWayRM(
   const sheets: AnalysisResult['sheets'] = [resultsSheet(blocks)]
   const values: AnalysisResult['values'] = {}
   for (const s of main) values[`p.${s.key}`] = pval(s.pCorrected ?? s.p)
+  Object.assign(
+    values,
+    testValue(res.kind === 'mixed' ? 'Mixed-effects model' : 'Two-way repeated-measures ANOVA'),
+  )
 
   if (params.comparisons === 'none') return result({ sheets, diagnostics, values })
-  // Main-effect means of a repeated factor aren't compared without sphericity.
-  const repeatedMain =
-    (params.comparisons === 'mainRows' && params.repeated !== 'columns') ||
-    (params.comparisons === 'mainColumns' && params.repeated !== 'rows')
-  if (repeatedMain && params.sphericity === 'gg') {
-    diagnostics.push({
-      level: 'info',
-      message:
-        'Main-effect comparisons of a repeated factor assume sphericity; choose “Yes — no correction” to compare these means.',
-    })
-    return result({ sheets, diagnostics, values })
-  }
+  // S10: main-effect means of a repeated factor without sphericity: each comparison with its
+  // own error term (per-contrast), so no refusal and no prompt to assume sphericity.
+  const perContrast =
+    res.kind === 'anova' &&
+    params.sphericity === 'gg' &&
+    ((params.comparisons === 'mainRows' && params.repeated !== 'columns') ||
+      (params.comparisons === 'mainColumns' && params.repeated !== 'rows'))
   const method = params.kind === 'vsControl' ? params.controlMethod : params.allPairsMethod
   const mc = twoWayRMComparisons(data, res, {
     family: params.comparisons,
@@ -448,11 +545,18 @@ export function runTwoWayRM(
     method,
     confLevel: level,
     singleFamily: params.singleFamily,
+    perContrast,
   })
+  if (perContrast)
+    diagnostics.push({
+      level: 'info',
+      message:
+        'Sphericity isn’t assumed, so each comparison of the repeated factor’s means uses its own error term (the differences between those two levels in each subject).',
+    })
   const labels: string[] = []
   const comparisons: Comparison[] = []
   for (const r of mc) {
-    const x = twoWayComparison(input, rows, params.comparisons, r, r.p)
+    const x = twoWayComparison(input, rows, params.comparisons, r, r.p, params.differenceAs)
     labels.push(x.label)
     if (x.comparison) comparisons.push(x.comparison)
   }
@@ -463,11 +567,41 @@ export function runTwoWayRM(
       comparisonTable(
         (METHOD_TITLE[method] ?? method) + TWO_WAY_FAMILY_SUFFIX[params.comparisons],
         labels,
-        mc,
+        signedRows(mc, params.differenceAs),
         level,
         method,
       ),
     ],
   })
+  diagnostics.push(...interactionNote(params.comparisons, values['p.interaction']))
+  Object.assign(values, comparisonTestValue(method))
   return result({ sheets, diagnostics, values, comparisons })
+}
+
+/** Values a complete design has: each subject in every cell of its repeated factors. */
+function neededValues(data: TwoWayRMData, repeated: RepeatedFactor, R: number, C: number): number {
+  const subjects = new Set(data.subject).size
+  return subjects * (repeated === 'both' ? R * C : repeated === 'columns' ? C : R)
+}
+
+/** S5: the subjects with a value in every cell of their repeated factors, and how many weren't. */
+function completeSubjects(
+  data: TwoWayRMData,
+  repeated: RepeatedFactor,
+  R: number,
+  C: number,
+): { data: TwoWayRMData; dropped: number } {
+  const need = repeated === 'both' ? R * C : repeated === 'columns' ? C : R
+  const count = new Map<number, number>()
+  for (const s of data.subject) count.set(s, (count.get(s) ?? 0) + 1)
+  const keep = new Set([...count].filter(([, k]) => k === need).map(([s]) => s))
+  const out: TwoWayRMData = { y: [], row: [], col: [], subject: [] }
+  data.subject.forEach((s, i) => {
+    if (!keep.has(s)) return
+    out.y.push(data.y[i]!)
+    out.row.push(data.row[i]!)
+    out.col.push(data.col[i]!)
+    out.subject.push(s)
+  })
+  return { data: out, dropped: count.size - keep.size }
 }

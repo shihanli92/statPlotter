@@ -1,8 +1,8 @@
 import type { FormText } from './types.ts'
 
-// Roadmap 51a: the text of the column analyses' forms (design §2.6 for the t test, worded for
-// today's defaults: Student's t test stays the starting choice until 51c, Welch's is recommended
-// in words).
+// Roadmap 51a: the text of the column analyses' forms (design §2.6 for the t test); roadmap 51c:
+// true of its defaults (Welch's t test, the direction of a one-tailed test, exact
+// Kruskal-Wallis P, Dunn's comparisons by Holm, one normality test and the QQ plot).
 
 const COMPARISONS_LINE = 'Which comparisons answer your question, decided before the experiment.'
 
@@ -27,15 +27,18 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
       },
     },
     dagostino: {
-      line: 'Labelled recommended because it combines skewness and kurtosis; needs 8 values.',
+      line: 'Combines skewness and kurtosis; needs at least 8 values.',
     },
     andersonDarling: { line: 'Weighs the tails of the distribution more than the others.' },
-    shapiroWilk: { line: 'The most widely used test, with good power at small n.' },
+    shapiroWilk: {
+      line: 'The most widely used test, with good power at small n (the one on by default).',
+      card: 'A test of normality says whether there is evidence against a normal distribution. With few values it rarely finds any (which doesn’t show the data are normal); with many it flags trivial departures. Choose between a t test and a rank test from what you measure, not from this test.',
+    },
     kolmogorovSmirnov: {
       line: 'The oldest test, with little power; kept for comparison with older work.',
     },
     qqPlot: {
-      line: 'Each value against where a normal distribution would put it: a line if normal.',
+      line: 'Each value against where a normal distribution would put it (on by default).',
       card: 'A QQ plot shows how the values depart from normal (curved: skewed; S-shaped: heavy tails), which a P value can’t. With few values the tests have little power, so the plot says more.',
     },
   },
@@ -45,6 +48,13 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
       options: {
         t: { line: 'For roughly symmetric measurements.', method: 'oneSampleT' },
         wilcoxon: { line: 'For scores or very skewed values.', method: 'oneSampleWilcoxon' },
+      },
+    },
+    predicted: {
+      line: 'Whether you predicted the values above or below the hypothetical value.',
+      options: {
+        increase: 'Above the hypothetical value.',
+        decrease: 'Below the hypothetical value.',
       },
     },
     hypothetical: {
@@ -62,8 +72,20 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
       },
     },
     'unpaired.assumeEqualSD': {
-      line: 'Untick for Welch’s t test, the safer choice when scatter may differ.',
-      card: 'Ticked: Student’s t test, which pools the two SDs (the starting choice in this version). Unticked: Welch’s t test, recommended because it protects P when scatter differs (a treatment often changes how much values vary) and costs almost nothing when it doesn’t. Decide from the experiment, not from a test of the SDs.',
+      line: 'A treatment often changes how much values vary, not only their mean.',
+      card: 'Welch’s t test doesn’t assume the two groups vary by the same amount; it protects P when they don’t and costs almost nothing when they do. Student’s t test pools the two SDs: choose it only with a reason, such as a validated assay whose scatter doesn’t depend on the treatment. Decide from the experiment, not from a test of the SDs.',
+      options: {
+        false: {
+          line: 'Welch’s t test: each group keeps its own SD.',
+          recommended:
+            'it protects P when scatter differs and costs almost nothing when it doesn’t',
+          method: 'welchT',
+        },
+        true: {
+          line: 'Student’s t test: only with a reason, e.g. a validated assay.',
+          method: 'studentT',
+        },
+      },
     },
     'paired.measure': {
       line: 'Concentrations and fold changes usually change by a factor.',
@@ -76,12 +98,35 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
       },
     },
     reportFTestVariances: {
-      line: 'An F test of the two SDs, for information; it should not choose the test.',
+      line: 'An F test of the two SDs, for information; it doesn’t choose the test.',
+      card: 'The results always show the ratio of the two SDs, as a description. Choosing between Student’s and Welch’s t test from an F test on the same data is a two-step procedure with worse error control than Welch’s test alone, and the F test is very sensitive to non-normal data.',
+    },
+    predicted: {
+      line: 'Which group you predicted to be higher, before seeing the data.',
+      options: {
+        increase: 'The second group higher than the first.',
+        decrease: 'The second group lower than the first.',
+      },
     },
   },
-  mannWhitney: {},
+  mannWhitney: {
+    predicted: {
+      line: 'Which group you predicted to have larger values, before seeing the data.',
+      options: {
+        increase: 'Values in the second group tend to be larger.',
+        decrease: 'Values in the second group tend to be smaller.',
+      },
+    },
+  },
   kolmogorovSmirnov: {},
   wilcoxon: {
+    predicted: {
+      line: 'Which direction you predicted for the differences within pairs.',
+      options: {
+        increase: 'The second value of each pair tends to be larger.',
+        decrease: 'The second value of each pair tends to be smaller.',
+      },
+    },
     zeroHandling: {
       line: 'Pairs whose two values are equal: drop them, or rank them as zeros.',
       options: {
@@ -120,6 +165,10 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
         none: 'Only whether any group differs (the overall test).',
       },
     },
+    sphericity: {
+      line: 'Do the differences between any two conditions vary about equally?',
+      card: 'Repeated measures assume sphericity: the differences between any two conditions have about the same scatter. Time courses usually break it. The Geisser-Greenhouse correction keeps P honest. With missing values a mixed-effects model is fit, which assumes sphericity, so the question doesn’t apply then.',
+    },
   },
   friedman: {
     comparisons: {
@@ -131,11 +180,17 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
       },
     },
     correction: {
-      line: 'Dunn’s test adjusts the comparisons for their number.',
+      line: 'How Dunn’s comparisons of the rank sums are adjusted for their number.',
       options: {
-        dunn: {
-          line: 'Bonferroni-adjusted Dunn comparisons.',
-          recommended: 'it keeps the chance of any false positive among the comparisons at 5%',
+        holm: {
+          line: 'Step-down: more power than Bonferroni, the same protection.',
+          recommended:
+            'it keeps the chance of any false positive at 5% with more power than Bonferroni',
+          method: 'dunn',
+        },
+        sidak: { line: 'Splits the error rate among the comparisons.', method: 'dunn' },
+        bonferroni: {
+          line: 'Multiplies each P by the number of comparisons (before 0.3.9: “Dunn’s test”).',
           method: 'dunn',
         },
         none: {
@@ -145,7 +200,15 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
       },
     },
   },
-  nestedT: {},
+  nestedT: {
+    predicted: {
+      line: 'Which group you predicted to be higher, before seeing the data.',
+      options: {
+        increase: 'The second group higher than the first.',
+        decrease: 'The second group lower than the first.',
+      },
+    },
+  },
   nestedOneWay: {
     comparisons: {
       line: COMPARISONS_LINE,
@@ -158,10 +221,9 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
   },
   roc: {
     direction: {
-      line: 'Say before looking whether patients have higher or lower values.',
-      card: 'Deciding the direction from the data makes the area at least 0.5 by construction, so it overstates how well the marker separates the groups. Choose higher or lower from what you know about the marker.',
+      line: 'Say before looking whether patients have higher or lower values (required).',
+      card: 'Deciding the direction from the data makes the area at least 0.5 by construction, so it overstates how well the marker separates the groups. Choose higher or lower from what you know about the marker. Curves saved before 0.3.9 that decided it from the data keep doing so, with a warning.',
       options: {
-        auto: 'Decided from the data (the starting choice; overstates a weak marker).',
         higher: 'Patients have higher values than controls.',
         lower: 'Patients have lower values than controls.',
       },
@@ -194,7 +256,7 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
   identifyOutliers: {
     method: {
       line: 'Remove a value only with a known cause; report results with and without it.',
-      card: 'Outlier tests flag values far from the rest. Removing them because a test flags them, then testing, makes P too small. Use them to find values to check (a pipetting error, a failed well), and report the analysis with and without them.',
+      card: 'Outlier tests flag values far from the rest. Removing them because a test flags them, then testing, makes P too small. Use them to find values to check (a pipetting error, a failed well), and report the analysis with and without them. Every analysis of the cleaned table says how many values were removed.',
       options: {
         rout: {
           line: 'Finds one or more outliers, controlling false discoveries.',
@@ -264,6 +326,32 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
         },
       },
     },
+    correction: {
+      line: 'With several pairs, some P values are small by chance: correct for their number.',
+      card: 'Correlating every pair of several columns makes many tests. The false discovery rate (Benjamini-Hochberg) keeps the share of false findings low; Holm keeps the chance of any false positive low. With one pair there is nothing to correct. r describes association, not agreement: Bland-Altman checks whether two methods agree.',
+      options: {
+        fdr: {
+          line: 'q values: of the pairs called significant, about 5% are expected false.',
+          recommended: 'with many pairs it keeps power while limiting false findings',
+          method: 'fdrBh',
+        },
+        holm: {
+          line: 'The chance of any false positive among the pairs stays at 5%.',
+          method: 'holm',
+        },
+        none: {
+          line: 'Each pair on its own: about 1 in 20 is below 0.05 by chance.',
+          method: 'noCorrection',
+        },
+      },
+    },
+    predicted: {
+      line: 'Whether you predicted a positive or a negative correlation, before the data.',
+      options: {
+        increase: 'The two variables rise together.',
+        decrease: 'One falls as the other rises.',
+      },
+    },
   },
   pStack: {
     approach: {
@@ -289,14 +377,20 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
           recommended: 'it has more power than Benjamini-Hochberg with the same guarantee',
           method: 'fdr',
         },
-        bh: { line: 'The most widely used method.', method: 'fdrBh' },
+        bh: {
+          line: 'The most widely used method; the two-stage one has more power.',
+          method: 'fdrBh',
+        },
         by: {
           line: 'Valid whatever the relation between the tests; conservative.',
           method: 'fdrBy',
         },
       },
     },
-    q: { line: 'The share of discoveries you accept as false, in percent.' },
+    q: {
+      line: 'The share of discoveries you accept as false, in percent (5% by default).',
+      card: 'Q = 5% means that of the rows called discoveries, about 5% are expected to be false: the level usual in screens. Work saved before 0.3.9, when the default was 1%, keep theirs.',
+    },
     sigMethod: {
       line: 'Which family-wise method.',
       options: {
@@ -309,6 +403,6 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
         bonferroni: { line: 'Multiplies each P by the number of tests.', method: 'bonferroni' },
       },
     },
-    alpha: { line: 'The chance of a false positive you accept, as a fraction (0.05 = 5%).' },
+    alpha: { line: 'The chance of a false positive you accept, in percent (5%).' },
   },
 }

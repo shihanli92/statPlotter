@@ -1,12 +1,13 @@
-import type {
-  AnalysisDef,
-  AnalysisResult,
-  Comparison,
-  Diagnostic,
-  NormalizedDataSet,
-  ResultBlock,
+import {
+  type AnalysisDef,
+  type AnalysisResult,
+  type Comparison,
+  type Diagnostic,
+  type NormalizedDataSet,
+  pinDefaults,
+  type ResultBlock,
 } from '@ps/model'
-import { type NestedResult, nestedAnova, nestedComparisons, nestedTTest } from '@ps/stats'
+import { type NestedResult, nestedAnova, nestedComparisons, nestedTTest, tSf } from '@ps/stats'
 import { z } from 'zod'
 import {
   ALL_PAIRS_METHODS,
@@ -15,6 +16,7 @@ import {
   CONTROL_FIELD,
   CONTROL_METHODS,
   comparisonTable,
+  comparisonTestValue,
   controlMethod,
   METHOD_TITLE,
   NO_COMPARISONS,
@@ -23,9 +25,11 @@ import {
 } from './anovaCommon.ts'
 import {
   ALPHA,
+  alternativeFor,
   CONFIDENCE_FIELD,
   confidenceLevel,
   dfText,
+  directionProblem,
   exclusionNotes,
   failure,
   int,
@@ -33,8 +37,13 @@ import {
   kv,
   labelTable,
   num,
+  oneTailedNotes,
+  PREDICTED_FIELD,
   pct,
+  pinObservedDirection,
   pRows,
+  predicted,
+  predictedRows,
   pSig,
   pval,
   result,
@@ -42,8 +51,36 @@ import {
   TAILS_FIELD,
   table,
   tails,
+  testValue,
   text,
 } from './common.ts'
+
+/**
+ * Roadmap 51c (S28): the denominator df of the mixed model's tests — Satterthwaite's (the
+ * default for new analyses, as lmerTest gives) or containment (subjects − groups, the default
+ * before 0.3.9).
+ */
+export const ddf = z.enum(['satterthwaite', 'containment']).default('satterthwaite')
+export const DDF_FIELD = {
+  path: ['ddf'],
+  label: 'Denominator degrees of freedom',
+  kind: 'radio',
+  options: [
+    { value: 'satterthwaite', label: 'Satterthwaite (recommended)' },
+    { value: 'containment', label: 'Containment' },
+  ],
+} as const
+const DDF_NAME = { satterthwaite: 'Satterthwaite', containment: 'Containment' } as const
+
+/** The mixed model's df method, said in the results. */
+const ddfRow = (d: 'satterthwaite' | 'containment'): [string, ReturnType<typeof text>] => [
+  'Denominator df',
+  text(DDF_NAME[d]),
+]
+
+/** Version 1 (before 0.3.9): containment df; one-tailed P in the observed direction. */
+const migrateNested = (raw: unknown, from: number): unknown =>
+  from >= 2 ? raw : pinObservedDirection(pinDefaults(raw, [[['ddf'], 'containment']]))
 
 // ---------------------------------------------------------------------------------------------
 // Nested t test and nested one-way ANOVA (nested tables: a data set = a treatment group, its
@@ -141,12 +178,12 @@ function nestedDiagnostics(input: readonly NormalizedDataSet[], res: NestedResul
 
 // ---- Nested t test ----------------------------------------------------------------------------
 
-const NestedTParams = z.object({ tails, confidenceLevel })
+const NestedTParams = z.object({ tails, predicted, ddf, confidenceLevel })
 type NestedTParams = z.infer<typeof NestedTParams>
 
 export const nestedTDef: AnalysisDef<NestedTParams> = {
   id: 'nestedT',
-  version: 1,
+  version: 2,
   title: 'Nested t test',
   category: 'Nested analyses',
   description:
@@ -154,19 +191,32 @@ export const nestedTDef: AnalysisDef<NestedTParams> = {
   accepts: ['nested'],
   inputs: { min: 2, max: 2 },
   params: NestedTParams,
-  form: [TAILS_FIELD, CONFIDENCE_FIELD],
+  migrateParams: migrateNested,
+  form: [TAILS_FIELD, PREDICTED_FIELD, DDF_FIELD, CONFIDENCE_FIELD],
   run(input, params) {
     const groups = nestedGroups(input)
     if (!groups) return failure('Nested analyses need raw values.', exclusionNotes(input))
-    const res = nestedAnova(groups)
+    const unset = directionProblem(params, exclusionNotes(input))
+    if (unset) return unset
+    const res = nestedAnova(groups, { ddf: params.ddf })
     const diagnostics = nestedDiagnostics(input, res)
     if (res.error) return failure(ERRORS[res.error], diagnostics)
     const level = params.confidenceLevel
-    const t = nestedTTest(res, level, params.tails)
+    const two = nestedTTest(res, level)
+    // S1: one-tailed P in the direction stated before the experiment (B − A).
+    const alt = alternativeFor(params.tails, params.predicted, two.diff)
+    const t = {
+      ...two,
+      p: alt === 'two-sided' ? two.p : tSf(alt === 'greater' ? two.t : -two.t, two.df),
+    }
     const [a, b] = input as [NormalizedDataSet, NormalizedDataSet]
+    const words = [`${b.title} higher than ${a.title}`, `${b.title} lower than ${a.title}`] as const
+    diagnostics.push(...oneTailedNotes(params, two.diff, t.p, words))
     const blocks: ResultBlock[] = [
       kv('Nested t test', [
         ...pRows(t.p, params.tails),
+        ...predictedRows(params, words),
+        ddfRow(params.ddf),
         ['t, df', text(`t = ${statText(Math.abs(t.t))}, df = ${dfText(t.df)}`)],
         ['F, DFn, DFd', text(`F = ${statText(t.t * t.t)}, DFn = 1, DFd = ${dfText(t.df)}`)],
       ]),
@@ -191,6 +241,7 @@ export const nestedTDef: AnalysisDef<NestedTParams> = {
         df: num(t.df),
         diff: num(t.diff),
         icc: num(res.icc),
+        ...testValue('Nested t test'),
       },
       comparisons,
     })
@@ -208,13 +259,14 @@ const NestedOneWayParams = z.object({
   control: z.string().default(''),
   allPairsMethod: allPairsNested.default('tukey'),
   controlMethod: controlMethod.default('dunnett'),
+  ddf,
   confidenceLevel,
 })
 type NestedOneWayParams = z.infer<typeof NestedOneWayParams>
 
 export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
   id: 'nestedOneWay',
-  version: 1,
+  version: 2,
   title: 'Nested one-way ANOVA',
   category: 'Nested analyses',
   description:
@@ -222,6 +274,7 @@ export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
   accepts: ['nested'],
   inputs: { min: 2, max: Number.POSITIVE_INFINITY },
   params: NestedOneWayParams,
+  migrateParams: migrateNested,
   form: [
     {
       path: ['comparisons'],
@@ -244,12 +297,13 @@ export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
       options: CONTROL_METHODS,
       showIf: { path: ['comparisons'], in: ['vsControl'] },
     },
+    DDF_FIELD,
     CONFIDENCE_FIELD,
   ],
   run(input, params) {
     const groups = nestedGroups(input)
     if (!groups) return failure('Nested analyses need raw values.', exclusionNotes(input))
-    const res = nestedAnova(groups)
+    const res = nestedAnova(groups, { ddf: params.ddf })
     const diagnostics = nestedDiagnostics(input, res)
     if (res.error) return failure(ERRORS[res.error], diagnostics)
     const level = params.confidenceLevel
@@ -259,6 +313,7 @@ export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
         ['F', num(tr.F)],
         ['DFn, DFd', text(`${dfText(tr.dfn)}, ${dfText(tr.dfd)}`)],
         ...pSig(tr.p, 'Significant diff. among means'),
+        ddfRow(params.ddf),
       ]),
       ...commonBlocks(input, res),
     ]
@@ -267,6 +322,7 @@ export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
     ]
     const { pairs } = oneWayPairs(input, params.comparisons, params.control)
     let comparisons: Comparison[] = []
+    let comparisonMethod: string | null = null
     if (pairs.length) {
       const method =
         params.comparisons === 'allPairs' ? params.allPairsMethod : params.controlMethod
@@ -305,11 +361,18 @@ export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
         pairs,
         rows.map((r) => r.p),
       )
+      comparisonMethod = method
     }
     return result({
       sheets,
       diagnostics,
-      values: { p: pval(tr.p), F: num(tr.F), icc: num(res.icc) },
+      values: {
+        p: pval(tr.p),
+        F: num(tr.F),
+        icc: num(res.icc),
+        ...testValue('Nested one-way ANOVA'),
+        ...comparisonTestValue(comparisonMethod),
+      },
       comparisons,
     })
   },

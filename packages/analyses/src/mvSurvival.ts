@@ -12,7 +12,14 @@ import {
 } from './common.ts'
 import { cellsOf, labelOf, levelsOf } from './mvVariables.ts'
 import { buildTable, stableId } from './resultTable.ts'
-import { CI_METHOD_FIELD, ciMethod, survivalResult } from './survival.ts'
+import {
+  CI_METHOD_FIELD,
+  ciMethod,
+  migrateSurvival,
+  survivalFields,
+  survivalParams,
+  survivalResult,
+} from './survival.ts'
 
 // ---------------------------------------------------------------------------------------------
 // Kaplan-Meier survival analysis of a multiple-variables table: one row per subject, a time
@@ -38,13 +45,14 @@ const Params = z.object({
   /** Text status: the level that means censored ('' = every level other than the event's). */
   censoredLevel: z.string().default(''),
   ciMethod,
+  ...survivalParams,
   confidenceLevel,
 })
 type Params = z.infer<typeof Params>
 
 export const survivalFromVariablesDef: AnalysisDef<Params> = {
   id: 'survivalFromVariables',
-  version: 1,
+  version: 2,
   title: 'Survival curves (Kaplan-Meier)',
   category: 'Survival analyses',
   description:
@@ -52,6 +60,7 @@ export const survivalFromVariablesDef: AnalysisDef<Params> = {
   accepts: ['multipleVariables'],
   inputs: { min: 2, max: 64 },
   params: Params,
+  migrateParams: migrateSurvival,
   form: [
     { path: ['time'], label: 'Time variable', kind: 'custom', component: 'dataset.pick' },
     {
@@ -86,6 +95,8 @@ export const survivalFromVariablesDef: AnalysisDef<Params> = {
       component: 'mv.level:status=1',
     },
     CI_METHOD_FIELD,
+    // The reference group is the first (the groups are made from the variables' levels).
+    ...survivalFields(null),
     CONFIDENCE_FIELD,
   ],
   run(input, params) {
@@ -193,7 +204,7 @@ export const survivalFromVariablesDef: AnalysisDef<Params> = {
     const groups: SurvivalSubject[][] = keys.map((k) =>
       subjects.filter((s) => s.group === k).map((s) => ({ time: s.time, event: s.event })),
     )
-    const result = survivalResult(titles, groups, params, diagnostics)
+    const result = survivalResult(titles, groups, { ...params, control: 0 }, diagnostics)
     if (result.status === 'error') return result
 
     // The survival table analyzed: one row per subject, the code in its group's column.

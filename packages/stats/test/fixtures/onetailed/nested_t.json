@@ -1,0 +1,17 @@
+{
+  "name": "nested_t",
+  "input": {"groups":[[[10,11,12],[14,15,13],[9,8,10],[12,13,11]],[[16,18,17],[13,12,14],[19,20,18],[15,14,16]]]},
+  "params": {"suite":"nested","rparams":{},"analysis":"nestedT","app":{"ddf":"containment"}},
+  "expected": {
+    "two": 0.034938431160900105,
+    "greater": 0.017469215580450052,
+    "less": 0.98253078441954989
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

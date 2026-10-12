@@ -91,6 +91,8 @@ export interface TwoWayRMOptions {
   sphericity?: 'assumed' | 'gg'
   interaction?: boolean
   ddf?: RMDdf
+  /** Roadmap 51c (S5): 'mixed' fits the mixed model with complete data too (default 'auto'). */
+  method?: 'auto' | 'mixed'
 }
 
 export interface TwoWayRMResult {
@@ -235,7 +237,7 @@ export function twoWayRM(
   const interaction = opts.interaction ?? true
   const ddf = opts.ddf ?? 'containment'
   const P = prepare(data, repeated)
-  if (P.complete && interaction) {
+  if (P.complete && interaction && opts.method !== 'mixed') {
     return repeated === 'both'
       ? anovaBoth(P, sphericity, ddf)
       : anovaSplit(P, repeated, sphericity, ddf)
@@ -683,6 +685,11 @@ export interface TwoWayRMComparisonSpec {
    * per row (as the ordinary two-way comparisons, DATA_MODEL §11).
    */
   singleFamily?: boolean
+  /**
+   * Roadmap 51c (S10): main effects of a repeated factor without assuming sphericity — each
+   * comparison with its own error term (ANOVA fits only; see `perContrastEstimator`).
+   */
+  perContrast?: boolean
 }
 
 export type TwoWayRMComparison = McRow & {
@@ -747,7 +754,10 @@ export function twoWayRMComparisons(
       : alongCols
         ? { r: -1, c: lev }
         : { r: lev, c: -1 }
-  const est = estimator(P, res, spec.family)
+  const est =
+    spec.perContrast && res.kind === 'anova' && !res.error && repeatedMain(res, spec.family)
+      ? perContrastEstimator(P, res, spec.family)
+      : estimator(P, res, spec.family)
   const fams: {
     rows: ContrastRow[]
     cov: (a: number, b: number) => number
@@ -802,6 +812,17 @@ export function twoWayRMComparisons(
       }
       return out
     }),
+  )
+}
+
+/** Whether a family compares the marginal means of a repeated (within-subject) factor. */
+export function repeatedMain(
+  res: Pick<TwoWayRMResult, 'repeated'>,
+  family: TwoWayRMComparisonSpec['family'],
+): boolean {
+  return (
+    (family === 'mainRows' && res.repeated !== 'columns') ||
+    (family === 'mainColumns' && res.repeated !== 'rows')
   )
 }
 
@@ -933,6 +954,69 @@ function anovaEstimator(
       if (key(B1) === key(B2)) s += weight(B1)
       return V * s
     }
+    return { rows, cov }
+  }
+}
+
+/**
+ * Roadmap 51c (S10): main-effect comparisons of a repeated factor without the sphericity
+ * assumption (Maxwell & Delaney 2004, ch. 12 and 14: a separate error term per contrast). Each
+ * subject's mean at each level of the compared factor (over the other factor's levels, when that
+ * one is repeated too) gives, per comparison, one difference d per subject. With the other factor
+ * between subjects (G groups of n_g), the least-squares marginal difference is the mean over
+ * groups of the group means of d, with SE² = s²_d Σ 1/n_g / G² (s²_d pooled within groups) on
+ * N − G df; with both factors repeated, it is the paired t test of the subjects' means (SE² =
+ * s²_d/n, n − 1 df). This is the multivariate (per-contrast) approach of
+ * `emmeans(…, model = "multivariate")` after an `afex` fit; the covariance of two comparisons
+ * (Dunnett's correlations) is the pooled covariance of their d's.
+ */
+function perContrastEstimator(
+  P: Prepared,
+  res: TwoWayRMResult,
+  family: TwoWayRMComparisonSpec['family'],
+): Estimator {
+  const { R, C } = P
+  const alongCols = family === 'mainColumns'
+  const L = alongCols ? C : R
+  const n = P.nSubjects
+  const sum = Array.from({ length: n }, () => new Float64Array(L))
+  const cnt = Array.from({ length: n }, () => new Float64Array(L))
+  for (const o of P.obs) {
+    const lev = alongCols ? o.c : o.r
+    sum[o.s]![lev]! += o.y
+    cnt[o.s]![lev]!++
+  }
+  const m = sum.map((row, si) => row.map((v, l) => v / cnt[si]![l]!))
+  const between = res.repeated !== 'both'
+  const G = between ? (res.repeated === 'columns' ? R : C) : 1
+  const grp = (si: number) => (between ? P.group[si]! : 0)
+  const ng = new Array<number>(G).fill(0)
+  for (let si = 0; si < n; si++) ng[grp(si)]!++
+  const dfE = n - G
+  const wsum = ng.reduce((a, k) => a + 1 / k, 0) / (G * G)
+  const lev = (d: MeanDef) => (alongCols ? d.c : d.r)
+  return (meta) => {
+    const ds = meta.map(([A, B]) => m.map((row) => row[lev(A)]! - row[lev(B)]!))
+    const centred = ds.map((d) => {
+      const gs = new Array<number>(G).fill(0)
+      for (let si = 0; si < n; si++) gs[grp(si)]! += d[si]!
+      const gm = gs.map((v, g) => v / ng[g]!)
+      return { est: gm.reduce((a, v) => a + v, 0) / G, dev: d.map((v, si) => v - gm[grp(si)]!) }
+    })
+    const cov = (x: number, y: number) => {
+      const a = centred[x]!.dev
+      const b = centred[y]!.dev
+      let s2 = 0
+      for (let si = 0; si < n; si++) s2 += a[si]! * b[si]!
+      return (s2 / dfE) * wsum
+    }
+    const rows = centred.map((c, k) => ({
+      i: 0,
+      j: 0,
+      diff: c.est,
+      se: Math.sqrt(cov(k, k)),
+      df: dfE,
+    }))
     return { rows, cov }
   }
 }

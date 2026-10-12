@@ -67,6 +67,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.6 | 49d | merge of 49d, fill and outline mapped separately (not tagged) |
 | 0.3.7 | 50 | merge of 50, zoom and pan with the mouse (not tagged) |
 | 0.3.8 | 51a | merge of 51a, explanations and a guided chooser (not tagged) |
+| 0.3.9 | 51c | merge of 51c, safer defaults and multiple comparisons (not tagged) |
 
 ## Phases
 
@@ -2114,3 +2115,53 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     table; search by question by keyboard; the empty Results' questions and Help) and the specs
     whose dialog and menu changed (`analyses`, `shell`, `gettingStarted`) in Chromium, WebKit
     and Firefox.
+
+51c. ✅ **Safer defaults and multiple comparisons** — decisions 1286–1301 (design
+    [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md) §6–§7; the second of 51a → 51c → 51b →
+    51d → 51e). **Saved analyses keep what they computed**: stored params are read one way
+    (`paramsOf`: migrated from the version they were saved with, then parsed); 22 analyses move
+    to params version 2 and their migrations write 0.3.8's defaults into older params, so only
+    new analyses get the new defaults (checked against the params 0.3.8 wrote). **New defaults**:
+    Welch's t test (the F test only when asked, the SDs and their ratio instead; no "Consider
+    Welch"), one-way ANOVA without Bartlett's test by default, Kruskal-Wallis' **exact P** for
+    small designs (up to 2 × 10⁷ arrangements, else the approximation, said), Dunn's comparisons
+    by Holm (Šidák, Bonferroni, none), the false discovery rate (Benjamini-Hochberg, Q = 5%)
+    across multiple one-way ANOVAs' rows and across a correlation's pairs, Q = 5% for multiple t
+    tests and P stacks, Satterthwaite's df for mixed models and nested analyses, the RM method
+    chosen (auto / ANOVA of complete subjects / mixed model, the model and its df said; sphericity
+    greyed with its reason while values are missing), one survival test (log-rank) with pairwise
+    log-rank tests corrected for three or more groups and one hazard ratio against a control,
+    trend tests off unless the rows or groups are ordered, Shapiro-Wilk alone with the QQ plot,
+    ROC's direction asked, new one- and two-way comparisons later − earlier. **One-tailed P for
+    the predicted direction** (decision 18 superseded): the direction asked in the groups' names,
+    the large P reported, and warned, when the data went the other way; saved one-tailed
+    analyses keep theirs, flagged. Main-effect comparisons of a repeated factor without
+    sphericity by per-contrast errors (no longer refused). Notes on analyses of outlier-cleaned
+    or normalized values, on two-way main effects beside an interaction, on comparing lines;
+    pilot data in power planning (the effect's CI and the n at its bound nearer zero); rank-test
+    wording ("Shift between groups"); "(pooled SD)" on d and g; "Y = log10(Y)"; Šidák; P = 0.05
+    is "ns"; α and Q as percentages; Newman-Keuls and LSD under "Other (not recommended)"; a 2 × 2's
+    exposed row and outcome column; the Fisher fall-back a warning; one model comparison in
+    curve fits. **Safeguards against test-switching** (§7): a method changed after its results
+    were seen shows a notice (the changes, a reason, Add as a new analysis; never blocking) and
+    is kept in the analysis' **method history** under its results (`analysis.recordChange`, one
+    undo step); brackets offer **Welch's t test** first and, with three or more groups or a
+    second bracket, **one analysis of all the groups** (one-way ANOVA with Tukey's or Dunnett's;
+    two-way within rows; two-way at each X through `input.byX`), relabelling bracket tests from
+    it ("Label these N brackets from one ANOVA"), separate bracket tests marked "(uncorrected)";
+    P labels name their test ("P = 0.0014 (Welch's t)"); two tests of one comparison on a graph
+    raise a warning badge. The explanations and Guide me follow (survival questions, a 2 × 2's
+    roles, the new defaults). `ANALYSES_VERSION` 1.4.1 → 1.5.0. R oracle: new suites
+    `onetailed` (17 cases), `kw_exact` (6), `rm_main_effects` (4), `survival_pairwise` (4),
+    `multiple_oneway_rows` (3), `correlation_family` (3), `power_pilot` (4); more cases in
+    `mixed` (2), `nested` (Satterthwaite outputs), `multcomp` and `friedman` (Dunn by Holm); the
+    `contingency` 2 × 2 cases through the roles. Example fingerprints change in their analyses'
+    params version and pinned params (the clinical ROC states its direction; two notes reworded);
+    goldens unchanged. Left for 51c-2: the stars' key label (§7.4), the power curve over a range
+    of effects (S29), the history in a methods paragraph (51d). Tests: `migrateParams` (0.3.8's
+    params full and sparse, every new and pinned choice), `paramsOfOnly`, `methodChanges`, the
+    oracle suites, the new defaults and their saved behaviour per analysis (unit); the method
+    history, its notice, the form's greyed choices, percentages and names (happy-dom); the
+    engine's history command, source notes and `byX`; brackets from one analysis, uncorrected
+    marking and duplicates; Playwright `methodHistory.spec.ts` (new) and the specs whose defaults
+    changed (`analyses`, `resultsOnGraphs`, `reuse`, `files`) in Chromium, WebKit and Firefox.

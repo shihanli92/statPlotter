@@ -1,0 +1,18 @@
+{
+  "name": "ties_k3",
+  "input": {"groups":[[1,2,2,3],[2,3,3,4,4],[4,5,5,6]]},
+  "params": {},
+  "expected": {
+    "p": 0.0023754023754023754,
+    "arrangements": 90090,
+    "pApprox": 0.012028062465692255,
+    "H": 8.8410256410256345
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5"
+    }
+  },
+  "note": "Histology-like scores with many ties: the observed mid-ranks are permuted."
+}

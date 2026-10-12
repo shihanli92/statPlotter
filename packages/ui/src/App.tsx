@@ -1742,6 +1742,8 @@ function Shell() {
                 mode="edit"
                 analysisId={dialog.analysisId}
                 onClose={() => setDialog(null)}
+                // Roadmap 51c (§7.2): Add as a new analysis opens it.
+                onCreated={setSelected}
                 onError={showError}
               />
             )}

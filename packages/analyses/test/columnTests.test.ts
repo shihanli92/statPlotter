@@ -10,6 +10,7 @@ import {
   wilcoxonSignedRankOneSample,
 } from '@ps/stats'
 import { describe, expect, it } from 'vitest'
+import { arr, expectClose, loadFixtures } from '../../stats/test/oracle.ts'
 import {
   correlationDef,
   friedmanDef,
@@ -28,8 +29,11 @@ const Z = [5.0, 4.6, 5.9, 5.3, 4.9, 5.6, 6.1, 5.2, 5.4, 4.8, 6.0, 5.1]
 describe('normality plugin', () => {
   const run = (t: DataTable, p: object = {}) => runDef(normalityDef, t, p)
 
+  // Roadmap 51c (S14): Shapiro-Wilk only by default; the four tests as before 0.3.9 here.
+  const ALL = { dagostino: true, andersonDarling: true, shapiroWilk: true, kolmogorovSmirnov: true }
+
   it('runs every test on every column', () => {
-    const r = run(columnTable([X, Y]))
+    const r = run(columnTable([X, Y]), ALL)
     expect(r.status).toBe('ok')
     const p = rowOf(r, 'P value', 'D’Agostino-Pearson omnibus normality test')
     expect(v(p[0])).toBe(dagostinoPearson(Float64Array.from(X)).p)
@@ -39,7 +43,7 @@ describe('normality plugin', () => {
   })
 
   it('marks columns too small for a test', () => {
-    const r = run(columnTable([X.slice(0, 5)]))
+    const r = run(columnTable([X.slice(0, 5)]), ALL)
     expect(kind(rowOf(r, 'K2', 'D’Agostino-Pearson omnibus normality test')[0])).toBe('text')
     expect(kind(rowOf(r, 'W', 'Shapiro-Wilk normality test')[0])).toBe('number')
   })
@@ -102,6 +106,48 @@ describe('correlation plugin', () => {
     t.dataSets[0]!.subcolumns[0]!.values = [...Y]
     const r = run(t)
     expect(v(r.values.r)).toBe(pearsonCorrelation(Float64Array.from(X), Float64Array.from(Y)).r)
+  })
+})
+
+// Roadmap 51c (S30): the pairs' P values corrected for their number, against R (suite
+// `correlation_family`): Benjamini-Hochberg (the default) and Holm, pairs with too few values left
+// out of the family; none with one pair.
+describe('correlation: the pairs corrected vs R', () => {
+  type Family = Record<'r' | 'p' | 'n' | 'bh' | 'holm', number[]>
+  for (const f of loadFixtures<{ columns: (number | null)[][] }, Family>('correlation_family')) {
+    it(f.name, () => {
+      const t = columnTable(f.input.columns)
+      const method = (f.params as { method: 'pearson' | 'spearman' }).method
+      for (const [correction, key, column] of [
+        ['fdr', 'bh', 'q value (Benjamini-Hochberg)'],
+        ['holm', 'holm', 'Holm-adjusted P value'],
+      ] as const) {
+        const p = correction === 'fdr' ? { method } : { method, correction }
+        const b = runDef(correlationDef, t, p).sheets[0]!.blocks[0]!
+        if (b.type !== 'table') throw new Error('table expected')
+        const col = (name: string) => b.columns.indexOf(name)
+        expect(col(column), b.columns.join()).toBeGreaterThan(0)
+        b.rows.forEach((row, k) => {
+          const want = arr(f.expected[key])[k]!
+          expect(v(row[col('Number of XY pairs')])).toBe(arr(f.expected.n)[k])
+          if (Number.isNaN(want)) {
+            expect(kind(row[col(column)])).toBe('text')
+            return
+          }
+          expectClose(v(row[1]), arr(f.expected.r)[k]!, f.tol, `${f.name} r ${k}`)
+          expectClose(v(row[col(column)]), want, f.tol, `${f.name} ${key} ${k}`)
+        })
+      }
+      const none = runDef(correlationDef, t, { method, correction: 'none' }).sheets[0]!.blocks[0]!
+      if (none.type !== 'table') throw new Error('table expected')
+      expect(none.columns).not.toContain('q value (Benjamini-Hochberg)')
+    })
+  }
+
+  it('one pair: nothing to correct', () => {
+    const b = runDef(correlationDef, columnTable([X, Y])).sheets[0]!.blocks[0]!
+    if (b.type !== 'table') throw new Error('table expected')
+    expect(b.columns).not.toContain('q value (Benjamini-Hochberg)')
   })
 })
 

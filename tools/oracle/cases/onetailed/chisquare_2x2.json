@@ -1,0 +1,25 @@
+{
+  "input": {
+    "table": [
+      [
+        30,
+        70
+      ],
+      [
+        45,
+        55
+      ]
+    ]
+  },
+  "params": {
+    "suite": "chisquare",
+    "rparams": {
+      "yates": false
+    },
+    "analysis": "contingency",
+    "app": {
+      "test": "chiSquare",
+      "yates": false
+    }
+  }
+}

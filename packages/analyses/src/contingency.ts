@@ -3,6 +3,7 @@ import {
   type AnalysisResult,
   contingencyCounts,
   type Diagnostic,
+  pinDefaults,
   type ResultBlock,
   type ResultSheet,
   type ResultValue,
@@ -22,14 +23,20 @@ import {
   ALPHA,
   CONFIDENCE_FIELD,
   confidenceLevel,
+  directionProblem,
   exclusionNotes,
   failure,
   int,
   interval,
   kv,
   num,
+  oneTailedNotes,
   pct,
+  pinObservedDirection,
   pRows,
+  predicted,
+  predictedField,
+  predictedRows,
   psum,
   pval,
   result,
@@ -38,6 +45,7 @@ import {
   TAILS_FIELD,
   table,
   tails,
+  testValue,
   text,
   yesNo,
 } from './common.ts'
@@ -46,8 +54,17 @@ import { rowTitleOf } from './grouped.ts'
 const Params = z.object({
   test: z.enum(['fisher', 'chiSquare']).default('fisher'),
   yates: z.boolean().default(false),
-  trend: z.boolean().default(true),
+  /** Roadmap 51c (S21): off by default — only when the rows are in a meaningful order. */
+  trend: z.boolean().default(false),
   tails,
+  predicted,
+  /**
+   * Roadmap 51c (S22): a 2 × 2's roles — the row of the treated or exposed group (the others are
+   * the comparison) and the column of the outcome. RR, OR, NNT and the diagnostic block are
+   * computed for this orientation (default: the first row and the first column, as before).
+   */
+  exposedRow: z.number().int().min(0).max(1).default(0),
+  outcomeColumn: z.number().int().min(0).max(1).default(0),
   riskEstimates: z.boolean().default(true),
   oddsRatio: z.boolean().default(true),
   diagnostic: z.boolean().default(false),
@@ -61,6 +78,23 @@ const Params = z.object({
   confidenceLevel,
 })
 type Params = z.infer<typeof Params>
+
+/**
+ * Version 1 (before 0.3.9): the trend test on by default; one-tailed P in the observed direction.
+ * Saved analyses keep them.
+ */
+const migrate = (raw: unknown, from: number): unknown =>
+  from >= 2 ? raw : pinObservedDirection(pinDefaults(raw, [[['trend'], true]]))
+
+/** A 2 × 2 table turned so the exposed row and the outcome column come first (S22). */
+export function oriented(
+  counts: readonly (readonly number[])[],
+  exposedRow: number,
+  outcomeColumn: number,
+): number[][] {
+  const rows = exposedRow === 1 ? [counts[1]!, counts[0]!] : [counts[0]!, counts[1]!]
+  return rows.map((r) => (outcomeColumn === 1 ? [r[1]!, r[0]!] : [r[0]!, r[1]!]))
+}
 
 const estimateRows = (label: string, e: Estimate, level: number): [string, ResultValue][] => [
   [label, num(e.value)],
@@ -88,7 +122,7 @@ const percentRows = (counts: number[][], denom: (i: number, j: number) => number
 
 export const contingencyDef: AnalysisDef<Params> = {
   id: 'contingency',
-  version: 1,
+  version: 2,
   title: 'Chi-square (and Fisher’s exact) test',
   category: 'Contingency table analyses',
   description:
@@ -96,6 +130,7 @@ export const contingencyDef: AnalysisDef<Params> = {
   accepts: ['contingency'],
   inputs: { min: 2, max: 64 },
   params: Params,
+  migrateParams: migrate,
   form: [
     {
       path: ['test'],
@@ -114,10 +149,33 @@ export const contingencyDef: AnalysisDef<Params> = {
     },
     {
       path: ['trend'],
-      label: 'Chi-square test for trend (tables with two outcome columns and three or more rows)',
+      label:
+        'The rows are in a meaningful order (doses, ages): test for a trend (two outcome columns, three or more rows)',
       kind: 'checkbox',
     },
+    {
+      path: ['exposedRow'],
+      label: 'Which row is the treated or exposed group? (2×2)',
+      kind: 'radio',
+      options: [
+        { value: 0, label: 'The first row' },
+        { value: 1, label: 'The second row' },
+      ],
+    },
+    {
+      path: ['outcomeColumn'],
+      label: 'Which column is the outcome? (2×2)',
+      kind: 'radio',
+      options: [
+        { value: 0, label: 'The first column' },
+        { value: 1, label: 'The second column' },
+      ],
+    },
     TAILS_FIELD,
+    predictedField(
+      'A higher risk of the outcome in the exposed group',
+      'A lower risk of the outcome in the exposed group',
+    ),
     {
       path: ['riskEstimates'],
       label: 'Relative risk, difference between proportions and NNT (2×2)',
@@ -127,7 +185,7 @@ export const contingencyDef: AnalysisDef<Params> = {
     {
       path: ['diagnostic'],
       label:
-        'Sensitivity, specificity and predictive values (2×2: rows = with / without the condition, columns = test positive / negative)',
+        'This table is a test result against the truth: sensitivity, specificity and predictive values (2×2)',
       kind: 'checkbox',
     },
     {
@@ -158,8 +216,8 @@ export const contingencyDef: AnalysisDef<Params> = {
       kind: 'select',
       options: [
         { value: 'bonferroni', label: 'Bonferroni (recommended: the comparisons share rows)' },
-        { value: 'holm-sidak', label: 'Holm-Šídák' },
-        { value: 'sidak', label: 'Šídák' },
+        { value: 'holm-sidak', label: 'Holm-Šidák' },
+        { value: 'sidak', label: 'Šidák' },
         { value: 'none', label: 'None (Fisher’s LSD-like)' },
       ],
       showIf: { path: ['pairwise'], in: ['all', 'control'] },
@@ -196,43 +254,89 @@ export const contingencyDef: AnalysisDef<Params> = {
 
     const level = params.confidenceLevel
     const is2x2 = counts.length === 2 && counts[0]!.length === 2
+    const oneTailed = is2x2 && params.tails === 'one'
+    if (oneTailed) {
+      const unset = directionProblem(params, diagnostics)
+      if (unset) return unset
+    }
     const chi = chiSquareTest(counts, { yates: is2x2 && params.yates })
     const blocks: ResultBlock[] = []
     const values: AnalysisResult['values'] = {}
+    // S22: the 2 × 2 turned to its roles (exposed row, outcome column first).
+    const turned = is2x2 ? oriented(counts, params.exposedRow, params.outcomeColumn) : counts
+    const [[a, b], [c, d]] = (
+      is2x2
+        ? turned
+        : [
+            [0, 0],
+            [0, 0],
+          ]
+    ) as [[number, number], [number, number]]
+    // The risk of the outcome in the exposed row minus the other's (the S1 effect's sign).
+    const riskDiff = a / (a + b) - c / (c + d)
+    const tail = { ...params, tails: oneTailed ? ('one' as const) : ('two' as const) }
+    const [g1, g2] = is2x2
+      ? params.exposedRow === 1
+        ? [rowNames[1]!, rowNames[0]!]
+        : [rowNames[0]!, rowNames[1]!]
+      : ['', '']
+    const outcome = is2x2 ? colNames[params.outcomeColumn]! : ''
+    const words = [
+      `a higher risk of “${outcome}” in ${g1} than in ${g2}`,
+      `a lower risk of “${outcome}” in ${g1} than in ${g2}`,
+    ] as const
 
     let useFisher = params.test === 'fisher'
     let fisherP = Number.NaN
     if (useFisher) {
       try {
-        const f = fisherExact(counts)
-        if (is2x2 && params.tails === 'one') {
-          const odds = counts[0]![0]! * counts[1]![1]! - counts[0]![1]! * counts[1]![0]!
-          fisherP = odds >= 0 ? f.pGreater : f.pLess
+        const f = fisherExact(oneTailed ? turned : counts)
+        if (oneTailed) {
+          // S1: the direction predicted; saved analyses (observed) the data's, as before.
+          const odds = a * d - b * c
+          const greater =
+            params.predicted === 'increase' || (params.predicted === 'observed' && odds >= 0)
+          fisherP = greater ? f.pGreater : f.pLess
         } else fisherP = f.p
       } catch {
         useFisher = false
+        // S42: a different test than chosen is a warning, and the block names the test used.
         diagnostics.push({
-          level: 'info',
+          level: 'warning',
           message:
-            'Fisher’s exact test is not available for this table; a chi-square test is shown.',
+            'Fisher’s exact test is too large to compute for this table; the chi-square test is reported instead.',
         })
       }
     }
     if (useFisher) {
-      blocks.push(kv('Fisher’s exact test', pRows(fisherP, is2x2 ? params.tails : 'two', true)))
+      blocks.push(
+        kv('Fisher’s exact test', [
+          ...pRows(fisherP, oneTailed ? 'one' : 'two', true),
+          ...predictedRows(tail, words),
+        ]),
+      )
       values.p = pval(fisherP)
+      Object.assign(values, testValue('Fisher’s exact test'))
+      diagnostics.push(...oneTailedNotes(tail, riskDiff, fisherP, words, 'The risk'))
     } else {
-      const oneTailed = is2x2 && params.tails === 'one'
-      const p = oneTailed ? chi.p / 2 : chi.p
+      // S1: one-tailed chi-square is the signed z test of the two proportions (P/2 in the
+      // predicted direction, else 1 − P/2), as prop.test(alternative =) gives.
+      const along =
+        params.predicted === 'observed' ||
+        (params.predicted === 'increase' ? riskDiff >= 0 : riskDiff <= 0)
+      const p = oneTailed ? (along ? chi.p / 2 : 1 - chi.p / 2) : chi.p
       blocks.push(
         kv(is2x2 && params.yates ? 'Chi-square test with Yates’ correction' : 'Chi-square test', [
           ...pRows(p, oneTailed ? 'one' : 'two', false),
+          ...predictedRows(tail, words),
           ['Chi-square', num(chi.chiSq)],
           ['df', int(chi.df)],
         ]),
       )
       values.p = pval(p)
       values.chiSq = num(chi.chiSq)
+      Object.assign(values, testValue('Chi-square test'))
+      diagnostics.push(...oneTailedNotes(tail, riskDiff, p, words, 'The risk'))
       if (chi.expected.flat().some((e) => e < 5)) {
         diagnostics.push({
           level: 'info',
@@ -265,9 +369,7 @@ export const contingencyDef: AnalysisDef<Params> = {
     }
 
     if (is2x2 && (params.riskEstimates || params.oddsRatio || params.diagnostic)) {
-      const e = twoByTwo(counts, { confLevel: level })
-      const [g1, g2] = rowNames
-      const outcome = colNames[0]
+      const e = twoByTwo(turned, { confLevel: level })
       if (params.riskEstimates) {
         blocks.push(
           kv(`Relative risk of “${outcome}”, ${g1} vs. ${g2}`, [
@@ -355,8 +457,8 @@ export const contingencyDef: AnalysisDef<Params> = {
 
 const METHOD_TITLE: Record<Params['pairwiseMethod'], string> = {
   bonferroni: 'Bonferroni',
-  'holm-sidak': 'Holm-Šídák',
-  sidak: 'Šídák',
+  'holm-sidak': 'Holm-Šidák',
+  sidak: 'Šidák',
   none: 'no correction',
 }
 
@@ -428,10 +530,11 @@ function pairwiseComparisons(
     },
     ...(fellBack
       ? {
+          // S42: a different test than chosen is a warning (the table's Test column names it).
           diagnostic: {
-            level: 'info',
+            level: 'warning',
             message:
-              'Fisher’s exact test is too large for some pairs of rows; chi-square is used for them.',
+              'Fisher’s exact test is too large for some pairs of rows; the chi-square test is reported for them (see the Test column).',
           },
         }
       : {}),

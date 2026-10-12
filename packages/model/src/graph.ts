@@ -732,6 +732,12 @@ export const Annotation = z.discriminatedUnion('type', [
         comparison: z.string(),
         /** 'number': the P value alone ("0.017", "<0.0001"), as many journals print it. */
         show: z.enum(['stars', 'p', 'both', 'number']),
+        /**
+         * Roadmap 51c (§7.4): the P value names its test ("P = 0.0014 (Welch’s t)"), from the
+         * analysis' `values.comparisonTest` or `values.test`. Absent: no name (graphs made
+         * before keep their labels).
+         */
+        test: z.boolean().optional(),
       }),
       /** Typed text: plain, or runs when formatted. */
       z.object({ source: z.literal('manual'), text: RichLabel }),

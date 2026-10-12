@@ -1,0 +1,25 @@
+{
+  "input": {
+    "a": [
+      10,
+      14,
+      9,
+      13,
+      12
+    ],
+    "b": [
+      12,
+      11,
+      15,
+      10,
+      14
+    ]
+  },
+  "params": {
+    "type": "two.sample",
+    "alpha": 0.05,
+    "target": 0.8,
+    "tails": 2
+  },
+  "note": "The CI includes zero: no n at its bound."
+}

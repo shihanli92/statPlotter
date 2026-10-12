@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect, openExample, test } from './fixtures.ts'
-import { analyze, newTable, runMenu, typeCells } from './helpers-data.ts'
+import { analyze, newTable, runMenu, sheet, typeCells } from './helpers-data.ts'
 import {
   dblclickOn,
   dialog,
@@ -122,13 +122,44 @@ test('a bracket from a group of bars to one bar, the group pooled', async ({ pag
   const svg = await newGraph(page, 'Bars with points', 'Donors graph')
   await insertResult(page, 'Bracket from a group to one…')
   const d = dialog(page, 'Add bracket from a group to one')
+  // Roadmap 51c (§7.3): four groups shown, so one analysis of all of them comes first.
+  await expect(d.getByRole('radio', { name: /^All groups: one-way ANOVA/ })).toBeChecked()
+  await d.getByRole('radio', { name: 'One test of the group against one' }).check()
+  // Welch's t test first and by default (S2).
+  await expect(d.getByLabel('Test', { exact: true })).toHaveValue('welch')
   await d.getByLabel('Label', { exact: true }).selectOption('p')
   await d.getByRole('button', { name: 'Add' }).click()
   await expect(d).toBeHidden()
-  // The bracket and the line spanning the group.
+  // The bracket and the line spanning the group; its P names the test (§7.4).
   await expect(svg.locator('polyline[data-id^="annotation/"]')).toHaveCount(2)
   await expect(svg.locator('polyline[data-id$="/group"]')).toHaveCount(1)
-  await expect(svg.locator('text[data-id^="annotation/"]')).toHaveText(/^P [<=] /)
+  await expect(svg.locator('text[data-id^="annotation/"]')).toHaveText(/^P [<=] .* \(Welch’s t\)$/)
+})
+
+// Roadmap 51c (§7.3, §7.4): brackets among several groups labelled from one ANOVA, each P naming
+// its comparisons' test.
+test('brackets of all the groups from one one-way ANOVA (Tukey)', async ({ page }) => {
+  await newTable(page, { kind: 'Column', name: 'Doses', dataSets: 3 })
+  await typeCells(page, 0, 0, [
+    ['10', '14', '19'],
+    ['12', '15', '21'],
+    ['11', '13', '20'],
+  ])
+  const svg = await newGraph(page, 'Bars with points', 'Doses graph')
+  await insertResult(page, 'Bracket from a group to one…')
+  const d = dialog(page, 'Add bracket from a group to one')
+  await expect(d.getByRole('radio', { name: /^All groups: one-way ANOVA/ })).toBeChecked()
+  await d.getByLabel('Label', { exact: true }).selectOption('p')
+  await d.getByRole('button', { name: 'Add' }).click()
+  await expect(d).toBeHidden()
+  // A bracket per pair of the three groups, from one analysis.
+  await expect(svg.locator('polyline[data-id^="annotation/"]')).toHaveCount(3)
+  await expect(svg.locator('text[data-id^="annotation/"]')).toHaveText([
+    /^P [<=] .* \(Tukey\)$/,
+    /^P [<=] .* \(Tukey\)$/,
+    /^P [<=] .* \(Tukey\)$/,
+  ])
+  await expect(sheet(page, 'One-way ANOVA (Tukey) of Doses', 'Results')).toBeVisible()
 })
 
 test('an inset table of descriptive statistics in the plot', async ({ page }) => {

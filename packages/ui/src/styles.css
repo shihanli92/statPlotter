@@ -5245,3 +5245,75 @@ dialog.dialog:has(.choosing-help) .dialog-body {
   margin-top: 24px;
   font-size: 16px;
 }
+
+/* Roadmap 51c (design §7): method changes, tests of one comparison, brackets of one analysis. */
+.banner.warning {
+  margin: 12px 20px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--warn-border);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  color: var(--warn-strong);
+}
+.method-change-notice {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--warn-border);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+}
+.method-change-notice p,
+.method-change-notice ul {
+  margin: 0 0 6px;
+}
+.method-change-notice textarea {
+  display: block;
+  width: 100%;
+  margin: 2px 0 8px;
+}
+.method-change-actions {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.method-history {
+  margin: 10px 20px 0;
+  font-size: 12px;
+}
+.method-history > summary {
+  cursor: pointer;
+  color: var(--warn-strong);
+}
+.method-history ul {
+  margin: 4px 0;
+}
+.duplicate-badge {
+  margin: 4px 12px 0;
+  font-size: 12px;
+}
+.duplicate-badge > summary.banner.warning {
+  margin: 0;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: inline-block;
+}
+.duplicate-menu {
+  padding: 6px 8px;
+}
+.duplicate-menu li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.bracket-uncorrected {
+  margin: 0 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.unavailable-reason {
+  color: var(--warn-strong);
+}
+fieldset.unavailable .radio-option {
+  opacity: 0.6;
+}

@@ -6,9 +6,11 @@ import {
   finiteValues,
   formatNumber,
   type NormalizedDataSet,
+  pinDefaults,
   type ResultBlock,
   type ResultSheet,
   type ResultValue,
+  valueAt,
 } from '@ps/model'
 import { meanAcross } from '@ps/stats'
 import { z } from 'zod'
@@ -25,6 +27,15 @@ export const pval = (v: number): ResultValue => ({ kind: 'pvalue', v })
 export const psum = (v: number): ResultValue => ({ kind: 'pSummary', v })
 export const text = (v: string): ResultValue => ({ kind: 'text', v })
 export const yesNo = (v: boolean): ResultValue => ({ kind: 'bool', v })
+
+/**
+ * Roadmap 51c (S31): why entered summary data (mean, SD, N) can't be analyzed by a rank test or
+ * a test of matched values, appended to their refusals.
+ */
+export const RANK_NEEDS_RAW =
+  ' A rank test ranks the individual values, which mean, SD and N don’t hold.'
+export const PAIRED_NEEDS_RAW =
+  ' Matching pairs each subject’s values row by row, which mean, SD and N can’t show.'
 
 /** Audit 3 (S6): what an undefined result reads (as `formatNumber` shows NaN). */
 export const UNDEFINED = '—'
@@ -84,6 +95,17 @@ export const pct = (level: number) => `${+(level * 100).toFixed(2)}%`
 export const tails = z.enum(['two', 'one']).default('two')
 export const confidenceLevel = z.number().gt(0.5).lt(1).default(0.95)
 
+/**
+ * Roadmap 51c (S1, design §6.3; supersedes decision 18): the direction a one-tailed test
+ * predicted, stated before the data were seen. `increase`: the analysis' effect is positive in its
+ * sign convention (B − A, the mean above the hypothetical value, r > 0, a higher risk in the
+ * exposed row); `decrease`: negative. `unset`: not stated (a one-tailed test then refuses to
+ * run). `observed`: analyses saved before 0.3.9, whose one-tailed P followed the data's direction
+ * (kept, with a warning); never offered in the form.
+ */
+export const predicted = z.enum(['unset', 'increase', 'decrease', 'observed']).default('unset')
+export type Predicted = z.infer<typeof predicted>
+
 export const TAILS_FIELD = {
   path: ['tails'],
   label: 'P value',
@@ -93,6 +115,25 @@ export const TAILS_FIELD = {
     { value: 'one', label: 'One-tailed' },
   ],
 } as const
+
+/**
+ * The predicted direction of a one-tailed test, in the analysis' words (`{A}` and `{B}`: the data
+ * sets' titles, filled in by the form).
+ */
+export const predictedField = (increase: string, decrease: string) =>
+  ({
+    path: ['predicted'],
+    label: 'Direction you predicted before the experiment',
+    kind: 'radio',
+    options: [
+      { value: 'increase', label: increase },
+      { value: 'decrease', label: decrease },
+    ],
+    showIf: { path: ['tails'], in: ['one'] },
+  }) as const
+
+/** Two groups, B − A: "B higher than A" / "B lower than A". */
+export const PREDICTED_FIELD = predictedField('{B} higher than {A}', '{B} lower than {A}')
 
 export const CONFIDENCE_FIELD = {
   path: ['confidenceLevel'],
@@ -106,15 +147,90 @@ export const CONFIDENCE_FIELD = {
 } as const
 
 /**
- * A one-tailed P assumes the direction you predicted is the one observed, so the
- * alternative follows the sign of the observed effect.
+ * The alternative hypothesis of a test: two-sided, or the predicted direction (S1). A one-tailed
+ * analysis saved before 0.3.9 (`observed`) keeps its P: the direction of the observed `effect`.
  */
 export function alternativeFor(
   tail: 'two' | 'one',
-  effect: number,
+  direction: Predicted,
+  effect = 0,
 ): 'two-sided' | 'less' | 'greater' {
   if (tail === 'two') return 'two-sided'
+  if (direction === 'increase') return 'greater'
+  if (direction === 'decrease') return 'less'
   return effect >= 0 ? 'greater' : 'less'
+}
+
+/** The message of a one-tailed test with no stated direction (a blocking check, and `run`'s). */
+export const NO_DIRECTION =
+  'Say which direction you predicted: a one-tailed P needs the direction stated before the experiment.'
+
+/** A failure when a one-tailed test has no stated direction, else null. */
+export function directionProblem(
+  p: { tails: 'two' | 'one'; predicted: Predicted },
+  diagnostics: Diagnostic[] = [],
+): AnalysisResult | null {
+  return p.tails === 'one' && p.predicted === 'unset' ? failure(NO_DIRECTION, diagnostics) : null
+}
+
+/**
+ * The warnings of a one-tailed test (S1): the effect went the other way to the prediction (the
+ * large P is reported), or the direction was never stated (saved before 0.3.9). `words`:
+ * [increase, decrease] in the analysis' terms ("Treated higher than Control").
+ */
+export function oneTailedNotes(
+  p: { tails: 'two' | 'one'; predicted: Predicted },
+  effect: number,
+  pValue: number,
+  words: readonly [string, string],
+  what = 'The difference',
+): Diagnostic[] {
+  if (p.tails !== 'one') return []
+  if (p.predicted === 'observed')
+    return [
+      {
+        level: 'warning',
+        message:
+          'Direction not stated (saved before 0.3.9): this one-tailed P assumes the observed direction was predicted. State the predicted direction in Edit… (Analysis parameters).',
+      },
+    ]
+  const against =
+    (p.predicted === 'increase' && effect < 0) || (p.predicted === 'decrease' && effect > 0)
+  if (!against) return []
+  return [
+    {
+      level: 'warning',
+      message: `${what} went the opposite way to your prediction (${p.predicted === 'increase' ? words[0] : words[1]}); one-tailed P = ${formatNumber(pValue, 2)}.`,
+    },
+  ]
+}
+
+/**
+ * Migrating params saved before 0.3.9 (S1): a one-tailed test's P followed the observed
+ * direction; it keeps doing so (`observed`), with a warning asking for the direction.
+ */
+export const pinObservedDirection = (raw: unknown): unknown =>
+  valueAt(raw, ['tails']) === 'one' ? pinDefaults(raw, [[['predicted'], 'observed']]) : raw
+
+/**
+ * Roadmap 51c (§7.4): the name of the test behind an analysis' P (`values.test`), which result
+ * labels on graphs can show ("P = 0.0014, Welch's t test").
+ */
+export const testValue = (name: string): { test: ResultValue } => ({ test: text(name) })
+
+/** The "Predicted direction" row of a one-tailed test (none when two-tailed). */
+export function predictedRows(
+  p: { tails: 'two' | 'one'; predicted: Predicted },
+  words: readonly [string, string],
+): [string, ResultValue][] {
+  if (p.tails !== 'one') return []
+  const said =
+    p.predicted === 'increase'
+      ? words[0]
+      : p.predicted === 'decrease'
+        ? words[1]
+        : 'Not stated (the observed direction)'
+  return [['Predicted direction', text(said)]]
 }
 
 /**

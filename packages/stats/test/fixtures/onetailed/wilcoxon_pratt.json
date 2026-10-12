@@ -1,0 +1,17 @@
+{
+  "name": "wilcoxon_pratt",
+  "input": {"a":[1,2,3,4,5,6,7,8],"b":[1,2.5,3.8999999999999999,4,6.2000000000000002,7.5,8.0999999999999996,9.5999999999999996]},
+  "params": {"suite":"wilcoxon","rparams":{"exact":"auto","zeroMethod":"pratt"},"analysis":"wilcoxon","app":{"pMethod":"exactWhenPossible","zeroHandling":"pratt"}},
+  "expected": {
+    "two": 0.03125,
+    "greater": 0.015625,
+    "less": 1
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

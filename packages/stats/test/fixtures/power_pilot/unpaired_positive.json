@@ -1,0 +1,19 @@
+{
+  "name": "unpaired_positive",
+  "input": {"a":[10,12,11,13,9,11.5],"b":[14,15,13,17,16,14.5]},
+  "params": {"type":"two.sample","alpha":0.05,"target":0.8,"tails":2},
+  "expected": {
+    "delta": 3.8333333333333321,
+    "sd": 1.4288690166235207,
+    "ciLo": 1.9952125597245121,
+    "ciHi": 5.6714541069421527,
+    "nFor": 3.4603734408854199,
+    "nBound": 9.1189662658583224,
+    "nBoundCeiling": 10
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Pilot effect well away from zero: n at the lower CI bound."
+}

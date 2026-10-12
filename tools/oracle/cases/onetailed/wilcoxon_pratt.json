@@ -1,0 +1,36 @@
+{
+  "input": {
+    "a": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "b": [
+      1,
+      2.5,
+      3.9,
+      4,
+      6.2,
+      7.5,
+      8.1,
+      9.6
+    ]
+  },
+  "params": {
+    "suite": "wilcoxon",
+    "rparams": {
+      "exact": "auto",
+      "zeroMethod": "pratt"
+    },
+    "analysis": "wilcoxon",
+    "app": {
+      "pMethod": "exactWhenPossible",
+      "zeroHandling": "pratt"
+    }
+  }
+}

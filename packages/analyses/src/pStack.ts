@@ -19,6 +19,7 @@ import {
   familyColumns,
   familyMethod,
   familyParams,
+  pinFamilyQ,
   rowTitleOf,
 } from './grouped.ts'
 
@@ -32,7 +33,7 @@ type Params = z.infer<typeof Params>
 
 export const pStackDef: AnalysisDef<Params> = {
   id: 'pStack',
-  version: 1,
+  version: 2,
   title: 'Analyze a stack of P values',
   category: 'Column analyses',
   description:
@@ -40,6 +41,8 @@ export const pStackDef: AnalysisDef<Params> = {
   accepts: ['column'],
   inputs: { min: 1, max: 1 },
   params: Params,
+  // S34: Q was 1% by default before 0.3.9.
+  migrateParams: (raw, from) => (from >= 2 ? raw : pinFamilyQ(raw)),
   form: [...FAMILY_FIELDS],
   outputs: () => [
     {

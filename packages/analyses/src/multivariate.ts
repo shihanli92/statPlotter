@@ -4,6 +4,7 @@ import {
   type NormalizedDataSet,
   type OutputDecl,
   pairedRows,
+  pinDefaults,
   type ResultBlock,
   type ResultSheet,
   type ResultValue,
@@ -37,6 +38,7 @@ import {
   result,
   resultsSheet,
   table,
+  testValue,
   text,
   tooFewDataSets,
   unpairedRowsNote,
@@ -497,15 +499,24 @@ function pcrSheet(
 // ---------------------------------------------------------------------------------------------
 
 const RocParams = z.object({
-  direction: z.enum(['auto', 'higher', 'lower']).default('auto'),
+  /**
+   * Roadmap 51c (S39): whether patients have higher or lower values, said before the results
+   * (`unset`: not yet, which refuses to run). `auto` (chosen from the data, so the AUC is at least
+   * 0.5 by construction) is kept for analyses saved before 0.3.9 and not offered.
+   */
+  direction: z.enum(['unset', 'higher', 'lower', 'auto']).default('unset'),
   ciMethod: z.enum(['clopperPearson', 'wilsonBrown']).default('clopperPearson'),
   confidenceLevel,
 })
 type RocParams = z.infer<typeof RocParams>
 
+/** The message of a ROC curve with no stated direction (a blocking check, and `run`'s). */
+export const NO_ROC_DIRECTION =
+  'Say whether patients have higher or lower values than controls (decided before seeing the data).'
+
 export const rocDef: AnalysisDef<RocParams> = {
   id: 'roc',
-  version: 1,
+  version: 2,
   title: 'ROC curve',
   category: 'Column analyses',
   description:
@@ -513,13 +524,14 @@ export const rocDef: AnalysisDef<RocParams> = {
   accepts: ['column'],
   inputs: { min: 2, max: 2 },
   params: RocParams,
+  // Version 1 (before 0.3.9): the direction was decided from the data by default; kept.
+  migrateParams: (raw, from) => (from >= 2 ? raw : pinDefaults(raw, [[['direction'], 'auto']])),
   form: [
     {
       path: ['direction'],
-      label: 'Patients have',
+      label: 'Do patients have higher or lower values than controls?',
       kind: 'radio',
       options: [
-        { value: 'auto', label: 'Decide from the data' },
         { value: 'higher', label: 'Higher values than controls' },
         { value: 'lower', label: 'Lower values than controls' },
       ],
@@ -561,6 +573,13 @@ export const rocDef: AnalysisDef<RocParams> = {
       return failure('A ROC curve needs raw values, not summary data.', diagnostics)
     if (!controls.length || !patients.length)
       return failure('Both columns need values.', diagnostics)
+    if (params.direction === 'unset') return failure(NO_ROC_DIRECTION, diagnostics)
+    if (params.direction === 'auto')
+      diagnostics.push({
+        level: 'warning',
+        message:
+          'Direction chosen from the data (saved before 0.3.9): the AUC is at least 0.5 by construction and its P is too small. Say whether patients have higher or lower values in Edit… (Analysis parameters).',
+      })
     const level = params.confidenceLevel
     const res = rocCurve([...controls], [...patients], {
       confLevel: level,
@@ -610,7 +629,7 @@ export const rocDef: AnalysisDef<RocParams> = {
         resultsSheet(blocks),
         { key: 'cutoffs', title: 'Sensitivity and specificity', blocks: [cutoffs] },
       ],
-      values: { auc: num(res.auc), p: pval(res.p) },
+      values: { auc: num(res.auc), p: pval(res.p), ...testValue('ROC curve (AUC)') },
       outputs: {
         roc: {
           title: 'ROC curve',

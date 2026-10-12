@@ -27,8 +27,8 @@ describe('formatP', () => {
 })
 
 describe('pSummary', () => {
-  it('uses inclusive thresholds', () => {
-    expect([0.2, 0.05, 0.01, 0.001, 0.0001, 1e-9].map((p) => pSummary(p, 'GP'))).toEqual([
+  it('uses strict thresholds, as “Significant (P < 0.05)?” does (51c, S35)', () => {
+    expect([0.2, 0.049, 0.0099, 0.00099, 0.000099, 1e-9].map((p) => pSummary(p, 'GP'))).toEqual([
       'ns',
       '*',
       '**',
@@ -37,6 +37,13 @@ describe('pSummary', () => {
       '****',
     ])
     expect(pSummary(1e-9, 'APA')).toBe('***')
+    // At a threshold exactly: the weaker summary (P = 0.05 is not below 0.05).
+    expect([0.05, 0.01, 0.001, 0.0001].map((p) => pSummary(p, 'GP'))).toEqual([
+      'ns',
+      '*',
+      '**',
+      '***',
+    ])
   })
 })
 

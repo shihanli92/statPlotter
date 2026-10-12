@@ -63,10 +63,13 @@ export function formatP(
   return P_STYLES[settings.pValueStyle].format(p, settings.pValueDigits)
 }
 
-/** 'ns', '*', '**', … per the project's P value style. */
+/**
+ * 'ns', '*', '**', … per the project's P value style. Roadmap 51c (S35): below each threshold, as
+ * "Significant (P < 0.05)?" decides, so P = 0.05 exactly is 'ns'.
+ */
 export function pSummary(p: number, style: PStyle): string {
   if (Number.isNaN(p)) return '—'
-  for (const [threshold, label] of P_STYLES[style].stars) if (p <= threshold) return label
+  for (const [threshold, label] of P_STYLES[style].stars) if (p < threshold) return label
   return 'ns'
 }
 

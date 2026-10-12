@@ -1,0 +1,17 @@
+{
+  "name": "chisquare_2x2",
+  "input": {"table":[[30,70],[45,55]]},
+  "params": {"suite":"chisquare","rparams":{"yates":false},"analysis":"contingency","app":{"test":"chiSquare","yates":false}},
+  "expected": {
+    "two": 0.028459736916310541,
+    "greater": 0.98577013154184467,
+    "less": 0.014229868458155296
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

@@ -14,6 +14,7 @@ import {
   twoByTwo,
 } from '@ps/stats'
 import { describe, expect, it } from 'vitest'
+import { expectClose, loadFixtures } from '../../stats/test/oracle.ts'
 import { contingencyDef, survivalDef } from '../src/index.ts'
 import { kvOf, runDef, v } from './helpers.ts'
 
@@ -79,16 +80,32 @@ describe('survival curves plugin', () => {
     expect(survivalDef.accepts).toEqual(['survival'])
   })
 
-  it('reports the log-rank and Gehan-Breslow-Wilcoxon tests and the hazard ratio', () => {
+  it('reports the test chosen in advance and one hazard ratio (51c, S16)', () => {
     const r = run(survivalTable([A, B]))
     expect(r.status).toBe('ok')
     const ref = compareSurvival([subjects(A), subjects(B)])
     expect(v(kvOf(r, 'P value', 'Log-rank (Mantel-Cox) test'))).toBe(ref.logRank.p)
-    expect(v(kvOf(r, 'Chi square', 'Gehan-Breslow-Wilcoxon test'))).toBe(
-      ref.gehanBreslowWilcoxon.chiSq,
-    )
+    expect(() => kvOf(r, 'Chi square', 'Gehan-Breslow-Wilcoxon test')).toThrow()
+    expect(() => kvOf(r, 'Ratio (A/B)', 'Hazard ratio (Mantel-Haenszel)')).toThrow()
+    expect(() => kvOf(r, 'Ratio (B/A)', 'Hazard ratio (log-rank)')).toThrow()
     expect(v(r.values.hazardRatio!)).toBe(ref.hazardRatio!.mantelHaenszel.value)
     expect(r.sheets.map((s) => s.key)).toEqual(['comparison', 'survival', 'summary'])
+    const gbw = run(survivalTable([A, B]), { test: 'gehanBreslowWilcoxon' })
+    expect(v(gbw.values.p!)).toBe(ref.gehanBreslowWilcoxon.p)
+    expect(() => kvOf(gbw, 'P value', 'Log-rank (Mantel-Cox) test')).toThrow()
+    // The reference group second: the ratio is A ÷ B.
+    const t = survivalTable([A, B])
+    const flipped = run(t, { control: t.dataSets[1]!.id })
+    expect(v(flipped.values.hazardRatio!)).toBeCloseTo(
+      1 / ref.hazardRatio!.mantelHaenszel.value,
+      14,
+    )
+    // Saved before 0.3.9: every test and both hazard ratios, as before.
+    const saved = run(survivalTable([A, B]), { test: 'all', trend: true, hazardRatio: 'both' })
+    expect(v(kvOf(saved, 'Chi square', 'Gehan-Breslow-Wilcoxon test'))).toBe(
+      ref.gehanBreslowWilcoxon.chiSq,
+    )
+    expect(v(saved.values.p!)).toBe(ref.logRank.p)
   })
 
   it('tabulates percent survival for each group', () => {
@@ -102,7 +119,11 @@ describe('survival curves plugin', () => {
 
   it('adds the trend test with three groups, and none with one', () => {
     const C = A.map((s) => ({ ...s, time: s.time + 3 }))
-    const three = run(survivalTable([A, B, C]))
+    // Roadmap 51c (S16): only when the groups are said to be ordered.
+    expect(() =>
+      kvOf(run(survivalTable([A, B, C])), 'P value', 'Log-rank test for trend'),
+    ).toThrow()
+    const three = run(survivalTable([A, B, C]), { trend: true })
     const ref = compareSurvival([subjects(A), subjects(B), subjects(C)])
     expect(v(kvOf(three, 'P value', 'Log-rank test for trend'))).toBe(ref.logRankTrend!.p)
     expect(run(survivalTable([A])).sheets.map((s) => s.key)).toEqual(['survival', 'summary'])
@@ -170,10 +191,46 @@ describe('contingency plugin', () => {
       [15, 35],
       [25, 25],
     ]
-    const r = run(counts, { test: 'chiSquare' })
+    // Roadmap 51c (S21): the trend test only when the rows are said to be ordered.
+    expect(() =>
+      kvOf(run(counts, { test: 'chiSquare' }), 'P value', 'Chi-square test for trend'),
+    ).toThrow()
+    const r = run(counts, { test: 'chiSquare', trend: true })
     expect(v(kvOf(r, 'P value', 'Chi-square test for trend'))).toBe(chiSquareTrend(counts).p)
     expect(r.values.relativeRisk).toBeUndefined()
   })
+
+  // Roadmap 51c (S22): the user says which row is exposed and which column the outcome; a table
+  // entered the other way round gives R's estimates of the table oriented as stated (suite
+  // `contingency`, each 2×2 case with its rows and/or columns swapped back by the roles).
+  type Estimate = { value: number }
+  for (const f of loadFixtures<
+    { table: number[][] },
+    { fisher: { p: number }; twoByTwo?: Record<'relativeRisk' | 'oddsRatio', Estimate> }
+  >('contingency')) {
+    const two = f.expected.twoByTwo
+    const t = f.input.table
+    if (!two || t.length !== 2 || t[0]!.length !== 2) continue
+    // An empty row or column is refused (degenerate), whichever way round.
+    if (t.some((r) => r[0]! + r[1]! === 0) || [0, 1].some((j) => t[0]![j]! + t[1]![j]! === 0))
+      continue
+    it(`2×2 roles: ${f.name}`, () => {
+      const flipRows = [t[1]!, t[0]!]
+      const flipCols = t.map((r) => [r[1]!, r[0]!])
+      const both = flipRows.map((r) => [r[1]!, r[0]!])
+      for (const [entered, exposedRow, outcomeColumn] of [
+        [flipRows, 1, 0],
+        [flipCols, 0, 1],
+        [both, 1, 1],
+      ] as const) {
+        const r = run(entered, { exposedRow, outcomeColumn })
+        const at = `${exposedRow}${outcomeColumn}`
+        expectClose(v(r.values.p!), f.expected.fisher.p, f.tol, `${at} Fisher P`)
+        expectClose(v(r.values.relativeRisk!), two.relativeRisk.value, f.tol, `${at} RR`)
+        expectClose(v(r.values.oddsRatio!), two.oddsRatio.value, f.tol, `${at} OR`)
+      }
+    })
+  }
 
   it('names a row with a blank title “Row n”', () => {
     const t = createTable({ tableKind: 'contingency', columns: 2, rows: 3 })

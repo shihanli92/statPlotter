@@ -1,0 +1,17 @@
+{
+  "name": "fisher_2x2",
+  "input": {"table":[[3,12],[9,6]]},
+  "params": {"suite":"fisher","rparams":{},"analysis":"contingency","app":{"test":"fisher"}},
+  "expected": {
+    "two": 0.060432941424024889,
+    "greater": 0.9961124700807491,
+    "less": 0.030216470712012441
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

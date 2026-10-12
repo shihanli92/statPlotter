@@ -6,19 +6,28 @@ import {
   CONFIDENCE_FIELD,
   comparisonKey,
   confidenceLevel,
+  directionProblem,
   exclusionNotes,
   failure,
   int,
   interval,
   kv,
   num,
+  oneTailedNotes,
+  PAIRED_NEEDS_RAW,
+  PREDICTED_FIELD,
   pct,
+  pinObservedDirection,
   pRows,
+  predicted,
+  predictedRows,
   pval,
+  RANK_NEEDS_RAW,
   rawValues,
   result,
   TAILS_FIELD,
   tails,
+  testValue,
   text,
   tooFewDataSets,
   unpairedRowsNote,
@@ -41,12 +50,20 @@ export const pMethod = z.enum(['exactWhenPossible', 'approximate']).default('exa
 
 // ---------------------------------------------------------------------------------------------
 
-const MWParams = z.object({ tails, pMethod, confidenceLevel })
+const MWParams = z.object({ tails, predicted, pMethod, confidenceLevel })
+
+/** Version 1 (before 0.3.9): one-tailed P in the observed direction (S1), kept for saved ones. */
+export const migrateTails = (raw: unknown, from: number): unknown =>
+  from >= 2 ? raw : pinObservedDirection(raw)
+
+/** Two groups' prediction in their names (B − A). */
+const groupWords = (A: { title: string }, B: { title: string }) =>
+  [`${B.title} higher than ${A.title}`, `${B.title} lower than ${A.title}`] as const
 type MWParams = z.infer<typeof MWParams>
 
 export const mannWhitney: AnalysisDef<MWParams> = {
   id: 'mannWhitney',
-  version: 1,
+  version: 2,
   title: 'Mann-Whitney test',
   category: 'Column analyses',
   description:
@@ -54,15 +71,23 @@ export const mannWhitney: AnalysisDef<MWParams> = {
   accepts: ['column'],
   inputs: { min: 2, max: 2 },
   params: MWParams,
-  form: [TAILS_FIELD, P_METHOD_FIELD, CONFIDENCE_FIELD],
+  migrateParams: migrateTails,
+  form: [TAILS_FIELD, PREDICTED_FIELD, P_METHOD_FIELD, CONFIDENCE_FIELD],
   run(input, params) {
     const few = tooFewDataSets(input, 2, 'The Mann-Whitney test compares two data sets.')
     if (few) return few
     const [A, B] = input as [(typeof input)[0], (typeof input)[0]]
     const notes = exclusionNotes(input)
+    const unset = directionProblem(params, notes)
+    if (unset) return unset
+    const words = groupWords(A, B)
     const a = rawValues(A)
     const b = rawValues(B)
-    if (!a || !b) return failure('The Mann-Whitney test needs raw values, not summary data.', notes)
+    if (!a || !b)
+      return failure(
+        `The Mann-Whitney test needs raw values, not summary data.${RANK_NEEDS_RAW}`,
+        notes,
+      )
     if (a.length < 1 || b.length < 1 || a.length + b.length < 3) {
       return failure(
         'The Mann-Whitney test needs values in both groups (at least three in total).',
@@ -75,10 +100,11 @@ export const mannWhitney: AnalysisDef<MWParams> = {
       exact,
       correct: true,
       confLevel: params.confidenceLevel,
-      alternative: alternativeFor(params.tails, two.hlEstimate),
+      alternative: alternativeFor(params.tails, params.predicted, two.hlEstimate),
     })
     // One-tailed P, but the usual two-sided Hodges-Lehmann estimate and CI.
     const r = { ...oneSided, hlEstimate: two.hlEstimate, hlLo: two.hlLo, hlHi: two.hlHi }
+    notes.push(...oneTailedNotes(params, two.hlEstimate, r.p, words, 'The shift'))
     if (r.method === 'normal' && params.pMethod === 'exactWhenPossible') {
       notes.push({
         level: 'info',
@@ -91,21 +117,23 @@ export const mannWhitney: AnalysisDef<MWParams> = {
         ['Column A', text(A.title)],
         ['Column B', text(B.title)],
       ]),
-      kv('Mann-Whitney test', [...pRows(r.p, params.tails, r.method === 'exact')]),
+      kv('Mann-Whitney test', [
+        ...pRows(r.p, params.tails, r.method === 'exact'),
+        ...predictedRows(params, words),
+      ]),
       kv('Ranks', [
         ['Sum of ranks in column A', rankValue(r.sumRanksA)],
         ['Sum of ranks in column B', rankValue(r.sumRanksB)],
         ['Mann-Whitney U', rankValue(r.U)],
       ]),
-      kv('Difference between medians', [
+      // S12: a rank test asks whether values in one group tend to be larger; the shift
+      // (Hodges-Lehmann) is the median of all differences, not the difference of the medians.
+      kv('Shift between groups', [
+        ['Shift (Hodges-Lehmann: median of all differences B − A)', num(r.hlEstimate)],
+        [`${level} CI of the shift`, interval(r.hlLo, r.hlHi, params.confidenceLevel)],
         ['Median of column A', num(r.medianA)],
         ['Median of column B', num(r.medianB)],
-        ['Difference: actual (B − A)', num(r.medianB - r.medianA)],
-        ['Difference: Hodges-Lehmann', num(r.hlEstimate)],
-        [
-          `${level} CI of Hodges-Lehmann difference`,
-          interval(r.hlLo, r.hlHi, params.confidenceLevel),
-        ],
+        ['Difference between medians (B − A)', num(r.medianB - r.medianA)],
       ]),
       kv('Data analyzed', [
         ['Sample size, column A', int(a.length)],
@@ -115,7 +143,12 @@ export const mannWhitney: AnalysisDef<MWParams> = {
     return result({
       blocks,
       diagnostics: notes,
-      values: { p: pval(r.p), U: rankValue(r.U), hl: num(r.hlEstimate) },
+      values: {
+        p: pval(r.p),
+        U: rankValue(r.U),
+        hl: num(r.hlEstimate),
+        ...testValue('Mann-Whitney test'),
+      },
       comparisons: [
         {
           key: comparisonKey(A, B),
@@ -126,7 +159,7 @@ export const mannWhitney: AnalysisDef<MWParams> = {
             value: r.hlEstimate,
             lo: r.hlLo,
             hi: r.hlHi,
-            label: 'Hodges-Lehmann difference B − A',
+            label: 'Hodges-Lehmann shift B − A',
           },
         },
       ],
@@ -138,6 +171,7 @@ export const mannWhitney: AnalysisDef<MWParams> = {
 
 const WParams = z.object({
   tails,
+  predicted,
   pMethod,
   zeroHandling: z.enum(['wilcoxon', 'pratt']).default('wilcoxon'),
   confidenceLevel,
@@ -146,7 +180,7 @@ type WParams = z.infer<typeof WParams>
 
 export const wilcoxon: AnalysisDef<WParams> = {
   id: 'wilcoxon',
-  version: 1,
+  version: 2,
   title: 'Wilcoxon matched-pairs signed rank test',
   category: 'Column analyses',
   description:
@@ -154,8 +188,10 @@ export const wilcoxon: AnalysisDef<WParams> = {
   accepts: ['column'],
   inputs: { min: 2, max: 2 },
   params: WParams,
+  migrateParams: migrateTails,
   form: [
     TAILS_FIELD,
+    PREDICTED_FIELD,
     P_METHOD_FIELD,
     {
       path: ['zeroHandling'],
@@ -173,8 +209,14 @@ export const wilcoxon: AnalysisDef<WParams> = {
     if (few) return few
     const [A, B] = input as [(typeof input)[0], (typeof input)[0]]
     const notes = exclusionNotes(input)
+    const unset = directionProblem(params, notes)
+    if (unset) return unset
+    const words = groupWords(A, B)
     if (A.data.shape !== 'replicates' || B.data.shape !== 'replicates') {
-      return failure('The Wilcoxon test needs raw paired values, not summary data.', notes)
+      return failure(
+        `The Wilcoxon test needs raw paired values, not summary data.${PAIRED_NEEDS_RAW}`,
+        notes,
+      )
     }
     const pairs = pairedRows(A.data.reps[0]!, B.data.reps[0]!)
     notes.push(...unpairedRowsNote(A.data.reps[0]!, B.data.reps[0]!))
@@ -191,9 +233,10 @@ export const wilcoxon: AnalysisDef<WParams> = {
     const two = wilcoxonSignedRank(pairs.a, pairs.b, opts)
     const oneSided = wilcoxonSignedRank(pairs.a, pairs.b, {
       ...opts,
-      alternative: alternativeFor(params.tails, two.hlEstimate),
+      alternative: alternativeFor(params.tails, params.predicted, two.hlEstimate),
     })
     const r = { ...oneSided, hlEstimate: two.hlEstimate, hlLo: two.hlLo, hlHi: two.hlHi }
+    notes.push(...oneTailedNotes(params, two.hlEstimate, r.p, words))
     const zeros = pairs.a.length - r.nNonZero
     const level = pct(params.confidenceLevel)
     const blocks: ResultBlock[] = [
@@ -203,6 +246,7 @@ export const wilcoxon: AnalysisDef<WParams> = {
       ]),
       kv('Wilcoxon matched-pairs signed rank test', [
         ...pRows(r.p, params.tails, r.method === 'exact'),
+        ...predictedRows(params, words),
       ]),
       kv('Ranks', [
         ['Sum of positive ranks', rankValue(r.wPlus)],
@@ -225,7 +269,7 @@ export const wilcoxon: AnalysisDef<WParams> = {
     return result({
       blocks,
       diagnostics: notes,
-      values: { p: pval(r.p), W: rankValue(r.W) },
+      values: { p: pval(r.p), W: rankValue(r.W), ...testValue('Wilcoxon matched-pairs test') },
       comparisons: [
         {
           key: comparisonKey(A, B),

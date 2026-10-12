@@ -138,9 +138,10 @@ const INPUTS: Record<string, (params: Record<string, unknown>) => Input[]> = {
     { table: columnTable(THREE.map((c, i) => (i === 1 ? [c[0]!, null, ...c.slice(2)] : c))) },
   ],
   friedman: () => [{ table: columnTable(THREE) }],
+  // A one-tailed test states its direction (roadmap 51c, S1).
   correlation: () => [
-    { table: columnTable([X12.slice(0, 6), Y12.slice(0, 6)]) },
-    { table: xyTable(X12, Y12, Y12B) },
+    { table: columnTable([X12.slice(0, 6), Y12.slice(0, 6)]), params: { predicted: 'increase' } },
+    { table: xyTable(X12, Y12, Y12B), params: { predicted: 'increase' } },
   ],
   linearRegression: () => [{ table: xyTable(X12.slice(0, 8), Y12.slice(0, 8), Y12B.slice(0, 8)) }],
   nonlinearFit: (p) => {
@@ -304,7 +305,7 @@ const EXPECT: Record<string, Expect> = {
       return results(
         p.design === 'paired'
           ? 'Cohen’s d (d_z: mean difference / SD of differences)'
-          : 'Cohen’s d',
+          : 'Cohen’s d (pooled SD)',
         { block: 'How big is the difference?' },
       )
   },
@@ -332,7 +333,7 @@ const EXPECT: Record<string, Expect> = {
     ({
       P: results('P value'),
       U: results('Mann-Whitney U'),
-      hl: results('Difference: Hodges-Lehmann'),
+      hl: results('Shift (Hodges-Lehmann: median of all differences B − A)'),
     })[f],
   wilcoxon: (f) => ({ P: results('P value'), W: results('Sum of signed ranks (W)') })[f],
   friedman: (f) => (f === 'P' ? results('P value') : undefined),
@@ -468,6 +469,11 @@ function check(
         const got = resolveResultRef(result, field.ref, SETTINGS, ds)
         if (!got) {
           problems.push(`${what}: doesn’t resolve (${JSON.stringify(field.ref)})`)
+          continue
+        }
+        // Roadmap 51c (§7.4): the test's name, a value of its own (no sheet cell holds it).
+        if (field.ref.from === 'value' && field.ref.key === 'test') {
+          if (got.kind !== 'text' || !got.v) problems.push(`${what}: no test name`)
           continue
         }
         const where = EXPECT[def.id]!(name, { template: t, params: parsedParams, titles, ds })

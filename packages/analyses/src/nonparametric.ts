@@ -1,4 +1,4 @@
-import type { AnalysisDef, Comparison, ResultBlock } from '@ps/model'
+import { type AnalysisDef, type Comparison, type ResultBlock, valueAt } from '@ps/model'
 import {
   dunnFriedmanComparisons,
   friedmanTest,
@@ -19,14 +19,35 @@ import {
   pRows,
   psum,
   pval,
+  RANK_NEEDS_RAW,
   rawValues,
   result,
   resultsSheet,
   significant,
   table,
+  testValue,
   text,
   tooFewDataSets,
 } from './common.ts'
+
+/**
+ * Roadmap 51c (S11): how Dunn's comparisons after a rank test are adjusted — Holm's step-down
+ * (the default: more power than Bonferroni with the same protection), Šidák, Bonferroni, or not
+ * at all. The same list after Kruskal-Wallis and Friedman.
+ */
+export const dunnMethod = z.enum(['holm', 'sidak', 'bonferroni', 'none'])
+export type DunnMethod = z.infer<typeof dunnMethod>
+export const DUNN_METHODS = [
+  { value: 'holm', label: 'Holm (recommended)' },
+  { value: 'sidak', label: 'Šidák' },
+  { value: 'bonferroni', label: 'Bonferroni' },
+  { value: 'none', label: 'No correction' },
+] as const
+/** The title of a Dunn's comparisons table: the test and its adjustment (S33). */
+export const dunnTitle = (m: DunnMethod, friedman = false) =>
+  `Dunn’s multiple comparisons test${friedman ? ' (Siegel-Castellan form)' : ''}, ${
+    m === 'none' ? 'uncorrected' : m === 'holm' ? 'Holm' : m === 'sidak' ? 'Šidák' : 'Bonferroni'
+  }`
 
 // ---------------------------------------------------------------------------------------------
 // Friedman test (matched / repeated measures, nonparametric)
@@ -36,13 +57,22 @@ const FriedmanParams = z.object({
   comparisons: z.enum(['none', 'allPairs', 'vsControl']).default('allPairs'),
   /** Data set key of the control; empty = the first analyzed data set. */
   control: z.string().default(''),
-  correction: z.enum(['dunn', 'none']).default('dunn'),
+  /** Roadmap 51c: Holm by default; before 0.3.9 'dunn' (Bonferroni) or 'none'. */
+  correction: dunnMethod.default('holm'),
 })
 type FriedmanParams = z.infer<typeof FriedmanParams>
 
+/** Version 1 (before 0.3.9): `correction` 'dunn' was Bonferroni (the default), 'none' none. */
+const migrateFriedman = (raw: unknown, from: number): unknown => {
+  if (from >= 2) return raw
+  const c = valueAt(raw, ['correction'])
+  const base = typeof raw === 'object' && raw !== null ? raw : {}
+  return { ...base, correction: c === 'none' ? 'none' : 'bonferroni' }
+}
+
 export const friedmanDef: AnalysisDef<FriedmanParams> = {
   id: 'friedman',
-  version: 1,
+  version: 2,
   title: 'Friedman test',
   category: 'Column analyses',
   description:
@@ -50,6 +80,7 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
   accepts: ['column'],
   inputs: { min: 3, max: 64 },
   params: FriedmanParams,
+  migrateParams: migrateFriedman,
   form: [
     {
       path: ['comparisons'],
@@ -66,10 +97,7 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
       path: ['correction'],
       label: 'Correction for multiple comparisons',
       kind: 'radio',
-      options: [
-        { value: 'dunn', label: 'Dunn’s test (recommended)' },
-        { value: 'none', label: 'Uncorrected Dunn’s test' },
-      ],
+      options: DUNN_METHODS,
       showIf: { path: ['comparisons'], in: ['allPairs', 'vsControl'] },
     },
   ],
@@ -77,7 +105,10 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
     const diagnostics = exclusionNotes(input)
     const titles = input.map((d) => d.title)
     if (input.some((d) => d.data.shape !== 'replicates'))
-      return failure('The Friedman test needs raw values, not summary data.', diagnostics)
+      return failure(
+        `The Friedman test needs raw values, not summary data.${RANK_NEEDS_RAW}`,
+        diagnostics,
+      )
     const cols = input.map((d) => (d.data.shape === 'replicates' ? d.data.reps[0]! : null)!)
     const rowCount = Math.max(...cols.map((c) => c.length))
     const rows: number[][] = []
@@ -105,7 +136,8 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
         ['P value', pval(p)],
         ['Exact or approximate P value?', text(exact ? 'Exact' : 'Approximate')],
         ['P value summary', psum(p)],
-        [`Are the medians significantly different (P < ${ALPHA})?`, significant(p)],
+        // S12: a rank test asks whether values tend to be larger in some groups.
+        [`Do the values tend to differ between groups (P < ${ALPHA})?`, significant(p)],
         ['Number of groups', int(fr.k)],
         ['Number of subjects (rows)', int(fr.n)],
         ['Friedman statistic', num(fr.stat)],
@@ -120,23 +152,19 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
     const { pairs } = oneWayPairs(input, params.comparisons, params.control)
     let comparisons: Comparison[] = []
     if (pairs.length) {
-      const cmp = dunnFriedmanComparisons(fr, pairs, {
-        method: params.correction === 'dunn' ? 'bonferroni' : 'none',
-      })
+      const cmp = dunnFriedmanComparisons(fr, pairs, { method: params.correction })
       sheets.push({
         key: 'comparisons',
         title: 'Multiple comparisons',
         blocks: [
           table(
-            params.correction === 'dunn'
-              ? 'Dunn’s multiple comparisons test'
-              : 'Uncorrected Dunn’s test',
+            dunnTitle(params.correction, true),
             [
               'Comparison',
               'Rank sum diff.',
               'Significant?',
               'Summary',
-              params.correction === 'dunn' ? 'Adjusted P Value' : 'P Value',
+              params.correction === 'none' ? 'P Value' : 'Adjusted P Value',
             ],
             cmp.map((c) => [
               text(`${titles[c.i]} vs. ${titles[c.j]}`),
@@ -154,7 +182,23 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
         cmp.map((c) => c.pAdj),
       )
     }
-    return result({ diagnostics, sheets, values: { p: pval(p), stat: num(fr.stat) }, comparisons })
+    return result({
+      diagnostics,
+      sheets,
+      values: {
+        p: pval(p),
+        stat: num(fr.stat),
+        ...testValue('Friedman test'),
+        ...(pairs.length
+          ? {
+              comparisonTest: text(
+                `Dunn${params.correction === 'none' ? ', uncorrected' : `, ${params.correction === 'holm' ? 'Holm' : params.correction === 'sidak' ? 'Šidák' : 'Bonferroni'}`}`,
+              ),
+            }
+          : {}),
+      },
+      comparisons,
+    })
   },
 }
 
@@ -205,7 +249,7 @@ export const kolmogorovSmirnovDef: AnalysisDef<KSParams> = {
           ['Median of column B', num(median(b))],
         ]),
       ],
-      values: { p: pval(r.p), d: num(r.d) },
+      values: { p: pval(r.p), d: num(r.d), ...testValue('Kolmogorov-Smirnov test') },
       comparisons: [{ key: comparisonKey(A, B), a: A.ref, b: B.ref, p: r.p }],
     })
   },

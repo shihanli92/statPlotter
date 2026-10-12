@@ -1,7 +1,8 @@
 import type { FieldText, FormText } from './types.ts'
 
 // Roadmap 51a: the text of the contingency, parts-of-whole, survival, multiple-variables and
-// planning analyses.
+// planning analyses; roadmap 51c: the trend test off by default, a 2 × 2's roles, survival's
+// one test chosen in advance with pairwise comparisons.
 
 const INTERCEPT: FieldText = {
   line: 'Leave on unless the outcome must be zero when every predictor is zero.',
@@ -22,6 +23,62 @@ const CI_PROFILE: FieldText = {
         'it stays accurate with few events or extreme probabilities, where Wald’s doesn’t',
     },
     wald: 'Estimate ± z·SE: fast, rough with few events.',
+  },
+}
+
+const SURVIVAL_CHOICES: FormText = {
+  test: {
+    line: 'Choose the test before the results: one P value answers the question.',
+    card: 'The log-rank test weighs every death equally over the whole follow-up. Gehan-Breslow-Wilcoxon gives more weight to early deaths, when more subjects are at risk. Reading several tests and reporting the smaller P is test shopping. Work saved before 0.3.9 reported both (and the trend test); they keep that.',
+    options: {
+      logRank: {
+        line: 'Every death weighs the same, over the whole follow-up.',
+        recommended: 'it is the most powerful test when the hazards stay proportional',
+        method: 'logRank',
+      },
+      gehanBreslowWilcoxon: {
+        line: 'Gives more weight to early deaths.',
+        method: 'gehanBreslowWilcoxon',
+      },
+    },
+  },
+  trend: {
+    line: 'Only if the groups are ordered (doses, ages): a steady change with the order.',
+    card: 'The test for trend scores the groups 1, 2, 3… in their order. For unordered groups (genotypes, cell lines) its P is meaningless, so it is off unless you say the groups are ordered.',
+  },
+  pairwise: {
+    line: 'With three or more groups: which curves differ, each pair compared on its own.',
+    card: 'Each pair of groups is compared with the test chosen above on its own subjects, then the P values are corrected for the number of pairs.',
+    options: {
+      none: 'Only whether any curves differ.',
+      all: 'Every pair of groups.',
+      control: 'Each group with the reference group.',
+    },
+  },
+  pairwiseMethod: {
+    line: 'How the pairs’ P values are corrected for their number.',
+    options: {
+      holm: {
+        line: 'Step-down: more power than Bonferroni, the same protection.',
+        recommended:
+          'it keeps the chance of any false positive at 5% with more power than Bonferroni',
+        method: 'holm',
+      },
+      bonferroni: { line: 'Multiplies each P by the number of pairs.', method: 'bonferroni' },
+      sidak: { line: 'Splits the error rate equally.', method: 'sidak' },
+      none: { line: 'No correction: only for one planned pair.', method: 'noCorrection' },
+    },
+  },
+  control: { line: 'The hazard ratio is each group’s hazard ÷ this group’s (the reference).' },
+  hazardRatio: {
+    line: 'One method, so one hazard ratio answers the question.',
+    options: {
+      mantelHaenszel: {
+        line: 'From the log-rank statistics, with its CI.',
+        recommended: 'it is the estimate that matches the log-rank test',
+      },
+      logRank: 'Observed ÷ expected deaths in each group.',
+    },
   },
 }
 
@@ -55,10 +112,33 @@ export const OTHER_TEXT: Readonly<Record<string, FormText>> = {
     yates: { line: 'A correction for 2 × 2 tables that makes chi-square conservative.' },
     trend: {
       line: 'Only if the rows are in a meaningful order (doses, ages) and you planned it.',
-      card: 'Tests a steady change in the proportion across ordered rows, for tables with two outcome columns and three or more rows. It is ticked by default in this version: untick it if the rows have no order.',
+      card: 'Tests a steady change in the proportion across ordered rows, for tables with two outcome columns and three or more rows. For unordered rows (cell lines, genotypes) its P is meaningless, so it is off unless you say the rows are ordered.',
+    },
+    exposedRow: {
+      line: 'The treated or exposed group of a 2 × 2: its risk is the numerator.',
+      card: 'Relative risk = the risk of the outcome in the treated (exposed) row ÷ the risk in the other row. Choosing the other row inverts the relative risk and the odds ratio. For a test against the truth, this is the row with the condition.',
+      options: {
+        '0': 'The first row (as before 0.3.9).',
+        '1': 'The second row.',
+      },
+    },
+    outcomeColumn: {
+      line: 'The column of the outcome (Died, Responded) of a 2 × 2.',
+      card: 'The risk is the share of each row in this column. Choosing the other column gives the risk of the other outcome. For a test against the truth, this is the test-positive column.',
+      options: {
+        '0': 'The first column (as before 0.3.9).',
+        '1': 'The second column.',
+      },
     },
     tails: {
       line: 'Applies to 2 × 2 tables; two-tailed asks about a difference in either direction.',
+    },
+    predicted: {
+      line: 'A 2 × 2: whether you predicted a higher or lower risk in the exposed group.',
+      options: {
+        increase: 'Higher risk of the outcome in the exposed (treated) row.',
+        decrease: 'Lower risk of the outcome in the exposed (treated) row.',
+      },
     },
     riskEstimates: {
       line: 'For a trial or cohort: the risk in each group, their ratio and difference.',
@@ -66,7 +146,7 @@ export const OTHER_TEXT: Readonly<Record<string, FormText>> = {
     oddsRatio: { line: 'For a case-control study, where risks can’t be estimated.' },
     diagnostic: {
       line: 'Only if the table is a test result against the truth (2 × 2).',
-      card: 'Rows: with and without the condition; columns: test positive and negative. Gives sensitivity, specificity and predictive values.',
+      card: 'The exposed row is the one with the condition, the outcome column the test-positive one (chosen above). Gives sensitivity, specificity and predictive values.',
     },
     effectSize: { line: 'The strength of the association, from 0 (none) to 1.' },
     pairwise: {
@@ -119,6 +199,7 @@ export const OTHER_TEXT: Readonly<Record<string, FormText>> = {
     eventCode: { line: 'The number in Y that means the event happened (usually 1).' },
     censoredCode: { line: 'The number in Y that means censored: event-free when last seen.' },
     ciMethod: SURVIVAL_CI,
+    ...SURVIVAL_CHOICES,
   },
   survivalFromVariables: {
     time: { line: 'Time from the start (entry, surgery) to the event or last contact.' },
@@ -129,6 +210,7 @@ export const OTHER_TEXT: Readonly<Record<string, FormText>> = {
     eventLevel: { line: 'For a text status: the value that means an event (“Died”).' },
     censoredLevel: { line: 'For a text status: the value that means censored; blank = any other.' },
     ciMethod: SURVIVAL_CI,
+    ...SURVIVAL_CHOICES,
   },
   multipleRegression: {
     y: { line: 'The measurement you want to predict or explain.' },
@@ -198,7 +280,12 @@ export const OTHER_TEXT: Readonly<Record<string, FormText>> = {
           method: 'bonferroni',
         },
         'holm-sidak': { line: 'Step-down: more power, adjusted P only.', method: 'holmSidak' },
-        fisher: { line: 'No adjustment: only for one planned comparison.', method: 'fisherLsd' },
+        fisher: {
+          line: 'No adjustment: only for one planned comparison.',
+          notRecommended:
+            'with several comparisons the chance of a false positive grows with their number',
+          method: 'fisherLsd',
+        },
       },
     },
     family: {

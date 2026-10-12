@@ -185,6 +185,10 @@ oracle <- function(input, params) {
     logLik = f$logLik,
     subjects = as.vector(tapply(d$s, d$g, function(v) length(unique(v)))),
     boundary = f$rho[1] == 0)
+  # Roadmap 51c (S28): Satterthwaite's df (lmerTest's), for the F test, the t test and every
+  # comparison (dense algebra, so not for the large cases).
+  satt <- N <= LARGE_N && f$rho[1] > 0
+  if (satt) out$treatmentSatterthwaite <- tt$satterthwaite
   L <- function(i, j) xrow(i) - xrow(j)
   if (k == 2) {
     l <- L(1, 0)
@@ -194,6 +198,13 @@ oracle <- function(input, params) {
     mx$close_enough(tv^2, tt$containment$F, 1e-10, "t^2 = F")
     out$ttest <- list(diff = est, se = se, t = tv, df = cdf, p = 2 * pt(-abs(tv), cdf),
                       lo = est - h, hi = est + h)
+    if (satt) {
+      sdf <- satt_dense(f, l)
+      hs <- qt(0.975, sdf) * se
+      mx$close_enough(sdf, tt$satterthwaite$dfd, 1e-9, "t Satterthwaite df = F's")
+      out$ttestSatterthwaite <- list(diff = est, se = se, t = tv, df = sdf,
+                                     p = 2 * pt(-abs(tv), sdf), lo = est - hs, hi = est + hs)
+    }
   }
   cmp <- list()
   for (spec in as_specs(params$comparisons)) {
@@ -203,7 +214,12 @@ oracle <- function(input, params) {
     i <- vapply(pr, `[`, 0, 1); j <- vapply(pr, `[`, 0, 2)
     ls <- t(vapply(seq_along(i), function(a) L(i[a], j[a]), numeric(k)))
     res <- mx$family_rows(f, ls, spec$method, k, "containment", cdf)
-    cmp[[length(cmp) + 1]] <- c(list(method = spec$method, i = i, j = j), res)
+    cmp[[length(cmp) + 1]] <- c(list(method = spec$method, ddf = "containment", i = i, j = j), res)
+    if (satt) {
+      res <- mx$family_rows(f, ls, spec$method, k, "satterthwaite", cdf)
+      cmp[[length(cmp) + 1]] <- c(list(method = spec$method, ddf = "satterthwaite", i = i, j = j),
+                                  res)
+    }
   }
   out$comparisons <- cmp
   out

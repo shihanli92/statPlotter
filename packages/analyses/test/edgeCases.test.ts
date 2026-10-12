@@ -247,7 +247,7 @@ it('two-way ANOVA uses the same value keys with and without repeated measures', 
       })
     })
   })
-  const keys = ['p.column', 'p.interaction', 'p.row']
+  const keys = ['comparisonTest', 'p.column', 'p.interaction', 'p.row', 'test']
   expect(Object.keys(runDef(twoWayAnovaDef, t).values).sort()).toEqual(keys)
   expect(Object.keys(runDef(twoWayAnovaDef, t, { repeated: 'rows' }).values).sort()).toEqual(keys)
 })
@@ -276,7 +276,11 @@ describe('paired analyses count rows missing one side', () => {
 
 it('normality: identical values show dashes, not "passed"', () => {
   const r = runDef(normalityDef, columnTable([[5, 5, 5, 5, 5, 5, 5, 5, 5]]))
-  for (const label of ['P value', 'Passed normality test (alpha = 0.05)?', 'P value summary'])
+  for (const label of [
+    'P value',
+    'Evidence against a normal distribution (P < 0.05)?',
+    'P value summary',
+  ])
     for (const cell of find(r, label)) expect(cell, label).toEqual(dash)
 })
 
@@ -306,7 +310,8 @@ describe('one-tailed P values keep the two-sided CI', () => {
   ])
   const same = (def: AnyDef, params: object, label: string) => {
     const two = runDef(def, t, params)
-    const one = runDef(def, t, { ...params, tails: 'one' })
+    // The data rise from A to B, as predicted (roadmap 51c, S1).
+    const one = runDef(def, t, { ...params, tails: 'one', predicted: 'increase' })
     expect(find(one, label)).toEqual(find(two, label))
     const ci = find(one, label)[0] as { lo: number; hi: number }
     expect(Number.isFinite(ci.lo) && Number.isFinite(ci.hi)).toBe(true)
@@ -322,7 +327,7 @@ describe('one-tailed P values keep the two-sided CI', () => {
     same(ttest, { design: 'paired', paired: { measure: 'ratio' } }, '95% CI of ratio')
   })
   it('Mann-Whitney and Wilcoxon', () => {
-    same(mannWhitney, { pMethod: 'approximate' }, '95% CI of Hodges-Lehmann difference')
+    same(mannWhitney, { pMethod: 'approximate' }, '95% CI of the shift')
     same(wilcoxon, { pMethod: 'approximate' }, '95% CI of Hodges-Lehmann estimate')
   })
   it('one-sample tests', () => {
@@ -337,6 +342,7 @@ describe('one-tailed P values keep the two-sided CI', () => {
         hypothetical: 10,
         pMethod: 'approximate',
         tails: 'one',
+        predicted: 'increase',
       })
       expect(find(b, label)).toEqual(find(a, label))
     }
@@ -528,9 +534,10 @@ it('hides form fields the chosen options ignore', () => {
   const showIf = (def: AnyDef, path: string) =>
     [def.form.find((f) => f.path.join('.') === path)!.showIf].flat()
   expect(showIf(ttest, 'reportFTestVariances')).toContainEqual({
-    path: ['unpaired', 'assumeEqualSD'],
-    in: [true],
+    path: ['design'],
+    in: ['unpaired'],
   })
+  expect(showIf(ttest, 'predicted')).toContainEqual({ path: ['tails'], in: ['one'] })
   expect(showIf(linearRegressionDef, 'compare')).toContainEqual({
     path: ['throughOrigin'],
     in: [false],

@@ -198,6 +198,7 @@ import { type PointRef, pointsName } from './pointEdits.ts'
 import { ManagePresetsDialog, SavePresetDialog } from './presets/PresetDialogs.tsx'
 import { printView } from './print.ts'
 import { anchorPoint, type ResizeHandle, sizeTargets } from './resize.ts'
+import { DuplicateTestsBadge } from './results/DuplicateBadge.tsx'
 import { ResultDialog, type ResultDialogMode } from './results/ResultDialogs.tsx'
 import {
   isSurvivalGraph,
@@ -1859,6 +1860,8 @@ export function GraphView({
           }
           onDock={setDock}
         />
+        {/* Roadmap 51c (§7.5): two tests of one comparison on this graph. */}
+        <DuplicateTestsBadge graph={graph} project={project} onOpen={onOpen} />
         <SheetNotes node={graph} />
         <ScreenSampleNote sampled={scene.sampled} every={every} onEvery={setEvery} />
         <EmptyGraphNote table={emptyTable} onOpen={onOpen} />

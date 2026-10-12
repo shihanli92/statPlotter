@@ -8,7 +8,7 @@ import {
   runSimulation,
   SIMULATIONS,
 } from '@ps/analyses'
-import type { FormField } from '@ps/model'
+import { type FormField, paramsOrDefaults } from '@ps/model'
 import { useId, useMemo } from 'react'
 import { NumberBox } from '../components/fields.tsx'
 import { CUSTOM_FIELDS, dataSetField } from './customFields.tsx'
@@ -395,6 +395,7 @@ const AnalysisField: CustomField = ({ label, path, params, onChange }) => {
   const cur = (getPath(params, path) ?? {}) as {
     analysisId?: string
     params?: Params
+    pluginVersion?: number
     dataSets?: string[]
   }
   const kind = trial?.table?.tableKind
@@ -406,7 +407,14 @@ const AnalysisField: CustomField = ({ label, path, params, onChange }) => {
     key: d.id as string,
     title: d.title,
   }))
-  const value = def ? { ...(def.params.parse({}) as Params), ...(cur.params ?? {}) } : {}
+  // Roadmap 51c: the stored params as their version means them (a Monte Carlo saved before 0.3.9
+  // keeps its analysis' old defaults); edited, they are stored whole, at the current version.
+  const value = def
+    ? (paramsOrDefaults(def, {
+        params: cur.params ?? {},
+        pluginVersion: cur.pluginVersion ?? def.version,
+      }) as Params)
+    : {}
   const put = (patch: Partial<typeof cur>) => onChange(setPath(params, path, { ...cur, ...patch }))
   return (
     <fieldset className="constraints">
@@ -417,7 +425,12 @@ const AnalysisField: CustomField = ({ label, path, params, onChange }) => {
         value={def?.id ?? ''}
         onChange={(e) =>
           onChange({
-            ...setPath(params, path, { analysisId: e.target.value, params: {}, dataSets: [] }),
+            ...setPath(params, path, {
+              analysisId: e.target.value,
+              params: {},
+              pluginVersion: registry.get(e.target.value)?.version ?? 1,
+              dataSets: [],
+            }),
             tabulate: [],
             hits: { combine: 'both', conditions: [] },
           })
@@ -456,7 +469,7 @@ const AnalysisField: CustomField = ({ label, path, params, onChange }) => {
         <ParamsForm
           fields={def.form}
           value={value}
-          onChange={(v) => put({ params: v })}
+          onChange={(v) => put({ params: v, pluginVersion: def.version })}
           custom={allFields()}
           context={{ dataSets }}
         />

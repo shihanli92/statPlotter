@@ -13,8 +13,8 @@ import {
 } from './build.ts'
 
 // Roadmap 51a: "Are the groups different?" and its relatives on column and nested tables (design
-// §3.5, "Compare groups"), with today's params: where 51c adds options (exact Kruskal-Wallis P,
-// Dunn's method, the RM method), the leaves set what exists now.
+// §3.5, "Compare groups"). Roadmap 51c: the leaves set its options explicitly (exact
+// Kruskal-Wallis P, Dunn's comparisons by Holm, the RM method and Satterthwaite's df).
 
 const WHY_MATCHED = 'Pairing is decided by how the experiment was done, not by the data.'
 const WHY_VALUES = 'Measurements, values that change by a factor, and scores need different tests.'
@@ -72,7 +72,7 @@ const mw = fixed({ pMethod: 'exactWhenPossible' })
 const wilcoxonParams = fixed({ pMethod: 'exactWhenPossible', zeroHandling: 'wilcoxon' })
 
 const LOG_FIRST =
-  'Take logarithms first (Transform, Y = log(Y), base 10): on a log scale the difference becomes a ratio you can report (B is 2.3 times A).'
+  'Take logarithms first (Transform, Y = log10(Y)): on a log scale the difference becomes a ratio you can report (B is 2.3 times A).'
 
 const unpairedValues = question(
   'values',
@@ -276,8 +276,15 @@ function manyGroups(fixedTo?: string): GuideStep {
   )
   const ranks = leaf(
     'oneWayAnova',
-    (_f, a) => ({ matched: false, gaussian: false, ...ANOVA_BASE, ...comparisonsOf(a) }),
-    'The Kruskal-Wallis test compares several groups by ranks; Dunn’s test says which pairs differ.',
+    (_f, a) => ({
+      matched: false,
+      gaussian: false,
+      kwPMethod: 'exactWhenPossible',
+      dunnMethod: 'holm',
+      ...ANOVA_BASE,
+      ...comparisonsOf(a),
+    }),
+    'The Kruskal-Wallis test compares several groups by ranks (exact P for small groups); Dunn’s test (Holm) says which pairs differ.',
     [
       alt(
         'oneWayAnova',
@@ -298,6 +305,8 @@ function manyGroups(fixedTo?: string): GuideStep {
       matched: true,
       gaussian: true,
       sphericity: 'gg',
+      rmMethod: 'auto',
+      ddf: 'satterthwaite',
       ...ANOVA_BASE,
       ...comparisonsOf(a),
     }),
@@ -312,7 +321,13 @@ function manyGroups(fixedTo?: string): GuideStep {
   )
   const friedman = leaf(
     'oneWayAnova',
-    (_f, a) => ({ matched: true, gaussian: false, ...ANOVA_BASE, ...comparisonsOf(a) }),
+    (_f, a) => ({
+      matched: true,
+      gaussian: false,
+      dunnMethod: 'holm',
+      ...ANOVA_BASE,
+      ...comparisonsOf(a),
+    }),
     'The Friedman test ranks each subject’s values; Dunn’s test says which pairs differ.',
     [
       alt(
@@ -595,7 +610,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
           'Two groups',
           leaf(
             'nestedT',
-            fixed({}),
+            fixed({ ddf: 'satterthwaite' }),
             'Your independent units are the subjects, not the wells; the nested t test counts them correctly.',
           ),
         ),
@@ -605,7 +620,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
           comparisonsQ(
             leaf(
               'nestedOneWay',
-              (_f, a) => ({ ...ANOVA_BASE, ...comparisonsOf(a) }),
+              (_f, a) => ({ ...ANOVA_BASE, ddf: 'satterthwaite', ...comparisonsOf(a) }),
               'Your independent units are the subjects, not the wells; nested one-way ANOVA counts them correctly.',
             ),
             { trend: null, noTrend: true },

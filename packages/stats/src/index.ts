@@ -224,6 +224,12 @@ export * from './survival/kaplanMeier.ts'
 export type { Alternative } from './tests/common.ts'
 export * from './tests/friedman.ts'
 export * from './tests/ftest.ts'
+export {
+  arrangements,
+  type KruskalExact,
+  KW_EXACT_LIMIT,
+  kruskalWallisExact,
+} from './tests/kruskalExact.ts'
 export * from './tests/ksTwoSample.ts'
 export * from './tests/mannWhitney.ts'
 export * from './tests/multipleT.ts'

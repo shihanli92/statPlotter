@@ -89,6 +89,24 @@ export const holmSidak = card({
   references: [{ text: 'Holm S (1979) Scand J Stat 6:65–70' }],
 })
 
+export const holm = card({
+  id: 'holm',
+  name: 'Holm’s step-down correction',
+  shortName: 'Holm',
+  question: 'Which comparisons differ, testing the smallest P first?',
+  useWhen: `A family of tests with yes/no answers (pairs of survival curves, Dunn’s rank comparisons, correlation pairs). It tests the smallest P first and relaxes for the rest, so it has more power than Bonferroni with the same guarantee.`,
+  instead: [
+    { card: 'bonferroni', when: 'you want the simplest adjustment' },
+    { card: 'fdrBh', when: 'you screen many comparisons' },
+  ],
+  reading: 'Read the adjusted P values only: step-down methods have no CIs.',
+  more: {
+    formula: 'Step-down Bonferroni: the i-th smallest P multiplied by m − i + 1 (kept monotone).',
+    r: 'p.adjust(p, "holm")',
+  },
+  references: [{ text: 'Holm S (1979) Scand J Stat 6:65–70' }],
+})
+
 export const bonferroni = card({
   id: 'bonferroni',
   name: 'Bonferroni correction',
@@ -220,10 +238,10 @@ export const dunn = card({
   useWhen: `After Kruskal-Wallis or Friedman. It uses the ranks of all groups together.`,
   instead: [{ card: 'tukey', when: 'the analysis is an ANOVA of measurements' }],
   reading:
-    'Read the adjusted P of each pair (Bonferroni-adjusted in this version); rank comparisons have no CIs.',
+    'Read the adjusted P of each pair (Holm’s step-down by default; Šidák, Bonferroni or none on request); rank comparisons have no CIs.',
   more: {
     formula: 'z = difference in mean ranks / its SE (tie-corrected).',
-    r: 'dunn.test::dunn.test(y, group, method = "bonferroni")',
+    r: 'dunn.test::dunn.test(y, group, method = "holm")',
   },
   references: [{ text: 'Dunn OJ (1964) Technometrics 6:241–252' }],
 })
@@ -295,6 +313,7 @@ export const COMPARISON_CARDS: readonly MethodCard[] = [
   dunnett,
   sidak,
   holmSidak,
+  holm,
   bonferroni,
   fdr,
   fdrBh,

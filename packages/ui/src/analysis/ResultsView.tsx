@@ -17,6 +17,7 @@ import {
   type GraphNode,
   hasLimitFlags,
   type NodeId,
+  paramsOf,
   type ResultBlock,
   type ResultValue,
 } from '@ps/model'
@@ -29,12 +30,14 @@ import { useResultsExport } from '../export/dataExport.tsx'
 import { copyTable, setClipboardData, type TableCopy, tableCopy } from '../export/tableClipboard.ts'
 import { useClipboardEvents } from '../graph/clipboardEvents.ts'
 import { newBrackets } from '../graph/graphActions.ts'
+import { duplicateComparisons, duplicateText } from '../graph/results/duplicates.ts'
 import { frozenCopy } from '../resultTables.ts'
 import { SheetNotes } from '../reuse/SheetNotes.tsx'
 import { TableView } from '../table/TableView.tsx'
 import { errorMessage } from '../util.ts'
 import { JobStatus } from './JobStatus.tsx'
 import { MethodCards } from './MethodCards.tsx'
+import { MethodHistory } from './MethodHistory.tsx'
 import { needsHint } from './needs.ts'
 
 /** Numbers line up in a monospace column; words (names, Yes/No) read as normal text. */
@@ -328,12 +331,12 @@ export function ResultsView({
   // analyzed data sets' names; and, when Guide me set it up, the question it answers.
   const howTo = useMemo(() => {
     const def = registry.get(node.analysisId)
-    const parsed = def?.params.safeParse(node.params)
-    const ids = parsed?.success ? (def?.cards?.(parsed.data) ?? []) : []
+    const parsed = def && paramsOf(def, node)
+    const ids = parsed?.ok ? (def?.cards?.(parsed.params) ?? []) : []
     const src = project.nodes[node.input.source]
     const titleOf = (k: string | undefined) =>
       src?.kind === 'table' ? src.dataSets.find((d) => d.id === k)?.title : undefined
-    const p = (parsed?.success ? parsed.data : {}) as { control?: unknown }
+    const p = (parsed?.ok ? parsed.params : {}) as { control?: unknown }
     const [a, b] = [titleOf(node.input.dataSets[0]), titleOf(node.input.dataSets[1])]
     const control = typeof p.control === 'string' ? titleOf(p.control) : undefined
     return {
@@ -342,6 +345,15 @@ export function ResultsView({
     }
   }, [node, project])
   const guided = node.origin?.guide
+  const duplicates = useMemo(
+    () =>
+      Object.values(project.nodes).flatMap((g) =>
+        g.kind === 'graph'
+          ? duplicateComparisons(g, project).filter((d) => d.tests.some((t) => t.analysis === id))
+          : [],
+      ),
+    [project, id],
+  )
 
   return (
     <div className="results-view" ref={viewRef}>
@@ -385,6 +397,13 @@ export function ResultsView({
           <MethodCards ids={howTo.ids} names={howTo.names} mode="reading" />
         </details>
       )}
+      {/* Roadmap 51c (§7.1, §7.5): the method's changes, and other tests of the same pairs. */}
+      <MethodHistory node={node} />
+      {duplicates.map((d) => (
+        <div key={d.key} className="banner warning duplicate-tests" role="note">
+          {duplicateText(d)} on “{d.graphName}”: {d.tests.map((t) => t.name).join('; ')}.
+        </div>
+      ))}
       {limitNote && (
         <div className="banner info limit-note" role="note">
           {limitNote}

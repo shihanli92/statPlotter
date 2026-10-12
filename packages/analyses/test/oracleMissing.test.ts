@@ -56,7 +56,8 @@ describe('one-way ANOVA with empty cells vs R', () => {
       const r = runDef(oneWayAnovaDef, t)
       expectClose(v(r.values.F), e.F, f.tol, 'F')
       expectClose(v(r.values.p), e.p, f.tol, 'P')
-      const kw = runDef(oneWayAnovaDef, t, { gaussian: false })
+      // The chi-square P, as R's kruskal.test (exact P: the suite kw_exact).
+      const kw = runDef(oneWayAnovaDef, t, { gaussian: false, kwPMethod: 'approximate' })
       expectClose(v(kw.values.p), e.kruskalWallis.p, f.tol, 'Kruskal-Wallis P')
       expectClose(
         v(kvOf(kw, 'Kruskal-Wallis statistic')),

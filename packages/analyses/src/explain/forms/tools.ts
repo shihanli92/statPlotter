@@ -91,7 +91,7 @@ export const TOOL_TEXT: Readonly<Record<string, FormText>> = {
   },
   transform: {
     y: {
-      line: 'log(Y) is the base-10 logarithm; values ≤ 0 have none and are left empty.',
+      line: 'log10(Y) is the base-10 logarithm; values ≤ 0 have none and are left empty.',
       options: functions('Y', Y_IDS),
     },
     k: { line: 'The constant K of the function chosen.' },

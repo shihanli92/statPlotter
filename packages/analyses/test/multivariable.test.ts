@@ -141,8 +141,13 @@ describe('column-table method comparisons', () => {
   const patients = [3.1, 4.2, 2.8, 5.0, 3.9, 2.4, 4.4, 3.6]
 
   it('ROC curve from controls vs patients, with its own graph', () => {
-    const r = runDef(rocDef, columnTable([controls, patients]))
-    const ref = rocCurve(controls, patients)
+    // Roadmap 51c (S39): the direction is stated; none refuses, `auto` (saved) warns.
+    const r = runDef(rocDef, columnTable([controls, patients]), { direction: 'higher' })
+    const ref = rocCurve(controls, patients, { direction: 'higher' })
+    expect(runDef(rocDef, columnTable([controls, patients])).status).toBe('error')
+    const auto = runDef(rocDef, columnTable([controls, patients]), { direction: 'auto' })
+    expect(auto.status).toBe('warning')
+    expect(v(auto.values.auc)).toBe(rocCurve(controls, patients).auc)
     expect(v(r.values.auc)).toBe(ref.auc)
     const roc = r.outputs.roc!
     expect([roc.x[0], roc.y[0], roc.x.at(-1), roc.y.at(-1)]).toEqual([0, 0, 100, 100])

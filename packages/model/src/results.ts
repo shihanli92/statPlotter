@@ -269,16 +269,58 @@ export function resolveResultRef(
       const row = fill(ref.row, ds, '{dataSet}', 'title')
       const column =
         ref.column === undefined ? undefined : fill(ref.column, ds, '{dataSet}', 'title')
-      for (const b of sheet.blocks) {
-        if (!blockMatches(b, block)) continue
-        const v = cellOf(b, row, column, settings)
-        if (!v) continue
-        if (ref.end && v.kind === 'interval') return { kind: 'number', v: v[ref.end] }
-        return v
-      }
+      // Roadmap 51c: a label renamed since the reference was made reads its new name.
+      const blocks = [block, ...(block === undefined ? [] : renamedLabel(block, BLOCK_RENAMES))]
+      const rows = [row, ...renamedLabel(row, ROW_RENAMES)]
+      for (const bt of blocks)
+        for (const r of rows)
+          for (const b of sheet.blocks) {
+            if (!blockMatches(b, bt)) continue
+            const v = cellOf(b, r, column, settings)
+            if (!v) continue
+            if (ref.end && v.kind === 'interval') return { kind: 'number', v: v[ref.end] }
+            return v
+          }
       return null
     }
   }
+}
+
+/**
+ * Roadmap 51c: result labels renamed (S12's rank-test wording, S43's "(pooled SD)"), old → new,
+ * so result labels on graphs made before keep their values. `{level}` stands for a confidence
+ * level ("95%"). Only renames that keep the value's meaning are listed.
+ */
+const ROW_RENAMES: readonly [string, string][] = [
+  ['Cohen’s d', 'Cohen’s d (pooled SD)'],
+  ['Hedges’ g', 'Hedges’ g (pooled SD)'],
+  ['Difference: Hodges-Lehmann', 'Shift (Hodges-Lehmann: median of all differences B − A)'],
+  ['Difference: actual (B − A)', 'Difference between medians (B − A)'],
+  ['{level} CI of Hodges-Lehmann difference', '{level} CI of the shift'],
+  [
+    'Do the medians vary significantly (P < 0.05)?',
+    'Do the values tend to differ between groups (P < 0.05)?',
+  ],
+  [
+    'Are the medians significantly different (P < 0.05)?',
+    'Do the values tend to differ between groups (P < 0.05)?',
+  ],
+]
+const BLOCK_RENAMES: readonly [string, string][] = [
+  ['Difference between medians', 'Shift between groups'],
+]
+
+/** A label's current name(s), when it was renamed. */
+function renamedLabel(label: string, renames: readonly [string, string][]): string[] {
+  const out: string[] = []
+  for (const [from, to] of renames) {
+    if (from === label) out.push(to)
+    else if (from.startsWith('{level}')) {
+      const m = /^(\d+(?:\.\d+)?%)(.*)$/.exec(label)
+      if (m && m[2] === from.slice('{level}'.length)) out.push(m[1] + to.slice('{level}'.length))
+    }
+  }
+  return out
 }
 
 /** A value's number, if it is one (a P value, a count, a number; an interval's ends aside). */

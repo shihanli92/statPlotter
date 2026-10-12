@@ -1,9 +1,10 @@
-import type {
-  AnalysisDef,
-  AnalysisResult,
-  GraphableDataSet,
-  ResultBlock,
-  ResultValue,
+import {
+  type AnalysisDef,
+  type AnalysisResult,
+  formatNumber,
+  type GraphableDataSet,
+  type ResultBlock,
+  type ResultValue,
 } from '@ps/model'
 import {
   compareLinear,
@@ -272,6 +273,11 @@ export const linearRegressionDef: AnalysisDef<Params> = {
             ['DFn, DFd', text(`${c.intercepts.dfn}, ${c.intercepts.dfd}`)],
             ...pSig(c.intercepts.p, 'Intercepts significantly different'),
           ]),
+          // S41: the intercepts' test is conditional on the slopes' (said, with its P).
+          {
+            type: 'note',
+            text: `The intercepts are compared assuming one common slope, because the slopes showed no evidence of differing (P = ${formatNumber(c.slopes.p, 2)}). The two tests are one procedure: the second depends on the first.`,
+          },
         )
       } else {
         compareBlocks.push({

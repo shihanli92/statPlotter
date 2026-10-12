@@ -98,6 +98,35 @@
           "p": 1,
           "pAdj": 1
         }
+      ],
+      "holm": [
+        {
+          "i": 0,
+          "j": 1,
+          "rankSumDiff": 0,
+          "meanRankDiff": 0,
+          "z": 0,
+          "p": 1,
+          "pAdj": 1
+        },
+        {
+          "i": 0,
+          "j": 2,
+          "rankSumDiff": 0,
+          "meanRankDiff": 0,
+          "z": 0,
+          "p": 1,
+          "pAdj": 1
+        },
+        {
+          "i": 1,
+          "j": 2,
+          "rankSumDiff": 0,
+          "meanRankDiff": 0,
+          "z": 0,
+          "p": 1,
+          "pAdj": 1
+        }
       ]
     }
   },

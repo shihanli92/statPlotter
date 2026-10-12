@@ -282,12 +282,13 @@ const nonlinearMV: Templates<Record<string, unknown>> = (p, ctx) => nonlinear(p,
 
 // --- Comparisons of groups ----------------------------------------------------------------------
 
+// Roadmap 51c (§7.4): a P value names its test ("P = 0.0014, Welch’s t test"; `values.test`).
 const pLabel = (offer = 'Show P on the graph'): ResultTemplate =>
   label(
     'p',
-    'P value',
-    runs(P, ' = {P}'),
-    { P: value('p', P_FORMAT) },
+    'P value and its test',
+    runs(P, ' = {P}, {test}'),
+    { P: value('p', P_FORMAT), test: value('test') },
     { offer, place: { at: 'corner', corner: 'topRight' } },
   )
 const pStars = (): ResultTemplate =>
@@ -306,7 +307,9 @@ const ttest: Templates<{
 }> = (p) => {
   const paired = p.design === 'paired'
   const t = !paired && !p.unpaired.assumeEqualSD ? 'Welch-corrected t' : 't'
-  const d = paired ? 'Cohen’s d (d_z: mean difference / SD of differences)' : 'Cohen’s d'
+  const d = paired
+    ? 'Cohen’s d (d_z: mean difference / SD of differences)'
+    : 'Cohen’s d (pooled SD)'
   const sheet = 'results'
   return [
     pLabel(),

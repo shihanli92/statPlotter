@@ -107,6 +107,17 @@ const NLFIT: FormText = {
     line: 'Does a parameter (an EC50) differ between data sets?',
     card: 'Fits the data sets with the parameter shared and separately, and compares the fits. Decide which parameter matters before looking at the curves.',
   },
+  compareBy: {
+    line: 'One verdict, by the method chosen before the fit.',
+    card: 'The extra sum-of-squares F test compares nested models (one a special case of the other, as a shared parameter against one per data set). AICc compares any two models fitted to the same data. They can disagree; reading both and keeping the one you like is test shopping. Fits saved before 0.3.9 reported both, and keep that.',
+    options: {
+      fTest: {
+        line: 'Nested models: a P value for the extra parameters.',
+        recommended: 'for nested models it is the classical test, with a P value',
+      },
+      aicc: 'Any two models: the chance each is the better one.',
+    },
+  },
   ...DIAGNOSTICS,
   weightingTest: { line: 'Does the scatter grow with Y? Then weighting may be needed.' },
   hougaard: { line: 'How far each parameter’s uncertainty is from symmetric.' },

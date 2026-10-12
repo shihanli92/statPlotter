@@ -2,7 +2,8 @@ import type { GuideAnswers, GuideEntry, GuideStep } from '@ps/model'
 import { alt, answer, elsewhere, fixed, leaf, needsRaw, pairingHint, question } from './build.ts'
 
 // Roadmap 51a: the grouped tables' questions (design §3.5, "Grouped tables"): rows are one
-// factor, data sets (columns) the other.
+// factor, data sets (columns) the other. Roadmap 51c: the leaves set its defaults explicitly (the
+// RM method, Satterthwaite's df; FDR across the rows of multiple one-way ANOVAs, Q = 5%).
 
 const twoWay = (a: GuideAnswers, repeated: string) => {
   const comparisons = a.comparisons ?? 'withinRows'
@@ -15,6 +16,7 @@ const twoWay = (a: GuideAnswers, repeated: string) => {
     family: 'perBlock',
     allPairsMethod: comparisons === 'allCells' || comparisons === 'mainColumns' ? 'tukey' : 'sidak',
     controlMethod: 'dunnett',
+    ...(repeated === 'none' ? {} : { rmMethod: 'auto', ddf: 'satterthwaite' }),
   }
 }
 
@@ -87,7 +89,7 @@ const twoFactors: GuideStep = question(
 )
 
 const multipleT = (design: string, distribution: string) =>
-  fixed({ design, distribution, variance: 'welch', approach: 'fdr', fdrMethod: 'bky' })
+  fixed({ design, distribution, variance: 'welch', approach: 'fdr', fdrMethod: 'bky', q: 5 })
 
 const rowsValues = (design: string): GuideStep =>
   question(
@@ -212,8 +214,15 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
           'Measurements',
           leaf(
             'multipleOneWay',
-            fixed({ gaussian: true, equalSD: 'yes', comparisons: 'allPairs' }),
-            'One ANOVA per row, each row’s comparisons adjusted within the row; the rows’ own P values are not corrected across rows yet.',
+            fixed({
+              gaussian: true,
+              equalSD: 'yes',
+              comparisons: 'allPairs',
+              approach: 'fdr',
+              fdrMethod: 'bh',
+              q: 5,
+            }),
+            'One ANOVA per row with a false discovery rate across the rows (most discoveries real); each row’s comparisons adjusted within the row.',
           ),
         ),
         answer(
@@ -221,8 +230,16 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
           'Scores or ranks',
           leaf(
             'multipleOneWay',
-            fixed({ gaussian: false, comparisons: 'allPairs' }),
-            'One Kruskal-Wallis test per row, with Dunn’s comparisons within the row.',
+            fixed({
+              gaussian: false,
+              comparisons: 'allPairs',
+              kwPMethod: 'exactWhenPossible',
+              dunnMethod: 'holm',
+              approach: 'fdr',
+              fdrMethod: 'bh',
+              q: 5,
+            }),
+            'One Kruskal-Wallis test per row, with a false discovery rate across the rows and Dunn’s comparisons (Holm) within each row.',
           ),
           { unavailable: needsRaw },
         ),

@@ -43,7 +43,11 @@ describe('one-way mixed-effects model vs R', () => {
       const tol = f.tol ?? MIXED_TOL
       const rows = nanRows(f.input.rows)
       const e = f.expected
-      const res = oneWayRM(rows)
+      // Roadmap 51c (S5): 'mixed' fits the model with complete data too (the `_complete` cases);
+      // with missing values it is what 'auto' fits.
+      const res = oneWayRM(rows, { method: 'mixed' })
+      if (rows.some((r) => r.some(Number.isNaN))) expect(oneWayRM(rows)).toEqual(res)
+      else expect(oneWayRM(rows).kind).toBe('anova')
       expect(res.kind).toBe('mixed')
       expect(res.error).toBeUndefined()
       expect(res.table).toBeNull()
@@ -53,7 +57,7 @@ describe('one-way mixed-effects model vs R', () => {
       expectDeepClose(res.means, e.means, tol, 'means')
       expect(res.n).toEqual(arr(e.n))
       if (e.boundary) expect(res.mixed!.subjectVariance).toBe(0)
-      const sat = oneWayRM(rows, { ddf: 'satterthwaite' })
+      const sat = oneWayRM(rows, { ddf: 'satterthwaite', method: 'mixed' })
       expectDeepClose(sat.treatment, e.treatmentSatterthwaite, tol, 'satterthwaite')
       for (const c of e.comparisons) {
         const r = c.ddf === 'satterthwaite' ? sat : res
@@ -89,8 +93,8 @@ describe('two-way mixed-effects model vs R', () => {
       const repeated = f.params.repeated as RepeatedFactor
       const interaction = f.params.interaction as boolean
       const e = f.expected
-      const res = twoWayRM(data, repeated, { interaction })
-      const sat = twoWayRM(data, repeated, { interaction, ddf: 'satterthwaite' })
+      const res = twoWayRM(data, repeated, { interaction, method: 'mixed' })
+      const sat = twoWayRM(data, repeated, { interaction, ddf: 'satterthwaite', method: 'mixed' })
       expect(res.kind).toBe('mixed')
       expect(res.error).toBeUndefined()
       expect(res.sources.map((s) => s.key)).toEqual(e.sources.map((s) => s.key))

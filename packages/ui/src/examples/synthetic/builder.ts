@@ -36,6 +36,7 @@ import {
   type TextSpec,
 } from '@ps/model'
 import { newLayout, pageSpec, placeGraphs } from '../../layout/figure.ts'
+import { exampleParams } from '../exampleParams.ts'
 
 /*
  * Helpers for building the synthetic example projects: seeded random numbers, tables from plain
@@ -423,7 +424,7 @@ export class ExampleBuilder {
     if (!def) throw new Error(`Unknown analysis ${analysisId}`)
     const table = this.source(source.id)
     const keys = opts.keys ?? table.dataSets.slice(0, def.inputs.max).map((d) => d.id as string)
-    const parsed = def.params.parse(params)
+    const parsed = exampleParams(def, params)
     const node: AnalysisNode = this.add({
       kind: 'analysis',
       id: newNodeId(),

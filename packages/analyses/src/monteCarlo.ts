@@ -3,6 +3,8 @@ import {
   type AnalysisResult,
   type Diagnostic,
   normalizeTable,
+  paramsOf,
+  pinDefaults,
   type ResultBlock,
   type ResultValue,
   type TableKind,
@@ -65,6 +67,11 @@ const Params = z.object({
     .object({
       analysisId: z.string().default('ttest'),
       params: z.record(z.string(), z.unknown()).default({}),
+      /**
+       * Roadmap 51c (design §6.1): the version of the analysis' params they were written for, so
+       * they keep their meaning when its defaults change (absent: the current version).
+       */
+      pluginVersion: z.number().int().min(1).optional(),
       /** Data sets of the simulated table to analyze (table ids); [] = all. */
       dataSets: z.array(z.string()).default([]),
     })
@@ -87,6 +94,23 @@ const Params = z.object({
   confidenceLevel,
 })
 export type MonteCarloParams = z.infer<typeof Params>
+
+/**
+ * Version 1 (before 0.3.9) stored the analysis' params without their version: they were written
+ * for version 1 of every analysis (a t test's `{}` is Student's), and keep meaning that.
+ */
+const migrate = (raw: unknown, from: number): unknown =>
+  from >= 2 ? raw : pinDefaults(raw, [[['analysis', 'pluginVersion'], 1]])
+
+/** A Monte Carlo's params with its analysis' params version written (as the dialog stores them). */
+export function withInnerVersion(
+  p: MonteCarloParams,
+  lookup: (id: string) => AnalysisDef<unknown> | undefined,
+): MonteCarloParams {
+  if (p.analysis.pluginVersion !== undefined) return p
+  const def = lookup(p.analysis.analysisId)
+  return def ? { ...p, analysis: { ...p.analysis, pluginVersion: def.version } } : p
+}
 
 /** A result value as a number (P values and estimates; booleans 1/0; NaN otherwise). */
 function valueNumber(v: ResultValue | undefined): number {
@@ -152,13 +176,17 @@ export function runSimulation(
   const input = p.analysis.dataSets.length
     ? all.filter((d) => p.analysis.dataSets.includes(d.ref.key))
     : all
-  const ap = def.params.safeParse(p.analysis.params)
-  if (!ap.success) return { result: null, error: 'The analysis’ settings are not valid.' }
+  // Roadmap 51c: the inner analysis' params through `paramsOf`, from the version they were for.
+  const ap = paramsOf(def, {
+    params: p.analysis.params,
+    pluginVersion: p.analysis.pluginVersion ?? def.version,
+  })
+  if (!ap.ok) return { result: null, error: 'The analysis’ settings are not valid.' }
   const titles = new Map(simTable.dataSets.map((d) => [d.id as string, d.title]))
   try {
     return {
       titles,
-      result: def.run(input, ap.data, {
+      result: def.run(input, ap.params, {
         tableKind: simTable.tableKind as TableKind,
         xTitle: simTable.x?.title ?? null,
       }),
@@ -210,7 +238,7 @@ export function makeMonteCarloDef(
 ): AnalysisDef<MonteCarloParams> {
   return {
     id: 'monteCarlo',
-    version: 1,
+    version: 2,
     title: 'Monte Carlo analysis',
     category: 'Simulate and generate',
     description:
@@ -221,6 +249,7 @@ export function makeMonteCarloDef(
     usesData: () => false,
     producesTable: true,
     params: Params,
+    migrateParams: migrate,
     form: [
       { path: ['simulation'], label: 'Simulation', kind: 'custom', component: 'mc.simulation' },
       { path: ['analysis'], label: 'Analysis to repeat', kind: 'custom', component: 'mc.analysis' },

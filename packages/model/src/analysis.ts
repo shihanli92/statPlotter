@@ -28,6 +28,12 @@ export const AnalysisNode = z.object({
      * patient): each pool's values together under its first data set's key, titled "A + B + C".
      */
     pools: z.array(z.array(DataSetKey).min(2).max(64)).max(32).optional(),
+    /**
+     * Roadmap 51c (§7.3): an XY table's data sets read as a grouped table's columns, each X value
+     * a row (in order of first appearance, titled by the value) and the replicates at that X the
+     * cell's values: a two-way ANOVA with comparisons at each X. Absent: as the table is.
+     */
+    byX: z.literal(true).optional(),
   }),
   /** Validated by the plugin's own schema, not here. */
   params: z.unknown(),
@@ -48,10 +54,48 @@ export const AnalysisNode = z.object({
           followed: z.boolean(),
         })
         .optional(),
+      /**
+       * Roadmap 51c (§7.3): made by a bracket on a graph (one test of two groups, not corrected
+       * for the graph's other brackets).
+       */
+      bracket: z.literal(true).optional(),
     })
     .optional(),
+  /**
+   * Roadmap 51c (§7.1): the method's changes, oldest first: what it was before each change, what
+   * changed (in the form's words), whether results had been seen, and the reason given. At most
+   * 50 are kept; `historyEarlier` counts the older ones dropped. Absent: never changed.
+   */
+  history: z
+    .array(z.lazy(() => MethodChange))
+    .max(50)
+    .optional(),
+  historyEarlier: z.number().int().min(1).optional(),
 })
 export type AnalysisNode = z.infer<typeof AnalysisNode>
+
+/** Roadmap 51c (§7.1): one change of an analysis' method. */
+export const MethodChange = z.object({
+  /** When (ISO date-time). */
+  at: z.string(),
+  /** The method before the change. */
+  from: z.object({
+    analysisId: z.string().min(1),
+    pluginVersion: z.number().int().min(1),
+    params: z.unknown(),
+    dataSets: z.array(DataSetKey),
+  }),
+  /** What changed, in the form's words ("P value: Two-tailed → One-tailed"). */
+  changes: z.array(z.string().max(500)).max(100),
+  /** The analysis had results (seen) when it was changed. */
+  afterResults: z.boolean(),
+  /** Why, as typed in the notice (optional). */
+  reason: z.string().max(500).optional(),
+})
+export type MethodChange = z.infer<typeof MethodChange>
+
+/** Method changes kept in a node (older ones are counted, `historyEarlier`). */
+export const MAX_METHOD_HISTORY = 50
 
 // ---------------------------------------------------------------------------------------------
 // Results. Derived data: never part of the undoable document, persisted only as a cache.
@@ -163,6 +207,9 @@ export type AnalysisResult = z.infer<typeof AnalysisResult>
 // Plugin contract. Implemented in @ps/analyses; the engine only sees this interface.
 // ---------------------------------------------------------------------------------------------
 
+/** Roadmap 51c: facts about the chosen data that make a question not apply (`unavailableIf`). */
+export type AnalysisFact = 'missingInMatched'
+
 export interface ShowIf {
   path: readonly string[]
   in: readonly unknown[]
@@ -242,11 +289,20 @@ export type FormField = {
   explain?: FieldExplain
   /** Show only when other fields have one of these values (all conditions must hold). */
   showIf?: ShowIf | readonly ShowIf[]
+  /**
+   * Roadmap 51c (S5): the question doesn't apply to this table while a fact about its data holds
+   * (and, when given, other fields have these values): it is shown greyed with the reason, its
+   * stored value kept. Facts are counts and shapes the dialog reads from the chosen data sets
+   * (`missingInMatched`: a subject — a row of a column table, a subcolumn of a grouped table —
+   * lacks a value the others have), never a test of the data.
+   */
+  unavailableIf?: { fact: AnalysisFact; when?: readonly ShowIf[]; reason: string }
 } & (
   | { kind: 'select'; options: readonly FormOption[] }
   | { kind: 'radio'; options: readonly FormOption[] }
   | { kind: 'checkbox' }
-  | { kind: 'number'; min?: number; max?: number; step?: number }
+  /** `percent`: stored as a fraction, shown and typed as a percentage (roadmap 51c, S34). */
+  | { kind: 'number'; min?: number; max?: number; step?: number; percent?: boolean }
   /** A plugin-specific editor the UI provides under this component id. */
   | { kind: 'custom'; component: string }
 )
@@ -294,6 +350,12 @@ export interface RunContext {
   tableKind: TableKind
   /** Title of the source's X column, if it has one. */
   xTitle: string | null
+  /**
+   * Roadmap 51c (S13, S20): the analysis whose result table is analyzed (chaining), with the
+   * note its result gives about what it did to the values (`values.sourceNote`: "3 values were
+   * removed as outliers (ROUT, Q = 1%)"). Absent for data tables.
+   */
+  source?: { analysisId: string; name: string; note?: string }
 }
 
 /**

@@ -45,6 +45,7 @@ import {
   type SymbolShape,
 } from '@ps/model'
 import { newLayout, pageSpec } from '../../layout/figure.ts'
+import { exampleParams } from '../exampleParams.ts'
 import { parseRichText } from '../markup.ts'
 import type { ExampleContext, ExampleDef } from '../registry.ts'
 
@@ -873,7 +874,7 @@ export async function buildPaper(paper: PaperSpec, ctx: ExampleContext): Promise
     for (const spec of panel.analyses ?? []) {
       const def = registry.get(spec.analysis)
       if (!def) throw new Error(`Unknown analysis “${spec.analysis}”.`)
-      const params = def.params.parse(spec.params ?? {})
+      const params = exampleParams(def, spec.params ?? {})
       const label = `${figureOf(panel.label).name}${figureOf(panel.label).letter}`
       // The table analysed: the panel's, or one made from it (added after it).
       let src: DataTable = node

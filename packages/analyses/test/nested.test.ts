@@ -83,11 +83,24 @@ describe('nested t test and nested one-way ANOVA vs R', () => {
         for (const [k, w] of Object.entries(e.ttest as Record<string, number>))
           close(tt[k as 'diff'], w, `t test ${k}`)
       }
+      // Roadmap 51c (S28): Satterthwaite's df (lmerTest's), for the F test, t and comparisons.
+      const sat = nestedAnova(groups, { ddf: 'satterthwaite' })
+      if (e.treatmentSatterthwaite) {
+        const ts = e.treatmentSatterthwaite as Record<string, number>
+        close(sat.treatment.F, ts.F, 'F (Satterthwaite)')
+        close(sat.treatment.dfd, ts.dfd, 'DFd (Satterthwaite)')
+        close(sat.treatment.p, ts.p, 'P (Satterthwaite)')
+      }
+      if (e.ttestSatterthwaite) {
+        const tt = nestedTTest(sat)
+        for (const [k, w] of Object.entries(e.ttestSatterthwaite as Record<string, number>))
+          close(tt[k as 'diff'], w, `t test (Satterthwaite) ${k}`)
+      }
       for (const c of (e.comparisons ?? []) as Record<string, unknown>[]) {
         const i = arr(c.i)
         const j = arr(c.j)
         const rows = nestedComparisons(
-          res,
+          c.ddf === 'satterthwaite' ? sat : res,
           i.map((a, x) => [a, j[x]!] as [number, number]),
           c.method as McMethod,
         )
@@ -98,7 +111,7 @@ describe('nested t test and nested one-way ANOVA vs R', () => {
               r[k],
               num(w),
               { ...tol, atol: k === 'p' ? 1e-10 : 0 },
-              `${c.method} ${x} ${k}`,
+              `${c.ddf} ${c.method} ${x} ${k}`,
             )
           }
         })

@@ -38,8 +38,9 @@ async function buildProject(page: Page) {
   await page.keyboard.press('Enter')
   await cell(page, 1, 0).click()
   await pressShortcut(page, 'Mod+E')
-  await analyze(page, 't test')
-  // R: t.test without the excluded 38.5: t = 6.1819.
+  // Student's t test, chosen (roadmap 51c: Welch's is the default).
+  await analyze(page, 't test', (d) => d.getByRole('radio', { name: /Student’s t test$/ }).check())
+  // R: t.test(var.equal = TRUE) without the excluded 38.5: t = 6.1819.
   await expect(resultValue(resultTable(page, 'Unpaired t test'), 't')).toHaveText('6.182')
   await sheet(page, 'Weights', 'Data Tables').click()
 }

@@ -1,4 +1,11 @@
-import { entriesFor, registry, tableFacts } from '@ps/analyses'
+import {
+  entriesFor,
+  type MonteCarloParams,
+  methodChanges,
+  registry,
+  tableFacts,
+  withInnerVersion,
+} from '@ps/analyses'
 import {
   type Command,
   compatibleTables,
@@ -14,6 +21,7 @@ import {
   type NodeId,
   newNodeId,
   normalizeColumn,
+  paramsOf,
   type TableKind,
 } from '@ps/model'
 import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from 'react'
@@ -30,6 +38,7 @@ import { DataSourceField, remapSelection } from './DataSourceField.tsx'
 import { defaultSelection } from './defaultSelection.ts'
 import { type GuideChoice, GuidePanel } from './GuidePanel.tsx'
 import { MethodCards } from './MethodCards.tsx'
+import { MethodChangeNotice } from './MethodHistory.tsx'
 import { variableInfo } from './mvFields.tsx'
 import { ParamsForm } from './ParamsForm.tsx'
 import { allFields } from './simulationFields.tsx'
@@ -67,6 +76,26 @@ export function openingAnalysis(
   if (used) return used
   const common = (COMMON_ANALYSES[kind] ?? []).find((id) => offered(id))
   return common ?? defs[0]?.id ?? ''
+}
+
+/**
+ * Roadmap 51c (S5): whether a subject lacks a value the others have among the chosen data sets —
+ * a column table's row with some values but not all, a grouped table's row whose replicates
+ * aren't all filled — so matched values would be fit by a mixed-effects model.
+ */
+export function missingInMatched(table: DataTable, keys: readonly string[]): boolean {
+  const sets = keys.flatMap((k) => normalizeColumn(table, k) ?? [])
+  if (sets.length < 2 || sets.some((d) => d.data.shape !== 'replicates')) return false
+  const reps = sets.map((d) => (d.data.shape === 'replicates' ? d.data.reps : []))
+  const rowCount = Math.max(...sets.map((d) => d.rowCount))
+  const width = table.tableKind === 'grouped' ? Math.max(...reps.map((r) => r.length)) : 1
+  for (let r = 0; r < rowCount; r++) {
+    const cells = reps.flatMap((rs) =>
+      Array.from({ length: width }, (_, j) => !Number.isNaN(rs[j]?.[r] ?? Number.NaN)),
+    )
+    if (cells.some(Boolean) && !cells.every(Boolean)) return true
+  }
+  return false
 }
 
 /** Plain values compared deeply (the params Use this wrote, and those submitted). */
@@ -281,9 +310,11 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   const initialParams = (id: string): Params => {
     const d = registry.get(id)
     if (!d) return {}
+    // Roadmap 51c: stored params migrated from their version (a saved analysis keeps its
+    // options), never parsed alone.
     if (existing && existing.analysisId === id) {
-      const r = d.params.safeParse(existing.params)
-      if (r.success) return r.data as Params
+      const r = paramsOf(d, existing)
+      if (r.ok) return r.params as Params
     }
     return d.params.parse({}) as Params
   }
@@ -311,6 +342,12 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   }
 
   const [showOn, setShowOn] = useState<ReadonlySet<string>>(new Set())
+  // Roadmap 51c (§7.1, §7.2): editing, what changes in the method, and whether results were seen.
+  const [reason, setReason] = useState('')
+  const ownState = useResultState(existing?.id ?? original.id)
+  const seen =
+    !!existing &&
+    (ownState?.status === 'ready' || (ownState?.status === 'pending' && !!ownState.previous))
   const tableGraphs = useDoc((d) =>
     Object.values(d.nodes).some((n) => n.kind === 'graph' && n.seriesSource.table === table.id),
   )
@@ -392,20 +429,69 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
           .filter((t) => !!t.offer)
       : []
 
+  /** Roadmap 51c (§7.1): the method's changes since the stored one (none when creating). */
+  const changes = (() => {
+    if (!existing) return []
+    const was = registry.get(existing.analysisId)
+    const now = def.params.safeParse(params)
+    if (!was || !now.success) return []
+    const before = paramsOf(was, existing)
+    if (!before.ok) return []
+    const name = (k: string) =>
+      table.dataSets.find((d) => d.id === k)?.title ||
+      original.dataSets.find((d) => d.id === k)?.title ||
+      k
+    return methodChanges(
+      { def: was, params: before.params, dataSets: existing.input.dataSets },
+      { def, params: now.data, dataSets: retarget ? existing.input.dataSets : dataSets },
+      name,
+    )
+  })()
+
+  /** A new node of the chosen method (create, or Add as a new analysis beside an edited one). */
+  const newAnalysis = (p: unknown, name: string): AnalysisNode => ({
+    kind: 'analysis',
+    id: newNodeId(),
+    name,
+    analysisId: def.id,
+    pluginVersion: def.version,
+    input: { source: table.id, dataSets },
+    params: p,
+  })
+
+  /** Roadmap 51c (§7.2): Add as a new analysis — the changed method beside the first. */
+  const addAsNew = () => {
+    const checked = def.params.safeParse(params)
+    if (!checked.success)
+      return props.onError(`Invalid parameters: ${checked.error.issues[0]?.message}`, 'validation')
+    try {
+      const node = newAnalysis(checked.data, `${def.title} of ${table.name}`)
+      store.dispatch(
+        [{ type: 'node.add', node }, ...linkOutputs(node.id, checked.data, dataSets)],
+        `New ${def.title}`,
+      )
+      props.onCreated?.(node.id)
+      props.onClose()
+    } catch (e) {
+      props.onError(errorMessage(e))
+    }
+  }
+
   const submit = () => {
-    const parsed = def.params.safeParse(params)
-    if (!parsed.success)
-      return props.onError(`Invalid parameters: ${parsed.error.issues[0]?.message}`, 'validation')
+    const checked = def.params.safeParse(params)
+    if (!checked.success)
+      return props.onError(`Invalid parameters: ${checked.error.issues[0]?.message}`, 'validation')
+    // Roadmap 51c (design §6.1): stored whole, with the version of an embedded analysis' params.
+    const parsed = {
+      data:
+        def.id === 'monteCarlo'
+          ? withInnerVersion(checked.data as MonteCarloParams, (id) => registry.get(id))
+          : checked.data,
+    }
     try {
       if (props.mode === 'create') {
         const node: AnalysisNode = {
-          kind: 'analysis',
-          id: newNodeId(),
-          name: draft ? def.title : `${def.title} of ${table.name}`,
-          analysisId: def.id,
-          pluginVersion: def.version,
-          input: { source: table.id, dataSets },
-          params: parsed.data,
+          ...newAnalysis(parsed.data, draft ? def.title : `${def.title} of ${table.name}`),
           // Roadmap 51a: set up with Guide me (and whether its params were kept).
           ...(fromGuide.current && fromGuide.current.analysisId === def.id
             ? {
@@ -448,6 +534,27 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
               },
               { type: 'analysis.setParams', id: props.analysisId, params: parsed.data },
               { type: 'analysis.setInput', id: props.analysisId, dataSets },
+              // Roadmap 51c (§7.1): the method before, in the history, in the same undo step.
+              ...(changes.length && existing
+                ? [
+                    {
+                      type: 'analysis.recordChange' as const,
+                      id: props.analysisId,
+                      change: {
+                        at: new Date().toISOString(),
+                        from: {
+                          analysisId: existing.analysisId,
+                          pluginVersion: existing.pluginVersion,
+                          params: existing.params,
+                          dataSets: existing.input.dataSets,
+                        },
+                        changes,
+                        afterResults: seen,
+                        ...(reason.trim() ? { reason: reason.trim().slice(0, 500) } : {}),
+                      },
+                    },
+                  ]
+                : []),
               ...(retargeted ? [] : linkOutputs(props.analysisId, parsed.data, dataSets)),
             ],
             retargeted ? 'Change analyzed table' : 'Change analysis',
@@ -654,6 +761,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
               index: i,
               title: table.rowTitles?.[i] || `Row ${i + 1}`,
             })),
+            facts: { missingInMatched: missingInMatched(table, selected) },
           }}
         />
         {offered.length > 0 && tableGraphs && (
@@ -727,6 +835,14 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
           ? { role: 'tabpanel', id: `${tabId}-panel`, 'aria-labelledby': `${tabId}-${tab}` }
           : {})}
       >
+        {props.mode === 'edit' && seen && changes.length > 0 && (
+          <MethodChangeNotice
+            changes={changes}
+            reason={reason}
+            onReason={setReason}
+            onAddAsNew={addAsNew}
+          />
+        )}
         {tab === 'guide' ? (
           <GuidePanel
             kind={table.tableKind}

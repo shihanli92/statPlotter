@@ -1,0 +1,27 @@
+{
+  "input": {
+    "x": [
+      12.1,
+      14.3,
+      11.8,
+      13.5,
+      15.2,
+      12.9,
+      13.8,
+      14.6
+    ],
+    "mu": 12.5
+  },
+  "params": {
+    "suite": "wilcoxon",
+    "rparams": {
+      "exact": "auto"
+    },
+    "analysis": "oneSample",
+    "app": {
+      "test": "wilcoxon",
+      "hypothetical": 12.5,
+      "pMethod": "exactWhenPossible"
+    }
+  }
+}

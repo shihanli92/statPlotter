@@ -67,6 +67,12 @@ export interface OneWayRMOptions {
   sphericity?: 'assumed' | 'gg'
   /** Denominator df for the mixed model's F test and comparisons (default 'containment'). */
   ddf?: RMDdf
+  /**
+   * Roadmap 51c (S5): 'auto' (default): RM ANOVA with complete data, else the mixed model;
+   * 'mixed': the mixed model always (with complete data too). (Analyzing complete subjects only
+   * is the caller's: drop the incomplete rows.)
+   */
+  method?: 'auto' | 'mixed'
 }
 
 export interface OneWayRMResult {
@@ -168,7 +174,7 @@ export function oneWayRM(
     rSquared: null,
     mixed: null,
   }
-  if (P.complete) return anova(P, sphericity, ddf)
+  if (P.complete && opts.method !== 'mixed') return anova(P, sphericity, ddf)
   if (P.k < 2)
     return { ...base, kind: 'mixed', treatment: NAN_TEST, means: rawMeans(P), error: 'too-few' }
   if (P.n.some((c) => c === 0)) {

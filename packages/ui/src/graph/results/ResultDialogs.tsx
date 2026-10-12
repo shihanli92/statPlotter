@@ -10,6 +10,8 @@ import {
   type BracketTest,
   groupBracketCommands,
   newInsetTable,
+  offersOneAnalysis,
+  oneAnalysisBracketCommands,
   type ResultKind,
   resultAnalyses,
   resultLayer,
@@ -93,8 +95,14 @@ export function ResultDialog({
   const [group, setGroup] = useState<string[]>(keys.slice(0, Math.max(0, keys.length - 1)))
   const [one, setOne] = useState<string>(keys.at(-1) ?? '')
   const [row, setRow] = useState<number>(0)
-  const [test, setTest] = useState<BracketTest>('ttest')
+  // Roadmap 51c (S2, S4): Welch's t test by default; one analysis of all the groups first when
+  // the graph shows three or more groups or already has a bracket.
+  const [test, setTest] = useState<BracketTest>('welch')
   const [show, setShow] = useState<Show>('p')
+  const [scope, setScope] = useState<'all' | 'one'>(() =>
+    table && offersOneAnalysis(graph, table) ? 'all' : 'one',
+  )
+  const [withControl, setWithControl] = useState(false)
 
   const dispatch = (cmds: Parameters<typeof store.dispatch>[0], label: string) => {
     try {
@@ -141,14 +149,31 @@ export function ResultDialog({
     } else if (kind === 'xBracket') {
       if (!table || x === undefined || !a || !b || a === b)
         return onError('Choose an X value and two different data sets.')
-      const { commands } = xBracketCommands(graph, table, { x, a, b, test, show })
-      if (dispatch(commands, TITLES.xBracket)) onAdded({ annotation: graph.annotations.length })
+      if (scope === 'all') {
+        const r = oneAnalysisBracketCommands(project, graph, table, { show, x, a, b })
+        if ('error' in r) return onError(r.error)
+        if (dispatch(r.commands, TITLES.xBracket)) onAdded({ annotation: graph.annotations.length })
+      } else {
+        const { commands } = xBracketCommands(graph, table, { x, a, b, test, show }, project)
+        if (dispatch(commands, TITLES.xBracket)) onAdded({ annotation: graph.annotations.length })
+      }
     } else {
       if (!table) return
-      const r = groupBracketCommands(graph, table, { group, one, row, test, show })
-      if ('error' in r) return onError(r.error)
-      if (dispatch(r.commands, TITLES.groupBracket))
-        onAdded({ annotation: graph.annotations.length })
+      if (scope === 'all') {
+        const r = oneAnalysisBracketCommands(project, graph, table, {
+          show,
+          row,
+          ...(withControl ? { control: one } : {}),
+        })
+        if ('error' in r) return onError(r.error)
+        if (dispatch(r.commands, 'Add brackets from one analysis'))
+          onAdded({ annotation: graph.annotations.length })
+      } else {
+        const r = groupBracketCommands(graph, table, { group, one, row, test, show }, project)
+        if ('error' in r) return onError(r.error)
+        if (dispatch(r.commands, TITLES.groupBracket))
+          onAdded({ annotation: graph.annotations.length })
+      }
     }
     onClose()
   }
@@ -282,8 +307,52 @@ export function ResultDialog({
         </>
       )}
       {(kind === 'xBracket' || kind === 'groupBracket') && (
+        <fieldset className="field bracket-scope">
+          <legend>Analysis</legend>
+          <label className="check">
+            <input
+              type="radio"
+              name="bracket-scope"
+              checked={scope === 'all'}
+              onChange={() => setScope('all')}
+            />
+            {kind === 'xBracket'
+              ? 'All data sets: two-way ANOVA with comparisons at each X (Šidák) (recommended)'
+              : table?.tableKind === 'grouped'
+                ? 'All data sets: two-way ANOVA comparing them within each row (Šidák) (recommended)'
+                : 'All groups: one-way ANOVA with Tukey’s comparisons (Dunnett’s with a control) (recommended)'}
+          </label>
+          <label className="check">
+            <input
+              type="radio"
+              name="bracket-scope"
+              checked={scope === 'one'}
+              onChange={() => setScope('one')}
+            />
+            {kind === 'xBracket' ? 'One test at this X only' : 'One test of the group against one'}
+          </label>
+          <div className="help">
+            Each bracket with a test of its own is another chance of a false positive; one analysis
+            of all the groups adjusts the comparisons for their number. Brackets of separate tests
+            are marked “(uncorrected)”.
+          </div>
+          {scope === 'all' && kind === 'groupBracket' && table?.tableKind === 'column' && (
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={withControl}
+                onChange={(e) => setWithControl(e.target.checked)}
+              />
+              Compare each group with “{title(one)}” only (Dunnett’s test)
+            </label>
+          )}
+        </fieldset>
+      )}
+      {(kind === 'xBracket' || kind === 'groupBracket') && (
         <>
-          <Select label="Test" value={test} options={BRACKET_TESTS} onChange={setTest} />
+          {scope === 'one' && (
+            <Select label="Test" value={test} options={BRACKET_TESTS} onChange={setTest} />
+          )}
           <Select label="Label" value={show} options={SHOW} onChange={setShow} />
           <p className="muted">
             A new analysis computes the P value; the bracket follows it when the data change.

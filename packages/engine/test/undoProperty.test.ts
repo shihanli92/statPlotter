@@ -494,6 +494,22 @@ const GENERATORS: { [K in CommandType]: Gen<K> } = {
     id: fc.constantFrom(A, G),
     dataSets: fc.subarray(['ta', 'tb', 'vn']),
   }),
+  'analysis.recordChange': fc.record({
+    type: fc.constant('analysis.recordChange'),
+    id: fc.constantFrom(A, G),
+    change: fc.record({
+      at: fc.constant('2026-10-12T10:00:00.000Z'),
+      from: fc.record({
+        analysisId: fc.constantFrom('ttest', 'mannWhitney'),
+        pluginVersion: fc.constantFrom(1, 2),
+        params: fc.constantFrom({}, { tails: 'one' }),
+        dataSets: fc.subarray(['ta', 'tb']),
+      }),
+      changes: fc.subarray(['P value: Two-tailed → One-tailed', 'Analysis: t test → Mann-Whitney']),
+      afterResults: fc.boolean(),
+      reason: fc.option(fc.constantFrom('wrong design', ''), { nil: undefined }),
+    }),
+  }),
   'node.set': fc.oneof(
     fc.record({
       type: fc.constant('node.set' as const),

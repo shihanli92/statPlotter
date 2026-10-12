@@ -10,6 +10,7 @@ import type {
   ResultValue,
   RunContext,
 } from '@ps/model'
+import { pinDefaults } from '@ps/model'
 import {
   type CurveModel,
   compareFits,
@@ -159,6 +160,13 @@ export const NonlinearParamsSchema = z.object({
   ciMethod: z.enum(['symmetric', 'profile']).default('symmetric'),
   band: z.enum(['none', 'confidence', 'prediction']).default('none'),
   compareWith: z.string().default('none'),
+  /**
+   * Roadmap 51c (S18): how models (or a parameter shared against one per data set) are
+   * compared, chosen before the results, one verdict reported: the extra sum-of-squares F test
+   * (nested models; the default) or AICc. `both`: analyses saved before 0.3.9, which showed both
+   * verdicts (kept, not offered).
+   */
+  compareBy: z.enum(['fTest', 'aicc', 'both']).default('fTest'),
   interpolate: z.boolean().default(false),
   diagnostics: Diagnostics,
   /** Hougaard's skewness of each parameter. */
@@ -420,9 +428,13 @@ function fitAll(
   })
 }
 
+/** Version 1 (before 0.3.9, S18): both the F test and AICc verdicts were reported; kept. */
+export const migrateNonlinear = (raw: unknown, from: number): unknown =>
+  from >= 2 ? raw : pinDefaults(raw, [[['compareBy'], 'both']])
+
 export const nonlinearFitDef: AnalysisDef<NonlinearParams> = {
   id: 'nonlinearFit',
-  version: 1,
+  version: 2,
   title: 'Nonlinear regression (curve fit)',
   category: 'XY analyses',
   description:
@@ -430,6 +442,7 @@ export const nonlinearFitDef: AnalysisDef<NonlinearParams> = {
   accepts: ['xy'],
   inputs: { min: 1, max: Number.POSITIVE_INFINITY },
   params: NonlinearParamsSchema,
+  migrateParams: migrateNonlinear,
   form: [
     { path: ['equation'], label: 'Model', kind: 'custom', component: 'nlfit.equation' },
     {
@@ -556,6 +569,18 @@ export const nonlinearFitDef: AnalysisDef<NonlinearParams> = {
       label: 'Do the best-fit values of these parameters differ between data sets?',
       kind: 'custom',
       component: 'nlfit.compareParams',
+    },
+    {
+      path: ['compareBy'],
+      label: 'Decide the comparison by (chosen before the results)',
+      kind: 'radio',
+      options: [
+        {
+          value: 'fTest',
+          label: 'Extra sum-of-squares F test (recommended for nested models)',
+        },
+        { value: 'aicc', label: 'AICc (models that aren’t nested too)' },
+      ],
     },
     ...DIAGNOSTIC_FIELDS,
     {
@@ -1151,9 +1176,17 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
       nested: nFree !== aFree,
     }
   })
-  const rows: [string, ResultValue[]][] = [
-    ['Null hypothesis (simpler model)', comps.map((c) => text(c.simplerName))],
-    ['Alternative hypothesis', comps.map((c) => text(c.complexName))],
+  // S18: one verdict, by the method chosen in advance (both for analyses saved before 0.3.9).
+  // Models with the same number of free parameters aren't nested: no F test.
+  const byF = params.compareBy !== 'aicc'
+  const byAICc = params.compareBy !== 'fTest' || comps.every((c) => !c.nested)
+  if (params.compareBy === 'fTest' && comps.every((c) => !c.nested))
+    diagnostics.push({
+      level: 'warning',
+      message:
+        'These models aren’t nested (the same number of free parameters), so the F test doesn’t apply; they are compared by AICc.',
+    })
+  const fRows: [string, ResultValue[]][] = [
     ['F', comps.map((c) => (c.nested ? num(c.c.F) : text('—')))],
     ['DFn, DFd', comps.map((c) => text(c.nested ? `${c.c.dfn}, ${c.c.dfd}` : '—'))],
     ['P value', comps.map((c) => (c.nested ? pval(c.c.p) : text('—')))],
@@ -1164,6 +1197,8 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
         text(!c.nested ? 'Not nested' : c.c.p < ALPHA ? c.complexName : c.simplerName),
       ),
     ],
+  ]
+  const aRows: [string, ResultValue[]][] = [
     ['AICc of simpler model', comps.map((c) => num(c.c.aiccSimpler))],
     ['AICc of alternative model', comps.map((c) => num(c.c.aiccComplex))],
     [
@@ -1175,18 +1210,30 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
       comps.map((c) => text(c.c.probSimpler >= 0.5 ? c.simplerName : c.complexName)),
     ],
   ]
+  const rows: [string, ResultValue[]][] = [
+    ['Null hypothesis (simpler model)', comps.map((c) => text(c.simplerName))],
+    ['Alternative hypothesis', comps.map((c) => text(c.complexName))],
+    ...(byF && !(params.compareBy === 'fTest' && byAICc) ? fRows : []),
+    ...(byAICc ? aRows : []),
+  ]
+  const title =
+    byF && byAICc && params.compareBy === 'both'
+      ? 'Extra sum-of-squares F test and AICc'
+      : byAICc
+        ? 'AICc'
+        : 'Extra sum-of-squares F test'
   return {
     key: 'compare',
     title: 'Comparison of fits',
     blocks: [
       labelTable(
-        'Extra sum-of-squares F test and AICc',
+        title,
         fits.map((f) => f.ds.title),
         rows,
       ),
       {
         type: 'note',
-        text: 'The F test is valid only when the simpler model is a special case of the other (nested models).',
+        text: 'The F test is valid only when the simpler model is a special case of the other (nested models); AICc compares any two models fitted to the same data.',
       },
     ],
   }
@@ -1244,6 +1291,9 @@ function compareParamsSheet(run: FitRun): { sheet: ResultSheet; p: number } | nu
   }
   const c = compareFits(simpler, complex)
   const one = share.length === 1
+  // S18: one verdict, by the method chosen in advance (both for analyses saved before 0.3.9).
+  const byF = params.compareBy !== 'aicc'
+  const byAICc = params.compareBy !== 'fTest'
   const sheet: ResultSheet = {
     key: 'compareParams',
     title: 'Compare parameters',
@@ -1254,20 +1304,43 @@ function compareParamsSheet(run: FitRun): { sheet: ResultSheet; p: number } | nu
           'Alternative hypothesis',
           text(`${names} ${one ? 'differs' : 'differ'} between data sets`),
         ],
-        ['F', num(c.F)],
-        ['DFn, DFd', text(`${c.dfn}, ${c.dfd}`)],
-        ...pSig(c.p),
-        [
-          `Conclusion (alpha = ${ALPHA})`,
-          text(
-            c.p < ALPHA
-              ? `Reject the null hypothesis: ${names} ${one ? 'differs' : 'differ'}`
-              : 'Do not reject the null hypothesis',
-          ),
-        ],
-        ['AICc of the null model (shared)', num(c.aiccSimpler)],
-        ['AICc of the alternative model', num(c.aiccComplex)],
-        ['Probability the null model is correct', text(`${(c.probSimpler * 100).toFixed(2)}%`)],
+        ...(byF
+          ? ([
+              ['F', num(c.F)],
+              ['DFn, DFd', text(`${c.dfn}, ${c.dfd}`)],
+              ...pSig(c.p),
+              [
+                `Conclusion (alpha = ${ALPHA})`,
+                text(
+                  c.p < ALPHA
+                    ? `Reject the null hypothesis: ${names} ${one ? 'differs' : 'differ'}`
+                    : 'Do not reject the null hypothesis',
+                ),
+              ],
+            ] as [string, ResultValue][])
+          : []),
+        ...(byAICc
+          ? ([
+              ['AICc of the null model (shared)', num(c.aiccSimpler)],
+              ['AICc of the alternative model', num(c.aiccComplex)],
+              [
+                'Probability the null model is correct',
+                text(`${(c.probSimpler * 100).toFixed(2)}%`),
+              ],
+              ...(byF
+                ? []
+                : ([
+                    [
+                      'Preferred model (AICc)',
+                      text(
+                        c.probSimpler >= 0.5
+                          ? `${names} shared`
+                          : `${names} different between data sets`,
+                      ),
+                    ],
+                  ] as [string, ResultValue][])),
+            ] as [string, ResultValue][])
+          : []),
         ...share.map((j): [string, ResultValue] => [
           `${eq.params[j]} when shared`,
           num(simpler.params[0]![j]!.value),
@@ -1275,11 +1348,16 @@ function compareParamsSheet(run: FitRun): { sheet: ResultSheet; p: number } | nu
       ]),
       {
         type: 'note',
-        text: 'Extra sum-of-squares F test: the fit with the parameter shared by all data sets against the fit with a value per data set; AICc compares the same two fits.',
+        text:
+          params.compareBy === 'both'
+            ? 'Extra sum-of-squares F test: the fit with the parameter shared by all data sets against the fit with a value per data set; AICc compares the same two fits.'
+            : params.compareBy === 'fTest'
+              ? 'Extra sum-of-squares F test: the fit with the parameter shared by all data sets against the fit with a value per data set.'
+              : 'AICc: the fit with the parameter shared by all data sets against the fit with a value per data set.',
       },
     ],
   }
-  return { sheet, p: c.p }
+  return { sheet, p: byF ? c.p : Number.NaN }
 }
 
 /** The outliers ROUT found. */

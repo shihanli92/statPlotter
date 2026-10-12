@@ -506,13 +506,48 @@ interface AnalysisNode {
   pluginVersion: number              // params schema version for this plugin (a whole number ≥ 1)
   input: { source: NodeId; dataSets: DataSetKey[]
            atX?: number              // roadmap 35: only the values at this X (a column table's data sets)
+           byX?: true                // roadmap 51c: an XY table as a grouped table, a row per X
            pools?: DataSetKey[][] }  // roadmap 35: each pool's data sets (2–64) as one, under its first's key; ≤ 32 pools
-  params: unknown                    // validated by the plugin's zod schema
+  params: unknown                    // validated by the plugin's zod schema, read through paramsOf
   notes?: string                     // free text above the results (roadmap 31); absent = none
-  origin?: { guide?: { entry: string; answers: Record<string, string>; followed: boolean } }
-                                     // roadmap 51a: set up with Guide me (absent: by hand)
+  origin?: { guide?: { entry: string; answers: Record<string, string>; followed: boolean }
+             bracket?: true }        // 51a: set up with Guide me; 51c: made by a graph bracket
+  history?: MethodChange[]           // roadmap 51c: method changes, oldest first, at most 50
+  historyEarlier?: number            // changes before those kept
+}
+interface MethodChange {
+  at: string                         // ISO date-time
+  from: { analysisId: string; pluginVersion: number; params: unknown; dataSets: DataSetKey[] }
+  changes: string[]                  // in the form's words: "P value: Two-tailed → One-tailed"
+  afterResults: boolean              // the analysis had results when it changed
+  reason?: string                    // ≤ 500 characters
 }
 ```
+
+- **Params versions (roadmap 51c, design §6.1, decision 1286).** `params` were saved under the
+  node's `pluginVersion`; every reader goes through `paramsOf(def, { params, pluginVersion })`
+  (`model/src/analysisParams.ts`): the definition's `migrateParams(raw, from)` brings older params
+  up to its `version`, then its schema parses them (filling what is missing from the current
+  defaults). A migration that follows a change of default writes the previous default where
+  older params have nothing (`pinDefaults`), so a saved analysis computes what it did and only
+  new ones get the new default; a value stored is never changed. Creators store complete params.
+  At 0.3.9 these definitions are at version 2: `ttest`, `mannWhitney`, `wilcoxon`, `oneSample`,
+  `nestedT`, `nestedOneWay`, `correlation`, `contingency`, `oneWayAnova`, `twoWayAnova`,
+  `threeWayAnova`, `multipleOneWay`, `friedman`, `multipleT`, `pStack`, `normality`, `survival`,
+  `survivalFromVariables`, `roc`, `monteCarlo`, `nonlinearFit`, `nonlinearFitMV` (what each
+  pins: their `migrateParams`; the params 0.3.8 wrote: `analyses/test/fixtures/params-v1/`).
+  Monte Carlo's inner analysis keeps the version its params were written for
+  (`params.analysis.pluginVersion`; absent in version 1: the inner analysis' version 1).
+- **`history`** (roadmap 51c, design §7.1, decision 1296): the analysis' method changes, written
+  by `analysis.recordChange` in the same undo step as the change (the edit dialog). A change of
+  method is a change of `analysisId`, of the data sets, or of a form field that isn't a
+  reporting one (`methodChanges`, `analyses/src/methodChanges.ts`). The last
+  `MAX_METHOD_HISTORY` (50) are kept, older ones counted in `historyEarlier`. Duplicate family
+  and Apply remap `from.dataSets` (and data set keys in `from.params`) as the input's. Shown
+  under the results; optional, so no schema version.
+- **`origin.bracket`** (roadmap 51c, §7.3): a test made by a graph's bracket (two groups, or a
+  group pooled against one). With two or more on one graph each name ends "(uncorrected)";
+  "Label these brackets from one ANOVA" replaces them.
 
 - **`origin.guide`** (roadmap 51a, decision 1280): the analysis was set up with the guided
   chooser (Analyze › Guide me): `entry` is the question's id (`GUIDE_ENTRIES`, e.g.
@@ -524,7 +559,11 @@ interface AnalysisNode {
 - One analysis reads from **one** source node (a table or another analysis), selecting data sets.
 - **Input modifiers** (roadmap 35, `modifyInput`, `model/src/analysisInput.ts`): `atX` keeps each
   data set's replicates at the rows whose X is that value, as a column table's data set (the run
-  context's `tableKind` becomes 'column'; an error without X values); `pools` then puts each
+  context's `tableKind` becomes 'column'; an error without X values); `byX` (roadmap 51c) makes
+  an XY table's data sets a grouped table's columns, a row per X value (in order of first
+  appearance, titled by the value) with the replicates of every table row at that X side by
+  side as subcolumns (the context's `tableKind` 'grouped', no X title), so two-way ANOVA compares
+  the data sets at each X (`row{r}:{a}|{b}`); `pools` then puts each
   pool's data sets together under its first's key and place, titled "A + B + C" (their
   replicates as more subcolumns of the same rows: a column table's values, a grouped table's
   cells row by row; entered means can't pool). Both are part of the input key, so only edits of
@@ -591,7 +630,16 @@ One plugin per *dialog*, not per test variant: the dialog structure lab users kn
 
 Phase 13 adds result tables and a run context. `run(input, params, context)` receives
 `RunContext` (`tableKind` of the source, `xTitle`), so a plugin can build an output of the right
-shape. A plugin with `producesTable` returns `AnalysisResult.table`: a `DataTable` (Transform,
+shape. Roadmap 51c adds `RunContext.source?: { analysisId; name; note? }` for an analysis of
+another analysis' table (`note`: the producer's `values.sourceNote`, e.g. Identify outliers'
+"2 values were removed as outliers (ROUT, Q = 1%)"); the engine adds a warning to the result
+(`withSourceNotes`: values removed before this analysis; a data set normalized to itself with no
+variation, S13, S20). Roadmap 51c also adds to the form: `FormField.unavailableIf?: { fact:
+AnalysisFact; when?: ShowIf[]; reason }` (the field is shown greyed with the reason while a fact
+about the chosen data holds, e.g. `missingInMatched`), a number field's `percent` (a fraction
+shown and typed as a percentage), and `{A}` / `{B}` in labels (the first and second data sets'
+names). Results name their test: `values.test` (and `values.comparisonTest`), text values a
+result label or a bracket can show. A plugin with `producesTable` returns `AnalysisResult.table`: a `DataTable` (Transform,
 Normalize, Remove baseline, Frequency distribution…) that other analyses and graphs can use as
 their source, addressed by the analysis node's id. Its data set ids must be stable across runs
 (derived from input keys and params), so references into it survive recomputation.
@@ -1717,6 +1765,7 @@ Bracket.group?: DataSetKey[]                         // data sets pooled with `a
 
 AnalysisNode.input.atX?: number                      // only the values at this X (§5.1)
 AnalysisNode.input.pools?: DataSetKey[][]            // data sets pooled before the analysis (§5.1)
+AnalysisNode.input.byX?: true                        // roadmap 51c: compared at each X (§5.1)
 GraphableDataSet.group?: string                      // a fit per group's level (an output's)
 OutputDecl.onGraphsOf?: { x; y: DataSetKey }         // also on graphs of the variables mapping X and Y
 AnalysisDef.graphResults?(params, { tableKind, dataSets }): ResultTemplate[]
@@ -2535,7 +2584,8 @@ Roadmap 28b (decisions 151–155):
 type Annotation =                                       // each may also carry `behind?: boolean`
   | { type: 'bracket'; id: AnnotationId; a: DataSetKey; b: DataSetKey;
       rowA?: number; rowB?: number                      // grouped graphs: the rows of the two bars (below)
-      label: { source: 'analysis'; analysis: NodeId; comparison: string; show: 'stars' | 'p' | 'both' | 'number' }
+      label: { source: 'analysis'; analysis: NodeId; comparison: string; show: 'stars' | 'p' | 'both' | 'number'
+               test?: boolean }                     // roadmap 51c: the test's name after a P ("P = 0.0014 (Welch’s t)")
            | { source: 'manual'; text: RichLabel };
       level: 'auto' | number                            // 'auto' = stacked by the layout engine
       offset?: Pt                                       // dragged up (negative) or down from its computed height
@@ -3113,6 +3163,7 @@ type Command =
   // Analyses (made with node.add, re-pointed with node.replace)
   | { type: 'analysis.setParams'; id: NodeId; params: unknown }
   | { type: 'analysis.setInput'; id: NodeId; dataSets: DataSetKey[] }
+  | { type: 'analysis.recordChange'; id: NodeId; change: MethodChange } // 51c: method history (§4.6)
   // Graph layers (roadmap 33b)
   | { type: 'graph.addLayer'; id: NodeId; layer: Layer; at?: number }
   | { type: 'graph.removeLayer'; id: NodeId; layer: LayerId }

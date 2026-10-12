@@ -73,8 +73,9 @@ oracle <- function(input, params) {
     z <- d / sqrt(S * (1 / ni + 1 / nj))
     raw <- 2 * pnorm(-abs(z))
     p <- switch(params$adjust, bonferroni = pmin(1, m * raw), sidak = pmin(1, sidak_adj(raw, m)),
-                none = raw)
-    if (all_pairs) {
+                holm = p.adjust(raw, "holm", n = m), none = raw)
+    # (Roadmap 51c: Holm's step-down is p.adjust's; dunn.test cross-checks the one-step ones.)
+    if (all_pairs && params$adjust != "holm") {
       invisible(capture.output(
         dt <- dunn.test::dunn.test(y, g, method = params$adjust, altp = TRUE, kw = FALSE,
                                    table = FALSE, list = FALSE)))

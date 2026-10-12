@@ -33,28 +33,28 @@ Roadmap 29; every edit is one undo step.
 
 | Analysis | Status | Phase | Notes |
 | --- | --- | --- | --- |
-| Unpaired / Welch / paired t test, P and CI | ✅ | | |
+| Unpaired / Welch / paired t test, P and CI | ✅ | 51c | Welch's by default (51c); one-tailed P for a stated direction |
 | Mann-Whitney with CI of the difference of medians | ✅ | | Hodges-Lehmann |
 | Kolmogorov-Smirnov (two groups) | ✅ | | |
 | Wilcoxon matched pairs with CI of the median | ✅ | | |
-| Multiple t tests, one per row (t, Welch, paired, Mann-Whitney, Wilcoxon), FDR or Bonferroni/Holm-Šídák | ✅ | 11 | Also consistent SD, lognormal / ratio, Kolmogorov-Smirnov; FDR BKY / BH / BY |
+| Multiple t tests, one per row (t, Welch, paired, Mann-Whitney, Wilcoxon), FDR or Bonferroni/Holm-Šidák | ✅ | 11 | Also consistent SD, lognormal / ratio, Kolmogorov-Smirnov; FDR BKY / BH / BY (Q = 5% by default, 51c) |
 | Volcano plot from multiple t tests | ✅ | 11 | No threshold lines |
 | One-way ANOVA, ordinary and repeated measures | ✅ | | |
-| Comparisons: Tukey, Dunnett, Bonferroni, Holm-Šídák, Šídák, Fisher's LSD, FDR (BKY) | ✅ | | |
+| Comparisons: Tukey, Dunnett, Bonferroni, Holm-Šidák, Šidák, Fisher's LSD, FDR (BKY) | ✅ | | New one- and two-way comparisons later − earlier (51c) |
 | Comparisons: Newman-Keuls | ✅ | 11 | Not with repeated measures; reports a step-down P |
 | Post-test for linear trend (one-way) | ✅ | 11 | Ordinary ANOVA only |
 | Welch and Brown-Forsythe ANOVA; Games-Howell, Tamhane T2, Dunnett T3 | ✅ | | |
 | Multiplicity-adjusted P values and CIs for comparisons | ✅ | | |
 | Geisser-Greenhouse (one- and two-way RM) | ✅ | | |
-| Kruskal-Wallis, Friedman, Dunn's test | ✅ | | |
+| Kruskal-Wallis, Friedman, Dunn's test | ✅ | 51c | Kruskal-Wallis' exact P for small designs (up to 2 × 10⁷ arrangements); Dunn's by Holm, Šidák, Bonferroni or none |
 | Fisher's exact / chi-square with RR, OR, CIs | ✅ | | |
-| Chi-square test for trend; comparisons within larger contingency tables | ✅ | 18 | Cochran-Armitage (k × 2); pairs of rows (or each vs. a control row) with Bonferroni / Holm-Šídák / Šídák |
+| Chi-square test for trend; comparisons within larger contingency tables | ✅ | 18 | Cochran-Armitage (k × 2; asked for, 51c); pairs of rows (or each vs. a control row) with Bonferroni / Holm-Šidák / Šidák; a 2 × 2's exposed row and outcome column (51c) |
 | Two-way ANOVA with missing values | ✅ | | |
 | Two-way RM in one or both factors; main and simple effects | ✅ | | Newman-Keuls only without repeated measures |
-| Mixed-effects model for RM with missing values (one-, two-way) | ✅ | | REML |
-| Multiple one-way ANOVAs, one per row | ✅ | 11 | Ordinary, Welch, Brown-Forsythe, Kruskal-Wallis; no repeated measures |
+| Mixed-effects model for RM with missing values (one-, two-way) | ✅ | 51c | REML; the method chosen (auto, ANOVA of complete subjects, mixed); Satterthwaite or containment df |
+| Multiple one-way ANOVAs, one per row | ✅ | 11, 51c | Ordinary, Welch, Brown-Forsythe, Kruskal-Wallis; no repeated measures; the rows corrected (FDR by Benjamini-Hochberg by default, 51c) |
 | Three-way ANOVA (2 × 2 × k), ordinary, RM and mixed | ◐ | 11, 18 | Ordinary (Type III, effect sizes, three comparison families); RM in any factors (GG) and mixed model with missing values (18); no comparisons after RM |
-| Nested t test, nested one-way ANOVA | ✅ | 13 | REML mixed model, containment df; variance components, ICC, F test and likelihood-ratio test of the subcolumns; comparisons as one-way ANOVA (no Newman-Keuls) |
+| Nested t test, nested one-way ANOVA | ✅ | 13 | REML mixed model, Satterthwaite (51c) or containment df; variance components, ICC, F test and likelihood-ratio test of the subcolumns; comparisons as one-way ANOVA (no Newman-Keuls) |
 | Multifactor (N-way) ANOVA | ✅ | 19 | Multiple-variables tables: text or coded factors, chosen two- and three-way interactions (default all), Type III SS for unbalanced data, η² / partial η² / Cohen's f / % of total, comparisons of marginal means (main effects, simple effects, cells; Tukey, Šídák, Bonferroni, Holm-Šídák, Fisher); no Dunnett, no residual plots |
 | Effect sizes for t tests, ANOVA and contingency tables | ✅ | 11, 18 | t tests: η², Cohen's d, Hedges' g, Glass's Δ; ANOVAs: η², partial η², ω² (ordinary), Cohen's f, RM designs against each effect's error term (18); contingency: RR/OR, phi, Cramér's V (18) |
 
@@ -84,7 +84,7 @@ Roadmap 29; every edit is one undo step.
 
 | Feature | Status | Notes |
 | --- | --- | --- |
-| Kaplan-Meier, log-rank (Mantel-Cox), trend, Gehan-Breslow-Wilcoxon, hazard ratios | ✅ | |
+| Kaplan-Meier, log-rank (Mantel-Cox), trend, Gehan-Breslow-Wilcoxon, hazard ratios | ✅ | One test chosen; pairwise tests corrected for three or more groups (51c) |
 | Cox proportional hazards regression | ✅ | |
 | Survival curves for chosen covariate values (Cox) | ✅ | 18: Kalbfleisch–Prentice baseline, step curves on an output graph, baseline functions sheet |
 | Kaplan-Meier from a multiple-variables table (grouping variables, text status) | ✅ | 19: curves per combination of grouping levels; makes the survival table for graphing; one status variable |
@@ -104,8 +104,8 @@ Roadmap 29; every edit is one undo step.
 | --- | --- | --- | --- |
 | Descriptive statistics (quartiles, CI, CV, skewness, kurtosis, geometric mean) | ✅ | | |
 | Frequency distribution, cumulative histogram | ✅ | 13 | Counts, relative (% / fraction), cumulative over bins; automatic width per FAQ 1660; no exact (unbinned) cumulative. Graphed as a histogram by default (17) |
-| Normality: D'Agostino-Pearson, Anderson-Darling, Shapiro-Wilk, KS; lognormality | ✅ | | |
-| QQ plot | ✅ | 18 | Output graph of the normality test (opt-in) |
+| Normality: D'Agostino-Pearson, Anderson-Darling, Shapiro-Wilk, KS; lognormality | ✅ | 51c | Shapiro-Wilk with the QQ plot by default (51c) |
+| QQ plot | ✅ | 18 | Output graph of the normality test (on by default, 51c) |
 | One-sample t / Wilcoxon | ✅ | | |
 | Outliers: Grubbs, ROUT | ✅ | 13 | ROUT (Q), Grubbs, iterative Grubbs; cleaned-data table |
 | Analyze a stack of P values (Bonferroni, FDR) | ✅ | 11 | Same correction code as multiple t tests; ranked-P graph |
@@ -119,7 +119,7 @@ Roadmap 29; every edit is one undo step.
 | Runs test for linearity; residual plots | ✅ | 14; also replicates test and residual normality |
 | Compare slopes and intercepts | ✅ | |
 | Interpolate from a standard line | ✅ | 14 |
-| Pearson and Spearman correlation | ✅ | |
+| Pearson and Spearman correlation | ✅ | Several pairs corrected (FDR by Benjamini-Hochberg or Holm, 51c) |
 
 ## Generalized linear models
 
@@ -136,7 +136,7 @@ Roadmap 29; every edit is one undo step.
 | Feature | Status |
 | --- | --- |
 | Bland-Altman | ✅ |
-| ROC curves | ✅ |
+| ROC curves | ✅ (the direction stated, 51c) |
 | Deming (type II) regression | ✅ |
 
 ## Simulations

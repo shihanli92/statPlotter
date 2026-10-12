@@ -166,7 +166,7 @@ function friedmanExactP(scores: readonly Int32Array[], k: number): number {
 }
 
 export interface DunnFriedmanOptions {
-  method: 'none' | 'bonferroni' | 'sidak'
+  method: 'none' | 'bonferroni' | 'sidak' | 'holm'
   /** Comparisons in the family (default and minimum: pairs.length). */
   family?: number
 }
@@ -189,7 +189,7 @@ export interface DunnFriedmanRow {
  * Dunn's multiple comparisons after the Friedman test: z = (R̄_i − R̄_j) /
  * √(k(k+1)/(6n)) on the mean ranks, equivalently (R_i − R_j)/√(n k(k+1)/6) on the rank sums, with
  * no tie correction; two-sided P = 2(1 − Φ(|z|)), multiplied by the number of comparisons
- * (Bonferroni, "Dunn's test"), Šidák-adjusted, or left uncorrected. This is the test of
+ * (Bonferroni, "Dunn's test"), Šidák- or (roadmap 51c) Holm-adjusted, or left uncorrected. This is the test of
  * Siegel & Castellan (1988, §7.2.2) and PMCMRplus::frdAllPairsSiegelTest.
  */
 export function dunnFriedmanComparisons(

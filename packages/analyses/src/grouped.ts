@@ -1,4 +1,4 @@
-import type { NormalizedDataSet } from '@ps/model'
+import { type NormalizedDataSet, pinDefaults } from '@ps/model'
 import type { FamilyMethod, GroupData } from '@ps/stats'
 import { z } from 'zod'
 
@@ -45,8 +45,11 @@ export function cellHasData(ds: NormalizedDataSet, r: number): boolean {
 export const familyParams = {
   approach: z.enum(['fdr', 'significance', 'none']).default('fdr'),
   fdrMethod: z.enum(['bky', 'bh', 'by']).default('bky'),
-  /** Desired FDR Q, as a percentage (as the dialog shows it). */
-  q: z.number().gt(0).lt(100).default(1),
+  /**
+   * Desired FDR Q, as a percentage (as the dialog shows it). Roadmap 51c (S34; amends decision
+   * 51): 5% for new analyses, the level usual in screens; 1% before 0.3.9 (pinned for those).
+   */
+  q: z.number().gt(0).lt(100).default(5),
   sigMethod: z.enum(['holm-sidak', 'sidak', 'bonferroni']).default('holm-sidak'),
   alpha: z.number().gt(0).lt(1).default(0.05),
 }
@@ -64,7 +67,7 @@ export const FAMILY_FIELDS = [
     label: 'Multiple comparisons',
     kind: 'radio',
     options: [
-      { value: 'fdr', label: 'Control the false discovery rate (FDR) — recommended' },
+      { value: 'fdr', label: 'Control the false discovery rate (FDR) (recommended)' },
       {
         value: 'significance',
         label: 'Control the Type I error rate for the family (significance)',
@@ -76,12 +79,14 @@ export const FAMILY_FIELDS = [
     path: ['fdrMethod'],
     label: 'Method',
     kind: 'select',
+    // S34: Benjamini-Hochberg first (the most widely used); the two-stage method stays the
+    // default of multiple t tests for its power, with the same guarantee.
     options: [
+      { value: 'bh', label: 'Benjamini-Hochberg (the most widely used)' },
       {
         value: 'bky',
         label: 'Two-stage step-up method of Benjamini, Krieger and Yekutieli (recommended)',
       },
-      { value: 'bh', label: 'Original FDR method of Benjamini and Hochberg' },
       { value: 'by', label: 'Corrected method of Benjamini and Yekutieli' },
     ],
     showIf: { path: ['approach'], in: ['fdr'] },
@@ -100,19 +105,21 @@ export const FAMILY_FIELDS = [
     label: 'Method',
     kind: 'select',
     options: [
-      { value: 'holm-sidak', label: 'Holm-Šídák method (recommended)' },
-      { value: 'sidak', label: 'Šídák-Bonferroni method' },
-      { value: 'bonferroni', label: 'Bonferroni-Dunn method' },
+      { value: 'holm-sidak', label: 'Holm-Šidák method (recommended)' },
+      { value: 'sidak', label: 'Šidák method' },
+      { value: 'bonferroni', label: 'Bonferroni method' },
     ],
     showIf: { path: ['approach'], in: ['significance'] },
   },
   {
+    // S34: shown as a percentage, like Q (stored as a fraction).
     path: ['alpha'],
-    label: 'Alpha (a fraction, e.g. 0.05)',
+    label: 'Significance level (alpha), %',
     kind: 'number',
     min: 0.0001,
     max: 0.5,
     step: 0.01,
+    percent: true,
     showIf: { path: ['approach'], in: ['significance', 'none'] },
   },
 ] as const
@@ -125,9 +132,9 @@ export const FAMILY_TITLE: Record<FamilyMethod, string> = {
   bky: 'False discovery rate: two-stage step-up method of Benjamini, Krieger and Yekutieli',
   bh: 'False discovery rate: original method of Benjamini and Hochberg',
   by: 'False discovery rate: corrected method of Benjamini and Yekutieli',
-  'holm-sidak': 'Statistical significance: Holm-Šídák method',
-  sidak: 'Statistical significance: Šídák-Bonferroni method',
-  bonferroni: 'Statistical significance: Bonferroni-Dunn method',
+  'holm-sidak': 'Statistical significance: Holm-Šidák method',
+  sidak: 'Statistical significance: Šidák method',
+  bonferroni: 'Statistical significance: Bonferroni method',
   none: 'Statistical significance: no correction for multiple comparisons',
 }
 
@@ -141,3 +148,6 @@ export function familyColumns(p: FamilyParams): { flag: string; adjusted: string
 
 /** The family's level as a fraction: Q or α. */
 export const familyLevel = (p: FamilyParams) => (p.approach === 'fdr' ? p.q / 100 : p.alpha)
+
+/** Version 1 (before 0.3.9, S34): Q was 1% by default; saved analyses keep it. */
+export const pinFamilyQ = (raw: unknown): unknown => pinDefaults(raw, [[['q'], 1]])

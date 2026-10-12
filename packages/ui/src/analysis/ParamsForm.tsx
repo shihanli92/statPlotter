@@ -1,4 +1,4 @@
-import type { FormField, FormOption, OptionExplain, ShowIf } from '@ps/model'
+import type { AnalysisFact, FormField, FormOption, OptionExplain, ShowIf } from '@ps/model'
 import { type ReactNode, useId, useState } from 'react'
 import { Field, NumberBox } from '../components/fields.tsx'
 
@@ -14,7 +14,24 @@ export interface FormContext {
   dataSets: { key: string; title: string; text?: boolean; levels?: string[] }[]
   /** Rows of the analyzed table (index and title, "Row n" when untitled). */
   rows?: { index: number; title: string }[]
+  /** Roadmap 51c: facts about the chosen data (`FormField.unavailableIf`). */
+  facts?: Partial<Record<AnalysisFact, boolean>>
 }
+
+/**
+ * Roadmap 51c: a label with the chosen data sets' names — `{A}` the first, `{B}` the second
+ * ("Treated higher than Control" for a one-tailed test's direction).
+ */
+export function named(label: string, context: FormContext): string {
+  if (!label.includes('{')) return label
+  const [a, b] = context.dataSets
+  return label
+    .replaceAll('{A}', a?.title ? `“${a.title}”` : 'the first group')
+    .replaceAll('{B}', b?.title ? `“${b.title}”` : 'the second group')
+}
+
+/** A fraction shown as a percentage, without binary noise (0.05 → 5). */
+const percentOf = (v: number) => +(v * 100).toPrecision(12)
 
 export type CustomField = (props: {
   label: string
@@ -108,7 +125,12 @@ export function ParamsForm({
     <div className="params-form">
       {fields.map((f, i) => {
         const conditions = f.showIf ? (Array.isArray(f.showIf) ? f.showIf : [f.showIf]) : []
-        if (!conditions.every((c: ShowIf) => c.in.includes(getPath(value, c.path)))) return null
+        const holds = (c: ShowIf) => c.in.includes(getPath(value, c.path))
+        if (!conditions.every(holds)) return null
+        // Roadmap 51c: greyed with the reason while a fact about the data holds.
+        const u = f.unavailableIf
+        const unavailable =
+          u && context.facts?.[u.fact] && (u.when ?? []).every(holds) ? u.reason : null
         // The radio buttons' shared name, and the ids of the lines that describe them.
         const name = `${base}-${i}`
         const lineId = `${name}-line`
@@ -155,10 +177,12 @@ export function ParamsForm({
             return (
               <fieldset
                 key={f.path.join('.')}
-                className="field radio"
+                className={`field radio${unavailable ? ' unavailable' : ''}`}
                 aria-describedby={line ? lineId : undefined}
+                disabled={!!unavailable}
               >
-                <legend>{f.label}</legend>
+                <legend>{named(f.label, context)}</legend>
+                {unavailable && <div className="help unavailable-reason">{unavailable}</div>}
                 {line && (
                   <div id={lineId} className="help explain">
                     {line}
@@ -178,7 +202,7 @@ export function ParamsForm({
                           aria-describedby={text ? oid : undefined}
                           onChange={() => update(o.value)}
                         />
-                        {o.label}
+                        {named(o.label, context)}
                       </label>
                       {text && (
                         <div id={oid} className="option-line">
@@ -240,21 +264,24 @@ export function ParamsForm({
               </Field>
             )
           }
-          case 'number':
+          case 'number': {
+            // S34: a fraction shown and typed as a percentage.
+            const pc = f.percent ? percentOf : (v: number) => v
             return (
               <Field key={f.path.join('.')} label={f.label} help={line}>
                 {(id, describedBy) => (
                   <NumberBox
                     id={id}
                     aria-describedby={describedBy}
-                    value={Number(current)}
-                    min={f.min}
-                    max={f.max}
-                    onChange={update}
+                    value={pc(Number(current))}
+                    min={f.min === undefined ? undefined : pc(f.min)}
+                    max={f.max === undefined ? undefined : pc(f.max)}
+                    onChange={(v) => update(f.percent ? v / 100 : v)}
                   />
                 )}
               </Field>
             )
+          }
         }
         return null
       })}

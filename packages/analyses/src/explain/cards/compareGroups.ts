@@ -1,9 +1,8 @@
 import type { MethodCard } from '@ps/model'
 
 // Roadmap 51a: the compare-groups cards as the design gives them (docs/design/ANALYSIS_GUIDE.md
-// §2.5), worded for the app as it is in 0.3.8: where 51c changes a default (Welch's t test,
-// exact Kruskal-Wallis P, Dunn's correction), the text describes today's behaviour and says which
-// choice is recommended, without claiming it is the default yet.
+// §2.5); roadmap 51c: true of its defaults (Welch's t test, exact Kruskal-Wallis P, Dunn's
+// comparisons by Holm, the RM method and Satterthwaite's df).
 
 export const welchT: MethodCard = {
   id: 'welchT',
@@ -51,7 +50,7 @@ export const studentT: MethodCard = {
   nullHypothesis:
     'The two groups have the same mean. P is the chance of a difference at least this large if they did.',
   useWhen:
-    'Two independent groups when you have a reason to expect equal scatter, such as a validated assay whose variability doesn’t depend on the treatment. It is the unpaired t test’s starting choice in this version; Welch’s t test is the safer one.',
+    'Two independent groups when you have a reason to expect equal scatter, such as a validated assay whose variability doesn’t depend on the treatment. Welch’s t test, the unpaired t test’s default, is the safer one.',
   instead: [
     {
       card: 'welchT',
@@ -366,11 +365,13 @@ export const kruskalWallis: MethodCard = {
     'It compares medians only if the groups have the same shape.',
   ],
   reading:
-    'Read P and the mean rank of each group. Dunn’s comparisons use the ranks of all groups together and are adjusted for their number. In this version P is the chi-square approximation, which is rough for very small groups; the result says so.',
+    'Read P and the mean rank of each group. Dunn’s comparisons use the ranks of all groups together and are adjusted for their number (Holm by default). P is exact for small groups (every arrangement of the ranks counted) and the chi-square approximation for larger ones; the result says which.',
   more: {
-    formula: 'H from the rank sums (tie-corrected), compared with chi-square on k − 1 df.',
-    r: 'kruskal.test(y ~ group)',
-    notes: 'Dunn: dunn.test::dunn.test(y, group, method = "bonferroni").',
+    formula:
+      'H from the rank sums (tie-corrected); exact P by enumerating the arrangements of the ranks, else chi-square on k − 1 df.',
+    r: 'kruskal.test(y ~ group)  # approximate P',
+    notes:
+      'Exact: coin::kruskal_test(y ~ group, distribution = approximate()) estimates it. Dunn: dunn.test::dunn.test(y, group, method = "holm").',
   },
   references: [
     { text: 'Kruskal WH, Wallis WA (1952) J Am Stat Assoc 47:583–621' },
@@ -399,7 +400,7 @@ export const rmOneWay: MethodCard = {
     'Sphericity: the differences between any two conditions vary about equally. Time courses usually break it.',
   ],
   reading:
-    'Read P for the conditions. The Geisser-Greenhouse correction (recommended because nearby times are usually more alike) lowers the df to keep P honest; its epsilon near 1 means sphericity holds. With missing values a mixed-effects model is fit instead: it uses every value but assumes sphericity; the result says so.',
+    'Read P for the conditions. The Geisser-Greenhouse correction (recommended because nearby times are usually more alike) lowers the df to keep P honest; its epsilon near 1 means sphericity holds. With missing values a mixed-effects model is fit instead (or always, or the complete subjects only, as you choose): it uses every value but assumes sphericity; the result says so, with its df (Satterthwaite by default).',
   more: {
     formula:
       'F = condition mean square / (condition × subject) mean square, df × epsilon. Mixed: REML with a random subject intercept.',
@@ -429,7 +430,7 @@ export const friedman: MethodCard = {
     'Values are ranked within each subject; rows with a missing value are left out.',
   ],
   reading:
-    'Read P (exact for small designs, else approximate; the result says which) and the rank sum of each condition. Dunn’s comparisons are adjusted for their number.',
+    'Read P (exact for small designs, else approximate; the result says which) and the rank sum of each condition. Dunn’s comparisons (Siegel-Castellan form) are adjusted for their number, by Holm by default.',
   more: {
     formula: 'Ranks 1…k within each subject; a chi-square statistic from the rank sums.',
     r: 'friedman.test(y ~ condition | subject)',

@@ -201,7 +201,14 @@ describe('chained analyses', () => {
     contexts.length = 0
     const { store } = chain()
     await startedEngine(store, registry)
-    expect(contexts).toEqual([{ tableKind: 'column', xTitle: null }])
+    // Roadmap 51c (S13): and which analysis produced it (with its note about the values, if any).
+    expect(contexts).toEqual([
+      {
+        tableKind: 'column',
+        xTitle: null,
+        source: { analysisId: 'test.scale', name: 'test.scale' },
+      },
+    ])
   })
 
   it('recomputes downstream when the upstream result changes', async () => {

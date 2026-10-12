@@ -1,0 +1,19 @@
+{
+  "name": "unpaired_ci_includes_zero",
+  "input": {"a":[10,14,9,13,12],"b":[12,11,15,10,14]},
+  "params": {"type":"two.sample","alpha":0.05,"target":0.8,"tails":2},
+  "expected": {
+    "delta": 0.80000000000000071,
+    "sd": 2.0736441353327719,
+    "ciLo": -2.2242960706775023,
+    "ciHi": 3.8242960706775042,
+    "nFor": 106.43799086599059,
+    "nBound": "NA",
+    "nBoundCeiling": "NA"
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "The CI includes zero: no n at its bound."
+}

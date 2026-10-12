@@ -22,15 +22,15 @@ groupsDiffer | groups=many matched=no values=measure scatter=unsure comparisons=
 groupsDiffer | groups=many matched=no values=measure scatter=unsure comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
 groupsDiffer | groups=many matched=no values=measure scatter=unsure comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
 groupsDiffer | groups=many matched=no values=factor → transform {"y":"log10"}
-groupsDiffer | groups=many matched=no values=scores comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
-groupsDiffer | groups=many matched=no values=scores comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
-groupsDiffer | groups=many matched=no values=scores comparisons=none → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
-groupsDiffer | groups=many matched=yes values=measure comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
-groupsDiffer | groups=many matched=yes values=measure comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
-groupsDiffer | groups=many matched=yes values=measure comparisons=none → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
-groupsDiffer | groups=many matched=yes values=scores comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
-groupsDiffer | groups=many matched=yes values=scores comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
-groupsDiffer | groups=many matched=yes values=scores comparisons=none → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=no values=scores comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":false,"kwPMethod":"exactWhenPossible","dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=no values=scores comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":false,"kwPMethod":"exactWhenPossible","dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=no values=scores comparisons=none → oneWayAnova {"matched":false,"gaussian":false,"kwPMethod":"exactWhenPossible","dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=yes values=measure comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","rmMethod":"auto","ddf":"satterthwaite","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=yes values=measure comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","rmMethod":"auto","ddf":"satterthwaite","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=yes values=measure comparisons=none → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","rmMethod":"auto","ddf":"satterthwaite","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+groupsDiffer | groups=many matched=yes values=scores comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":false,"dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+groupsDiffer | groups=many matched=yes values=scores comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":false,"dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+groupsDiffer | groups=many matched=yes values=scores comparisons=none → oneWayAnova {"matched":true,"gaussian":false,"dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
 vsControl | groups=one values=measure → oneSample {"test":"t","hypothetical":100}
 vsControl | groups=one values=scores → oneSample {"test":"wilcoxon","hypothetical":100}
 vsControl | groups=two matched=no values=measure scatter=yes → ttest {"design":"unpaired","unpaired":{"assumeEqualSD":false}}
@@ -52,15 +52,15 @@ vsControl | groups=many matched=no values=measure scatter=unsure comparisons=all
 vsControl | groups=many matched=no values=measure scatter=unsure comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
 vsControl | groups=many matched=no values=measure scatter=unsure comparisons=none → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"welch","welchMethod":"dunnett-t3","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
 vsControl | groups=many matched=no values=factor → transform {"y":"log10"}
-vsControl | groups=many matched=no values=scores comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
-vsControl | groups=many matched=no values=scores comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
-vsControl | groups=many matched=no values=scores comparisons=none → oneWayAnova {"matched":false,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
-vsControl | groups=many matched=yes values=measure comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
-vsControl | groups=many matched=yes values=measure comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
-vsControl | groups=many matched=yes values=measure comparisons=none → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
-vsControl | groups=many matched=yes values=scores comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
-vsControl | groups=many matched=yes values=scores comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
-vsControl | groups=many matched=yes values=scores comparisons=none → oneWayAnova {"matched":true,"gaussian":false,"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=no values=scores comparisons=allPairs → oneWayAnova {"matched":false,"gaussian":false,"kwPMethod":"exactWhenPossible","dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=no values=scores comparisons=vsControl → oneWayAnova {"matched":false,"gaussian":false,"kwPMethod":"exactWhenPossible","dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=no values=scores comparisons=none → oneWayAnova {"matched":false,"gaussian":false,"kwPMethod":"exactWhenPossible","dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=yes values=measure comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","rmMethod":"auto","ddf":"satterthwaite","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=yes values=measure comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","rmMethod":"auto","ddf":"satterthwaite","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=yes values=measure comparisons=none → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","rmMethod":"auto","ddf":"satterthwaite","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
+vsControl | groups=many matched=yes values=scores comparisons=allPairs → oneWayAnova {"matched":true,"gaussian":false,"dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
+vsControl | groups=many matched=yes values=scores comparisons=vsControl → oneWayAnova {"matched":true,"gaussian":false,"dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
+vsControl | groups=many matched=yes values=scores comparisons=none → oneWayAnova {"matched":true,"gaussian":false,"dunnMethod":"holm","allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}
 trend | matched=no → oneWayAnova {"matched":false,"gaussian":true,"equalSD":"yes","comparisons":"trend"}
 trend | matched=yes → oneWayAnova {"matched":true,"gaussian":true,"sphericity":"gg","comparisons":"allPairs"}
 setValue | values=measure → oneSample {"test":"t","hypothetical":100}
@@ -84,35 +84,35 @@ twoFactors | repeated=none comparisons=allCells kind=vsControl → twoWayAnova {
 twoFactors | repeated=none comparisons=mainColumns kind=allPairs → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"mainColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"tukey","controlMethod":"dunnett"}
 twoFactors | repeated=none comparisons=mainColumns kind=vsControl → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"mainColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"tukey","controlMethod":"dunnett"}
 twoFactors | repeated=none comparisons=none → twoWayAnova {"repeated":"none","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=columns comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=columns comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=columns comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=columns comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=columns comparisons=none → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=rows comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=rows comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=rows comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=rows comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=rows comparisons=none → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=both comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=both comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=both comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=both comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-twoFactors | repeated=both comparisons=none → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-timeCourse | second=yes comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-timeCourse | second=yes comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-timeCourse | second=yes comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-timeCourse | second=yes comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
-timeCourse | second=yes comparisons=none → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett"}
+twoFactors | repeated=columns comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=columns comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=columns comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=columns comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=columns comparisons=none → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=rows comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=rows comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=rows comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=rows comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=rows comparisons=none → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=both comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=both comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=both comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=both comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+twoFactors | repeated=both comparisons=none → twoWayAnova {"repeated":"both","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+timeCourse | second=yes comparisons=withinRows kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+timeCourse | second=yes comparisons=withinRows kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+timeCourse | second=yes comparisons=withinColumns kind=allPairs → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+timeCourse | second=yes comparisons=withinColumns kind=vsControl → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"withinColumns","kind":"vsControl","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
+timeCourse | second=yes comparisons=none → twoWayAnova {"repeated":"rows","interaction":true,"sphericity":"gg","comparisons":"none","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
 timeCourse | second=one → needs column
-rowsTwo | matched=no values=measure → multipleT {"design":"unpaired","distribution":"gaussian","variance":"welch","approach":"fdr","fdrMethod":"bky"}
-rowsTwo | matched=no values=factor → multipleT {"design":"unpaired","distribution":"lognormal","variance":"welch","approach":"fdr","fdrMethod":"bky"}
-rowsTwo | matched=no values=scores → multipleT {"design":"unpaired","distribution":"nonparametric","variance":"welch","approach":"fdr","fdrMethod":"bky"}
-rowsTwo | matched=yes values=measure → multipleT {"design":"paired","distribution":"gaussian","variance":"welch","approach":"fdr","fdrMethod":"bky"}
-rowsTwo | matched=yes values=factor → multipleT {"design":"paired","distribution":"lognormal","variance":"welch","approach":"fdr","fdrMethod":"bky"}
-rowsTwo | matched=yes values=scores → multipleT {"design":"paired","distribution":"nonparametric","variance":"welch","approach":"fdr","fdrMethod":"bky"}
-rowsMany | values=measure → multipleOneWay {"gaussian":true,"equalSD":"yes","comparisons":"allPairs"}
-rowsMany | values=scores → multipleOneWay {"gaussian":false,"comparisons":"allPairs"}
+rowsTwo | matched=no values=measure → multipleT {"design":"unpaired","distribution":"gaussian","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
+rowsTwo | matched=no values=factor → multipleT {"design":"unpaired","distribution":"lognormal","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
+rowsTwo | matched=no values=scores → multipleT {"design":"unpaired","distribution":"nonparametric","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
+rowsTwo | matched=yes values=measure → multipleT {"design":"paired","distribution":"gaussian","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
+rowsTwo | matched=yes values=factor → multipleT {"design":"paired","distribution":"lognormal","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
+rowsTwo | matched=yes values=scores → multipleT {"design":"paired","distribution":"nonparametric","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
+rowsMany | values=measure → multipleOneWay {"gaussian":true,"equalSD":"yes","comparisons":"allPairs","approach":"fdr","fdrMethod":"bh","q":5}
+rowsMany | values=scores → multipleOneWay {"gaussian":false,"comparisons":"allPairs","kwPMethod":"exactWhenPossible","dunnMethod":"holm","approach":"fdr","fdrMethod":"bh","q":5}
 threeFactors | groups=four → threeWayAnova {}
 threeFactors | groups=other → needs multipleVariables
 describeRows |  → rowStats {}
@@ -268,15 +268,31 @@ yesNo |  → simpleLogistic {"ciMethod":"profile"}
 auc |  → areaUnderCurve {}
 smooth |  → fitSpline {"method":"lowess"}
 outcomeGroup | paired=yes → needs nothing yet
-outcomeGroup | paired=no size=twoByTwo report=risk → contingency {"test":"fisher","trend":false,"riskEstimates":true,"oddsRatio":false}
-outcomeGroup | paired=no size=twoByTwo report=odds → contingency {"test":"fisher","trend":false,"riskEstimates":false,"oddsRatio":true}
+outcomeGroup | paired=no size=twoByTwo report=risk exposed=first → contingency {"test":"fisher","trend":false,"riskEstimates":true,"oddsRatio":false,"exposedRow":0,"outcomeColumn":0}
+outcomeGroup | paired=no size=twoByTwo report=risk exposed=first → contingency {"test":"fisher","trend":false,"riskEstimates":true,"oddsRatio":false,"exposedRow":0,"outcomeColumn":1}
+outcomeGroup | paired=no size=twoByTwo report=risk exposed=second → contingency {"test":"fisher","trend":false,"riskEstimates":true,"oddsRatio":false,"exposedRow":1,"outcomeColumn":0}
+outcomeGroup | paired=no size=twoByTwo report=risk exposed=second → contingency {"test":"fisher","trend":false,"riskEstimates":true,"oddsRatio":false,"exposedRow":1,"outcomeColumn":1}
+outcomeGroup | paired=no size=twoByTwo report=odds exposed=first → contingency {"test":"fisher","trend":false,"riskEstimates":false,"oddsRatio":true,"exposedRow":0,"outcomeColumn":0}
+outcomeGroup | paired=no size=twoByTwo report=odds exposed=first → contingency {"test":"fisher","trend":false,"riskEstimates":false,"oddsRatio":true,"exposedRow":0,"outcomeColumn":1}
+outcomeGroup | paired=no size=twoByTwo report=odds exposed=second → contingency {"test":"fisher","trend":false,"riskEstimates":false,"oddsRatio":true,"exposedRow":1,"outcomeColumn":0}
+outcomeGroup | paired=no size=twoByTwo report=odds exposed=second → contingency {"test":"fisher","trend":false,"riskEstimates":false,"oddsRatio":true,"exposedRow":1,"outcomeColumn":1}
 outcomeGroup | paired=no size=larger ordered=yes → contingency {"test":"chiSquare","trend":true}
 outcomeGroup | paired=no size=larger ordered=no which=overall → contingency {"test":"chiSquare","trend":false,"pairwise":"none","pairwiseMethod":"bonferroni"}
 outcomeGroup | paired=no size=larger ordered=no which=pairs → contingency {"test":"chiSquare","trend":false,"pairwise":"all","pairwiseMethod":"bonferroni"}
 trendCounts |  → contingency {"test":"chiSquare","trend":true}
-diagnosticTest | result=yesNo → contingency {"test":"fisher","diagnostic":true,"trend":false}
+diagnosticTest | result=yesNo exposed=first → contingency {"test":"fisher","diagnostic":true,"trend":false,"exposedRow":0,"outcomeColumn":0}
+diagnosticTest | result=yesNo exposed=first → contingency {"test":"fisher","diagnostic":true,"trend":false,"exposedRow":0,"outcomeColumn":1}
+diagnosticTest | result=yesNo exposed=second → contingency {"test":"fisher","diagnostic":true,"trend":false,"exposedRow":1,"outcomeColumn":0}
+diagnosticTest | result=yesNo exposed=second → contingency {"test":"fisher","diagnostic":true,"trend":false,"exposedRow":1,"outcomeColumn":1}
 diagnosticTest | result=measurement → needs column
-curvesDiffer |  → survival {}
+curvesDiffer | groups=two weight=whole → survival {"control":"C","test":"logRank","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+curvesDiffer | groups=two weight=early → survival {"control":"C","test":"gehanBreslowWilcoxon","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+curvesDiffer | groups=more ordered=yes weight=whole → survival {"control":"C","test":"logRank","trend":true,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+curvesDiffer | groups=more ordered=yes weight=early → survival {"control":"C","test":"gehanBreslowWilcoxon","trend":true,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+curvesDiffer | groups=more ordered=no which=overall weight=whole → survival {"control":"C","test":"logRank","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+curvesDiffer | groups=more ordered=no which=overall weight=early → survival {"control":"C","test":"gehanBreslowWilcoxon","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+curvesDiffer | groups=more ordered=no which=pairs weight=whole → survival {"control":"C","test":"logRank","trend":false,"pairwise":"all","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+curvesDiffer | groups=more ordered=no which=pairs weight=early → survival {"control":"C","test":"gehanBreslowWilcoxon","trend":false,"pairwise":"all","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
 medianSurvival |  → survival {}
 expectedProportions |  → goodnessOfFit {}
 fractions |  → fractionOfTotal {"display":"percent"}
@@ -287,10 +303,17 @@ predictOutcome | outcomeKind=time → coxRegression {"time":"<Age>","event":"<Di
 factorsAffect |  → multifactorAnova {"y":"<Age>","factors":["<Group>"]}
 pca |  → pca {"standardize":true,"select":"parallel"}
 coxCovariates |  → coxRegression {"time":"<Age>","event":"<Died>"}
-kmFromRows |  → survivalFromVariables {"time":"<Age>","status":"<Died>"}
+kmFromRows | groups=two weight=whole → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"logRank","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+kmFromRows | groups=two weight=early → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"gehanBreslowWilcoxon","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+kmFromRows | groups=more ordered=yes weight=whole → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"logRank","trend":true,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+kmFromRows | groups=more ordered=yes weight=early → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"gehanBreslowWilcoxon","trend":true,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+kmFromRows | groups=more ordered=no which=overall weight=whole → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"logRank","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+kmFromRows | groups=more ordered=no which=overall weight=early → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"gehanBreslowWilcoxon","trend":false,"pairwise":"none","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+kmFromRows | groups=more ordered=no which=pairs weight=whole → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"logRank","trend":false,"pairwise":"all","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
+kmFromRows | groups=more ordered=no which=pairs weight=early → survivalFromVariables {"time":"<Age>","status":"<Died>","test":"gehanBreslowWilcoxon","trend":false,"pairwise":"all","pairwiseMethod":"holm","hazardRatio":"mantelHaenszel"}
 curvePerGroup |  → nonlinearFitMV {"x":"<Age>","y":"<Dose>","group":"<Group>"}
-nestedGroups | groups=two → nestedT {}
-nestedGroups | groups=many comparisons=allPairs → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"allPairs","control":""}
-nestedGroups | groups=many comparisons=vsControl → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"vsControl","control":"C"}
-nestedGroups | groups=many comparisons=none → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","comparisons":"none","control":""}"
+nestedGroups | groups=two → nestedT {"ddf":"satterthwaite"}
+nestedGroups | groups=many comparisons=allPairs → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","ddf":"satterthwaite","comparisons":"allPairs","control":""}
+nestedGroups | groups=many comparisons=vsControl → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","ddf":"satterthwaite","comparisons":"vsControl","control":"C"}
+nestedGroups | groups=many comparisons=none → nestedOneWay {"allPairsMethod":"tukey","controlMethod":"dunnett","ddf":"satterthwaite","comparisons":"none","control":""}"
 `;

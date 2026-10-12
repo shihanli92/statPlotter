@@ -119,11 +119,12 @@ describe('every analysis', () => {
           options++
         }
       }
-    // The counts the roadmap reports (every field and option of the 54 analyses).
+    // The counts the roadmap reports (every field and option of the 54 analyses; 51c added
+    // 42 fields, 91 options and the Holm card).
     expect(defs.length).toBe(54)
-    expect(fields).toBe(405)
-    expect(options).toBe(599)
-    expect(METHOD_CARDS.size).toBe(88)
+    expect(fields).toBe(447)
+    expect(options).toBe(690)
+    expect(METHOD_CARDS.size).toBe(89)
   })
 
   it('gives the reason wherever a label says (not) recommended', () => {

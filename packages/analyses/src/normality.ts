@@ -1,4 +1,11 @@
-import type { AnalysisDef, AnalysisResult, OutputDecl, ResultBlock, ResultValue } from '@ps/model'
+import {
+  type AnalysisDef,
+  type AnalysisResult,
+  type OutputDecl,
+  pinDefaults,
+  type ResultBlock,
+  type ResultValue,
+} from '@ps/model'
 import {
   andersonDarling,
   dagostinoPearson,
@@ -10,7 +17,6 @@ import {
 import { z } from 'zod'
 import {
   ALPHA,
-  decided,
   exclusionNotes,
   failure,
   int,
@@ -20,23 +26,38 @@ import {
   pval,
   rawValues,
   result,
+  testValue,
   text,
 } from './common.ts'
 
 const Params = z.object({
   distribution: z.enum(['normal', 'lognormal', 'both']).default('normal'),
-  dagostino: z.boolean().default(true),
-  andersonDarling: z.boolean().default(true),
+  /** Roadmap 51c (S14): Shapiro-Wilk only by default (the four tests before 0.3.9). */
+  dagostino: z.boolean().default(false),
+  andersonDarling: z.boolean().default(false),
   shapiroWilk: z.boolean().default(true),
-  kolmogorovSmirnov: z.boolean().default(true),
+  kolmogorovSmirnov: z.boolean().default(false),
   /**
    * A QQ plot on a graph of its own (actual values on X, the values a Gaussian sample
    * would have at the same ranks on Y, with the line of identity). Lognormal when only
-   * lognormality is tested. Off by default here, so existing projects gain no graph.
+   * lognormality is tested. Roadmap 51c (S14): on by default for new analyses (off before
+   * 0.3.9, so saved projects gain no graph).
    */
-  qqPlot: z.boolean().default(false),
+  qqPlot: z.boolean().default(true),
 })
 type Params = z.infer<typeof Params>
+
+/** Version 1 (before 0.3.9): the four tests on and no QQ plot by default; kept. */
+const migrate = (raw: unknown, from: number): unknown =>
+  from >= 2
+    ? raw
+    : pinDefaults(raw, [
+        [['dagostino'], true],
+        [['andersonDarling'], true],
+        [['shapiroWilk'], true],
+        [['kolmogorovSmirnov'], true],
+        [['qqPlot'], false],
+      ])
 
 interface TestDef {
   key: 'dagostino' | 'andersonDarling' | 'shapiroWilk' | 'kolmogorovSmirnov'
@@ -88,7 +109,12 @@ export function testBlock(
   dist: string,
 ) {
   const results = samples.map((x) => (x && x.length >= t.minN ? t.run(x) : null))
-  const passed = `Passed ${dist} test (alpha = ${ALPHA})?`
+  // S14: descriptive, not a pass: evidence against the distribution, or no evidence (which
+  // doesn't show the data are normal).
+  const shape = dist === 'normality' ? 'normal' : 'lognormal'
+  const evidence = `Evidence against a ${shape} distribution (P < ${ALPHA})?`
+  const verdict = (p: number): ResultValue =>
+    text(p < ALPHA ? 'Yes' : `No evidence (doesn’t show the data are ${shape})`)
   // No P (e.g. every value identical): a dash rather than "passed".
   type Res = ReturnType<TestDef['run']>
   const cell = (r: Res | null, v: (r: Res) => ResultValue) =>
@@ -97,14 +123,14 @@ export function testBlock(
     [t.stat, results.map((r) => cell(r, (r) => num(r.stat)))],
     // Lilliefors P is only accurate below 0.10; above it, just "> 0.10".
     ['P value', results.map((r) => cell(r, (r) => (r.pAbove010 ? text('> 0.10') : pval(r.p))))],
-    [passed, results.map((r) => cell(r, (r) => decided(!(r.p < ALPHA), r.p)))],
+    [evidence, results.map((r) => cell(r, (r) => verdict(r.p)))],
     ['P value summary', results.map((r) => cell(r, (r) => psum(r.p)))],
   ])
 }
 
 export const normalityDef: AnalysisDef<Params> = {
   id: 'normality',
-  version: 1,
+  version: 2,
   title: 'Normality and lognormality tests',
   category: 'Column analyses',
   description:
@@ -112,6 +138,7 @@ export const normalityDef: AnalysisDef<Params> = {
   accepts: ['column'],
   inputs: { min: 1, max: 64 },
   params: Params,
+  migrateParams: migrate,
   form: [
     {
       path: ['distribution'],
@@ -123,11 +150,7 @@ export const normalityDef: AnalysisDef<Params> = {
         { value: 'both', label: 'Both' },
       ],
     },
-    {
-      path: ['dagostino'],
-      label: 'D’Agostino-Pearson omnibus test (recommended)',
-      kind: 'checkbox',
-    },
+    { path: ['dagostino'], label: 'D’Agostino-Pearson omnibus test (n ≥ 8)', kind: 'checkbox' },
     { path: ['andersonDarling'], label: 'Anderson-Darling test', kind: 'checkbox' },
     { path: ['shapiroWilk'], label: 'Shapiro-Wilk test', kind: 'checkbox' },
     { path: ['kolmogorovSmirnov'], label: 'Kolmogorov-Smirnov test', kind: 'checkbox' },
@@ -177,6 +200,10 @@ export const normalityDef: AnalysisDef<Params> = {
       labelTable('Data analyzed', titles, [
         ['Number of values', samples.map((x) => int(x!.length))],
       ]),
+      {
+        type: 'note',
+        text: 'With few values these tests can’t see departures from the distribution; with many they flag trivial ones. Read the QQ plot, and choose between a t test and a rank test from what is known about the measurement, not from this test.',
+      },
     )
     const small = tests.filter((t) => samples.some((x) => x!.length < t.minN))
     if (small.length) {
@@ -203,6 +230,6 @@ export const normalityDef: AnalysisDef<Params> = {
       })
       if (lo <= hi) outputs['qq:identity'] = { title: 'Line of identity', x: [lo, hi], y: [lo, hi] }
     }
-    return result({ blocks, diagnostics, outputs })
+    return result({ blocks, diagnostics, outputs, values: testValue('Normality tests') })
   },
 }

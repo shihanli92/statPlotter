@@ -33,7 +33,7 @@ export function createDataProcessing(fonts: FontRegistry): Project {
         Control: draws(12, () => r.lognormal(Math.log(40), 0.6), 1),
         Infected: draws(12, () => r.lognormal(Math.log(95), 0.6), 1),
       },
-      'Serum IL-6 (pg/mL) in 12 control and 12 infected mice. Simulated lognormal data: right-skewed, with the spread growing with the mean. Transform (Y = log(Y)) makes a table of log10 values, and the t test analyzes that table; both update when a value here changes.',
+      'Serum IL-6 (pg/mL) in 12 control and 12 infected mice. Simulated lognormal data: right-skewed, with the spread growing with the mean. Transform (Y = log10(Y)) makes a table of log10 values, and the t test analyzes that table; both update when a value here changes.',
     ),
   )
   b.graph(skewed, {

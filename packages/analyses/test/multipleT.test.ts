@@ -1,4 +1,4 @@
-import { createTable } from '@ps/model'
+import { createTable, paramsOf } from '@ps/model'
 import { correctFamily, tTestUnpaired } from '@ps/stats'
 import { describe, expect, it } from 'vitest'
 import { multipleTDef } from '../src/index.ts'
@@ -32,11 +32,13 @@ const cells: (number | null)[][][] = [
 const titles = ['Gapdh', 'Actb', 'Il6', 'Tnf', 'empty']
 
 describe('multiple t tests plugin', () => {
-  it('has parseable defaults (Welch, FDR two-stage, Q = 1%)', () => {
+  it('has parseable defaults (Welch, FDR two-stage, Q = 5% since 0.3.9; saved ones keep 1%)', () => {
     const p = multipleTDef.params.parse({})
     expect(p.variance).toBe('welch')
     expect(p.fdrMethod).toBe('bky')
-    expect(p.q).toBe(1)
+    expect(p.q).toBe(5)
+    const saved = paramsOf(multipleTDef, { params: {}, pluginVersion: 1 })
+    expect(saved.ok && saved.params.q).toBe(1)
   })
 
   it('tests every row, reports A − B, skips untestable rows and leaves out empty ones', () => {

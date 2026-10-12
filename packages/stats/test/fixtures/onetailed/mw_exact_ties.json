@@ -1,0 +1,17 @@
+{
+  "name": "mw_exact_ties",
+  "input": {"a":[1,2,2,3,4,5],"b":[3,4,4,5,6,6,7]},
+  "params": {"suite":"mannwhitney","rparams":{"exact":"auto"},"analysis":"mannWhitney","app":{"pMethod":"exactWhenPossible"}},
+  "expected": {
+    "two": 0.037296037296037296,
+    "greater": 0.018648018648018648,
+    "less": 0.988927738927739
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

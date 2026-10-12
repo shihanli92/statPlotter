@@ -41,26 +41,31 @@ test('t test: results, parameters edited, recomputed after a data edit', async (
   await newTable(page, { kind: 'Column', sample: true })
   await analyze(page, 't test')
   await expect(sheet(page, 't test of Data 1', 'Results')).toHaveClass(/\bon\b/)
-  const test = resultTable(page, 'Unpaired t test')
-  // R: t.test(Treated, Control, var.equal = TRUE): t = 6.1686, df = 14, p = 2.441e-05.
-  await expect(resultValue(test, 't')).toHaveText('6.169')
-  await expect(resultValue(test, 'df')).toHaveText('14')
-  await expect(resultValue(test, 'P value')).toHaveText('<0.0001')
+  // Roadmap 51c (S2): Welch's t test by default (R: t.test(Treated, Control): t = 6.1686,
+  // df = 13.948, p = 2.6e-05; equal group sizes, so t is Student's).
+  const welch = resultTable(page, 'Unpaired t test with Welch’s correction')
+  await expect(resultValue(welch, 'Welch-corrected t')).toHaveText('6.169')
+  await expect(resultValue(welch, 'df')).toHaveText('13.95')
+  await expect(resultValue(welch, 'P value')).toHaveText('<0.0001')
+  // No F test of variances unless asked; the SD ratio describes the scatter.
+  await expect(resultTable(page, 'F test to compare variances')).toHaveCount(0)
+  await expect(resultTable(page, 'Scatter in each group')).toBeVisible()
   const diff = resultTable(page, 'How big is the difference?')
   await expect(resultValue(diff, 'Difference between means (B − A)')).toHaveText('12.66')
-  await expect(resultValue(diff, '95% confidence interval')).toHaveText('8.260 to 17.07')
 
-  // Welch's t test (R: df = 13.948).
+  // Student's t test (R: t.test(var.equal = TRUE): df = 14; CI 8.260 to 17.07).
   const d = await editParameters(page)
-  await d.getByRole('checkbox', { name: /^Assume both populations have the same SD/ }).uncheck()
+  await d.getByRole('radio', { name: /Student’s t test$/ }).check()
   await d.getByRole('button', { name: 'OK' }).click()
   await expectUpToDate(page)
-  const welch = resultTable(page, 'Unpaired t test with Welch’s correction')
-  await expect(welch).toBeVisible()
-  await expect(resultValue(welch, 'df')).toHaveText('13.95')
+  const test = resultTable(page, 'Unpaired t test')
+  await expect(resultValue(test, 'df')).toHaveText('14')
+  await expect(resultValue(diff, '95% confidence interval')).toHaveText('8.260 to 17.07')
   await expect(tool(page, 'Undo Change analysis')).toBeEnabled()
   await pressShortcut(page, 'Mod+Z')
-  await expect(resultValue(resultTable(page, 'Unpaired t test'), 'df')).toHaveText('14')
+  await expect(resultValue(welch, 'df')).toHaveText('13.95')
+  await pressShortcut(page, 'Mod+Shift+Z')
+  await expect(resultValue(test, 'df')).toHaveText('14')
 
   // Editing a value of the table recomputes the results (R: t = 4.8626, difference 11.41).
   await runMenu(page, 'View', 'Go to data table')
@@ -105,23 +110,24 @@ test('one-way ANOVA with Tukey comparisons, and brackets on the graph', async ({
   await expect(resultValue(anova, 'DFn, DFd')).toHaveText('2, 12')
   await expect(resultValue(anova, 'P value')).toHaveText('<0.0001')
 
-  // R: TukeyHSD: B−A p = 4.44e-05, C−A p = 0.0597, C−B p = 0.00251.
+  // R: TukeyHSD: B−A p = 4.44e-05, C−A p = 0.0597, C−B p = 0.00251. Roadmap 51c: later −
+  // earlier, as TukeyHSD gives them.
   await page.getByRole('tab', { name: 'Multiple comparisons' }).click()
   await expect(page.getByRole('tab', { name: 'Multiple comparisons' })).toHaveAttribute(
     'aria-selected',
     'true',
   )
   const tukey = resultTable(page, 'Tukey’s multiple comparisons test')
-  await expect(resultRow(tukey, 'Group A vs. Group B')).toHaveText([
-    'Group A vs. Group B',
-    '-1.240',
-    '-1.718 to -0.7618',
+  await expect(resultRow(tukey, 'Group B − Group A')).toHaveText([
+    'Group B − Group A',
+    '1.240',
+    '0.7618 to 1.718',
     'Yes',
     '****',
     '<0.0001',
   ])
-  await expect(resultRow(tukey, 'Group A vs. Group C').last()).toHaveText('0.0597')
-  await expect(resultRow(tukey, 'Group B vs. Group C').last()).toHaveText('0.0025')
+  await expect(resultRow(tukey, 'Group C − Group A').last()).toHaveText('0.0597')
+  await expect(resultRow(tukey, 'Group C − Group B').last()).toHaveText('0.0025')
 
   // Brackets for the significant comparisons, added to the table's graph in one undo step.
   await page.getByRole('button', { name: 'Add brackets to “Data 1”' }).click()
@@ -383,7 +389,7 @@ test('a simulation with no table open, then a Monte Carlo analysis of it', async
 test('chained analyses: a transform, then a t test of its table', async ({ page }) => {
   await newTable(page, { kind: 'Column', sample: true })
   await analyze(page, 'Transform')
-  // Y = log(Y) by default; the result is a table, shown first.
+  // Y = log10(Y) by default; the result is a table, shown first.
   const transformed = page.getByRole('main').getByRole('grid', { name: 'Transform of Data 1' })
   await expect(transformed.getByRole('rowgroup').nth(1).getByRole('row').first()).toHaveText(
     /1\.53275\s*1\.65514/,
@@ -394,8 +400,9 @@ test('chained analyses: a transform, then a t test of its table', async ({ page 
   await d.getByRole('option', { name: 't test', exact: true }).click()
   await d.getByRole('button', { name: 'OK' }).click()
   await expectUpToDate(page)
-  // R: t.test(log10(Treated), log10(Control), var.equal = TRUE): t = 6.0346.
-  await expect(resultValue(resultTable(page, 'Unpaired t test'), 't')).toHaveText('6.035')
+  // R: t.test(log10(Treated), log10(Control)): t = 6.0346 (Welch's, the default; equal sizes).
+  const welch = resultTable(page, 'Unpaired t test with Welch’s correction')
+  await expect(resultValue(welch, 'Welch-corrected t')).toHaveText('6.035')
   await expect(sheet(page, 't test of Transform of Data 1', 'Results')).toHaveClass(/\bon\b/)
 
   // The chain follows the data: an edit of the table reaches the t test through the transform.
@@ -403,7 +410,7 @@ test('chained analyses: a transform, then a t test of its table', async ({ page 
   await typeCells(page, 0, 0, [['44.1']])
   await sheet(page, 't test of Transform of Data 1', 'Results').click()
   await expectUpToDate(page)
-  await expect(resultValue(resultTable(page, 'Unpaired t test'), 't')).not.toHaveText('6.035')
+  await expect(resultValue(welch, 'Welch-corrected t')).not.toHaveText('6.035')
   await sheet(page, 'Transform of Data 1', 'Results').click()
   await expect(transformed.getByRole('rowgroup').nth(1).getByRole('row').first()).toHaveText(
     /1\.64444\s*1\.65514/,

@@ -17,6 +17,7 @@ import {
   type Project,
   type RichText,
 } from '@ps/model'
+import { exampleParams } from './examples/exampleParams.ts'
 import { groupedTable as groupedTableOf } from './examples/synthetic/builder.ts'
 import { newLayout, pageSpec, placeGraphs } from './layout/figure.ts'
 
@@ -186,7 +187,7 @@ export function createPaperExample(fonts: FontRegistry): Project {
           }
         : base
     const def = registry.get('twoWayAnova')!
-    const parsed = def.params.parse(params)
+    const parsed = exampleParams(def, params)
     const keys = table.dataSets.map((d) => d.id)
     const analysis: AnalysisNode = {
       kind: 'analysis',

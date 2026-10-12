@@ -1,4 +1,4 @@
-import type { AnalysisDef, AnalysisResult, ResultBlock, ResultValue } from '@ps/model'
+import type { AnalysisDef, AnalysisResult, Diagnostic, ResultBlock, ResultValue } from '@ps/model'
 import {
   powerAnova,
   powerCorrelation,
@@ -7,9 +7,22 @@ import {
   powerT,
   solveSampleSize,
   type Tails,
+  tTestPaired,
+  tTestUnpaired,
 } from '@ps/stats'
 import { z } from 'zod'
-import { failure, int, kv, num, rawValues, result, resultsSheet, table, text } from './common.ts'
+import {
+  failure,
+  int,
+  interval,
+  kv,
+  num,
+  rawValues,
+  result,
+  resultsSheet,
+  table,
+  text,
+} from './common.ts'
 
 // Sample size and power (the "Sample size and power" tool): for a planned experiment, the
 // sample size that gives the wanted power, or the power of a given sample size, with a power
@@ -293,6 +306,10 @@ export const powerAnalysisDef: AnalysisDef<Params> = {
     let lo = 2
     let perGroup = 1
     const pilot = usesPilotData(params)
+    const diagnostics: Diagnostic[] = []
+    /** S29: the pilot effect's 95% CI (t tests), for the n at its bound nearer zero. */
+    let pilotCI: { lo: number; hi: number; at: (bound: number) => (n: number) => number } | null =
+      null
     const samples = input.map(rawValues)
     const pilotError = (need: number) =>
       samples.length < need || samples.some((s) => !s || s.length < 2)
@@ -316,11 +333,15 @@ export const powerAnalysisDef: AnalysisDef<Params> = {
               ((a.length - 1) * variance(a) + (b.length - 1) * variance(b)) /
                 (a.length + b.length - 2),
             )
+            const t = tTestUnpaired(a, b, { equalVariance: true, confLevel: 0.95 })
+            pilotCI = { lo: t.ciLo, hi: t.ciHi, at: () => () => 0 }
           } else {
             const m = Math.min(a.length, b.length)
             const d = Float64Array.from({ length: m }, (_, i) => b[i]! - a[i]!)
             delta = mean(d)
             sd = Math.sqrt(variance(d))
+            const t = tTestPaired(a.subarray(0, m), b.subarray(0, m), { confLevel: 0.95 })
+            pilotCI = { lo: t.ciLo, hi: t.ciHi, at: () => () => 0 }
           }
           inputs.push(['Estimated from', text(`${input[0]!.title} and ${input[1]!.title}`)])
         }
@@ -334,6 +355,7 @@ export const powerAnalysisDef: AnalysisDef<Params> = {
         )
         if (!(Math.abs(delta) > 0)) return failure('The difference to detect must not be zero.')
         pw = (n) => powerT(n, delta, sd, alpha, kind, tails)
+        if (pilotCI) pilotCI.at = (bound) => (n) => powerT(n, bound, sd, alpha, kind, tails)
         break
       }
       case 'anova': {
@@ -408,6 +430,34 @@ export const powerAnalysisDef: AnalysisDef<Params> = {
       nShown = params.n
       results.push([unit, num(nShown)], ['Power', num(pw(nShown))])
     }
+    // S29: pilot data are for planning, and their effects are usually overestimates.
+    if (pilot && params.solveFor === 'power')
+      diagnostics.push({
+        level: 'warning',
+        message:
+          'Power computed from the observed effect adds nothing to the P value of these data; use it only to plan the next experiment.',
+      })
+    if (pilot && params.solveFor === 'n') {
+      diagnostics.push({
+        level: 'info',
+        message:
+          'Effects estimated from pilot data are usually overestimates: plan with a smaller effect, such as the lower bound of its CI.',
+      })
+      if (pilotCI) {
+        const zero = pilotCI.lo <= 0 && pilotCI.hi >= 0
+        const bound = pilotCI.lo > 0 ? pilotCI.lo : pilotCI.hi
+        results.push(['95% CI of the pilot effect', interval(pilotCI.lo, pilotCI.hi, 0.95)])
+        if (zero)
+          results.push([`${unit} for the CI bound nearer zero`, text('— (the CI includes 0)')])
+        else {
+          const nb = solveSampleSize(pilotCI.at(bound), params.power, lo)
+          results.push([
+            `${unit} for the CI bound nearer zero`,
+            Number.isFinite(nb) ? int(Math.ceil(nb - 1e-9)) : text('above 10⁹'),
+          ])
+        }
+      }
+    }
     if (params.design === 'logRank')
       results.push([
         'Number of subjects (events / probability)',
@@ -441,6 +491,7 @@ export const powerAnalysisDef: AnalysisDef<Params> = {
       },
     ]
     return result({
+      diagnostics,
       sheets: [resultsSheet(blocks, 'Sample size and power')],
       values: { n: num(nShown), power: num(pw(nShown)) },
       outputs: { curve: { title: 'Power', x: xs, y: ys } },

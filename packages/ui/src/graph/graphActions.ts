@@ -94,5 +94,12 @@ export function newBrackets(
   includeNonSignificant: boolean,
 ): Annotation[] {
   const maxP = includeNonSignificant ? Number.POSITIVE_INFINITY : defaultBracketMaxP(result)
-  return bracketsFromAnalysis(graph, analysisId, result, bracketLabelShow(graph), maxP)
+  // Roadmap 51c (§7.4): a P value on a new bracket names its test.
+  return bracketsFromAnalysis(graph, analysisId, result, bracketLabelShow(graph), maxP).map((b) =>
+    b.type === 'bracket' &&
+    b.label.source === 'analysis' &&
+    (b.label.show === 'p' || b.label.show === 'both')
+      ? { ...b, label: { ...b.label, test: true } }
+      : b,
+  )
 }

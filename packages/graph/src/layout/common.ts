@@ -1369,5 +1369,22 @@ function bracketText(
   const pLabel = /^[<>]/.test(pText) ? `P ${pText[0]} ${pText.slice(1)}` : `P = ${pText}`
   const stars = pSummary(p, settings.pValueStyle)
   if (src.show === 'number') return pText
-  return src.show === 'stars' ? stars : src.show === 'p' ? pLabel : `${stars} (${pLabel})`
+  // Roadmap 51c (§7.4): the test named after the P value.
+  const test = src.test ? testName(ctx.result?.(src.analysis)?.values) : null
+  if (src.show === 'stars') return stars
+  if (src.show === 'p') return test ? `${pLabel} (${test})` : pLabel
+  return `${stars} (${pLabel}${test ? `, ${test}` : ''})`
+}
+
+/**
+ * Roadmap 51c (§7.4): the short name of the test behind an analysis' P values: its comparisons'
+ * method (`values.comparisonTest`, "Tukey"), else its test without the word "test"
+ * ("Welch’s t"); null when it names none.
+ */
+export function testName(values: Record<string, { kind: string; v?: unknown }> | undefined) {
+  const c = values?.comparisonTest
+  if (c?.kind === 'text' && typeof c.v === 'string') return c.v
+  const t = values?.test
+  if (t?.kind === 'text' && typeof t.v === 'string') return t.v.replace(/ test$/, '')
+  return null
 }

@@ -77,6 +77,8 @@ const ANALYSIS = [
   'analyses',
   'dataManipulation',
   'examples',
+  // Roadmap 51c: the method change notice and history, a one-tailed direction, duplicate tests.
+  'methodHistory',
   'graphs',
   'groupOverlays',
   'resultsOnGraphs',

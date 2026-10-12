@@ -289,7 +289,8 @@ export function createClinicalExample(fonts: FontRegistry): Project {
     ),
   )
   b.graph(marker, { preset: 'pointsMedian', yTitle: 'Biomarker (ng/mL)' })
-  const roc = b.analyze(marker, 'roc', {}, { name: 'ROC curve' })
+  // Roadmap 51c (S39): the direction is said before the data are seen: patients higher.
+  const roc = b.analyze(marker, 'roc', { direction: 'higher' }, { name: 'ROC curve' })
   // Planning the next study from this one as pilot data: patients per group for 90% power.
   b.analyze(
     marker,

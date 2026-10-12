@@ -32,6 +32,11 @@ describe('multiple one-way ANOVAs vs R (oneway and multcomp oracles, row by row)
           p.test === 'welch' ? 'welch' : p.test === 'brownForsythe' ? 'brownForsythe' : 'yes',
         comparisons: p.control !== undefined ? 'vsControl' : 'allPairs',
         control: p.control !== undefined ? input[p.control]!.ref.key : '',
+        // The rows uncorrected, Kruskal-Wallis' chi-square P and Dunn by Bonferroni, as these
+        // cases were computed (the settings before 0.3.9; 51c's are tested below).
+        approach: 'none',
+        kwPMethod: 'approximate',
+        dunnMethod: 'bonferroni',
         ...(p.test === 'welch' || p.test === 'brownForsythe'
           ? { welchMethod: p.method }
           : p.test === 'kruskalWallis'
@@ -103,7 +108,51 @@ describe('multiple one-way ANOVAs plugin', () => {
     expect(r.status).toBe('ok')
     expect(tableBlock(r, 'results', 1).rows).toHaveLength(1)
     expect(r.comparisons.map((c) => c.key.startsWith('row0:'))).toEqual([true, true, true])
-    const note = r.sheets[0]!.blocks.find((b) => b.type === 'note')
-    expect(note).toMatchObject({ text: 'Not analyzed: b (a data set has no values).' })
+    const notes = r.sheets[0]!.blocks.filter((b) => b.type === 'note')
+    expect(notes).toContainEqual({
+      type: 'note',
+      text: 'Not analyzed: b (a data set has no values).',
+    })
+    // Roadmap 51c (S9): the rows' P values are corrected across rows, and the result says so.
+    expect(notes.map((n) => (n as { text: string }).text).join(' ')).toMatch(/^Rows: /)
   })
+})
+
+// Roadmap 51c (S9): the rows' P values corrected for their number, against R (suite
+// `multiple_oneway_rows`): every FDR and family-wise method, at the case's Q.
+describe('multiple one-way ANOVAs: the rows corrected vs R', () => {
+  type Rows = Record<'p' | 'bh' | 'by' | 'bky' | 'holmSidak' | 'sidak' | 'bonferroni', number[]>
+  for (const f of loadFixtures<{ rows: number[][][] }, Rows>('multiple_oneway_rows')) {
+    it(f.name, () => {
+      const p = f.params as { test: 'ordinary' | 'kruskalWallis'; Q: number }
+      const table = groupedTable(f.input.rows)
+      const base = {
+        gaussian: p.test === 'ordinary',
+        kwPMethod: 'approximate',
+        comparisons: 'none',
+        q: p.Q * 100,
+      }
+      const cases: [object, keyof Rows, string][] = [
+        [{ approach: 'fdr', fdrMethod: 'bh' }, 'bh', 'q value'],
+        [{ approach: 'fdr', fdrMethod: 'by' }, 'by', 'q value'],
+        [{ approach: 'fdr', fdrMethod: 'bky' }, 'bky', 'q value'],
+        [{ approach: 'significance', sigMethod: 'holm-sidak' }, 'holmSidak', 'Adjusted P value'],
+        [{ approach: 'significance', sigMethod: 'sidak' }, 'sidak', 'Adjusted P value'],
+        [{ approach: 'significance', sigMethod: 'bonferroni' }, 'bonferroni', 'Adjusted P value'],
+      ]
+      for (const [extra, key, column] of cases) {
+        const r = runDef(multipleOneWayDef, table, { ...base, ...extra })
+        const main = tableBlock(r, 'results', 1)
+        const pc = main.columns.indexOf('P value')
+        const ac = main.columns.indexOf(column)
+        expect(ac, `${key}: ${main.columns.join()}`).toBeGreaterThan(0)
+        main.rows.forEach((row, i) => {
+          expectClose(v(row[pc]), arr(f.expected.p)[i]!, f.tol, `${key} row ${i} P`)
+          expectClose(v(row[ac]), arr(f.expected[key])[i]!, f.tol, `${key} row ${i}`)
+        })
+      }
+      const none = runDef(multipleOneWayDef, table, { ...base, approach: 'none' })
+      expect(tableBlock(none, 'results', 1).columns).not.toContain('q value')
+    })
+  }
 })

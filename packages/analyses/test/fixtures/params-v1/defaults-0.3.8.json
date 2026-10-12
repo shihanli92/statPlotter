@@ -1,0 +1,254 @@
+{
+  "contingency": {
+    "test": "fisher",
+    "yates": false,
+    "trend": true,
+    "tails": "two",
+    "riskEstimates": true,
+    "oddsRatio": true,
+    "diagnostic": false,
+    "effectSize": true,
+    "pairwise": "none",
+    "pairwiseControl": "0",
+    "pairwiseMethod": "bonferroni",
+    "confidenceLevel": 0.95
+  },
+  "correlation": {
+    "method": "pearson",
+    "tails": "two",
+    "confidenceLevel": 0.95
+  },
+  "friedman": {
+    "comparisons": "allPairs",
+    "control": "",
+    "correction": "dunn"
+  },
+  "mannWhitney": {
+    "tails": "two",
+    "pMethod": "exactWhenPossible",
+    "confidenceLevel": 0.95
+  },
+  "monteCarlo": {
+    "simulation": {
+      "analysisId": "simulateColumn",
+      "params": {}
+    },
+    "analysis": {
+      "analysisId": "ttest",
+      "params": {},
+      "dataSets": []
+    },
+    "simulations": 1000,
+    "seed": 1,
+    "tabulate": [
+      "p"
+    ],
+    "hits": {
+      "combine": "both",
+      "conditions": [
+        {
+          "value": "p",
+          "op": "<",
+          "than": 0.05
+        }
+      ]
+    },
+    "hitDenominator": "all",
+    "alpha": 0.05,
+    "confidenceLevel": 0.95
+  },
+  "multipleOneWay": {
+    "gaussian": true,
+    "equalSD": "yes",
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "welchMethod": "dunnett-t3",
+    "confidenceLevel": 0.95
+  },
+  "multipleT": {
+    "design": "unpaired",
+    "distribution": "gaussian",
+    "variance": "welch",
+    "rankTest": "mannWhitney",
+    "approach": "fdr",
+    "fdrMethod": "bky",
+    "q": 1,
+    "sigMethod": "holm-sidak",
+    "alpha": 0.05,
+    "difference": "aMinusB",
+    "reportLogP": false
+  },
+  "nestedOneWay": {
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+  },
+  "nestedT": {
+    "tails": "two",
+    "confidenceLevel": 0.95
+  },
+  "nonlinearFit": {
+    "equation": "agonist-response-variable-slope",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+      "residuals": false,
+      "runsTest": false,
+      "replicatesTest": false,
+      "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95
+  },
+  "nonlinearFitMV": {
+    "equation": "agonist-response-variable-slope",
+    "userEquation": "",
+    "constraints": {},
+    "initialValues": {},
+    "initialRules": {},
+    "limits": {},
+    "fitMethod": "leastSquares",
+    "outliers": "none",
+    "routQ": 1,
+    "weighting": "none",
+    "weightPower": 2,
+    "replicates": "each",
+    "compareParams": [],
+    "weightingTest": false,
+    "equationByDataSet": {},
+    "ciMethod": "symmetric",
+    "band": "none",
+    "compareWith": "none",
+    "interpolate": false,
+    "diagnostics": {
+      "residuals": false,
+      "runsTest": false,
+      "replicatesTest": false,
+      "normality": false
+    },
+    "hougaard": false,
+    "covariance": false,
+    "confidenceLevel": 0.95,
+    "x": "",
+    "y": "",
+    "group": ""
+  },
+  "normality": {
+    "distribution": "normal",
+    "dagostino": true,
+    "andersonDarling": true,
+    "shapiroWilk": true,
+    "kolmogorovSmirnov": true,
+    "qqPlot": false
+  },
+  "oneSample": {
+    "test": "t",
+    "hypothetical": 0,
+    "tails": "two",
+    "pMethod": "exactWhenPossible",
+    "confidenceLevel": 0.95
+  },
+  "oneWayAnova": {
+    "matched": false,
+    "sphericity": "gg",
+    "gaussian": true,
+    "equalSD": "yes",
+    "comparisons": "allPairs",
+    "control": "",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "welchMethod": "dunnett-t3",
+    "confidenceLevel": 0.95
+  },
+  "pStack": {
+    "approach": "fdr",
+    "fdrMethod": "bky",
+    "q": 1,
+    "sigMethod": "holm-sidak",
+    "alpha": 0.05
+  },
+  "roc": {
+    "direction": "auto",
+    "ciMethod": "clopperPearson",
+    "confidenceLevel": 0.95
+  },
+  "survival": {
+    "eventCode": 1,
+    "censoredCode": 0,
+    "ciMethod": "asymmetric",
+    "confidenceLevel": 0.95
+  },
+  "survivalFromVariables": {
+    "time": "",
+    "status": "",
+    "groups": [],
+    "eventCode": 1,
+    "censoredCode": 0,
+    "eventLevel": "",
+    "censoredLevel": "",
+    "ciMethod": "asymmetric",
+    "confidenceLevel": 0.95
+  },
+  "threeWayAnova": {
+    "comparisons": "none",
+    "allPairsMethod": "tukey",
+    "controlMethod": "dunnett",
+    "oneFactorMethod": "holm-sidak",
+    "confidenceLevel": 0.95,
+    "repeatedRows": false,
+    "repeatedCol1": false,
+    "repeatedCol2": false,
+    "sphericity": "gg",
+    "rmMethod": "auto"
+  },
+  "ttest": {
+    "design": "unpaired",
+    "unpaired": {
+      "assumeEqualSD": true
+    },
+    "paired": {
+      "measure": "difference"
+    },
+    "tails": "two",
+    "confidenceLevel": 0.95,
+    "reportFTestVariances": true
+  },
+  "twoWayAnova": {
+    "repeated": "none",
+    "sphericity": "gg",
+    "interaction": true,
+    "comparisons": "withinRows",
+    "kind": "allPairs",
+    "family": "perBlock",
+    "allPairsMethod": "sidak",
+    "controlMethod": "dunnett",
+    "confidenceLevel": 0.95
+  },
+  "wilcoxon": {
+    "tails": "two",
+    "pMethod": "exactWhenPossible",
+    "zeroHandling": "wilcoxon",
+    "confidenceLevel": 0.95
+  }
+}

@@ -8,13 +8,14 @@ import {
   contrastCov,
   contrastEstimate,
   fitReml,
+  satterthwaiteDf,
   unitRows,
   type VcDesign,
   type VcFit,
   waldF,
 } from './mixedModel.ts'
 import { type ContrastRow, contrastComparisons } from './rmCompare.ts'
-import { dunnettLambdas } from './rmOneWay.ts'
+import { dunnettLambdas, type RMDdf } from './rmOneWay.ts'
 
 /**
  * Nested t test and nested one-way ANOVA: a mixed effects model with the main factor (that
@@ -27,7 +28,9 @@ import { dunnettLambdas } from './rmOneWay.ts'
  * fitted by REML (mixedModel.ts, variances ≥ 0) with sum-to-zero coded groups. The treatment
  * test is the Wald F of the group effects with containment denominator df (SAS's default for
  * the published code): the number of subcolumns (subjects) with data minus the number of
- * groups. With no missing values and equal numbers of replicates this is the ordinary one-way
+ * groups; or (roadmap 51c, S28: `ddf: 'satterthwaite'`) lmerTest's Satterthwaite df, for the F
+ * test and per comparison (the same as containment for balanced data). With one value per
+ * subcolumn there is no random effect to fit and both are the residual df. With no missing values and equal numbers of replicates this is the ordinary one-way
  * ANOVA / unpaired t test of the subcolumn means ("identical results … when there are no
  * missing values"). Group means are the model's (least-squares) means; comparisons use the
  * model covariance with the same df, through the general contrast code (rmCompare.ts).
@@ -57,6 +60,8 @@ export interface NestedResult {
   subcolumnTest: { F: number; dfn: number; dfd: number; p: number }
   lrt: { chi2: number; df: number; p: number }
   logLik: number
+  /** Denominator df method of the F test and the comparisons. */
+  ddf: RMDdf
   /** Internal: the fit and contrast helpers. */
   fit: VcFit | null
   shift: number
@@ -64,7 +69,11 @@ export interface NestedResult {
 }
 
 /** groups[g][s] = the values (finite) of subcolumn s of group g. Empty subcolumns are dropped. */
-export function nestedAnova(groups: readonly (readonly (readonly number[])[])[]): NestedResult {
+export function nestedAnova(
+  groups: readonly (readonly (readonly number[])[])[],
+  opts: { ddf?: RMDdf } = {},
+): NestedResult {
+  const ddfMethod = opts.ddf ?? 'containment'
   const k = groups.length
   const subs = groups.map((g) => g.filter((s) => s.length > 0))
   const subjects = subs.map((g) => g.length)
@@ -84,6 +93,7 @@ export function nestedAnova(groups: readonly (readonly (readonly number[])[])[])
     subcolumnTest: { F: nan, dfn: S - k, dfd: nValues - S, p: nan },
     lrt: { chi2: nan, df: 1, p: nan },
     logLik: nan,
+    ddf: ddfMethod,
     fit: null,
     shift: 0,
   }
@@ -144,7 +154,10 @@ export function nestedAnova(groups: readonly (readonly (readonly number[])[])[])
     return { ...base, subcolumnTest, error: fit.reason === 'no-residual-df' ? 'no-df' : fit.reason }
   const wf = waldF(fit, unitRows(k, 1, k))
   const nested = design.terms.length > 0
-  const dfd = containmentDf(design, nested ? [0] : [])
+  const dfd =
+    ddfMethod === 'satterthwaite' && nested
+      ? wf.dfdSatterthwaite()
+      : containmentDf(design, nested ? [0] : [])
   const means = Array.from(
     { length: k },
     (_, g) => contrastEstimate(fit, levelRow(g, k)).est + shift,
@@ -166,15 +179,17 @@ export function nestedAnova(groups: readonly (readonly (readonly number[])[])[])
   }
 }
 
-/** mean_i − mean_j with its SE, on the containment df. */
+/** mean_i − mean_j with its SE, on the containment df (or its own Satterthwaite df). */
 function nestedContrast(
   res: NestedResult,
   i: number,
   j: number,
 ): { diff: number; se: number; df: number } {
   if (!res.fit) return { diff: Number.NaN, se: Number.NaN, df: Number.NaN }
-  const e = contrastEstimate(res.fit, levelDiff(i, j, res.k))
-  return { diff: e.est, se: e.se, df: res.treatment.dfd }
+  const l = levelDiff(i, j, res.k)
+  const e = contrastEstimate(res.fit, l)
+  const satt = res.ddf === 'satterthwaite' && Number.isFinite(res.variances.subcolumn)
+  return { diff: e.est, se: e.se, df: satt ? satterthwaiteDf(res.fit, [l])[0]! : res.treatment.dfd }
 }
 
 export interface NestedTTest {

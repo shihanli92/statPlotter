@@ -30,7 +30,8 @@ async function tableWithTTest(page: Page, name: string) {
 }
 
 /** The t of the open t test's results. */
-const tValue = (page: Page) => resultValue(resultTable(page, 'Unpaired t test'), 't')
+const tValue = (page: Page) =>
+  resultValue(resultTable(page, 'Unpaired t test with Welch’s correction'), 'Welch-corrected t')
 
 /** Opens a sheet's right-click menu in the navigator and chooses an item. */
 async function sheetMenu(

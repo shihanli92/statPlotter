@@ -159,10 +159,11 @@ describe('the Analyze form’s explanations', () => {
     const twoTailed = radio('Two-tailed (recommended)')
     const line = document.getElementById(twoTailed.getAttribute('aria-describedby')!)
     expect(line?.textContent).toMatch(/Recommended: the right choice unless you stated a direction/)
-    // A checkbox's line says what unticking it does (Welch's t test, recommended in words).
-    const equal = [...document.querySelectorAll('input[type=checkbox]')][0] as HTMLInputElement
-    expect(document.getElementById(equal.getAttribute('aria-describedby')!)?.textContent).toMatch(
-      /Welch’s t test/,
+    // Roadmap 51c (S2): Welch's t test is the default choice, recommended with its reason.
+    const welch = radio('Yes, or not sure: Welch’s t test (recommended)')
+    expect(welch.checked).toBe(true)
+    expect(document.getElementById(welch.getAttribute('aria-describedby')!)?.textContent).toMatch(
+      /Recommended: it protects P when scatter differs/,
     )
   })
 

@@ -1,13 +1,92 @@
-import type { GuideAsk, GuideEntry, GuideStep } from '@ps/model'
+import type { GuideAnswers, GuideAsk, GuideEntry, GuideStep, TableFacts } from '@ps/model'
 import { answer, fixed, leaf, question } from './build.ts'
 
 // Roadmap 51a: survival tables and multiple-variables tables (design §3.5, "Survival" and
-// "Relationships and regression"). The survival questions of the design (trend, pairs, early
-// weighting, the reference group) need 51c's params; until then the survival results list every
-// test, and the reason says to read the one planned.
+// "Relationships and regression"). Roadmap 51c: the survival questions of the design — ordered
+// groups (trend), which pairs differ (pairwise log-rank, Holm), early weighting (the one test
+// chosen) and the reference group of the hazard ratio.
+
+/** The survival analysis' params from the answers (`analysisId`: on a table or on variables). */
+const survivalParams =
+  (variables: boolean) =>
+  (f: TableFacts, a: GuideAnswers): Record<string, unknown> => ({
+    ...(variables
+      ? {
+          time: f.variables?.numbers[0]?.key ?? '',
+          status: f.variables?.binary[0]?.key ?? '',
+        }
+      : { control: a.control ?? '' }),
+    test: a.weight === 'early' ? 'gehanBreslowWilcoxon' : 'logRank',
+    trend: a.ordered === 'yes',
+    pairwise: a.which === 'pairs' ? 'all' : 'none',
+    pairwiseMethod: 'holm',
+    hazardRatio: 'mantelHaenszel',
+  })
 
 const SURVIVAL_REASON =
-  'Kaplan-Meier shows the curves; the log-rank test compares them over the whole follow-up. The results list other tests too: read the one you planned.'
+  'Kaplan-Meier shows the curves; the test you chose compares them, once (log-rank: the whole follow-up; Gehan-Breslow-Wilcoxon: early deaths weigh more).'
+
+/** "Which matters most?": the one test, chosen before the results. */
+const weightQ = (variables: boolean): GuideStep => {
+  const then = leaf(
+    variables ? 'survivalFromVariables' : 'survival',
+    survivalParams(variables),
+    SURVIVAL_REASON,
+  )
+  return question(
+    'weight',
+    'Which part of the follow-up matters most to your question?',
+    'Decide before looking: one test answers it (reading two and keeping the smaller P is test shopping).',
+    [
+      answer('whole', 'The whole follow-up (the usual choice)', then),
+      answer('early', 'Early differences, decided in advance', then),
+    ],
+  )
+}
+
+/** The reference group of the hazard ratio (survival tables). */
+const ASK_REFERENCE: GuideAsk = {
+  id: 'control',
+  kind: 'group',
+  label: 'Reference group (hazard ratio = group ÷ this one)',
+  initial: (f) => f.groups[0]?.key ?? '',
+}
+
+/** "Do the survival curves differ?": counting the groups, then the design questions. */
+const curvesDiffer = (variables: boolean): GuideStep => {
+  const weight = weightQ(variables)
+  const which = question(
+    'which',
+    'Do you want to know which groups differ?',
+    'Each pair of curves is then compared on its own, adjusted for the number of pairs (Holm).',
+    [
+      answer('overall', 'Only whether any curves differ', weight),
+      answer('pairs', 'Also which pairs of groups differ', weight),
+    ],
+  )
+  const ordered = question(
+    'ordered',
+    'Are the groups ordered (doses, ages)?',
+    'A trend test uses the order; for unordered groups (genotypes) its P means nothing.',
+    [
+      answer('yes', 'Yes: also test for a steady change with the order', weight),
+      answer('no', 'No', which),
+    ],
+  )
+  return question(
+    'groups',
+    'How many groups?',
+    'Counted from the table.',
+    [
+      answer('two', 'Two', weight, variables ? {} : { asks: [ASK_REFERENCE] }),
+      answer('more', 'Three or more', ordered, variables ? {} : { asks: [ASK_REFERENCE] }),
+    ],
+    {
+      answeredBy: (f) =>
+        variables ? null : f.groups.length === 2 ? 'two' : f.groups.length > 2 ? 'more' : null,
+    },
+  )
+}
 
 const variable = (id: string, label: string, pick: 'numbers' | 'binary' | 'any'): GuideAsk => ({
   id,
@@ -98,7 +177,7 @@ export const SURVIVAL_ENTRIES: readonly GuideEntry[] = [
       'time to event',
       'mortality',
     ],
-    start: leaf('survival', fixed({}), SURVIVAL_REASON),
+    start: curvesDiffer(false),
   },
   {
     id: 'medianSurvival',
@@ -179,13 +258,38 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
     question: 'Kaplan-Meier from one row per subject',
     kinds: ['multipleVariables'],
     keywords: ['kaplan meier', 'survival', 'log-rank', 'one row per subject'],
-    start: leaf(
-      'survivalFromVariables',
-      (f) => ({
-        time: f.variables?.numbers[0]?.key ?? '',
-        status: f.variables?.binary[0]?.key ?? '',
-      }),
-      'Kaplan-Meier curves from a time and a status variable, one curve per group of a grouping variable.',
+    start: question(
+      'groups',
+      'Are there three or more groups (from a grouping variable)?',
+      'Choose the grouping variable in the options; the questions about the groups follow.',
+      [
+        answer('two', 'One or two groups', weightQ(true)),
+        answer(
+          'more',
+          'Three or more',
+          question(
+            'ordered',
+            'Are the groups ordered (doses, ages)?',
+            'A trend test uses the order; for unordered groups (genotypes) its P means nothing.',
+            [
+              answer('yes', 'Yes: also test for a steady change with the order', weightQ(true)),
+              answer(
+                'no',
+                'No',
+                question(
+                  'which',
+                  'Do you want to know which groups differ?',
+                  'Each pair of curves is then compared on its own, adjusted for the number of pairs (Holm).',
+                  [
+                    answer('overall', 'Only whether any curves differ', weightQ(true)),
+                    answer('pairs', 'Also which pairs of groups differ', weightQ(true)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     ),
   },
   {

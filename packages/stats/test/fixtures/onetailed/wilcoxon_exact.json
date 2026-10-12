@@ -1,0 +1,17 @@
+{
+  "name": "wilcoxon_exact",
+  "input": {"a":[12.1,14.300000000000001,11.800000000000001,13.5,15.199999999999999,12.9,13.800000000000001,14.6],"b":[15.4,16.800000000000001,14.1,17.300000000000001,15.9,18.199999999999999,16.100000000000001,15.699999999999999]},
+  "params": {"suite":"wilcoxon","rparams":{"exact":"auto","zeroMethod":"wilcoxon"},"analysis":"wilcoxon","app":{"pMethod":"exactWhenPossible","zeroHandling":"wilcoxon"}},
+  "expected": {
+    "two": 0.0078125,
+    "greater": 0.00390625,
+    "less": 1
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

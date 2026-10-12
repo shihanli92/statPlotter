@@ -1,10 +1,18 @@
-import type { AnalysisDef, Comparison, ResultSheet, ResultValue } from '@ps/model'
+import {
+  type AnalysisDef,
+  type Comparison,
+  pinDefaults,
+  type ResultSheet,
+  type ResultValue,
+} from '@ps/model'
 import {
   brownForsytheAnova,
+  correctFamily,
   type DunnRow,
   dunnComparisons,
   type GroupData,
   kruskalWallis,
+  kruskalWallisExact,
   type McRow,
   multipleComparisons,
   oneWayAnova,
@@ -34,6 +42,7 @@ import {
   ALPHA,
   CONFIDENCE_FIELD,
   confidenceLevel,
+  decided,
   dfText,
   exclusionNotes,
   failure,
@@ -42,14 +51,27 @@ import {
   num,
   psum,
   pval,
+  RANK_NEEDS_RAW,
   result,
   resultsSheet,
   significant,
   summaryProblem,
   table,
+  testValue,
   text,
 } from './common.ts'
-import { cellGroup, cellHasData, rowTitleOf } from './grouped.ts'
+import {
+  cellGroup,
+  cellHasData,
+  FAMILY_FIELDS,
+  FAMILY_TITLE,
+  familyColumns,
+  familyMethod,
+  familyParams,
+  rowTitleOf,
+} from './grouped.ts'
+import { DUNN_METHODS, dunnMethod, dunnTitle } from './nonparametric.ts'
+import { P_METHOD_FIELD, pMethod } from './rank.ts'
 
 // ---------------------------------------------------------------------------------------------
 // Multiple one-way ANOVAs: one ANOVA (or Kruskal-Wallis test) per row of a grouped table, each
@@ -65,9 +87,50 @@ const Params = z.object({
   allPairsMethod: allPairsMethod.default('tukey'),
   controlMethod: controlMethod.default('dunnett'),
   welchMethod: welchMethod.default('dunnett-t3'),
+  /** Roadmap 51c (S11): Kruskal-Wallis' exact P for small groups; Dunn's adjustment. */
+  kwPMethod: pMethod,
+  dunnMethod: dunnMethod.default('holm'),
+  /**
+   * Roadmap 51c (S9, the user's answer to §10.4 question 4): the rows' P values corrected for
+   * their number — the false discovery rate by Benjamini-Hochberg at Q = 5% by default — with the
+   * choices of multiple t tests. Comparisons within a row stay a family of their own.
+   */
+  ...familyParams,
+  fdrMethod: z.enum(['bky', 'bh', 'by']).default('bh'),
   confidenceLevel,
 })
 type Params = z.infer<typeof Params>
+
+/**
+ * Version 1 (before 0.3.9): no correction across rows, Kruskal-Wallis' approximate P and Dunn's
+ * comparisons by Bonferroni. Saved analyses keep them.
+ */
+const migrate = (raw: unknown, from: number): unknown =>
+  from >= 2
+    ? raw
+    : pinDefaults(raw, [
+        [['approach'], 'none'],
+        [['kwPMethod'], 'approximate'],
+        [['dunnMethod'], 'bonferroni'],
+      ])
+
+/** The rows' correction: multiple t tests' fields, worded for rows of ANOVAs. */
+const ROW_FAMILY_FIELDS = FAMILY_FIELDS.map((f) =>
+  f.path[0] === 'approach'
+    ? {
+        ...f,
+        label: 'Correct the rows’ P values for their number',
+        options: [
+          { value: 'fdr', label: 'Control the false discovery rate (FDR) (recommended)' },
+          {
+            value: 'significance',
+            label: 'Control the chance of any false positive among the rows',
+          },
+          { value: 'none', label: 'No correction across rows' },
+        ],
+      }
+    : f,
+)
 
 const gaussianEqual = [
   { path: ['gaussian'], in: [true] },
@@ -87,7 +150,7 @@ type RowResult = {
 
 export const multipleOneWayDef: AnalysisDef<Params> = {
   id: 'multipleOneWay',
-  version: 1,
+  version: 2,
   title: 'Multiple one-way ANOVAs',
   category: 'Grouped analyses',
   description:
@@ -95,6 +158,7 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
   accepts: ['grouped'],
   inputs: { min: 3, max: Number.POSITIVE_INFINITY },
   params: Params,
+  migrateParams: migrate,
   form: [
     {
       path: ['gaussian'],
@@ -138,6 +202,18 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
         { path: ['comparisons'], in: ['allPairs', 'vsControl'] },
       ],
     },
+    { ...P_METHOD_FIELD, path: ['kwPMethod'], showIf: { path: ['gaussian'], in: [false] } },
+    {
+      path: ['dunnMethod'],
+      label: 'Adjust Dunn’s comparisons',
+      kind: 'select',
+      options: DUNN_METHODS,
+      showIf: [
+        { path: ['gaussian'], in: [false] },
+        { path: ['comparisons'], in: ['allPairs', 'vsControl'] },
+      ],
+    },
+    ...ROW_FAMILY_FIELDS,
     CONFIDENCE_FIELD,
   ],
   run(input, params) {
@@ -148,7 +224,10 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
     const rowName = (r: number) => rowTitleOf(input, r)
     const nonparametric = !params.gaussian
     if (nonparametric && input.some((d) => d.data.shape !== 'replicates'))
-      return failure('The Kruskal-Wallis test needs raw values, not summary data.', diagnostics)
+      return failure(
+        `The Kruskal-Wallis test needs raw values, not summary data.${RANK_NEEDS_RAW}`,
+        diagnostics,
+      )
     for (const ds of input)
       for (let r = 0; r < rowCount; r++) {
         const problem = summaryProblem(ds, r, 1, rowName(r))
@@ -158,7 +237,7 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
     const { control, pairs } = oneWayPairs(input, params.comparisons, params.control)
     const welch = params.gaussian && params.equalSD !== 'yes'
     const method = nonparametric
-      ? 'dunn'
+      ? params.dunnMethod
       : welch
         ? params.welchMethod
         : params.comparisons === 'vsControl'
@@ -166,6 +245,7 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
           : params.allPairsMethod
 
     const results: RowResult[] = []
+    let exactRows = 0
     const skipped: string[] = []
     const mcLabels: string[] = []
     const mcRows: McRow[] = []
@@ -199,17 +279,20 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
           skipped.push(`${name} (no variation)`)
           continue
         }
+        // S11: exact while the row's groups are small enough.
+        const exact = params.kwPMethod === 'exactWhenPossible' ? kruskalWallisExact(vals) : null
+        if (exact) exactRows++
         results.push({
           row: r,
           name,
           F: kw.H,
           dfn: groups.length - 1,
           dfd: Number.NaN,
-          p: kw.p,
+          p: exact ? exact.p : kw.p,
           groups: vals.map((v, k) => ({ n: v.length, mean: kw.meanRanks[k]! })),
         })
         if (pairs.length) {
-          const rows = dunnComparisons(vals, pairs, { adjust: 'bonferroni' })
+          const rows = dunnComparisons(vals, pairs, { adjust: params.dunnMethod })
           dunnRows.push(...rows)
           mcLabels.push(...labels)
           addComparisons(r, rows)
@@ -276,6 +359,16 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
     const statName = nonparametric ? 'Kruskal-Wallis statistic' : 'F'
     const dfsText = (x: RowResult) =>
       nonparametric ? text(dfText(x.dfn)) : text(`${dfText(x.dfn)}, ${dfText(x.dfd)}`)
+    // S9: the rows' P values as one family (FDR or family-wise), when asked.
+    const rowFamily = familyMethod(params)
+    const fam =
+      rowFamily === 'none'
+        ? null
+        : correctFamily(
+            results.map((x) => x.p),
+            { method: rowFamily, q: params.q / 100, alpha: params.alpha },
+          )
+    const cols = familyColumns(params)
     const mainTable = table(
       `${testName}, one per row`,
       [
@@ -284,16 +377,17 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
         nonparametric ? 'DF' : 'DFn, DFd',
         'P value',
         'P value summary',
-        `Significant (P < ${ALPHA})?`,
+        // With a correction across rows its decision replaces the uncorrected one.
+        ...(fam && cols.adjusted ? [cols.adjusted, cols.flag] : [`Significant (P < ${ALPHA})?`]),
         ...(params.equalSD === 'yes' && !nonparametric ? ['R squared'] : []),
       ],
-      results.map((x): ResultValue[] => [
+      results.map((x, i): ResultValue[] => [
         text(x.name),
         num(x.F),
         dfsText(x),
         pval(x.p),
         psum(x.p),
-        significant(x.p),
+        ...(fam ? [pval(fam.adjusted[i]!), decided(fam.flagged[i]!, x.p)] : [significant(x.p)]),
         ...(x.r2 !== undefined ? [num(x.r2)] : []),
       ]),
     )
@@ -308,14 +402,50 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
         ['Number of rows analyzed', int(results.length)],
         ['Number of rows not analyzed', int(skipped.length)],
         ['Number of groups (data sets) per row', int(input.length)],
+        ...(nonparametric
+          ? ([
+              [
+                'Exact or approximate P values?',
+                text(
+                  exactRows === results.length
+                    ? 'Exact'
+                    : exactRows === 0
+                      ? 'Approximate'
+                      : `Exact in ${exactRows} rows, approximate in ${results.length - exactRows}`,
+                ),
+              ],
+            ] as [string, ResultValue][])
+          : []),
+        ['Correction across rows', text(FAMILY_TITLE[rowFamily])],
+        ...(fam
+          ? ([
+              params.approach === 'fdr'
+                ? ['Desired FDR (Q)', text(`${params.q}%`)]
+                : ['Significance level (alpha)', text(`${+(params.alpha * 100).toPrecision(12)}%`)],
+              [
+                params.approach === 'fdr' ? 'Number of discoveries' : 'Number below threshold',
+                int(fam.flagged.filter(Boolean).length),
+              ],
+            ] as [string, ResultValue][])
+          : []),
       ]),
       mainTable,
       summaryTable,
+      {
+        type: 'note' as const,
+        text: `${
+          fam
+            ? `Rows: ${FAMILY_TITLE[rowFamily].replace(/^[^:]*: /, '').replace(/^./, (c) => c.toLowerCase())} across the ${results.length} rows (${params.approach === 'fdr' ? 'q values' : 'adjusted P values'}).`
+            : `Rows: each row’s P value is not corrected for the ${results.length} rows.`
+        }${pairs.length ? ' Comparisons within a row are their own family, adjusted for that row’s comparisons only.' : ''}`,
+      },
     ]
     if (skipped.length) blocks.push({ type: 'note', text: `Not analyzed: ${skipped.join(', ')}.` })
     const sheets: ResultSheet[] = [resultsSheet(blocks)]
     if (pairs.length) {
-      const title = `${METHOD_TITLE[method] ?? method} — within each row (each row a family)`
+      const title = `${
+        nonparametric ? dunnTitle(params.dunnMethod) : (METHOD_TITLE[method] ?? method)
+      } — within each row (each row a family)`
       sheets.push({
         key: 'comparisons',
         title: 'Multiple comparisons',
@@ -326,6 +456,11 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
         ],
       })
     }
-    return result({ sheets, diagnostics, values: { rows: int(results.length) }, comparisons })
+    return result({
+      sheets,
+      diagnostics,
+      values: { rows: int(results.length), ...testValue(testName) },
+      comparisons,
+    })
   },
 }

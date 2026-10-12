@@ -1,10 +1,11 @@
-import type {
-  AnalysisDef,
-  Comparison,
-  NormalizedDataSet,
-  ResultBlock,
-  ResultSheet,
-  ResultValue,
+import {
+  type AnalysisDef,
+  type Comparison,
+  type NormalizedDataSet,
+  pinDefaults,
+  type ResultBlock,
+  type ResultSheet,
+  type ResultValue,
 } from '@ps/model'
 import {
   effectSizes,
@@ -54,6 +55,7 @@ import {
   yesNo,
 } from './common.ts'
 import { cellGroup, cellHasData, rowTitleOf } from './grouped.ts'
+import { DDF_FIELD, ddf } from './nested.ts'
 
 // ---------------------------------------------------------------------------------------------
 // Three-way ANOVA, the 2 × 2 × k layout on a grouped table: the rows are one factor (k
@@ -80,6 +82,8 @@ const Params = z.object({
   sphericity: z.enum(['gg', 'assumed']).default('gg'),
   /** RM ANOVA when there are no missing values, else a mixed model; or always one of them. */
   rmMethod: z.enum(['auto', 'anova', 'mixed']).default('auto'),
+  /** Roadmap 51c (S28): the mixed model's denominator df (containment before 0.3.9). */
+  ddf,
 })
 type Params = z.infer<typeof Params>
 
@@ -98,7 +102,7 @@ const EFFECT_KEYS = ['row', 'col1', 'col2', 'row_col1', 'row_col2', 'col1_col2',
 
 export const threeWayAnovaDef: AnalysisDef<Params> = {
   id: 'threeWayAnova',
-  version: 1,
+  version: 2,
   title: 'Three-way ANOVA',
   category: 'Grouped analyses',
   description:
@@ -106,6 +110,8 @@ export const threeWayAnovaDef: AnalysisDef<Params> = {
   accepts: ['grouped'],
   inputs: { min: 4, max: 4 },
   params: Params,
+  // Version 1 (before 0.3.9): containment df for mixed fits; kept.
+  migrateParams: (raw, from) => (from >= 2 ? raw : pinDefaults(raw, [[['ddf'], 'containment']])),
   form: [
     {
       path: ['comparisons'],
@@ -183,6 +189,7 @@ export const threeWayAnovaDef: AnalysisDef<Params> = {
         { value: 'mixed', label: 'A mixed-effects model always' },
       ],
     },
+    { ...DDF_FIELD, showIf: [{ path: ['rmMethod'], in: ['auto', 'mixed'] }] },
   ],
   run(input, params) {
     const few = tooFewDataSets(
@@ -370,7 +377,7 @@ function runRepeated(
   })
   const res = threeWayRM(
     { y, row, col1, col2, subject },
-    { repeated, sphericity: params.sphericity, method: params.rmMethod },
+    { repeated, sphericity: params.sphericity, method: params.rmMethod, ddf: params.ddf },
   )
   const rmName = repeated.map((f) => FACTOR_NAMES[f]!).join(', ')
   if (res.error)
@@ -405,6 +412,14 @@ function runRepeated(
         ),
       ],
       ['Number of subjects', int(res.nSubjects)],
+      ...(res.kind === 'mixed'
+        ? ([
+            [
+              'Denominator df',
+              text(params.ddf === 'satterthwaite' ? 'Satterthwaite' : 'Containment'),
+            ],
+          ] as [string, ResultValue][])
+        : []),
     ]),
   ]
   const gg = res.kind === 'anova' && params.sphericity === 'gg'

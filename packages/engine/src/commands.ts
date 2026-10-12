@@ -27,7 +27,9 @@ import {
   LayerId,
   LimitRule,
   MAX_COLUMN_WIDTH,
+  MAX_METHOD_HISTORY,
   MAX_REPLICATES,
+  type MethodChange,
   MIN_COLUMN_WIDTH,
   mapGraphRefs,
   mayNameInfo,
@@ -201,6 +203,12 @@ export type Command =
   | { type: 'table.setYFormat'; table: NodeId; format: YFormat }
   | { type: 'analysis.setParams'; id: NodeId; params: unknown }
   | { type: 'analysis.setInput'; id: NodeId; dataSets: string[] }
+  /**
+   * Roadmap 51c (§7.1): appends a change of the analysis' method to its history (the oldest
+   * dropped and counted beyond `MAX_METHOD_HISTORY`); dispatched with the change itself, in
+   * the same undo step.
+   */
+  | { type: 'analysis.recordChange'; id: NodeId; change: MethodChange }
   /**
    * Sets a value at a path in a node; `undefined` removes it. A `{ id }` segment names an element
    * of an array by its `id` (a graph's layer, an output): `['layers', { id: 'bars' }, 'style']`.
@@ -949,6 +957,18 @@ export function applyCommand(doc: Project, cmd: Command): void {
       if (!Array.isArray(cmd.dataSets)) throw new CommandError('data sets are a list')
       getAnalysis(doc, cmd.id).input.dataSets = [...cmd.dataSets]
       return
+
+    case 'analysis.recordChange': {
+      const a = getAnalysis(doc, cmd.id)
+      const history = [...(a.history ?? []), copyData(cmd.change)]
+      const over = history.length - MAX_METHOD_HISTORY
+      if (over > 0) {
+        history.splice(0, over)
+        a.historyEarlier = (a.historyEarlier ?? 0) + over
+      }
+      a.history = history
+      return
+    }
 
     case 'node.set': {
       // Generic path setter for graph/analysis properties; the result is schema-validated by the

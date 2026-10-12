@@ -1,0 +1,26 @@
+{
+  "input": {
+    "groups": [
+      [
+        1,
+        2,
+        2,
+        3
+      ],
+      [
+        2,
+        3,
+        3,
+        4,
+        4
+      ],
+      [
+        4,
+        5,
+        5,
+        6
+      ]
+    ]
+  },
+  "note": "Histology-like scores with many ties: the observed mid-ranks are permuted."
+}

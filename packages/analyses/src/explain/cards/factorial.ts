@@ -211,7 +211,7 @@ export const multipleOneWay: MethodCard = {
     'Roughly symmetric values in each row.',
   ],
   reading:
-    'Read each row’s P and its comparisons, each row its own family. In this version the rows’ P values are not corrected across rows: with many rows, some small P values come by chance.',
+    'Read each row’s q value (false discovery rate across the rows, Benjamini-Hochberg by default) and its comparisons, each row its own family. Without the correction, with many rows some small P values come by chance.',
   more: {
     formula: 'A one-way ANOVA (or Kruskal-Wallis) per row.',
     r: 'apply(m, 1, function(r) oneway.test(r ~ g, var.equal = TRUE)$p.value)',

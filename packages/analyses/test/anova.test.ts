@@ -2,6 +2,7 @@ import { type AnalysisResult, createTable, type DataTable } from '@ps/model'
 import {
   friedmanTest,
   kruskalWallis,
+  kruskalWallisExact,
   oneWayAnova,
   oneWayRM,
   tTestUnpaired,
@@ -63,9 +64,16 @@ describe('one-way ANOVA plugin', () => {
   })
 
   it('Kruskal-Wallis with Dunn’s test; refuses summary data', () => {
+    // Roadmap 51c (S11): the exact P for small groups; the chi-square approximation on request.
     const r = run(columnTable([A, B, C]), { gaussian: false })
-    expect(v(kvOf(r, 'P value', 'Kruskal-Wallis test'))).toBe(kruskalWallis([A, B, C]).p)
-    expect(tableBlock(r, 'comparisons').title).toMatch(/Dunn/)
+    expect(v(kvOf(r, 'P value', 'Kruskal-Wallis test'))).toBe(kruskalWallisExact([A, B, C])!.p)
+    expect(kvOf(r, 'Exact or approximate P value?', 'Kruskal-Wallis test')).toEqual({
+      kind: 'text',
+      v: 'Exact',
+    })
+    const approx = run(columnTable([A, B, C]), { gaussian: false, kwPMethod: 'approximate' })
+    expect(v(kvOf(approx, 'P value', 'Kruskal-Wallis test'))).toBe(kruskalWallis([A, B, C]).p)
+    expect(tableBlock(r, 'comparisons').title).toMatch(/Dunn.*Holm/)
     expect(
       run(
         summaryTable('meanSdN', [
@@ -202,13 +210,19 @@ describe('two-way ANOVA plugin', () => {
       tableBlock(r, 'comparisons').rows.map((row) => (row[0] as { v: string }).v)
     const t = groupedTable(cells)
     t.rowTitles = ['Low', '', 'High']
+    // Roadmap 51c: later − earlier for new analyses; earlier vs. later for saved ones.
     expect(labels(run(t))).toEqual([
+      'Low: Group B − Group A',
+      'Row 2: Group B − Group A',
+      'High: Group B − Group A',
+    ])
+    expect(labels(run(t, { differenceAs: 'earlierMinusLater' }))).toEqual([
       'Low: Group A vs. Group B',
       'Row 2: Group A vs. Group B',
       'High: Group A vs. Group B',
     ])
     const rm = run(t, { repeated: 'rows', comparisons: 'withinRows' })
-    expect(labels(rm)).toContain('Row 2: Group A vs. Group B')
+    expect(labels(rm)).toContain('Row 2: Group B − Group A')
   })
 
   it('summary data: a cell with N = 1 and no SD counts as one value (it adds no residual df)', () => {
@@ -297,12 +311,38 @@ describe('repeated measures', () => {
     t.dataSets[1]!.subcolumns[0]!.values[2] = null
     const r = run(t)
     expect(r.diagnostics.some((d) => /mixed-effects/.test(d.message))).toBe(true)
+    expect(r.status).toBe('warning')
     const rows = S.map((row, i) => row.map((y, j) => (i === 2 && j === 1 ? Number.NaN : y)))
-    const ref = oneWayRM(rows, { sphericity: oneWayAnovaDef.params.parse({}).sphericity })
+    // Roadmap 51c (S28): Satterthwaite's df for new analyses.
+    const ref = oneWayRM(rows, { sphericity: 'gg', ddf: 'satterthwaite' })
     expect(ref.kind).toBe('mixed')
     expect(v(kvOf(r, 'P value', 'Mixed-effects model (REML) — fixed effect (type III)'))).toBe(
       ref.treatment.p,
     )
+  })
+
+  // Roadmap 51c (S5, S28): the RM method chosen — ANOVA of the complete subjects (said), or the
+  // mixed model with complete data too; the mixed model's note says sphericity and the df.
+  it('the RM method: ANOVA of complete subjects, or the mixed model by choice', () => {
+    const t = columnTable(cols)
+    t.dataSets[1]!.subcolumns[0]!.values[2] = null
+    const anova = run(t, { rmMethod: 'anova' })
+    const complete = S.filter((_, i) => i !== 2)
+    expect(v(anova.values.p)).toBe(oneWayRM(complete, { sphericity: 'gg' }).corrected!.p)
+    expect(anova.diagnostics.map((d) => d.message)).toContainEqual(
+      '1 subject with a missing value was left out: repeated-measures ANOVA analyzes complete subjects only.',
+    )
+    const auto = run(t)
+    const note = auto.diagnostics.find((d) => /mixed-effects/.test(d.message))!.message
+    expect(note).toMatch(/sphericity/i)
+    expect(note).toMatch(/Satterthwaite/)
+    const mixed = run(columnTable(cols), { rmMethod: 'mixed' })
+    const ref = oneWayRM(S, { method: 'mixed', ddf: 'satterthwaite' })
+    expect(ref.kind).toBe('mixed')
+    expect(v(kvOf(mixed, 'P value', 'Mixed-effects model (REML) — fixed effect (type III)'))).toBe(
+      ref.treatment.p,
+    )
+    expect(mixed.diagnostics.find((d) => /as chosen/.test(d.message))!.level).toBe('info')
   })
 
   it('matched and nonparametric is the Friedman test', () => {
@@ -332,8 +372,10 @@ describe('repeated measures', () => {
     if (sources.type !== 'table') throw new Error('table expected')
     expect(sources.rows.map((row) => (row[0] as { v: string }).v)).toContain('Subjects (matching)')
     expect(r.comparisons.map((c) => c.rowA)).toEqual([0, 1, 2])
-    // Main-effect comparisons of the repeated factor need sphericity.
+    // Roadmap 51c (S10): main-effect comparisons of the repeated factor without sphericity use
+    // each comparison's own error term (no refusal).
     const main = runDef(twoWayAnovaDef, t, { repeated: 'rows', comparisons: 'mainRows' })
-    expect(main.sheets.map((s) => s.key)).toEqual(['results'])
+    expect(main.sheets.map((s) => s.key)).toEqual(['results', 'comparisons'])
+    expect(main.diagnostics.map((d) => d.message).join(' ')).toMatch(/its own error term/)
   })
 })

@@ -187,6 +187,16 @@ function remapAnalysis(a: AnalysisNode, m: Remap) {
     else delete a.input.pools
   }
   a.params = mapParams(a.params, m.keys)
+  // Roadmap 51c (§7.1): the method history names data sets too (what it analyzed before).
+  if (a.history)
+    a.history = a.history.map((h) => ({
+      ...h,
+      from: {
+        ...h.from,
+        dataSets: h.from.dataSets.flatMap((k) => mapKey(k, m.keys) ?? []),
+        params: mapParams(h.from.params, m.keys),
+      },
+    }))
   if (onTable) {
     const next = remapRowParams(a.analysisId, a.params, (r) => m.rows!(r))
     if (next !== undefined) {

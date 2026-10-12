@@ -178,7 +178,12 @@ const CHECKS: Record<string, [name: string, check: (b: Built) => void | Promise<
         const cleaned = outliers.table!.dataSets.find((d) => d.id === batch2)!
         expect(cleaned.subcolumns[0]!.values[3]).toBeNull()
         expect(cleaned.subcolumns[0]!.values.filter((v) => v !== null)).toHaveLength(7)
-        expect(result('One-way ANOVA of cleaned data').status).toBe('ok')
+        // Roadmap 51c (S13): the ANOVA of the cleaned table says a value was removed first.
+        const anova = result('One-way ANOVA of cleaned data')
+        expect(anova.status).toBe('warning')
+        expect(anova.diagnostics.map((d) => d.message).join(' ')).toMatch(
+          /^1 value was removed as outlier \(ROUT, Q = 1%\) in “Outliers \(ROUT\)” before this analysis/,
+        )
       },
     ],
     [

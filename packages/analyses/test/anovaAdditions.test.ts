@@ -117,8 +117,9 @@ describe('t test effect sizes', () => {
       }
     }
     const e = cohensD(s(A), s(B))
-    expect(v(kvOf(r, 'Cohen’s d'))).toBeCloseTo(e.cohensD, 12)
-    expect(v(kvOf(r, 'Hedges’ g'))).toBeCloseTo(e.hedgesG, 12)
+    // Roadmap 51c (S43): labelled with their standardizer, the pooled SD, under Welch too.
+    expect(v(kvOf(r, 'Cohen’s d (pooled SD)'))).toBeCloseTo(e.cohensD, 12)
+    expect(v(kvOf(r, 'Hedges’ g (pooled SD)'))).toBeCloseTo(e.hedgesG, 12)
     expect(v(kvOf(r, 'Glass’s delta (SD of column A)'))).toBeCloseTo(e.glassDelta!, 12)
     const p = runDef(ttest, t, { design: 'paired' })
     const d = B.map((y, i) => y - A[i]!)

@@ -62,8 +62,9 @@ const ELEMENTWISE = {
   divideK: { label: 'Y = Y / K', f: (y, k) => y / k, usesK: true, sdScale: (k) => 1 / Math.abs(k) },
   square: { label: 'Y = Y squared', f: (y) => y * y },
   powerK: { label: 'Y = Y ^ K', f: (y, k) => y ** k, usesK: true },
-  log10: { label: 'Y = log(Y)', f: (y) => log10(y) },
-  negLog10: { label: 'Y = −1 * log(Y)', f: (y) => -log10(y) },
+  // Roadmap 51c (S38, decision 1285): log10 named as such (ln and log2 are separate).
+  log10: { label: 'Y = log10(Y)', f: (y) => log10(y) },
+  negLog10: { label: 'Y = −1 * log10(Y)', f: (y) => -log10(y) },
   ln: { label: 'Y = ln(Y)', f: (y) => Math.log(y) },
   log2: { label: 'Y = log2(Y)', f: (y) => Math.log2(y) },
   pow10: { label: 'Y = 10 ^ Y', f: (y) => 10 ** y },

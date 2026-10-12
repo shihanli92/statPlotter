@@ -16,16 +16,83 @@ export const CONFIDENCE: FieldText = {
 
 export const TAILS: FieldText = {
   line: 'Two-tailed asks whether the groups differ in either direction.',
-  card: 'A one-tailed P is only valid if, before the experiment, you predicted the direction and would have treated a difference the other way as no effect. In this version a one-tailed P is half the two-tailed P, in the direction the data went: it assumes that was the direction you predicted.',
+  card: 'Use one-tailed only if, before the experiment, you predicted the direction and would have treated a difference the other way as no effect. The P is then computed for the direction you state below; if the data go the other way, the result reports the large P and says so.',
   options: {
     two: {
       line: 'Asks about a difference in either direction.',
       recommended: 'the right choice unless you stated a direction before the experiment',
     },
     one: {
-      line: 'Half the two-tailed P, in the observed direction: only if you predicted it.',
+      line: 'Only in the direction you predicted before the experiment (stated below).',
       card: 'Choose it only for a direction stated before the experiment. Choosing one-tailed after seeing which way the data went doubles the chance of a false positive.',
     },
+  },
+}
+
+export const PREDICTED: FieldText = {
+  line: 'The direction you predicted before seeing the data; the P is for that direction.',
+  card: 'A one-tailed P answers one direction only. If the data go the other way, the P is large (above 0.5) and the result says so: a difference the other way is, by your prediction, no effect. Work saved before 0.3.9 used the observed direction; they keep it, with a warning, until you state one.',
+  options: {
+    increase: 'The effect you predicted is an increase.',
+    decrease: 'The effect you predicted is a decrease.',
+  },
+}
+
+export const DDF: FieldText = {
+  line: 'How the degrees of freedom of a mixed-effects model’s tests are counted.',
+  card: 'Satterthwaite’s method works out the df from the data’s own balance, as most statistics packages do for mixed models; containment counts subjects minus groups. They agree for balanced data; with missing values Satterthwaite’s keeps P closer to its stated level.',
+  options: {
+    satterthwaite: {
+      line: 'The df from the variance components (as lmerTest).',
+      recommended: 'it keeps P honest when values are missing or groups are unbalanced',
+    },
+    containment: 'Subjects minus groups: the default before 0.3.9.',
+  },
+}
+
+export const RM_METHOD: FieldText = {
+  line: 'What happens when a subject misses a value.',
+  card: 'Repeated-measures ANOVA needs every subject in every condition. With missing values a mixed-effects model uses every value instead, but it assumes equal correlation between all conditions (sphericity), so the Geisser-Greenhouse correction doesn’t apply; the result says which was fit. You can also analyze the complete subjects only.',
+  options: {
+    auto: 'ANOVA with complete data; a mixed-effects model when values are missing.',
+    anova: 'ANOVA of the subjects with every value; the others are left out (said).',
+    mixed: 'A mixed-effects model, with or without missing values.',
+  },
+}
+
+export const DUNN_METHOD: FieldText = {
+  line: 'How Dunn’s comparisons of the ranks are adjusted for their number.',
+  options: {
+    holm: {
+      line: 'Step-down: more power than Bonferroni, the same protection.',
+      recommended:
+        'it keeps the chance of any false positive at 5% with more power than Bonferroni',
+      method: 'dunn',
+    },
+    sidak: { line: 'Splits the error rate among the comparisons.', method: 'dunn' },
+    bonferroni: { line: 'Multiplies each P by the number of comparisons.', method: 'dunn' },
+    none: {
+      line: 'Each comparison unadjusted: only for one planned comparison.',
+      method: 'noCorrection',
+    },
+  },
+}
+
+export const KW_P_METHOD: FieldText = {
+  line: 'Exact P counts every arrangement of the ranks; approximate uses chi-square.',
+  card: 'With the small groups of most experiments the chi-square approximation can be far off. The exact P counts every way the ranks could fall into the groups; with large groups there are too many, and the approximation is used (the result says which).',
+  options: {
+    exactWhenPossible: 'Exact while the groups are small enough, else approximate (said).',
+    approximate: 'The chi-square approximation: fast, but rough for small groups.',
+  },
+}
+
+export const DIFFERENCE_AS: FieldText = {
+  line: 'The sign of each difference: later group minus earlier, or group minus control.',
+  card: 'New comparisons read “Treated − Control”: a positive difference means the later group (or the group compared with the control) is higher. Comparisons saved before 0.3.9 read “Control vs. Treated” as earlier minus later; they keep it. P values don’t change with the sign.',
+  options: {
+    laterMinusEarlier: 'Each group minus the control; later minus earlier for pairs.',
+    earlierMinusLater: 'Earlier minus later (“A vs. B” = A − B), as before 0.3.9.',
   },
 }
 
@@ -54,7 +121,11 @@ export const ALL_PAIRS_METHOD: FieldText = {
     sidak: 'Splits the error rate among the comparisons; slightly more power than Bonferroni.',
     bonferroni: 'Multiplies each P by the number of comparisons: simple and conservative.',
     'holm-sidak': 'Step-down: more power than Šidák, but adjusted P values only (no CIs).',
-    fisher: 'No adjustment: only for one planned comparison.',
+    fisher: {
+      line: 'No adjustment: only for one planned comparison after the overall test.',
+      notRecommended:
+        'with several comparisons the chance of a false positive grows with their number',
+    },
     bky: 'Controls the share of false discoveries, for screening many comparisons.',
     'newman-keuls': {
       line: 'A stepwise range test giving significant or not, without P values or CIs.',
@@ -74,7 +145,11 @@ export const CONTROL_METHOD: FieldText = {
     sidak: 'Splits the error rate among the comparisons; slightly more power than Bonferroni.',
     bonferroni: 'Multiplies each P by the number of comparisons: simple and conservative.',
     'holm-sidak': 'Step-down: more power than Šidák, but adjusted P values only (no CIs).',
-    fisher: 'No adjustment: only for one planned comparison.',
+    fisher: {
+      line: 'No adjustment: only for one planned comparison after the overall test.',
+      notRecommended:
+        'with several comparisons the chance of a false positive grows with their number',
+    },
     bky: 'Controls the share of false discoveries, for screening many comparisons.',
   },
 }
@@ -105,7 +180,11 @@ export const ONE_FACTOR_METHOD: FieldText = {
       recommended:
         'for a set of planned comparisons it has the most power of the methods that control any false positive',
     },
-    fisher: 'No adjustment: only for one planned comparison.',
+    fisher: {
+      line: 'No adjustment: only for one planned comparison after the overall test.',
+      notRecommended:
+        'with several comparisons the chance of a false positive grows with their number',
+    },
     bky: 'Controls the share of false discoveries, for screening many comparisons.',
     'newman-keuls': {
       line: 'A stepwise range test giving significant or not, without P values or CIs.',
@@ -161,6 +240,16 @@ export const SHARED_TEXT: FormText = {
   oneFactorMethod: ONE_FACTOR_METHOD,
   sphericity: SPHERICITY,
   equalSD: EQUAL_SD,
+  predicted: PREDICTED,
+  ddf: DDF,
+  rmMethod: RM_METHOD,
+  dunnMethod: DUNN_METHOD,
+  kwPMethod: KW_P_METHOD,
+  differenceAs: DIFFERENCE_AS,
+  reportEqualSdTests: {
+    line: 'Brown-Forsythe and Bartlett tests of the SDs, for information; they don’t choose the test.',
+    card: 'Choosing between ordinary and Welch ANOVA from a test of the SDs on the same data is a two-step procedure with worse error control than deciding in advance. The results always show the ratio of the largest SD to the smallest, as a description.',
+  },
   referenceRule: REFERENCE_RULE,
   referenceLevels: {
     line: 'Choose the reference level of each categorical predictor by hand.',

@@ -22,9 +22,9 @@ describe('registry', () => {
 describe('t test', () => {
   const run = (t: DataTable, params: object = {}) => runDef(ttest, t, params)
 
-  it('matches the stats layer, with the B − A sign convention', () => {
+  it('matches the stats layer, with the B − A sign convention (Welch by default, 51c)', () => {
     const r = run(columnTable([A, B]))
-    const ref = tTestUnpaired(A, B)
+    const ref = tTestUnpaired(A, B, { equalVariance: false })
     expect(r.status).toBe('ok')
     expect(v(r, 'P value')).toBe(ref.p)
     expect(v(r, 'Difference between means (B − A)')).toBeGreaterThan(0)
@@ -33,12 +33,26 @@ describe('t test', () => {
     expect(kvOf(r, 'Significantly different (P < 0.05)?')).toEqual({ kind: 'bool', v: true })
   })
 
-  it('one-tailed P is half the two-tailed P in the observed direction', () => {
+  it('one-tailed P is for the direction predicted before the experiment (51c, S1)', () => {
     const two = run(columnTable([A, B]))
-    const one = run(columnTable([A, B]), { tails: 'one' })
-    expect(v(one, 'P value')).toBeCloseTo(v(two, 'P value') / 2, 15)
-    const reversed = run(columnTable([B, A]), { tails: 'one' })
-    expect(v(reversed, 'P value')).toBeCloseTo(v(two, 'P value') / 2, 15)
+    const p2 = v(two, 'P value')
+    // B is higher than A: predicted higher, half the two-tailed P; predicted lower, the large P.
+    const along = run(columnTable([A, B]), { tails: 'one', predicted: 'increase' })
+    expect(v(along, 'P value')).toBeCloseTo(p2 / 2, 15)
+    expect(along.diagnostics.some((d) => d.level === 'warning')).toBe(false)
+    const against = run(columnTable([A, B]), { tails: 'one', predicted: 'decrease' })
+    expect(v(against, 'P value')).toBeCloseTo(1 - p2 / 2, 12)
+    expect(against.diagnostics.map((d) => d.message).join(' ')).toMatch(
+      /went the opposite way to your prediction/,
+    )
+    // No direction stated: refused, with the dialog's message.
+    const unset = run(columnTable([A, B]), { tails: 'one' })
+    expect(unset.status).toBe('error')
+    expect(unset.diagnostics.at(-1)!.message).toMatch(/Say which direction you predicted/)
+    // Saved before 0.3.9 (`observed`): the data's direction, as decision 18 did, and a warning.
+    const saved = run(columnTable([B, A]), { tails: 'one', predicted: 'observed' })
+    expect(v(saved, 'P value')).toBeCloseTo(p2 / 2, 15)
+    expect(saved.diagnostics.map((d) => d.message).join(' ')).toMatch(/Direction not stated/)
   })
 
   it('Welch drops the F test and reports fractional df', () => {
@@ -55,7 +69,7 @@ describe('t test', () => {
   it('ignores excluded values and says so', () => {
     const r = run(columnTable([[...A, 999], B], { excluded: [[0, 6]] }))
     expect(v(r, 'Sample size, column A')).toBe(6)
-    expect(v(r, 'P value')).toBe(tTestUnpaired(A, B).p)
+    expect(v(r, 'P value')).toBe(tTestUnpaired(A, B, { equalVariance: false }).p)
     expect(r.diagnostics.map((d) => d.message)).toContain('1 excluded value was not analyzed.')
   })
 
@@ -69,7 +83,7 @@ describe('t test', () => {
         [m(B), s(B), B.length],
       ]),
     )
-    expect(v(r, 'P value')).toBeCloseTo(tTestUnpaired(A, B).p, 12)
+    expect(v(r, 'P value')).toBeCloseTo(tTestUnpaired(A, B, { equalVariance: false }).p, 12)
   })
 
   it('refuses summary data without N', () => {

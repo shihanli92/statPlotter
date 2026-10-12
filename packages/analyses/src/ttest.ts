@@ -2,8 +2,10 @@ import {
   type AnalysisDef,
   type AnalysisResult,
   pairedRows,
+  pinDefaults,
   type ResultBlock,
   type ResultValue,
+  valueAt,
 } from '@ps/model'
 import {
   cohensD,
@@ -24,14 +26,21 @@ import {
   CONFIDENCE_FIELD,
   comparisonKey,
   confidenceLevel,
+  directionProblem,
   exclusionNotes,
   failure,
   int,
   interval,
   kv,
   num,
+  oneTailedNotes,
+  PAIRED_NEEDS_RAW,
+  PREDICTED_FIELD,
   pct,
+  pinObservedDirection,
   pRows,
+  predicted,
+  predictedRows,
   pSig,
   psum,
   pval,
@@ -42,6 +51,7 @@ import {
   summaryProblem,
   TAILS_FIELD,
   tails,
+  testValue,
   text,
   tooFewDataSets,
   unpairedRowsNote,
@@ -49,23 +59,44 @@ import {
 
 const Params = z.object({
   design: z.enum(['unpaired', 'paired']).default('unpaired'),
-  unpaired: z.object({ assumeEqualSD: z.boolean().default(true) }).prefault({}),
+  /** Roadmap 51c (S2): Welch's t test by default (version 2; saved analyses keep Student's). */
+  unpaired: z.object({ assumeEqualSD: z.boolean().default(false) }).prefault({}),
   paired: z.object({ measure: z.enum(['difference', 'ratio']).default('difference') }).prefault({}),
   tails,
+  predicted,
   confidenceLevel,
-  reportFTestVariances: z.boolean().default(true),
+  /** Roadmap 51c (S2): the F test of variances only when asked for (an extra, not a pre-test). */
+  reportFTestVariances: z.boolean().default(false),
 })
 type Params = z.infer<typeof Params>
 
+/**
+ * Version 1 (before 0.3.9): Student's t test and the F test of variances by default; one-tailed P
+ * in the observed direction. Saved analyses keep them. A Welch analysis never showed the F test,
+ * whatever its box said, so it stays off for those.
+ */
+export function migrateTTest(raw: unknown, from: number): unknown {
+  if (from >= 2) return raw
+  const welch =
+    valueAt(raw, ['design']) !== 'paired' && valueAt(raw, ['unpaired', 'assumeEqualSD']) === false
+  const pinned = pinDefaults(raw, [
+    [['unpaired', 'assumeEqualSD'], true],
+    [['reportFTestVariances'], true],
+  ])
+  if (welch) pinned.reportFTestVariances = false
+  return pinObservedDirection(pinned)
+}
+
 export const ttest: AnalysisDef<Params> = {
   id: 'ttest',
-  version: 1,
+  version: 2,
   title: 't test',
   category: 'Column analyses',
   description: 'Compare the means of two groups (unpaired, Welch, paired, or ratio paired t test).',
   accepts: ['column'],
   inputs: { min: 2, max: 2 },
   params: Params,
+  migrateParams: migrateTTest,
   form: [
     {
       path: ['design'],
@@ -78,8 +109,12 @@ export const ttest: AnalysisDef<Params> = {
     },
     {
       path: ['unpaired', 'assumeEqualSD'],
-      label: 'Assume both populations have the same SD (uncheck for Welch’s t test)',
-      kind: 'checkbox',
+      label: 'Can the groups vary by different amounts?',
+      kind: 'radio',
+      options: [
+        { value: false, label: 'Yes, or not sure: Welch’s t test (recommended)' },
+        { value: true, label: 'No, equal scatter is known: Student’s t test' },
+      ],
       showIf: { path: ['design'], in: ['unpaired'] },
     },
     {
@@ -93,15 +128,13 @@ export const ttest: AnalysisDef<Params> = {
       showIf: { path: ['design'], in: ['paired'] },
     },
     TAILS_FIELD,
+    PREDICTED_FIELD,
     CONFIDENCE_FIELD,
     {
       path: ['reportFTestVariances'],
-      label: 'Report F test comparing variances',
+      label: 'Also report the F test comparing the variances',
       kind: 'checkbox',
-      showIf: [
-        { path: ['design'], in: ['unpaired'] },
-        { path: ['unpaired', 'assumeEqualSD'], in: [true] },
-      ],
+      showIf: [{ path: ['design'], in: ['unpaired'] }],
     },
   ],
   run(input, params) {
@@ -109,7 +142,12 @@ export const ttest: AnalysisDef<Params> = {
     if (few) return few
     const [A, B] = input as [(typeof input)[0], (typeof input)[0]]
     const notes = exclusionNotes(input)
+    const unset = directionProblem(params, notes)
+    if (unset) return unset
     const level = pct(params.confidenceLevel)
+    // S1: the direction stated before the experiment, in the data sets' names (B − A).
+    const words = [`${B.title} higher than ${A.title}`, `${B.title} lower than ${A.title}`] as const
+    const tailRows = (p: number) => [...pRows(p, params.tails), ...predictedRows(params, words)]
     const columnsBlock = kv('Data sets', [
       ['Column A', text(A.title)],
       ['Column B', text(B.title)],
@@ -125,7 +163,11 @@ export const ttest: AnalysisDef<Params> = {
     if (params.design === 'paired') {
       const a = A.data.shape === 'replicates' ? A.data.reps[0]! : null
       const b = B.data.shape === 'replicates' ? B.data.reps[0]! : null
-      if (!a || !b) return failure('A paired t test needs raw values, not summary data.', notes)
+      if (!a || !b)
+        return failure(
+          `A paired t test needs raw values, not summary data.${PAIRED_NEEDS_RAW}`,
+          notes,
+        )
       const pairs = pairedRows(a, b)
       notes.push(...unpairedRowsNote(a, b))
       if (pairs.a.length < 2)
@@ -138,13 +180,14 @@ export const ttest: AnalysisDef<Params> = {
         const two = tTestRatioPaired(pairs.a, pairs.b, { confLevel: params.confidenceLevel })
         const r = tTestRatioPaired(pairs.a, pairs.b, {
           confLevel: params.confidenceLevel,
-          alternative: alternativeFor(params.tails, two.mean),
+          alternative: alternativeFor(params.tails, params.predicted, two.mean),
         })
         noVariation(notes, r.p, 'the ratios are all identical')
+        notes.push(...oneTailedNotes(params, two.mean, r.p, words, 'The ratio'))
         const blocks: ResultBlock[] = [
           columnsBlock,
           kv('Ratio paired t test', [
-            ...pRows(r.p, params.tails),
+            ...tailRows(r.p),
             ['t', num(r.t)],
             ['df', int(r.df)],
             ['Number of pairs', int(r.n)],
@@ -162,7 +205,13 @@ export const ttest: AnalysisDef<Params> = {
         return result({
           blocks,
           diagnostics: notes,
-          values: { p: pval(r.p), t: num(r.t), df: int(r.df), ratio: num(r.ratio) },
+          values: {
+            p: pval(r.p),
+            t: num(r.t),
+            df: int(r.df),
+            ratio: num(r.ratio),
+            ...testValue('Ratio paired t test'),
+          },
           comparisons: [
             comparison(r.p, r.ratio, two.ratioCiLo, two.ratioCiHi, 'Geometric mean ratio B/A'),
           ],
@@ -172,13 +221,14 @@ export const ttest: AnalysisDef<Params> = {
       const two = tTestPaired(pairs.a, pairs.b, { confLevel: params.confidenceLevel })
       const r = tTestPaired(pairs.a, pairs.b, {
         confLevel: params.confidenceLevel,
-        alternative: alternativeFor(params.tails, two.mean),
+        alternative: alternativeFor(params.tails, params.predicted, two.mean),
       })
       noVariation(notes, r.p, 'the differences are all identical')
+      notes.push(...oneTailedNotes(params, two.mean, r.p, words))
       const blocks: ResultBlock[] = [
         columnsBlock,
         kv('Paired t test', [
-          ...pRows(r.p, params.tails),
+          ...tailRows(r.p),
           ['t', num(r.t)],
           ['df', int(r.df)],
           ['Number of pairs', int(r.n)],
@@ -205,7 +255,13 @@ export const ttest: AnalysisDef<Params> = {
       return result({
         blocks,
         diagnostics: notes,
-        values: { p: pval(r.p), t: num(r.t), df: int(r.df), diff: num(r.mean) },
+        values: {
+          p: pval(r.p),
+          t: num(r.t),
+          df: int(r.df),
+          diff: num(r.mean),
+          ...testValue('Paired t test'),
+        },
         comparisons: [comparison(r.p, r.mean, two.ciLo, two.ciHi, 'Mean difference B − A')],
       })
     }
@@ -238,13 +294,14 @@ export const ttest: AnalysisDef<Params> = {
       return tTestFromSummary(s(rawA, sumA), s(rawB, sumB), opts)
     }
     const two = run('two-sided')
-    const r = run(alternativeFor(params.tails, two.diff))
+    const r = run(alternativeFor(params.tails, params.predicted, two.diff))
     noVariation(notes, r.p, 'both groups have the same mean and no variation')
+    notes.push(...oneTailedNotes(params, two.diff, r.p, words))
 
     const blocks: ResultBlock[] = [
       columnsBlock,
       kv(welch ? 'Unpaired t test with Welch’s correction' : 'Unpaired t test', [
-        ...pRows(r.p, params.tails),
+        ...tailRows(r.p),
         [welch ? 'Welch-corrected t' : 't', num(r.t)],
         ['df', welch ? num(r.df) : int(r.df)],
       ]),
@@ -265,7 +322,23 @@ export const ttest: AnalysisDef<Params> = {
         ),
       ]),
     ]
-    if (params.reportFTestVariances && !welch && rawA && rawB) {
+    // S2: the scatter of each group, described (not a test that picks one); the F test only
+    // when asked for, and never a prompt to switch tests after the result.
+    const [big, small] = r.sdA >= r.sdB ? [r.sdA, r.sdB] : [r.sdB, r.sdA]
+    blocks.push(
+      kv('Scatter in each group', [
+        [`SD of ${A.title}`, num(r.sdA)],
+        [`SD of ${B.title}`, num(r.sdB)],
+        ['Ratio of SDs (larger / smaller)', num(big / small)],
+      ]),
+      {
+        type: 'note',
+        text: welch
+          ? 'Welch’s t test doesn’t assume the two groups vary by the same amount. The ratio of SDs describes the data; it doesn’t choose the test.'
+          : 'Student’s t test assumes the two groups vary by the same amount (chosen before the analysis). The ratio of SDs describes the data; it doesn’t choose the test.',
+      },
+    )
+    if (params.reportFTestVariances && rawA && rawB) {
       const f = fTestVariances(rawA, rawB)
       blocks.push(
         kv('F test to compare variances', [
@@ -274,13 +347,6 @@ export const ttest: AnalysisDef<Params> = {
           ...pSig(f.p, 'Significantly different'),
         ]),
       )
-      if (f.p < ALPHA) {
-        notes.push({
-          level: 'warning',
-          message:
-            'The variances differ significantly (F test). Consider Welch’s t test, which does not assume equal SDs.',
-        })
-      }
     }
     blocks.push(
       kv('Data analyzed', [
@@ -291,7 +357,13 @@ export const ttest: AnalysisDef<Params> = {
     return result({
       blocks,
       diagnostics: notes,
-      values: { p: pval(r.p), t: num(r.t), df: num(r.df), diff: num(r.diff) },
+      values: {
+        p: pval(r.p),
+        t: num(r.t),
+        df: num(r.df),
+        diff: num(r.diff),
+        ...testValue(welch ? 'Welch’s t test' : 'Student’s t test'),
+      },
       comparisons: [comparison(r.p, r.diff, two.ciLo, two.ciHi, 'Difference between means B − A')],
     })
   },
@@ -308,8 +380,9 @@ function effectRows(e: StandardizedDifference, paired: boolean): [string, Result
         ['Hedges’ g (g_z)', num(e.hedgesG)],
       ]
     : [
-        ['Cohen’s d', num(e.cohensD)],
-        ['Hedges’ g', num(e.hedgesG)],
+        // S43: d standardizes by the pooled SD whichever test was run (decision 54).
+        ['Cohen’s d (pooled SD)', num(e.cohensD)],
+        ['Hedges’ g (pooled SD)', num(e.hedgesG)],
         ['Glass’s delta (SD of column A)', num(e.glassDelta!)],
       ]
 }

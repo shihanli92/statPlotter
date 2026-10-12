@@ -1,0 +1,17 @@
+{
+  "name": "onesample_t",
+  "input": {"x":[12.1,14.300000000000001,11.800000000000001,13.5,15.199999999999999,12.9,13.800000000000001,14.6],"mu":12},
+  "params": {"suite":"onesample","rparams":{},"analysis":"oneSample","app":{"test":"t","hypothetical":12}},
+  "expected": {
+    "two": 0.0087106384328234799,
+    "greater": 0.0043553192164117399,
+    "less": 0.99564468078358825
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

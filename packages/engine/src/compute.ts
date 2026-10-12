@@ -12,6 +12,7 @@ import {
   nodeById,
   normalizeColumn,
   type Project,
+  paramsOf,
   type RunContext,
   resultTableAs,
   tableIssues,
@@ -101,7 +102,7 @@ type Prepared =
 export type UpstreamLookup = (analysisId: NodeId) => ResultState | undefined
 
 type Source =
-  | { ok: true; table: DataTable }
+  | { ok: true; table: DataTable; from?: RunContext['source'] }
   | { ok: false; message: string }
   | { ok: 'wait'; message: string; key: string }
 
@@ -151,7 +152,17 @@ function resolveSource(
       message: `The data table of ${name} is malformed (${issue.path.join('.')}: ${issue.message}).`,
     }
   }
-  return { ok: true, table: resultTableAs(table, source.id) }
+  // Roadmap 51c (S13): what the producing analysis did to the values, said by its result.
+  const note = up.result.values.sourceNote
+  return {
+    ok: true,
+    table: resultTableAs(table, source.id),
+    from: {
+      analysisId: source.analysisId,
+      name: source.name,
+      ...(note?.kind === 'text' ? { note: note.v } : {}),
+    },
+  }
 }
 
 /**
@@ -190,7 +201,7 @@ export function prepareJob(
   }
   // Roadmap 35: the values at one X, data sets pooled (the input's modifiers).
   let tableKind = source.tableKind
-  const modifiers = { atX: node.input.atX, pools: node.input.pools }
+  const modifiers = { atX: node.input.atX, pools: node.input.pools, byX: node.input.byX }
   if (hasModifiers(modifiers)) {
     const modified = modifyInput(input, modifiers, tableKind)
     if ('error' in modified) return fail(modified.error)
@@ -205,22 +216,20 @@ export function prepareJob(
     return fail(`${def.title} needs ${range} data sets; ${input.length} selected.`)
   }
 
-  let raw = node.params
-  if (node.pluginVersion < def.version && def.migrateParams) {
-    raw = def.migrateParams(raw, node.pluginVersion)
-  }
-  const parsed = def.params.safeParse(raw)
-  if (!parsed.success) return fail(`Invalid parameters: ${parsed.error.issues[0]?.message ?? ''}`)
+  // Roadmap 51c: stored params through `paramsOf` (migrated from the node's version, parsed).
+  const parsed = paramsOf(def, node)
+  if (!parsed.ok) return fail(`Invalid parameters: ${parsed.message}`)
 
   const context: RunContext = {
     tableKind,
-    xTitle: node.input.atX === undefined ? (source.x?.title ?? null) : null,
+    xTitle: node.input.atX === undefined && !node.input.byX ? (source.x?.title ?? null) : null,
+    ...(src.from ? { source: src.from } : {}),
   }
   const inputKey = hashStrings([
     node.analysisId,
     String(def.version),
     registry.engineVersion,
-    JSON.stringify(parsed.data),
+    JSON.stringify(parsed.params),
     JSON.stringify(context),
     ...(hasModifiers(modifiers) ? [JSON.stringify(modifiers)] : []),
     ...input.map(hashDataSet),
@@ -228,7 +237,48 @@ export function prepareJob(
   return {
     ok: true,
     inputKey,
-    job: { analysisId: node.analysisId, params: parsed.data, input, context },
+    job: { analysisId: node.analysisId, params: parsed.params, input, context },
+  }
+}
+
+/** Roadmap 51c (S20): analyses whose result tables hold values normalized to a reference. */
+const NORMALIZING = new Set(['normalize'])
+
+/**
+ * Roadmap 51c (S13, S20): notes every analysis of another analysis' result carries, whatever it
+ * computes — the values that analysis removed or changed (its `sourceNote`: outliers removed
+ * before the test), and a group normalized to itself (every value 100, or 1: no variation left
+ * to compare). Added to the result the runner returns (the cache holds it with them).
+ */
+export function withSourceNotes(result: AnalysisResult, job: AnalysisJob): AnalysisResult {
+  const src = job.context.source
+  if (!src) return result
+  const notes: AnalysisResult['diagnostics'] = []
+  if (src.note)
+    notes.push({
+      level: 'warning',
+      message: `${src.note} in “${src.name}” before this analysis. Remove values only for a known cause, and report the analysis with and without them.`,
+    })
+  if (NORMALIZING.has(src.analysisId)) {
+    const flat = job.input.filter((ds) => {
+      const v = ds.data.shape === 'replicates' ? ds.data.reps.flatMap((r) => [...r]) : []
+      const f = v.filter((x) => !Number.isNaN(x))
+      return f.length > 1 && (f.every((x) => x === 100) || f.every((x) => x === 1))
+    })
+    for (const ds of flat) {
+      const at = ds.data.shape === 'replicates' && ds.data.reps[0]!.find((x) => !Number.isNaN(x))
+      notes.push({
+        level: 'warning',
+        message: `“${ds.title}” was normalized to itself and has no variation (every value is ${at}): compare the other groups with ${at} by a one-sample t test, or test the raw values with the experiment as the matching factor (paired or repeated measures).`,
+      })
+    }
+  }
+  if (!notes.length) return result
+  const diagnostics = [...result.diagnostics, ...notes]
+  return {
+    ...result,
+    diagnostics,
+    status: result.status === 'error' ? 'error' : 'warning',
   }
 }
 
@@ -474,7 +524,7 @@ export class ComputeEngine {
       checked++
       let next: ResultState
       try {
-        const fresh = await this.runner(prep.job)
+        const fresh = withSourceNotes(await this.runner(prep.job), prep.job)
         const saved = this.cache.get(key)
         if (saved && sameResult(saved, fresh)) continue
         this.remember(key, fresh)
@@ -619,7 +669,8 @@ export class ComputeEngine {
     // The key leaves `inflight` before settling, so the refresh a settle starts (or a later one)
     // can launch it again: a job lost with a crashed worker, or one dropped as unwanted.
     const run = this.runner(job, () => this.waitsFor(key), report).then(
-      (result) => {
+      (raw) => {
+        const result = withSourceNotes(raw, job)
         live = false
         this.inflight.delete(key)
         this.clearProgress(key)

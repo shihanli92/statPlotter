@@ -4,6 +4,7 @@ import './zodConfig.ts'
 
 export * from './analysis.ts'
 export * from './analysisInput.ts'
+export * from './analysisParams.ts'
 export * from './axisExtras.ts'
 export * from './extract.ts'
 export * from './factory.ts'

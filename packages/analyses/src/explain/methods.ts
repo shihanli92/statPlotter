@@ -11,6 +11,7 @@ export const COMPARISON_CARD: Readonly<Record<string, string>> = {
   sidak: 'sidak',
   bonferroni: 'bonferroni',
   'holm-sidak': 'holmSidak',
+  holm: 'holm',
   fisher: 'fisherLsd',
   bky: 'fdr',
   bh: 'fdrBh',
@@ -48,12 +49,21 @@ function oneWay(p: P, matched: boolean): string[] {
           : 'oneWayAnova'
   if (p.comparisons === 'none') return [test]
   if (p.comparisons === 'trend') return [test, 'linearTrend']
-  if (!p.gaussian) return [test, 'dunn']
+  if (!p.gaussian) return [test, p.dunnMethod === 'none' ? 'noCorrection' : 'dunn']
   if (!matched && p.equalSD !== 'yes') return [test, ...cmp(p.welchMethod)]
   return [test, ...cmp(p.comparisons === 'vsControl' ? p.controlMethod : p.allPairsMethod)]
 }
 
-const survival = () => ['kaplanMeier', 'logRank', 'gehanBreslowWilcoxon']
+/** Survival: the test chosen (all three for analyses saved before 0.3.9), then the pairs'. */
+const survival = (p: P): string[] => [
+  'kaplanMeier',
+  ...(p.test === 'gehanBreslowWilcoxon'
+    ? ['gehanBreslowWilcoxon']
+    : p.test === 'all'
+      ? ['logRank', 'gehanBreslowWilcoxon']
+      : ['logRank']),
+  ...(p.pairwise && p.pairwise !== 'none' ? cmp(p.pairwiseMethod) : []),
+]
 
 const fit = (p: P): string[] => [
   p.fitMethod === 'robust' ? 'robustFit' : 'nonlinearFit',
@@ -109,7 +119,7 @@ export const CARDS_OF: Readonly<Record<string, (p: P) => readonly string[]>> = {
           : 'studentT',
     ...rowCorrection(p),
   ],
-  multipleOneWay: (p) => ['multipleOneWay', ...oneWay(p, false)],
+  multipleOneWay: (p) => ['multipleOneWay', ...oneWay(p, false), ...rowCorrection(p)],
   threeWayAnova: (p) => [
     'threeWayAnova',
     ...(p.comparisons === 'allCells'
@@ -120,7 +130,10 @@ export const CARDS_OF: Readonly<Record<string, (p: P) => readonly string[]>> = {
           ? cmp(p.oneFactorMethod)
           : []),
   ],
-  correlation: (p) => [p.method === 'spearman' ? 'spearman' : 'pearson'],
+  correlation: (p) => [
+    p.method === 'spearman' ? 'spearman' : 'pearson',
+    ...(p.correction === 'holm' ? ['holm'] : p.correction === 'fdr' ? ['fdrBh'] : []),
+  ],
   linearRegression: () => ['linearRegression'],
   deming: () => ['deming'],
   simpleLogistic: () => ['simpleLogistic'],

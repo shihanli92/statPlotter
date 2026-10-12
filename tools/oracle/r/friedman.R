@@ -88,12 +88,19 @@ oracle <- function(input, params) {
   se <- sqrt(n * k * (k + 1) / 6)
   pairs <- t(combn(k, 2))
   m <- nrow(pairs)
-  dunn <- lapply(c(none = "none", bonferroni = "bonferroni", sidak = "sidak"), function(method) {
+  # Roadmap 51c (S11): Holm's step-down too (p.adjust over the m pairs).
+  rawP <- vapply(seq_len(m), function(q) {
+    2 * pnorm(abs((R[pairs[q, 1]] - R[pairs[q, 2]]) / se), lower.tail = FALSE)
+  }, 0)
+  holmP <- p.adjust(rawP, "holm")
+  dunn <- lapply(c(none = "none", bonferroni = "bonferroni", sidak = "sidak", holm = "holm"),
+                 function(method) {
     lapply(seq_len(m), function(q) {
       i <- pairs[q, 1]; j <- pairs[q, 2]
       z <- (R[i] - R[j]) / se
       p <- 2 * pnorm(abs(z), lower.tail = FALSE)
-      pAdj <- switch(method, none = p, bonferroni = min(1, m * p), sidak = -expm1(m * log1p(-p)))
+      pAdj <- switch(method, none = p, bonferroni = min(1, m * p), sidak = -expm1(m * log1p(-p)),
+                     holm = holmP[q])
       list(i = i - 1, j = j - 1, rankSumDiff = unname(R[i] - R[j]),
            meanRankDiff = unname((R[i] - R[j]) / n), z = unname(z), p = unname(p),
            pAdj = unname(pAdj))

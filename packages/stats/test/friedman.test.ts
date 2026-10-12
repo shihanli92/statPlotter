@@ -23,6 +23,7 @@ describe('Friedman test vs R', () => {
         none: dunnFriedmanComparisons(res, pairs, { method: 'none' }),
         bonferroni: dunnFriedmanComparisons(res, pairs, { method: 'bonferroni' }),
         sidak: dunnFriedmanComparisons(res, pairs, { method: 'sidak' }),
+        holm: dunnFriedmanComparisons(res, pairs, { method: 'holm' }),
       }
       expectDeepClose({ ...res, dunn }, f.expected, f.tol)
     })

@@ -11,6 +11,7 @@ import {
   THIN_BORDER,
 } from '../../components/formatFields.tsx'
 import { InsetTablePanel } from '../results/ResultPanels.tsx'
+import { bracketTests, oneAnalysisBracketCommands } from '../results/resultActions.ts'
 import { effectiveText, type PanelContext } from './context.ts'
 
 type BracketShow = Extract<
@@ -70,15 +71,63 @@ export function AnnotationPanel({ ctx, index }: { ctx: PanelContext; index: numb
   if (a.type === 'table') return <InsetTablePanel ctx={ctx} index={index} />
 
   if (a.type === 'bracket') {
+    // Roadmap 51c (§7.3): brackets each labelled by a test of their own, relabelled from one
+    // analysis of all the groups in one step.
+    const tests = bracketTests(ctx.project, graph)
+    const source = ctx.project.nodes[graph.seriesSource.table]
+    const own = graph.annotations.filter(
+      (x) =>
+        x.type === 'bracket' &&
+        x.label.source === 'analysis' &&
+        tests.some((t) => t.id === (x.label as { analysis: string }).analysis),
+    ).length
+    const oneAnalysis =
+      source?.kind === 'table' && own >= 2 && a.label.source === 'analysis' && !a.group?.length
+        ? () => {
+            const r = oneAnalysisBracketCommands(ctx.project, graph, source, {
+              show: (a.label as { show: BracketShow }).show,
+              ...(a.x !== undefined ? { x: a.x, a: a.a, b: a.b } : {}),
+              ...(a.rowA !== undefined ? { row: a.rowA } : {}),
+            })
+            if ('error' in r) ctx.onError(r.error)
+            else ctx.dispatch(r.commands, 'Label brackets from one analysis')
+          }
+        : null
     return (
       <Section title="Significance bracket">
+        {oneAnalysis && (
+          <div className="banner warning bracket-uncorrected">
+            <span>
+              {own} brackets here are each labelled by a test of their own, not corrected for each
+              other.
+            </span>
+            <button type="button" onClick={oneAnalysis}>
+              Label these {own} brackets from one{' '}
+              {source?.kind === 'table' && source.tableKind === 'column'
+                ? 'ANOVA'
+                : 'two-way ANOVA'}
+            </button>
+          </div>
+        )}
         {a.label.source === 'analysis' ? (
-          <Select
-            label="Label"
-            value={a.label.show}
-            options={BRACKET_LABELS}
-            onChange={(v) => set(['label', 'show'], v, 'Bracket label')}
-          />
+          <>
+            <Select
+              label="Label"
+              value={a.label.show}
+              options={BRACKET_LABELS}
+              onChange={(v) => set(['label', 'show'], v, 'Bracket label')}
+            />
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={!!a.label.test}
+                onChange={(e) =>
+                  set(['label', 'test'], e.target.checked || undefined, 'Bracket label')
+                }
+              />
+              Name the test after the P value
+            </label>
+          </>
         ) : (
           <RichTextField
             label="Label"

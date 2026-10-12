@@ -66,7 +66,7 @@ export const chiSquareTrend: MethodCard = {
   instead: [{ card: 'chiSquare', when: 'the rows have no order' }],
   assumptions: ['Rows equally spaced in their order.', 'Each subject counted once.'],
   reading:
-    'Read P for the trend. In this version it is reported whenever the table has three or more rows and two columns, ticked by default; read it only if you planned it.',
+    'Read P for the trend. It is computed only when you say the rows are in a meaningful order (tables with three or more rows and two columns).',
   more: {
     formula: 'Cochran-Armitage: the linear component of chi-square with scores 1…r.',
     r: 'prop.trend.test(events, totals)',
@@ -148,7 +148,7 @@ export const logRank: MethodCard = {
     'Most powerful when the hazards are proportional (curves that don’t cross).',
   ],
   reading:
-    'Read P and the hazard ratio with its CI. The survival results in this version list the log-rank, trend and Gehan-Breslow-Wilcoxon tests together: decide which one answers your question before you look.',
+    'Read P and the hazard ratio (each group ÷ the reference group) with its CI. Only the test you chose is reported; with three or more groups, the pairwise comparisons say which curves differ, corrected for their number (Holm by default).',
   more: {
     formula: 'Observed against expected events in each group at every event time.',
     r: 'survival::survdiff(Surv(time, event) ~ group)',

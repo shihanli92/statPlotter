@@ -21,7 +21,7 @@ export const pearson: MethodCard = {
     'Both measurements are roughly symmetric; one outlier can dominate r.',
   ],
   reading:
-    'Read r (−1 to 1) with its CI, and r² (the share of variation the two share). r describes association, not agreement or cause. With several columns, every pair is tested and the P values are not corrected for their number in this version.',
+    'Read r (−1 to 1) with its CI, and r² (the share of variation the two share). r describes association, not agreement or cause. With several columns every pair is tested, and the P values are corrected for their number (false discovery rate by default).',
   more: {
     formula: 'r = Σ(x − x̄)(y − ȳ) / √(Σ(x − x̄)² Σ(y − ȳ)²); CI by Fisher’s z.',
     r: 'cor.test(x, y)',
@@ -218,7 +218,7 @@ export const modelComparison: MethodCard = {
   instead: [{ card: 'nonlinearFit', when: 'you only want the parameters' }],
   assumptions: ['The F test needs nested models (one a special case of the other); AICc doesn’t.'],
   reading:
-    'Read the preferred model and its evidence: the F test’s P, or the AICc difference and the probability that each model is right. In this version both are reported; choose the one you decided on in advance.',
+    'Read the preferred model and its evidence: the F test’s P, or the AICc difference and the probability that each model is right, by the method you chose before the fit (one verdict).',
   more: {
     formula:
       'F = ((SS1 − SS2)/(df1 − df2)) / (SS2/df2); AICc = n·ln(SS/n) + 2K + 2K(K + 1)/(n − K − 1).',

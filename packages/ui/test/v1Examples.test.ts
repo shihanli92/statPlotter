@@ -7,6 +7,7 @@ import {
   type MigrationNote,
   type NodeId,
   type Project,
+  paramsOf,
   parseProject,
 } from '@ps/model'
 import { describe, expect, it, vi } from 'vitest'
@@ -68,18 +69,50 @@ const sha = (s: string) => createHash('sha256').update(s).digest('hex')
 /** What a graph's layers decide (compared by drawing instead). */
 const LAYERED = ['layers', 'look', 'preset', 'seriesOverrides', 'style', 'scales']
 
-/** A project with its graphs' layer fields left out. */
-function withoutLayers(project: Project): object {
+/**
+ * A project with its graphs' layer fields left out, and its analyses' params as they mean them
+ * (roadmap 51c: params read through `paramsOf`, at the current version: a v1 document's params
+ * of 0.3.8 and the example's, pinned to the same choices, are the same params).
+ */
+function withoutLayers(project: Project, example: string): object {
   const nodes = Object.fromEntries(
-    Object.entries(project.nodes).map(([id, n]) => [
-      id,
-      n.kind === 'graph'
-        ? Object.fromEntries(Object.entries(n).filter(([k]) => !LAYERED.includes(k)))
-        : n,
-    ]),
+    Object.entries(project.nodes).map(([id, n]) => {
+      if (n.kind === 'graph')
+        return [id, Object.fromEntries(Object.entries(n).filter(([k]) => !LAYERED.includes(k)))]
+      if (n.kind !== 'analysis') return [id, n]
+      const def = registry.get(n.analysisId)
+      const p = def && paramsOf(def, n)
+      if (!p?.ok) return [id, n]
+      const params = { ...(p.params as object), ...CHANGED_SINCE_V1[`${example}/${n.analysisId}`] }
+      return [id, { ...n, params, pluginVersion: def!.version }]
+    }),
   )
   return { ...project, nodes }
 }
+
+/**
+ * Params an example now states that its v1 document left to a default, the same results (each
+ * with its reason): applied to the migrated document before comparing.
+ */
+const CHANGED_SINCE_V1: Record<string, object> = {
+  // Roadmap 51c (S39): the ROC direction is stated (patients higher), as the data-chosen one was.
+  'clinical/roc': { direction: 'higher' },
+}
+
+/**
+ * Text an example now words otherwise (its notes and names): replaced in the migrated document
+ * before comparing. Roadmap 51c: Transform's label "Y = log10(Y)" (S38), the spelling Šidák (S33).
+ */
+const TEXT_SINCE_V1: Record<string, [string, string][]> = {
+  'data-processing': [['Y = log(Y)', 'Y = log10(Y)']],
+  grouped: [['Šídák', 'Šidák']],
+}
+
+const reworded = (project: Project, example: string): Project =>
+  (TEXT_SINCE_V1[example] ?? []).reduce(
+    (p, [from, to]) => JSON.parse(JSON.stringify(p).replaceAll(from, to)) as Project,
+    project,
+  )
 
 /** A scene as text without empty groups (a layer drawing nothing leaves one; SVG drops it). */
 function drawing(scene: Scene): string {
@@ -131,8 +164,8 @@ describe('examples: the v1 document migrated is the document built now', () => {
       // Built with ids counted from 0, once per run (`exampleBuilds.ts`).
       const built = (await builtExample(example, context))!
       const diff = firstDifference(
-        JSON.parse(normalized(withoutLayers(migrated))),
-        JSON.parse(normalized(withoutLayers(built))),
+        JSON.parse(normalized(withoutLayers(reworded(migrated, id), id))),
+        JSON.parse(normalized(withoutLayers(built, id))),
       )
       expect(diff, `${id}: ${diff}`).toBeNull()
       expect(

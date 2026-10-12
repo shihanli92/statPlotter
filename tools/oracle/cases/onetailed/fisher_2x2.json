@@ -1,0 +1,22 @@
+{
+  "input": {
+    "table": [
+      [
+        3,
+        12
+      ],
+      [
+        9,
+        6
+      ]
+    ]
+  },
+  "params": {
+    "suite": "fisher",
+    "rparams": {},
+    "analysis": "contingency",
+    "app": {
+      "test": "fisher"
+    }
+  }
+}

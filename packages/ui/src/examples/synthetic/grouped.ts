@@ -20,7 +20,7 @@ export function createGroupedExample(fonts: FontRegistry): Project {
       'Genotype × treatment',
       ['Wild type', 'Knockout'],
       { Vehicle: cells([40, 42], 5, 6), Drug: cells([47, 63], 5, 6) },
-      'Rows are genotypes, data sets treatments, 6 mice per cell (subcolumns). Simulated data with a larger drug effect in knockouts. Two-way ANOVA with Šídák’s comparisons of the treatments within each genotype.',
+      'Rows are genotypes, data sets treatments, 6 mice per cell (subcolumns). Simulated data with a larger drug effect in knockouts. Two-way ANOVA with Šidák’s comparisons of the treatments within each genotype.',
     ),
   )
   const genoBars = b.graph(genotype, {
@@ -31,7 +31,7 @@ export function createGroupedExample(fonts: FontRegistry): Project {
     genotype,
     'twoWayAnova',
     { comparisons: 'withinRows', allPairsMethod: 'sidak' },
-    { name: 'Two-way ANOVA (Šídák)' },
+    { name: 'Two-way ANOVA (Šidák)' },
   )
   b.brackets(genoBars, twoWay, { show: 'stars', maxP: Number.POSITIVE_INFINITY })
 
@@ -48,7 +48,7 @@ export function createGroupedExample(fonts: FontRegistry): Project {
       'Time course (repeated measures)',
       hours.map((h) => `${h} h`),
       { Placebo: subjects(course(1.5)), Drug: subjects(course(16)) },
-      'Plasma level of 6 subjects per group (subcolumns) at six times (rows). Simulated data. Two-way repeated-measures ANOVA (rows repeated, Geisser-Greenhouse), Šídák’s comparisons at each time, and row statistics.',
+      'Plasma level of 6 subjects per group (subcolumns) at six times (rows). Simulated data. Two-way repeated-measures ANOVA (rows repeated, Geisser-Greenhouse), Šidák’s comparisons at each time, and row statistics.',
     ),
   )
   const timeGraph = b.graph(time, {

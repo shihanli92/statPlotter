@@ -301,7 +301,8 @@ describe('Stucchi et al. 2026, column tests', () => {
       [fig4cCa[0]!, '0.0165'],
       [fig4cCa[1]!, '0.0081'],
     ] as const) {
-      const r = runDef(ttest, columnTable(cols))
+      // The paper's unpaired t tests are Student's (the default before 0.3.9).
+      const r = runDef(ttest, columnTable(cols), { unpaired: { assumeEqualSD: true } })
       expectPrinted(r.comparisons[0]!.p, printed)
     }
   })

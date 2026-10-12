@@ -74,7 +74,9 @@ const Params = z.object({
 })
 type Params = z.infer<typeof Params>
 
-const METHODS = ALL_PAIRS_METHODS.slice(0, 5)
+const METHODS = ALL_PAIRS_METHODS.filter((m) =>
+  ['tukey', 'sidak', 'bonferroni', 'holm-sidak', 'fisher'].includes(m.value),
+)
 
 /** Numeric factors with more levels than this get a warning (probably a continuous variable). */
 const MANY_LEVELS = 20

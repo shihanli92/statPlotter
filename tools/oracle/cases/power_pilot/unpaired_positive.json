@@ -1,0 +1,27 @@
+{
+  "input": {
+    "a": [
+      10,
+      12,
+      11,
+      13,
+      9,
+      11.5
+    ],
+    "b": [
+      14,
+      15,
+      13,
+      17,
+      16,
+      14.5
+    ]
+  },
+  "params": {
+    "type": "two.sample",
+    "alpha": 0.05,
+    "target": 0.8,
+    "tails": 2
+  },
+  "note": "Pilot effect well away from zero: n at the lower CI bound."
+}

@@ -1,7 +1,12 @@
 import type { AnalysisDef, GraphableDataSet, NormalizedDataSet, OutputDecl } from '@ps/model'
 import { z } from 'zod'
 import { failure, firstCol } from './common.ts'
-import { NonlinearParamsSchema, nonlinearFitDef, runNonlinear } from './nonlinear.ts'
+import {
+  migrateNonlinear,
+  NonlinearParamsSchema,
+  nonlinearFitDef,
+  runNonlinear,
+} from './nonlinear.ts'
 import { stableId } from './resultTable.ts'
 
 // Nonlinear regression from a multiple-variables table (roadmap item 20): choose the X and Y
@@ -26,7 +31,7 @@ const GRAPH = { id: 'mvfit', name: 'Curve fit' }
 
 export const nonlinearFitMVDef: AnalysisDef<NonlinearMVParams> = {
   id: 'nonlinearFitMV',
-  version: 1,
+  version: 2,
   title: 'Nonlinear regression (curve fit)',
   category: 'Multiple variable analyses',
   description:
@@ -36,6 +41,7 @@ export const nonlinearFitMVDef: AnalysisDef<NonlinearMVParams> = {
   // Phase 42: X and Y default to the first two data sets chosen, which must be numbers.
   numbersByDefault: true,
   params: MVParams,
+  migrateParams: migrateNonlinear,
   form: [
     { path: ['x'], label: 'X variable', kind: 'custom', component: 'dataset.pick' },
     { path: ['y'], label: 'Y variable', kind: 'custom', component: 'dataset.pick:1' },

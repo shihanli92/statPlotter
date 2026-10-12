@@ -1,11 +1,12 @@
-import type {
-  AnalysisDef,
-  AnalysisResult,
-  Comparison,
-  Diagnostic,
-  NormalizedDataSet,
-  ResultBlock,
-  ResultValue,
+import {
+  type AnalysisDef,
+  type AnalysisResult,
+  type Comparison,
+  type Diagnostic,
+  type NormalizedDataSet,
+  pinDefaults,
+  type ResultBlock,
+  type ResultValue,
 } from '@ps/model'
 import {
   brownForsytheAnova,
@@ -13,6 +14,7 @@ import {
   effectSizes,
   type GroupData,
   kruskalWallis,
+  kruskalWallisExact,
   linearTrend,
   type McRow,
   multipleComparisons,
@@ -32,18 +34,26 @@ import {
   CONTROL_FIELD,
   CONTROL_METHODS,
   comparisonTable,
+  comparisonTestValue,
   controlMethod,
+  DIFFERENCE_AS_FIELD,
+  type DifferenceAs,
+  differenceAs,
   dunnTable,
   EQUAL_SD_FIELD,
   effectSizeTable,
   equalSD,
   groupData,
+  interactionNote,
   METHOD_TITLE,
   magnitudeWarning,
   NO_COMPARISONS,
   noResidualWarning,
   oneWayPairs,
   pairComparisons,
+  pairLabel,
+  signedDunn,
+  signedRows,
   TWO_WAY_FAMILY_SUFFIX,
   twoWayComparison,
   WELCH_METHODS,
@@ -63,6 +73,7 @@ import {
   pSig,
   psum,
   pval,
+  RANK_NEEDS_RAW,
   rawValues,
   result,
   resultsSheet,
@@ -70,12 +81,21 @@ import {
   statText,
   summaryProblem,
   table,
+  testValue,
   text,
   yesNo,
 } from './common.ts'
 import { cellGroup, rowTitleOf } from './grouped.ts'
-import { friedmanDef } from './nonparametric.ts'
-import { runOneWayRM, runTwoWayRM } from './rmAnova.ts'
+import { DDF_FIELD, ddf } from './nested.ts'
+import {
+  DUNN_METHODS,
+  type DunnMethod,
+  dunnMethod,
+  dunnTitle,
+  friedmanDef,
+} from './nonparametric.ts'
+import { P_METHOD_FIELD, pMethod } from './rank.ts'
+import { RM_METHOD_FIELD, rmMethod, runOneWayRM, runTwoWayRM } from './rmAnova.ts'
 
 const NK_RM_MESSAGE =
   'Newman-Keuls comparisons are available without repeated measures. Choose Tukey or another test.'
@@ -97,9 +117,36 @@ const OneWayParams = z.object({
   allPairsMethod: allPairsMethod.default('tukey'),
   controlMethod: controlMethod.default('dunnett'),
   welchMethod: welchMethod.default('dunnett-t3'),
+  /** Roadmap 51c (S11): Kruskal-Wallis' exact P for small groups; Dunn's adjustment. */
+  kwPMethod: pMethod,
+  dunnMethod: dunnMethod.default('holm'),
+  /** Roadmap 51c (S5, S28): how matched rows are analyzed, and the mixed model's df. */
+  rmMethod,
+  ddf,
+  /** Roadmap 51c (S3): the tests of equal SDs only when asked for (not a pre-test). */
+  reportEqualSdTests: z.boolean().default(false),
+  /** Roadmap 51c: comparisons as later − earlier (group − control) for new analyses. */
+  differenceAs,
   confidenceLevel,
 })
 type OneWayParams = z.infer<typeof OneWayParams>
+
+/**
+ * Version 1 (before 0.3.9): Kruskal-Wallis' P by the chi-square approximation, Dunn's comparisons
+ * Bonferroni-adjusted, containment df for mixed fits, the tests of equal SDs always reported,
+ * comparisons as earlier − later. Saved analyses keep them.
+ */
+const migrateOneWay = (raw: unknown, from: number): unknown =>
+  from >= 2
+    ? raw
+    : pinDefaults(raw, [
+        [['kwPMethod'], 'approximate'],
+        [['dunnMethod'], 'bonferroni'],
+        [['rmMethod'], 'auto'],
+        [['ddf'], 'containment'],
+        [['reportEqualSdTests'], true],
+        [['differenceAs'], 'earlierMinusLater'],
+      ])
 
 const gaussianEqual = [
   { path: ['gaussian'], in: [true] },
@@ -119,11 +166,18 @@ const SPHERICITY_FIELD = {
     { value: 'gg', label: 'No — use the Geisser-Greenhouse correction (recommended)' },
     { value: 'assumed', label: 'Yes — no correction' },
   ],
+  // S5: with missing values 'auto' fits a mixed-effects model, which assumes sphericity.
+  unavailableIf: {
+    fact: 'missingInMatched',
+    when: [{ path: ['rmMethod'], in: ['auto'] }],
+    reason:
+      'Some values are missing: a mixed-effects model will be fit, and the Geisser-Greenhouse correction doesn’t apply to it.',
+  },
 } as const
 
 export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
   id: 'oneWayAnova',
-  version: 1,
+  version: 2,
   title: 'One-way ANOVA (and nonparametric)',
   category: 'Column analyses',
   description:
@@ -153,7 +207,12 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
         },
       ],
     },
-    { ...SPHERICITY_FIELD, showIf: gaussianMatched },
+    { ...RM_METHOD_FIELD, showIf: gaussianMatched },
+    {
+      ...SPHERICITY_FIELD,
+      showIf: [...gaussianMatched, { path: ['rmMethod'], in: ['auto', 'anova'] }],
+    },
+    { ...DDF_FIELD, showIf: [...gaussianMatched, { path: ['rmMethod'], in: ['auto', 'mixed'] }] },
     {
       ...EQUAL_SD_FIELD,
       showIf: [
@@ -212,9 +271,37 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
         { path: ['comparisons'], in: ['allPairs', 'vsControl'] },
       ],
     },
+    {
+      ...P_METHOD_FIELD,
+      path: ['kwPMethod'],
+      showIf: [
+        { path: ['gaussian'], in: [false] },
+        { path: ['matched'], in: [false] },
+      ],
+    },
+    {
+      path: ['dunnMethod'],
+      label: 'Adjust Dunn’s comparisons',
+      kind: 'select',
+      options: DUNN_METHODS,
+      showIf: [
+        { path: ['gaussian'], in: [false] },
+        { path: ['comparisons'], in: ['allPairs', 'vsControl'] },
+      ],
+    },
+    {
+      path: ['reportEqualSdTests'],
+      label: 'Also report tests of equal SDs (Brown-Forsythe and Bartlett)',
+      kind: 'checkbox',
+      showIf: [
+        { path: ['gaussian'], in: [true] },
+        { path: ['matched'], in: [false] },
+      ],
+    },
+    DIFFERENCE_AS_FIELD,
     CONFIDENCE_FIELD,
   ],
-  migrateParams: (raw) => raw,
+  migrateParams: migrateOneWay,
   run(input, params) {
     if (input.length < 2)
       return failure('One-way ANOVA compares two or more data sets.', exclusionNotes(input))
@@ -234,7 +321,7 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
       return friedmanDef.run(input, {
         comparisons: mcKind,
         control: params.control,
-        correction: 'dunn',
+        correction: params.dunnMethod,
       })
     }
     const diagnostics = exclusionNotes(input)
@@ -243,16 +330,17 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
         return failure(NK_RM_MESSAGE, diagnostics)
       return runOneWayRM(input, { ...params, comparisons: mcKind }, diagnostics)
     }
-    // Pairs: indices into `input`. "A vs. B" means diff = mean(A) − mean(B).
+    // Pairs: indices into `input`, diff = mean(i) − mean(j) (shown as later − earlier for new
+    // analyses: `differenceAs`).
     const { control, pairs } = oneWayPairs(input, params.comparisons, params.control)
-    if (!params.gaussian) return runKruskalWallis(input, pairs, diagnostics)
+    if (!params.gaussian) return runKruskalWallis(input, pairs, diagnostics, params)
 
     // ---- ANOVA ---------------------------------------------------------------------------------
     const level = params.confidenceLevel
     const titles = input.map((d) => d.title)
     const sheets: AnalysisResult['sheets'] = []
     const values: AnalysisResult['values'] = {}
-    const pairLabels = pairs.map(([i, j]) => `${titles[i]} vs. ${titles[j]}`)
+    const pairLabels = pairs.map(([i, j]) => pairLabel(titles[i]!, titles[j]!, params.differenceAs))
     for (const ds of input) {
       const problem = summaryProblem(ds)
       if (problem) return failure(problem, diagnostics)
@@ -310,8 +398,24 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
           : []),
       ]),
     ]
+    // S3: the scatter of each group described (the ratio of the largest SD to the smallest),
+    // never a test that picks the method; the tests of equal SDs only when asked for.
+    const sds = aov.groups.map((x) => x.sd).filter((v) => Number.isFinite(v))
+    if (sds.length >= 2) {
+      const ratio = Math.max(...sds) / Math.min(...sds)
+      blocks.push(
+        kv('Scatter in each group', [['Ratio of SDs (largest / smallest)', num(ratio)]]),
+        {
+          type: 'note',
+          text:
+            params.equalSD === 'yes'
+              ? 'Ordinary ANOVA assumes the groups vary by about the same amount (chosen before the analysis). The ratio of SDs describes the data; it doesn’t choose the test.'
+              : `${params.equalSD === 'welch' ? 'Welch' : 'Brown-Forsythe'} ANOVA doesn’t assume the groups vary by the same amount. The ratio of SDs describes the data; it doesn’t choose the test.`,
+        },
+      )
+    }
     const equalSdRows: [string, ResultValue][] = []
-    if (aov.brownForsythe) {
+    if (params.reportEqualSdTests && aov.brownForsythe) {
       const bf = aov.brownForsythe
       equalSdRows.push(
         [
@@ -322,7 +426,7 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
         ['Brown-Forsythe test: SDs significantly different?', significant(bf.p)],
       )
     }
-    if (aov.bartlett) {
+    if (params.reportEqualSdTests && aov.bartlett) {
       const b = aov.bartlett
       equalSdRows.push(
         ['Bartlett’s test: statistic (DFn)', text(`${statText(b.chi2)} (${dfText(b.df)})`)],
@@ -345,13 +449,6 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
           ['Cohen’s f', num(es.cohensF)],
         ]),
       )
-    }
-    if (params.equalSD === 'yes' && aov.brownForsythe && aov.brownForsythe.p < ALPHA) {
-      diagnostics.push({
-        level: 'warning',
-        message:
-          'The SDs differ significantly (Brown-Forsythe test). Consider Welch or Brown-Forsythe ANOVA, which do not assume equal SDs.',
-      })
     }
     blocks.push(
       table(
@@ -394,6 +491,7 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
     sheets.push(resultsSheet(blocks))
     values.p = pval(main.p)
     values.F = num(main.F)
+    Object.assign(values, testValue(main.name.replace(/ test$/, '')))
 
     if (params.comparisons === 'trend') {
       const tr = linearTrend(g)
@@ -450,39 +548,66 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
       sheets.push({
         key: 'comparisons',
         title: 'Multiple comparisons',
-        blocks: [comparisonTable(METHOD_TITLE[method] ?? method, pairLabels, rows, level, method)],
+        blocks: [
+          comparisonTable(
+            METHOD_TITLE[method] ?? method,
+            pairLabels,
+            signedRows(rows, params.differenceAs),
+            level,
+            method,
+          ),
+        ],
       })
       comparisons = pairComparisons(
         input,
         pairs,
         rows.map((r) => r.p),
       )
+      Object.assign(values, comparisonTestValue(method))
     }
     return result({ sheets, diagnostics, values, comparisons })
   },
 }
 
 /** The Kruskal-Wallis test (one-way ANOVA, not Gaussian), with Dunn's comparisons of `pairs`. */
-function runKruskalWallis(
+export function runKruskalWallis(
   input: readonly NormalizedDataSet[],
   pairs: [number, number][],
   diagnostics: Diagnostic[],
+  params: {
+    kwPMethod: 'exactWhenPossible' | 'approximate'
+    dunnMethod: DunnMethod
+    differenceAs: DifferenceAs
+  },
 ): AnalysisResult {
   const titles = input.map((d) => d.title)
   const raws = input.map(rawValues)
   if (raws.some((r) => !r))
-    return failure('The Kruskal-Wallis test needs raw values, not summary data.', diagnostics)
+    return failure(
+      `The Kruskal-Wallis test needs raw values, not summary data.${RANK_NEEDS_RAW}`,
+      diagnostics,
+    )
   const groups = raws as Float64Array[]
   if (groups.some((g) => g.length === 0))
     return failure('Every group needs at least one value.', diagnostics)
   const kw = kruskalWallis(groups)
+  // S11: the exact P (every arrangement of the ranks) while the groups are small enough.
+  const exact = params.kwPMethod === 'exactWhenPossible' ? kruskalWallisExact(groups) : null
+  if (params.kwPMethod === 'exactWhenPossible' && !exact)
+    diagnostics.push({
+      level: 'info',
+      message:
+        'The groups are too large to enumerate every arrangement of the ranks; P is the chi-square approximation.',
+    })
+  const p = exact ? exact.p : kw.p
   const sheets = [
     resultsSheet([
       kv('Kruskal-Wallis test', [
-        ['P value', pval(kw.p)],
-        ['Exact or approximate P value?', text('Approximate')],
-        ['P value summary', psum(kw.p)],
-        [`Do the medians vary significantly (P < ${ALPHA})?`, significant(kw.p)],
+        ['P value', pval(p)],
+        ['Exact or approximate P value?', text(exact ? 'Exact' : 'Approximate')],
+        ['P value summary', psum(p)],
+        // S12: a rank test asks whether values tend to be larger in some groups.
+        [`Do the values tend to differ between groups (P < ${ALPHA})?`, significant(p)],
         ['Number of groups', int(groups.length)],
         ['Kruskal-Wallis statistic', num(kw.H)],
       ]),
@@ -494,12 +619,14 @@ function runKruskalWallis(
   ]
   let comparisons: Comparison[] = []
   if (pairs.length) {
-    const rows = dunnComparisons(groups, pairs, { adjust: 'bonferroni' })
-    const labels = pairs.map(([i, j]) => `${titles[i]} vs. ${titles[j]}`)
+    const rows = dunnComparisons(groups, pairs, { adjust: params.dunnMethod })
+    const labels = pairs.map(([i, j]) => pairLabel(titles[i]!, titles[j]!, params.differenceAs))
     sheets.push({
       key: 'comparisons',
       title: 'Multiple comparisons',
-      blocks: [dunnTable(METHOD_TITLE.dunn!, labels, rows)],
+      blocks: [
+        dunnTable(dunnTitle(params.dunnMethod), labels, signedDunn(rows, params.differenceAs)),
+      ],
     })
     comparisons = pairComparisons(
       input,
@@ -507,7 +634,22 @@ function runKruskalWallis(
       rows.map((r) => r.p),
     )
   }
-  return result({ sheets, diagnostics, values: { p: pval(kw.p) }, comparisons })
+  return result({
+    sheets,
+    diagnostics,
+    values: {
+      p: pval(p),
+      ...testValue('Kruskal-Wallis test'),
+      ...(pairs.length
+        ? {
+            comparisonTest: text(
+              `Dunn${params.dunnMethod === 'none' ? ', uncorrected' : `, ${params.dunnMethod === 'holm' ? 'Holm' : params.dunnMethod === 'sidak' ? 'Šidák' : 'Bonferroni'}`}`,
+            ),
+          }
+        : {}),
+    },
+    comparisons,
+  })
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -527,13 +669,33 @@ const TwoWayParams = z.object({
   family: z.enum(['perBlock', 'all']).default('perBlock'),
   allPairsMethod: allPairsMethod.default('sidak'),
   controlMethod: controlMethod.default('dunnett'),
+  /** Roadmap 51c (S5, S28): how matched values are analyzed, and the mixed model's df. */
+  rmMethod,
+  ddf,
+  /** Roadmap 51c: comparisons as later − earlier for new analyses. */
+  differenceAs,
   confidenceLevel,
 })
 type TwoWayParams = z.infer<typeof TwoWayParams>
 
+/**
+ * Version 1 (before 0.3.9): containment df for mixed fits and comparisons as earlier − later.
+ * Saved analyses keep them.
+ */
+const migrateTwoWay = (raw: unknown, from: number): unknown =>
+  from >= 2
+    ? raw
+    : pinDefaults(raw, [
+        [['rmMethod'], 'auto'],
+        [['ddf'], 'containment'],
+        [['differenceAs'], 'earlierMinusLater'],
+      ])
+
+const repeatedFactor = { path: ['repeated'], in: ['rows', 'columns', 'both'] } as const
+
 export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
   id: 'twoWayAnova',
-  version: 1,
+  version: 2,
   title: 'Two-way ANOVA',
   category: 'Grouped analyses',
   description:
@@ -560,10 +722,12 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
         { value: 'both', label: 'Both factors are repeated' },
       ],
     },
+    { ...RM_METHOD_FIELD, showIf: repeatedFactor },
     {
       ...SPHERICITY_FIELD,
-      showIf: { path: ['repeated'], in: ['rows', 'columns', 'both'] },
+      showIf: [repeatedFactor, { path: ['rmMethod'], in: ['auto', 'anova'] }],
     },
+    { ...DDF_FIELD, showIf: [repeatedFactor, { path: ['rmMethod'], in: ['auto', 'mixed'] }] },
     {
       path: ['interaction'],
       label: 'Model',
@@ -647,8 +811,10 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
         },
       ],
     },
+    DIFFERENCE_AS_FIELD,
     CONFIDENCE_FIELD,
   ],
+  migrateParams: migrateTwoWay,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     if (params.repeated !== 'none') {
@@ -739,9 +905,10 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
       ]),
     ]
     const sheets: AnalysisResult['sheets'] = [resultsSheet(blocks)]
-    const values: AnalysisResult['values'] = Object.fromEntries(
-      effects.map((s) => [`p.${VALUE_KEY[s.source]}`, pval(s.p)]),
-    )
+    const values: AnalysisResult['values'] = {
+      ...Object.fromEntries(effects.map((s) => [`p.${VALUE_KEY[s.source]}`, pval(s.p)])),
+      ...testValue('Two-way ANOVA'),
+    }
 
     // ---- Multiple comparisons ------------------------------------------------------------------
     if (params.comparisons === 'none') return result({ sheets, diagnostics, values })
@@ -775,7 +942,7 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
     const labels: string[] = []
     const comparisons: Comparison[] = []
     const add = (c: Parameters<typeof twoWayComparison>[3], p: number) => {
-      const x = twoWayComparison(input, rows, params.comparisons, c, p)
+      const x = twoWayComparison(input, rows, params.comparisons, c, p, params.differenceAs)
       labels.push(x.label)
       if (x.comparison) comparisons.push(x.comparison)
     }
@@ -841,7 +1008,7 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
       }
       pairs.forEach(([i, j], k) => {
         const [a, b] = [res.cells[i]!, res.cells[j]!]
-        labels.push(`${name(i)} vs. ${name(j)}`)
+        labels.push(pairLabel(name(i), name(j), params.differenceAs))
         comparisons.push({
           key: `cell${rows[a.row]}:${input[a.col]!.ref.key}|${rows[b.row]}:${input[b.col]!.ref.key}`,
           a: input[a.col]!.ref,
@@ -886,8 +1053,13 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
     sheets.push({
       key: 'comparisons',
       title: 'Multiple comparisons',
-      blocks: [comparisonTable(title, labels, mcRows, level, method)],
+      blocks: [
+        comparisonTable(title, labels, signedRows(mcRows, params.differenceAs), level, method),
+      ],
     })
+    Object.assign(values, comparisonTestValue(method))
+    // S15: comparisons of main effects average over a factor whose effect differs.
+    diagnostics.push(...interactionNote(params.comparisons, values['p.interaction']))
     return result({ sheets, diagnostics, values, comparisons })
   },
 }

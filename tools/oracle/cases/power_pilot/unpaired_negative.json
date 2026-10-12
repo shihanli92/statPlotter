@@ -1,0 +1,31 @@
+{
+  "input": {
+    "a": [
+      21.3,
+      19.8,
+      22.4,
+      20.9,
+      23.1,
+      21.7,
+      20.2,
+      22.8
+    ],
+    "b": [
+      18.9,
+      20.1,
+      17.6,
+      19.4,
+      18.2,
+      20.8,
+      19.1,
+      17.9
+    ]
+  },
+  "params": {
+    "type": "two.sample",
+    "alpha": 0.05,
+    "target": 0.9,
+    "tails": 2
+  },
+  "note": "A negative effect: the bound nearer zero is the upper one."
+}

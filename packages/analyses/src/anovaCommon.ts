@@ -4,10 +4,12 @@ import {
   formatNumber,
   type NormalizedDataSet,
   type ResultBlock,
+  type ResultValue,
 } from '@ps/model'
 import type { DunnRow, GroupData, McRow } from '@ps/stats'
 import { z } from 'zod'
 import {
+  ALPHA,
   comparisonKey,
   decided,
   dfText,
@@ -30,23 +32,82 @@ import { rowTitleOf } from './grouped.ts'
 // Shared pieces
 // ---------------------------------------------------------------------------------------------
 
+// Roadmap 51c (S36): methods that don't control the chance of any false positive (Fisher's LSD,
+// uncorrected; Newman-Keuls) come last, under "Other (not recommended for most uses)".
+export const OTHER_METHODS = 'Other (not recommended for most uses)'
 export const ALL_PAIRS_METHODS = [
   { value: 'tukey', label: 'Tukey (recommended)' },
   { value: 'sidak', label: 'Šidák' },
   { value: 'bonferroni', label: 'Bonferroni' },
   { value: 'holm-sidak', label: 'Holm-Šidák (step-down)' },
-  { value: 'fisher', label: 'Fisher’s LSD (no correction)' },
   { value: 'bky', label: 'False discovery rate (two-stage Benjamini, Krieger & Yekutieli)' },
-  { value: 'newman-keuls', label: 'Newman-Keuls (not recommended; no P values or CIs)' },
+  { value: 'fisher', label: `${OTHER_METHODS}: Fisher’s LSD, no correction` },
+  { value: 'newman-keuls', label: `${OTHER_METHODS}: Newman-Keuls, no P values or CIs` },
 ] as const
 export const CONTROL_METHODS = [
   { value: 'dunnett', label: 'Dunnett (recommended)' },
   { value: 'sidak', label: 'Šidák' },
   { value: 'bonferroni', label: 'Bonferroni' },
   { value: 'holm-sidak', label: 'Holm-Šidák (step-down)' },
-  { value: 'fisher', label: 'Fisher’s LSD (no correction)' },
   { value: 'bky', label: 'False discovery rate (two-stage Benjamini, Krieger & Yekutieli)' },
+  { value: 'fisher', label: `${OTHER_METHODS}: Fisher’s LSD, no correction` },
 ] as const
+
+/**
+ * Roadmap 51c (the user's answer to design §10.4 question 5): the sign of one- and two-way
+ * comparisons. New analyses report later − earlier (each group − the control: "10 mg − Vehicle");
+ * analyses saved before 0.3.9 keep earlier − later ("A vs. B" = mean A − mean B). Only the signs
+ * of the differences and their CIs change; P values, and the brackets they label, don't.
+ */
+export const differenceAs = z
+  .enum(['laterMinusEarlier', 'earlierMinusLater'])
+  .default('laterMinusEarlier')
+export type DifferenceAs = z.infer<typeof differenceAs>
+
+/** Comparison rows (diff = i − j) as the convention reads them: later − earlier is j − i. */
+export function signedRows<T extends { diff: number; lo: number; hi: number; stat: number }>(
+  rows: readonly T[],
+  as: DifferenceAs,
+): T[] {
+  if (as === 'earlierMinusLater') return [...rows]
+  return rows.map((r) => ({ ...r, diff: -r.diff, lo: -r.hi, hi: -r.lo, stat: -r.stat }))
+}
+
+/** Dunn's rows (mean rank diff = i − j) as the convention reads them. */
+export function signedDunn<T extends { meanRankDiff: number; z: number }>(
+  rows: readonly T[],
+  as: DifferenceAs,
+): T[] {
+  if (as === 'earlierMinusLater') return [...rows]
+  return rows.map((r) => ({ ...r, meanRankDiff: -r.meanRankDiff, z: -r.z }))
+}
+
+/** The form's choice of the sign (shown when comparisons are made). */
+export const DIFFERENCE_AS_FIELD = {
+  path: ['differenceAs'],
+  label: 'Differences in the comparisons',
+  kind: 'radio',
+  options: [
+    { value: 'laterMinusEarlier', label: 'Later − earlier (each group − the control)' },
+    { value: 'earlierMinusLater', label: 'Earlier − later (as before 0.3.9)' },
+  ],
+  showIf: {
+    path: ['comparisons'],
+    in: [
+      'allPairs',
+      'vsControl',
+      'withinRows',
+      'withinColumns',
+      'allCells',
+      'mainColumns',
+      'mainRows',
+    ],
+  },
+} as const
+
+/** A comparison's label: "Treated − Control" (later − earlier) or "Control vs. Treated". */
+export const pairLabel = (earlier: string, later: string, as: DifferenceAs) =>
+  as === 'laterMinusEarlier' ? `${later} − ${earlier}` : `${earlier} vs. ${later}`
 
 /** Comparisons after a Welch or Brown-Forsythe ANOVA (unequal SDs). */
 export const welchMethod = z.enum(['dunnett-t3', 'games-howell', 'tamhane-t2'])
@@ -96,6 +157,31 @@ export const METHOD_TITLE: Record<string, string> = {
   'tamhane-t2': 'Tamhane’s T2 multiple comparisons test',
   dunn: 'Dunn’s multiple comparisons test',
 }
+
+/**
+ * Roadmap 51c (§7.4): each comparison method's short name, which a bracket labelled from the
+ * comparisons shows after its P (`values.comparisonTest`).
+ */
+export const METHOD_SHORT: Record<string, string> = {
+  tukey: 'Tukey',
+  'newman-keuls': 'Newman-Keuls',
+  dunnett: 'Dunnett',
+  sidak: 'Šidák',
+  bonferroni: 'Bonferroni',
+  'holm-sidak': 'Holm-Šidák',
+  fisher: 'Fisher’s LSD, uncorrected',
+  bky: 'FDR, two-stage',
+  bh: 'FDR, Benjamini-Hochberg',
+  'games-howell': 'Games-Howell',
+  'dunnett-t3': 'Dunnett’s T3',
+  'tamhane-t2': 'Tamhane’s T2',
+  holm: 'Dunn, Holm',
+  none: 'uncorrected',
+}
+
+/** `values.comparisonTest` of a comparison method (empty when there are no comparisons). */
+export const comparisonTestValue = (method: string | null): Record<string, ResultValue> =>
+  method ? { comparisonTest: { kind: 'text', v: METHOD_SHORT[method] ?? method } } : {}
 
 export const allPairsMethod = z.enum([
   'tukey',
@@ -296,6 +382,7 @@ export function twoWayComparison(
   family: string,
   c: { rowA?: number; rowB?: number; colA?: number; colB?: number },
   p: number,
+  as: DifferenceAs = 'earlierMinusLater',
 ): { label: string; comparison?: Comparison } {
   const [a, b] = [input[c.colA!]!, input[c.colB!]!]
   const [ra, rb] = [rows[c.rowA!]!, rows[c.rowB!]!]
@@ -310,17 +397,20 @@ export function twoWayComparison(
   })
   if (family === 'withinRows')
     return {
-      label: `${title(ra)}: ${a.title} vs. ${b.title}`,
+      label: `${title(ra)}: ${pairLabel(a.title, b.title, as)}`,
       comparison: record(`row${ra}:${comparisonKey(a, b)}`, ra, ra),
     }
   if (family === 'withinColumns')
     return {
-      label: `${a.title}: ${title(ra)} vs. ${title(rb)}`,
+      label: `${a.title}: ${pairLabel(title(ra), title(rb), as)}`,
       comparison: record(`col${a.ref.key}:${ra}|${rb}`, ra, rb),
     }
   if (family === 'mainColumns')
-    return { label: `${a.title} vs. ${b.title}`, comparison: record(`main:${comparisonKey(a, b)}`) }
-  return { label: `${title(ra)} vs. ${title(rb)}` }
+    return {
+      label: pairLabel(a.title, b.title, as),
+      comparison: record(`main:${comparisonKey(a, b)}`),
+    }
+  return { label: pairLabel(title(ra), title(rb), as) }
 }
 
 /** Total sum of squares of the finite values about their mean. */
@@ -390,4 +480,23 @@ export function comparisonTable(
       pval(r.p),
     ]),
   )
+}
+
+/**
+ * S15: main-effect comparisons when the interaction is real (P < 0.05): they average over rows
+ * (columns) where the effect differs, so the comparisons within each row describe it better.
+ */
+export function interactionNote(
+  comparisons: string,
+  pInteraction: ResultValue | undefined,
+): Diagnostic[] {
+  if (comparisons !== 'mainColumns' && comparisons !== 'mainRows') return []
+  if (pInteraction?.kind !== 'pvalue' || !(pInteraction.v < ALPHA)) return []
+  const [factor, other] = comparisons === 'mainColumns' ? ['column', 'row'] : ['row', 'column']
+  return [
+    {
+      level: 'warning',
+      message: `The effect of the ${factor} factor depends on the ${other} (interaction P < ${ALPHA}): these comparisons average over ${other}s where it differs. Comparisons within each ${other} describe it better.`,
+    },
+  ]
 }

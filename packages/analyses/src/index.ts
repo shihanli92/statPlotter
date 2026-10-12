@@ -55,7 +55,13 @@ import { demingDef, simpleLogisticDef } from './xyModels.ts'
 // lognormal tests leave values ≤ 0 out of the row (RTA-2).
 // 1.4.1 (roadmap 48b): result text only — the Deming note and the LOWESS info message no longer
 // name another program; every number is unchanged.
-export const ANALYSES_VERSION = '1.4.1'
+// 1.5.0 (roadmap 51c): safer defaults (Welch, Holm for Dunn, FDR across rows and correlation
+// pairs, Q = 5%, log-rank only, trend off, Shapiro-Wilk only) for new analyses, saved ones pinned
+// by their params version; a one-tailed P for the predicted direction (large when the data went
+// the other way); Kruskal-Wallis' exact P; Satterthwaite's df; RM main effects by per-contrast
+// errors; the mixed model for matched values with gaps; new comparisons later − earlier; pairwise
+// log-rank tests; result text (names, units, P < threshold, notes).
+export const ANALYSES_VERSION = '1.5.0'
 
 export const ANALYSES: readonly AnalysisDef<unknown>[] = [
   descriptive,
@@ -151,7 +157,13 @@ export {
   withNames,
 } from './explain/index.ts'
 export * from './guide/index.ts'
-export { labelOf, type MonteCarloParams, runSimulation } from './monteCarlo.ts'
+export { isMethodField, type MethodState, methodChanges } from './methodChanges.ts'
+export {
+  labelOf,
+  type MonteCarloParams,
+  runSimulation,
+  withInnerVersion,
+} from './monteCarlo.ts'
 export {
   type Constraint,
   EQUATIONS,

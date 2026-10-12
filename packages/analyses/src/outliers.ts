@@ -196,7 +196,21 @@ export const outliersDef: AnalysisDef<OutlierParams> = {
     return result({
       sheets,
       diagnostics,
-      values: { outliers: int(total) },
+      values: {
+        outliers: int(total),
+        // Roadmap 51c (S13): said by every analysis of the cleaned table (`RunContext.source`).
+        ...(total > 0
+          ? {
+              sourceNote: text(
+                `${total} value${total > 1 ? 's were' : ' was'} removed as outlier${total > 1 ? 's' : ''} (${
+                  params.method === 'rout'
+                    ? `ROUT, Q = ${params.q}%`
+                    : `${params.method === 'grubbs' ? 'Grubbs’' : 'iterative Grubbs’'}, alpha = ${params.alpha}`
+                })`,
+              ),
+            }
+          : {}),
+      },
       table: buildTable(input, {
         name: 'Cleaned data',
         tableKind: sourceKind(input, context),

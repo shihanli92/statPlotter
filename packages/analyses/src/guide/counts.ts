@@ -2,8 +2,8 @@ import type { GuideAnswers, GuideEntry, GuideStep, TableFacts } from '@ps/model'
 import { alt, answer, elsewhere, fixed, leaf, question } from './build.ts'
 
 // Roadmap 51a: counts and proportions (design §3.5, "Counts and proportions"): contingency and
-// parts-of-whole tables. The roles of a 2 × 2 (which row is exposed, which column the outcome)
-// arrive with 51c's params; until then the first row and the first column are read as such.
+// parts-of-whole tables. Roadmap 51c (S22): a 2 × 2's roles asked — which row is the treated or
+// exposed group, which column the outcome — and the trend test only for ordered rows.
 
 const twoByTwo = (f: TableFacts) =>
   f.contingency
@@ -11,6 +11,42 @@ const twoByTwo = (f: TableFacts) =>
       ? 'twoByTwo'
       : 'larger'
     : null
+
+/** S22: a 2 × 2's roles from the answers (the first row and column unless said). */
+const roles = (a: GuideAnswers) => ({
+  exposedRow: a.exposed === 'second' ? 1 : 0,
+  outcomeColumn: a.outcome === 'second' ? 1 : 0,
+})
+
+/** "Which row is the treated or exposed group?" then "Which column is the outcome?", then `then`. */
+const rolesQ = (then: GuideStep): GuideStep =>
+  question(
+    'exposed',
+    'Which row is the treated or exposed group?',
+    'Relative risk = the risk of the outcome in this row ÷ the risk in the other: swapping them inverts it.',
+    [
+      answer(
+        'first',
+        'The first row',
+        question(
+          'outcome',
+          'Which column is the outcome (Died, Responded)?',
+          'The risk is the share of each row in this column.',
+          [answer('first', 'The first column', then), answer('second', 'The second column', then)],
+        ),
+      ),
+      answer(
+        'second',
+        'The second row',
+        question(
+          'outcome',
+          'Which column is the outcome (Died, Responded)?',
+          'The risk is the share of each row in this column.',
+          [answer('first', 'The first column', then), answer('second', 'The second column', then)],
+        ),
+      ),
+    ],
+  )
 
 const pairwiseParams = (f: TableFacts, a: GuideAnswers) => ({
   test: (f.contingency?.minExpected ?? 0) >= 5 ? 'chiSquare' : 'fisher',
@@ -71,6 +107,12 @@ const larger: GuideStep = question(
   ],
 )
 
+const diagnosticLeaf = leaf(
+  'contingency',
+  (_f, a) => ({ test: 'fisher', diagnostic: true, trend: false, ...roles(a) }),
+  'Sensitivity, specificity and predictive values: rows the truth (the condition’s row as chosen), columns the test result.',
+)
+
 const outcomeGroup: GuideStep = question(
   'paired',
   'Were the same subjects counted twice (before and after, paired yes/no)?',
@@ -100,26 +142,42 @@ const outcomeGroup: GuideStep = question(
                 answer(
                   'risk',
                   'The risk in each group (a trial or cohort)',
-                  leaf(
-                    'contingency',
-                    fixed({ test: 'fisher', trend: false, riskEstimates: true, oddsRatio: false }),
-                    'Fisher’s exact test is exact for any sample size; report the relative risk with its CI (first row against second, first column the outcome).',
-                    [
-                      alt(
-                        'contingency',
-                        fixed({ test: 'chiSquare', trend: false }),
-                        'large counts (chi-square)',
-                      ),
-                    ],
+                  rolesQ(
+                    leaf(
+                      'contingency',
+                      (_f, a) => ({
+                        test: 'fisher',
+                        trend: false,
+                        riskEstimates: true,
+                        oddsRatio: false,
+                        ...roles(a),
+                      }),
+                      'Fisher’s exact test is exact for any sample size; report the relative risk (the exposed row ÷ the other, for the outcome column) with its CI.',
+                      [
+                        alt(
+                          'contingency',
+                          (_f, a) => ({ test: 'chiSquare', trend: false, ...roles(a) }),
+                          'large counts (chi-square)',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 answer(
                   'odds',
                   'The odds (a case-control study)',
-                  leaf(
-                    'contingency',
-                    fixed({ test: 'fisher', trend: false, riskEstimates: false, oddsRatio: true }),
-                    'Fisher’s exact test is exact for any sample size; report the odds ratio with its CI.',
+                  rolesQ(
+                    leaf(
+                      'contingency',
+                      (_f, a) => ({
+                        test: 'fisher',
+                        trend: false,
+                        riskEstimates: false,
+                        oddsRatio: true,
+                        ...roles(a),
+                      }),
+                      'Fisher’s exact test is exact for any sample size; report the odds ratio (the exposed row against the other) with its CI.',
+                    ),
                   ),
                 ),
               ],
@@ -173,10 +231,38 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
         answer(
           'yesNo',
           'A yes/no result (a 2 × 2 of test against the truth)',
-          leaf(
-            'contingency',
-            fixed({ test: 'fisher', diagnostic: true, trend: false }),
-            'Sensitivity, specificity and predictive values, with rows the truth and columns the test result.',
+          question(
+            'exposed',
+            'Which row holds the subjects with the condition?',
+            'Sensitivity is the share of them the test calls positive.',
+            [
+              answer(
+                'first',
+                'The first row',
+                question(
+                  'outcome',
+                  'Which column is a positive test result?',
+                  'Specificity is the share of the others in the other column.',
+                  [
+                    answer('first', 'The first column', diagnosticLeaf),
+                    answer('second', 'The second column', diagnosticLeaf),
+                  ],
+                ),
+              ),
+              answer(
+                'second',
+                'The second row',
+                question(
+                  'outcome',
+                  'Which column is a positive test result?',
+                  'Specificity is the share of the others in the other column.',
+                  [
+                    answer('first', 'The first column', diagnosticLeaf),
+                    answer('second', 'The second column', diagnosticLeaf),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
         answer(

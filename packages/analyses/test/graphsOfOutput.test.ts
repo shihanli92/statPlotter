@@ -24,9 +24,14 @@ describe('normality test: QQ plot', () => {
     const id = r.outputs['qq:identity']!
     expect(id.x).toEqual(id.y)
   })
-  it('is off by default and lognormal when only lognormality is tested', () => {
+  it('is on by default (51c, S14), off when unticked, and lognormal when only lognormality is tested', () => {
     const t = columnTable([b])
-    expect(normalityDef.outputs!([t.dataSets[0]!.id], normalityDef.params.parse({}))).toEqual([])
+    expect(normalityDef.outputs!([t.dataSets[0]!.id], normalityDef.params.parse({}))).toHaveLength(
+      2,
+    )
+    expect(
+      normalityDef.outputs!([t.dataSets[0]!.id], normalityDef.params.parse({ qqPlot: false })),
+    ).toEqual([])
     const r = runDef(normalityDef, t, { qqPlot: true, distribution: 'lognormal' })
     expect(r.outputs[`qq:${t.dataSets[0]!.id}`]!.y).toEqual(
       qqPlot(b, { lognormal: true }).predicted,

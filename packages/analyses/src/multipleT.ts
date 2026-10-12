@@ -18,6 +18,7 @@ import {
   pval,
   result,
   table,
+  testValue,
   text,
   tooFewDataSets,
 } from './common.ts'
@@ -31,6 +32,7 @@ import {
   familyLevel,
   familyMethod,
   familyParams,
+  pinFamilyQ,
   rowTitleOf,
 } from './grouped.ts'
 
@@ -79,6 +81,26 @@ const LOG_TEST_NAME: Partial<Record<MultipleTTestMethod, string>> = {
   pooled: 'Lognormal t test (t test on log10 values), assuming a consistent SD across all rows',
   paired: 'Ratio paired t test (paired t test on log10 of the ratios)',
 }
+/** Roadmap 51c (§7.4): a row's test and the rows' correction, as a bracket names them. */
+const TEST_SHORT: Record<MultipleTTestMethod, string> = {
+  welch: 'Welch’s t',
+  unpaired: 'Student’s t',
+  pooled: 't, pooled SD',
+  paired: 'paired t',
+  mannWhitney: 'Mann-Whitney',
+  kolmogorovSmirnov: 'Kolmogorov-Smirnov',
+  wilcoxon: 'Wilcoxon',
+}
+const FAMILY_SHORT: Record<string, string> = {
+  bky: 'FDR across rows',
+  bh: 'FDR across rows',
+  by: 'FDR across rows',
+  'holm-sidak': 'Holm-Šidák across rows',
+  sidak: 'Šidák across rows',
+  bonferroni: 'Bonferroni across rows',
+  none: 'uncorrected',
+}
+
 const SKIP_TEXT: Record<MultipleTSkip, string> = {
   'too-few-values': 'too few values',
   'no-variation': 'no variation',
@@ -89,7 +111,7 @@ const SKIP_TEXT: Record<MultipleTSkip, string> = {
 
 export const multipleTDef: AnalysisDef<Params> = {
   id: 'multipleT',
-  version: 1,
+  version: 2,
   title: 'Multiple t tests (and nonparametric tests)',
   category: 'Grouped analyses',
   description:
@@ -97,6 +119,8 @@ export const multipleTDef: AnalysisDef<Params> = {
   accepts: ['grouped'],
   inputs: { min: 2, max: 2 },
   params: Params,
+  // S34: Q was 1% by default before 0.3.9.
+  migrateParams: (raw, from) => (from >= 2 ? raw : pinFamilyQ(raw)),
   form: [
     {
       path: ['design'],
@@ -384,6 +408,10 @@ export const multipleTDef: AnalysisDef<Params> = {
     const values = {
       tests: int(tested.length),
       flagged: int(flaggedIdx.length),
+      ...testValue((lognormal && LOG_TEST_NAME[method]) || TEST_NAME[method]),
+      comparisonTest: text(
+        `${lognormal ? 'lognormal ' : ''}${TEST_SHORT[method]}, ${FAMILY_SHORT[familyMethod(params)]}`,
+      ),
     }
     return result({
       sheets,

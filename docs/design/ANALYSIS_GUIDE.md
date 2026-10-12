@@ -11,10 +11,24 @@ min(1200 px, 94vw), the entry points, search by question across kinds, "Not here
 deviations recorded in decisions 1279–1285 (the survival questions and a 2 × 2's roles wait for
 51c's params; "Not sure" about scatter leads to Welch ANOVA; values that change by a factor lead
 to Transform, then the test; S38's label waits for 51c); `origin.guide` of §10.1; U2, U3, U5.
-Still to build: §4–§9 (51c, 51b, 51d, 51e). Written from `main` at
+
+**Built so far — 51c (0.3.9, decisions 1286–1301; ROADMAP 51c):** §6 whole — `paramsOf` and
+pinning migrations (22 definitions at version 2), every row of §6.2's table that is 51c's, §6.3,
+the oracle suites of §6.4 (`onetailed`, `kw_exact`, `rm_main_effects`, `survival_pairwise`,
+`multiple_oneway_rows`, `correlation_family`, `power_pilot`, more `mixed`, `nested`, `multcomp`,
+`friedman` cases; the contingency cases through the roles), `ANALYSES_VERSION` 1.5.0 — and §7.1–
+§7.5 (the method history and its notice, brackets from one analysis with `input.byX`, uncorrected
+marking, P labels naming their test, the duplicate-comparison badge). Deviations, recorded in the
+decisions: what counts as a change of method is every field but a list of reporting ones (not a
+`method: true` flag per field, 1296); the Kruskal-Wallis enumeration limit is 2 × 10⁷
+arrangements (1289); BH, not BKY, is the default across multiple one-way ANOVAs' rows (the
+answer to §10.4 question 4, 1293); new one- and two-way comparisons are later − earlier already
+(1292); several 51d texts came with their version bump (S12's wording, S15, S41, S43, 1295). Left
+for 51c-2: the stars' key label (§7.4), the power curve over a range of effects (S29). Still to
+build: §4, §5, §8, §9 (51b, 51d, 51e). Written from `main` at
 e363961 (0.3.7) and two private reviews of the analysis section (a statistics review, findings
 S1–S44, and a usability review, findings U1–U29, with wireframes). Finding numbers below are
-those reviews'. Decisions are numbered when each phase is built (the next free number is 1276).
+those reviews'. Decisions are numbered when each phase is built (the next free number is 1302).
 
 Contents
 

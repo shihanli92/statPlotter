@@ -1,0 +1,17 @@
+{
+  "name": "onesample_wilcoxon",
+  "input": {"x":[12.1,14.300000000000001,11.800000000000001,13.5,15.199999999999999,12.9,13.800000000000001,14.6],"mu":12.5},
+  "params": {"suite":"wilcoxon","rparams":{"exact":"auto"},"analysis":"oneSample","app":{"test":"wilcoxon","hypothetical":12.5,"pMethod":"exactWhenPossible"}},
+  "expected": {
+    "two": 0.0625,
+    "greater": 0.03125,
+    "less": 0.9765625
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {
+      "coin": "1.4.5",
+      "pspearman": "0.3.1"
+    }
+  }
+}

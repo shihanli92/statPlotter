@@ -133,6 +133,7 @@ const LABELS: Record<CommandType, string> = {
   'table.setYFormat': 'Change table format',
   'analysis.setParams': 'Change analysis parameters',
   'analysis.setInput': 'Change analyzed data sets',
+  'analysis.recordChange': 'Change analysis',
   'node.set': 'Change format',
   'graph.addLayer': 'Add layer',
   'graph.removeLayer': 'Delete layer',
