@@ -1,7 +1,14 @@
-import type { ColorRef, DendrogramStyle, LayerOf, StrokeStyle } from '@ps/model'
+import {
+  type ColorRef,
+  type DendrogramStyle,
+  type LayerOf,
+  labelPlain,
+  type RichLabel,
+  type StrokeStyle,
+} from '@ps/model'
 import { cutCount, cutree, type HClust } from '@ps/stats'
 import { type LegendEntry, SWATCH, swatchRect } from '../../layout/legend.ts'
-import type { SceneNode, Stroke, StylePath } from '../../scene.ts'
+import type { SceneNode, Stroke, StylePath, TreeLeaf, TreeMark } from '../../scene.ts'
 import { resolveStroke, seriesColor, type Theme } from '../../theme.ts'
 
 // Dendrograms (roadmap 49c): a hierarchical clustering's tree as a layer of its own — beside a
@@ -178,9 +185,46 @@ export function treeLines(
 }
 
 /**
+ * Roadmap 49c: what a tree's hover cards name its leaves by — the rows' or the columns' names
+ * (by index) — and which it is of.
+ */
+export interface TreeFacts {
+  of: 'rows' | 'columns'
+  names: readonly RichLabel[]
+}
+
+/** A leaf's card: its name and (cut) its cluster. */
+const leafOf = (facts: TreeFacts, clusters: TreeClusters | null, leaf: number): TreeLeaf => {
+  const c = clusters?.leaves[leaf]
+  const name = labelPlain(facts.names[leaf]) || String(leaf + 1)
+  return { name, ...(c ? { cluster: c } : {}) }
+}
+
+/**
+ * Each merge's card: R's height, the leaves under it and (cut) its cluster when they are all in
+ * one; and its branches' leaves (null: a branch is a merge).
+ */
+function mergeCards(
+  hc: HClust,
+  facts: TreeFacts,
+  clusters: TreeClusters | null,
+): { mark: TreeMark; a: TreeLeaf | null; b: TreeLeaf | null }[] {
+  const sizes: number[] = []
+  const size = (c: number) => (c < 0 ? 1 : sizes[c - 1]!)
+  const leaf = (c: number) => (c < 0 ? leafOf(facts, clusters, -c - 1) : null)
+  return hc.merge.map(([a, b], k) => {
+    sizes.push(size(a) + size(b))
+    const c = clusters?.merges[k]
+    const merge = { height: hc.height[k]!, leaves: sizes[k]!, ...(c ? { cluster: c } : {}) }
+    return { mark: { of: facts.of, merge }, a: leaf(a), b: leaf(b) }
+  })
+}
+
+/**
  * A tree's scene nodes: a polyline per merge (`<id>/<k>`; a merge of several colours a group of
  * its three lines `<id>/<k>/a|bar|b`) placed by `place(position, height)`, in the line's stroke or
- * (cut, branches coloured) its cluster's colour.
+ * (cut, branches coloured) its cluster's colour; each with what its hover card tells (`tree`, its
+ * legs down to leaves the leaves').
  */
 export function treeNodes(o: {
   hc: HClust
@@ -190,6 +234,7 @@ export function treeNodes(o: {
   id: string
   target: StylePath
   place: (pos: number, height: number) => [number, number]
+  facts: TreeFacts
 }): SceneNode[] {
   const { hc, tree, palette, id, target, place } = o
   const clusters = tree.colorBranches ? o.clusters : null
@@ -197,8 +242,13 @@ export function treeNodes(o: {
   const stroke = (c: number): Stroke =>
     c ? { ...line, color: clusterColor(tree, palette, c) } : line
   const parts = ['a', 'bar', 'b']
+  const cards = mergeCards(hc, o.facts, o.clusters)
   return treeLines(hc, treeHeights(hc, tree.heights), clusters).map((lines, k) => {
-    const polyline = (l: TreeLine, nid: string): SceneNode => ({
+    const card = cards[k]!
+    /** Legs down to leaves: a ⊓'s first and last segments, a part a or b whole. */
+    const legs = (...at: [number, TreeLeaf | null][]) =>
+      at.flatMap(([seg, leaf]) => (leaf ? [{ seg, leaf }] : []))
+    const polyline = (l: TreeLine, nid: string, own: TreeMark['legs'] = []): SceneNode => ({
       id: nid,
       target,
       prim: {
@@ -206,13 +256,17 @@ export function treeNodes(o: {
         points: l.points.map(([p, h]) => place(p, h)),
         stroke: stroke(l.cluster),
       },
+      tree: own.length ? { ...card.mark, legs: own } : card.mark,
     })
     return lines.length === 1
-      ? polyline(lines[0]!, `${id}/${k}`)
+      ? polyline(lines[0]!, `${id}/${k}`, legs([0, card.a], [2, card.b]))
       : {
           id: `${id}/${k}`,
           target,
-          children: lines.map((l, i) => polyline(l, `${id}/${k}/${parts[i]}`)),
+          tree: card.mark,
+          children: lines.map((l, i) =>
+            polyline(l, `${id}/${k}/${parts[i]}`, legs([0, [card.a, null, card.b][i] ?? null])),
+          ),
         }
   })
 }
@@ -229,8 +283,9 @@ export function stripNodes(o: {
   id: string
   target: StylePath
   rect: (slot: number) => { x: number; y: number; w: number; h: number }
+  facts: TreeFacts
 }): SceneNode[] {
-  const { hc, tree, clusters, palette, id, target, rect } = o
+  const { hc, tree, clusters, palette, id, target, rect, facts } = o
   if (!tree.strip || !clusters) return []
   return hc.order.map((leaf, i) => {
     const box = rect(i)
@@ -244,6 +299,7 @@ export function stripNodes(o: {
         fill: { color: clusterColor(tree, palette, clusters.leaves[leaf]!), opacity: 1 },
       },
       bbox: box,
+      tree: { of: facts.of, leaf: leafOf(facts, clusters, leaf) },
     }
   })
 }

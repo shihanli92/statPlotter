@@ -2,6 +2,7 @@ import {
   boxInRoot,
   cloudPointIndex,
   cloudPointNode,
+  hasHoverCard,
   type MarkInfo,
   markSeries,
   type SceneNode,
@@ -38,7 +39,7 @@ export function useHoverMark() {
   /** The mark under the pointer (null: none). */
   const hover = (n: SceneNode | null) => {
     clearTimeout(timer.current)
-    if (n && markSeries(n)) {
+    if (n && hasHoverCard(n)) {
       if (shown.current) show(n)
       else timer.current = setTimeout(() => show(n), HOVER_DELAY_MS)
       return

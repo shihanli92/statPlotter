@@ -211,7 +211,11 @@ GraphNode (declarative, style-only) → layoutGraph (axes, ticks, legends, brack
   frames a series per level of a text variable, and the matrix has kinds by the axes' types.
   More variables map to the points' colour, shape, size and labels (roadmap 34b): one set of
   scales (`aesthetics.ts`) and each row's look and legend guides (`layers/looks.ts`) for XY,
-  category and grouped graphs of variables, what each acts on in the matrix (`AES_GEOMS`).
+  category and grouped graphs of variables, what each acts on in the matrix (`AES_GEOMS`). Fills
+  and outlines are two colour scales (roadmap 49d): a fill by data set is the data set's fill
+  colour (its own, the graph's fill palette's, else its colour), put into the resolved style by
+  the layout's style resolver (`LayerKit.style`), and a variable may fill the rows on a scale of
+  its own, with merged or separate legends.
   Groups get ellipses and convex hulls (`polygon`), paths in row order and vectors (`path`,
   `segment`) on XY graphs, and a grouped PCA's score plot is a graph of its table of scores
   (roadmap 34c). Small multiples are sets of ordinary graphs (roadmap 34d): one per level of a

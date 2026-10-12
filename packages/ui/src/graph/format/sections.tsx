@@ -19,9 +19,11 @@ import type { PanelContext } from '../inspector/context.ts'
 import {
   ColourSchemeFields,
   CopyFormatSection,
+  fillsGraph,
   hasOwnFormats,
   ResetLayerSeries,
   SeriesColor,
+  SeriesFill,
   YAxisSelect,
 } from '../inspector/DataSetSection.tsx'
 import { FunctionPanel } from '../inspector/FunctionPanel.tsx'
@@ -406,6 +408,8 @@ function SeriesColourRow({ ctx, target }: SectionProps) {
   return (
     <div className="series-colour-row">
       <SeriesColor ctx={ctx} item={one} dataSets={dataSets} />
+      {/* Roadmap 49d: its fill colour beside it, where the graph fills by data set. */}
+      {fillsGraph(ctx.graph) && <SeriesFill ctx={ctx} item={one} dataSets={dataSets} />}
     </div>
   )
 }

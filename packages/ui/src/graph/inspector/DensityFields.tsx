@@ -6,7 +6,7 @@ import {
   densityStyle,
   HEX_BINS,
 } from '@ps/graph'
-import { type ColorMapName, type Layer, sourceTable } from '@ps/model'
+import { type ColorMapName, type Dash, isBySeries, type Layer, sourceTable } from '@ps/model'
 import type { ReactNode } from 'react'
 import { Checkbox, NumberInput, Section, Select, TextInput } from '../../components/fields.tsx'
 import { StrokeFields } from '../../components/formatFields.tsx'
@@ -242,6 +242,7 @@ export function HexFields({ e }: { e: LayerEdit }) {
 export function ContourFields({ e }: { e: LayerEdit }) {
   if (e.layer.geom !== 'contour') return null
   const style = densityStyle(e.layer, e.key ?? '', e.ctx.theme)
+  const byGroup = isBySeries(style.stroke.dash)
   return (
     <Section title="Density contours">
       <Select
@@ -255,13 +256,29 @@ export function ContourFields({ e }: { e: LayerEdit }) {
         onChange={(v) => e.set('draw', v === 'lines' ? undefined : v, 'Contours drawn')}
       />
       {style.draw !== 'bands' && (
-        <StrokeFields
-          label="Lines"
-          value={style.stroke}
-          palette={e.ctx.palette}
-          allowSeries
-          onChange={(v) => v && e.set('stroke', v, 'Contour lines')}
-        />
+        <>
+          <StrokeFields
+            label="Lines"
+            value={{ ...style.stroke, dash: byGroup ? 'solid' : (style.stroke.dash as Dash) }}
+            palette={e.ctx.palette}
+            allowSeries
+            onChange={(v) =>
+              v && e.set('stroke', byGroup ? { ...v, dash: { series: true } } : v, 'Contour lines')
+            }
+          />
+          {/* Roadmap 49d: the lines' pattern by group (the graph's line styles in turn). */}
+          <Checkbox
+            label="Line style by group (the graph’s line styles in turn)"
+            checked={byGroup}
+            onChange={(v) =>
+              e.set(
+                'stroke',
+                { ...style.stroke, dash: v ? { series: true } : 'solid' },
+                v ? 'Line style by group' : 'Fixed line style',
+              )
+            }
+          />
+        </>
       )}
       {style.draw !== 'lines' && (
         <>

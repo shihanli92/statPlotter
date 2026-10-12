@@ -122,10 +122,15 @@ export function resetToStyle(
     ;(axes as Record<string, AxisSpec>)[k] = n
   }
   const bracket = graph.style.bracket
-  // Roadmap 49a: the cycles of symbols and line patterns go with the palette.
+  // Roadmap 49a: the cycles of symbols and line patterns go with the palette; 49d: the fill
+  // colours by data set too.
   const style = put(
-    put(put(put(graph.style, 'text', undefined), 'palette', undefined), 'shapes', undefined),
-    'dashes',
+    put(
+      put(put(put(graph.style, 'text', undefined), 'palette', undefined), 'shapes', undefined),
+      'dashes',
+      undefined,
+    ),
+    'fillPalette',
     undefined,
   ) as GraphNode['style']
   const nextBracket = bracket
@@ -240,6 +245,10 @@ export function styleFromGraph(
       : {}),
     ...((graph.style.dashes ?? theme.dashes)
       ? { dashes: [...(graph.style.dashes ?? theme.dashes)!] }
+      : {}),
+    // Roadmap 49d: the fill colours by data set, when the graph or its style has them.
+    ...((graph.style.fillPalette ?? theme.fillPalette)
+      ? { fillPalette: [...(graph.style.fillPalette ?? theme.fillPalette)!] }
       : {}),
     ...(theme.colorMap ? { colorMap: theme.colorMap } : {}),
     axes: {

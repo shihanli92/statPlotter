@@ -64,6 +64,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.3 | 49a | merge of 49a, aesthetics by data set or fixed (not tagged) |
 | 0.3.4 | 49b | merge of 49b, one layer at a time in the Format view (not tagged) |
 | 0.3.5 | 49c | merge of 49c, dendrograms as layers (not tagged) |
+| 0.3.6 | 49d | merge of 49d, fill and outline mapped separately (not tagged) |
 
 ## Phases
 
@@ -1964,6 +1965,47 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     owner of each axis' tree, legend entries, a tree alone both ways, the matrix's rules, plot
     styles, presets, the migration's edges and its v2 fixtures, the canvas drag (unit); the
     heat map's clustering adding and removing trees and a tree's Format view (happy-dom);
-    Playwright `dendrogram.spec.ts` (new) in Chromium, WebKit and Firefox. Not done: the tree's
-    handle on graphs placed on layout pages (its Format field there), the format bar's line group
-    for a tree, hover cards on trees.
+    Playwright `dendrogram.spec.ts` (new) in Chromium, WebKit and Firefox. Left then and done in
+    49d: the tree's handle on graphs placed on layout pages, the format bar's line group for a
+    tree, hover cards on trees.
+
+49d. ✅ **Fill and outline mapped separately** — decisions 1254–1265 (the
+    user's request continued from 49a: ggplot's `fill =` beside `colour =`; amends 1214). **Two
+    colour channels**: a fill by data set (`{ series: true }` in a fill) is the data set's fill
+    colour — its own ("Data set fill (every layer)" under "Data set colour (every layer)", or a
+    link "Set a separate fill colour"), else the graph's fill palette at its place (Common's "Fill
+    colours of the data sets": Same as their colours, Lighter colours, the colour schemes; a
+    style's too), else its colour — while outlines and lines stay the colour; put into the resolved
+    style by the layout's style resolver as 49a's shapes and dashes are, so the legend's keys draw
+    both. A fourth recipe, "Light fill, dark outline by group". **Fill by a variable** on
+    multiple-variables tables (`aes.fill`, `mapping.fill`; the matrix's `fill`, §6.2a
+    regenerated): a text variable's levels in their fill colours, a number variable on a colour
+    scale of its own (`scales.fill`, viridis with a colour bar to start); the Appearance table's
+    Fill row By variable chooses it ("Same as the colour" until then), the Outline row the colour
+    variable, a fixed fill unmaps it; Appearance by variable lists its levels' fills. **Legends as
+    ggplot's**: one legend whose keys show both when fill and colour map the same thing (data
+    sets; a variable's levels as symbols outlined and filled), separate legends headed by their
+    variables when not (numbers as colour bars), each ordered, hidden and relabelled as 47b's.
+    **Line patterns by group** for ellipses, hulls, paths, vectors and contours (the graph's line
+    styles in turn, by the group's place), legend samples too. Carried by styles, presets (fill
+    palette, fill scale, the fill variable's type), Match format, the format painter (a data set's
+    own fill with its colour) and Change layers; `graphRefs` walks `aes.fill` and `mapping.fill`.
+    Model: optional fields and union members only, no schema change; absent, everything draws as
+    before — every golden, v1 and v2 fixture and example fingerprint byte-identical,
+    `ANALYSES_VERSION` unchanged. New goldens (`filloutline-fill-palette-black-outline`,
+    `-light-fill-dark-outline-bars`, `-xy-own-fills`, `-variables-split-legends`,
+    `-variables-merged-legend`, `-variables-fill-number`, `-ellipses-dashed-by-group`,
+    `-paths-dashed-by-data-set`). **The 49c leftovers** (decisions 1262–1265): a tree's
+    handle also on graphs placed on layout pages (the drag scaled by the item, the plot staying
+    put, one undo step "Dendrogram size"); the format bar's Line group formats selected trees
+    (colour, width, style; mixed across trees; written where the Appearance rows write); hover
+    cards on trees — a branch its merge height, leaves and cluster, a leaf (its leg or strip band)
+    its row or column and cluster — the facts riding on the scene nodes, never drawn. Tests: the fill channel's resolution (absent =
+    today, a fill palette equal to the palette drawing the 49a goldens byte for byte, own fills
+    over the palette, wrapping, which layers fill by data set), fill variables and their scales,
+    merged and split legends, overlay dashes, styles, presets, Match format, graphRefs and the
+    format painter, tree hover cards, the page's tree handle and the format bar's tree Line
+    (unit); the fill row and its link, the data sets' fill colours, the recipe, the
+    Fill and Outline variables on graphs of variables, a tree's hover cards (happy-dom); Playwright `fillOutline.spec.ts`
+    (new) and `dendrogram.spec.ts` (a tree's handle on a page, the format bar's Line on trees,
+    hover cards) in Chromium, WebKit and Firefox.

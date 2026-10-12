@@ -4,7 +4,13 @@ import { describe, expect, it } from 'vitest'
 import { clusteredMap, genesTable, treeAlone } from '../../graph/test/dendrogramCases.ts'
 import { fonts, projectOf } from '../../graph/test/helpers.ts'
 import { dragOutcome } from '../src/graph/canvasDrag.ts'
-import { draggedDepth, treeHandle, treeSide } from '../src/graph/treeDrag.ts'
+import {
+  draggedDepth,
+  layerAlone,
+  pageTreeHandle,
+  treeHandle,
+  treeSide,
+} from '../src/graph/treeDrag.ts'
 
 // Roadmap 49c: a heat map's tree resized by dragging its outer edge (its handle), one edit of its
 // layer's `depth`; a dendrogram alone has none (the plot's handles size it).
@@ -86,5 +92,39 @@ describe('the drag', () => {
     )
     expect(none.commits).toEqual([])
     expect(none.graph).toBe(g)
+  })
+})
+
+describe('on a layout page (roadmap 49c, left for 49d)', () => {
+  it('shows for one whole tree layer alone among the graph’s selected parts', () => {
+    expect(layerAlone([['layers', 'rowTree']])).toBe('rowTree')
+    expect(layerAlone([['layers', 'rowTree', 'series', 'a']])).toBeNull()
+    expect(
+      layerAlone([
+        ['layers', 'rowTree'],
+        ['layers', 'columnTree'],
+      ]),
+    ).toBeNull()
+    expect(layerAlone([['title']])).toBeNull()
+    expect(layerAlone([])).toBeNull()
+  })
+
+  it('stands on the placed graph’s tree, a page move scaled by the item’s into graph points', () => {
+    const g = clusteredMap(table)
+    const s = sceneOf(g)
+    const h = treeHandle(s, g, 'rowTree')!
+    const item = { x: 100, y: 200, scale: 0.5 }
+    const onPage = pageTreeHandle(h, item)
+    expect(onPage).toEqual({ ...h, x: 100 + h.x / 2, y: 200 + h.y / 2 })
+    // 12 page points out at half size: 24 graph points, the depth 36 → 60, one edit.
+    const out = dragOutcome(
+      g,
+      s,
+      { kind: 'tree', layer: 'rowTree', dx: 12 / item.scale, dy: 0, free: false },
+      OPTS,
+    )
+    expect(out.commits.map((c) => [c.path, c.value, c.label])).toEqual([
+      [['layers', { id: 'rowTree' }, 'style', 'depth'], 60, 'Dendrogram size'],
+    ])
   })
 })

@@ -217,7 +217,7 @@ import {
   resetPaths,
 } from './selectionEdits.ts'
 import { swapMappedXY, swappable } from './swapXY.ts'
-import { treeHandle } from './treeDrag.ts'
+import { layerAlone, treeHandle } from './treeDrag.ts'
 import {
   EmptyGraphNote,
   EVERY_POINT_HINT,
@@ -601,10 +601,7 @@ export function GraphView({
     )
   }
   // Roadmap 49c: a selected heat map's tree has a handle on its outer edge, dragged to resize it.
-  const treeId =
-    !several && !edit && selected?.[0] === 'layers' && selected.length === 2
-      ? String(selected[1])
-      : null
+  const treeId = !several && !edit && selected ? layerAlone([selected]) : null
   const treeAt = treeId ? treeHandle(scene, outcome?.graph ?? graph, treeId) : null
   const onPointerDownTree = (e: React.PointerEvent) => {
     if (e.button !== 0 || !treeAt) return

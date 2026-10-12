@@ -14,7 +14,7 @@ import type { LegendEntry } from '../../layout/legend.ts'
 import { pngWriter } from '../../render/raster.ts'
 import type { Scale } from '../../scale.ts'
 import type { PathCmd, StylePath } from '../../scene.ts'
-import { resolveStroke, type Theme } from '../../theme.ts'
+import { graphDashes, resolveStroke, type Theme } from '../../theme.ts'
 import { transformOf } from '../../transform.ts'
 import type { LayerKit } from '../kit.ts'
 import { colorBarEntry } from '../looks.ts'
@@ -28,7 +28,13 @@ import {
   pointDensities,
 } from '../stats/density.ts'
 import { DENSITY_THEME, GROUP_BAND_OPACITY } from '../theme.ts'
-import { clipPolygon, clipPolygonToPieces, type PlotPieces, plotPieces } from './overlay.ts'
+import {
+  clipPolygon,
+  clipPolygonToPieces,
+  groupStroke,
+  type PlotPieces,
+  plotPieces,
+} from './overlay.ts'
 
 // Densities of a graph of variables' points (roadmap 34g), drawn on its XY frame: hexagons tiling
 // the plot coloured by the points in each (`hex` × `hexbin`), contour lines and filled bands of
@@ -235,6 +241,8 @@ export interface DensityGroup {
   id: (part: string) => string
   target: StylePath
   color: string
+  /** Roadmap 49d: its place among the groups (a line pattern by group; absent: 0). */
+  index?: number
   /** Its points' rows' indices into the plot points (`PlotPoints`), or null for every point. */
   members: Int32Array | null
   /** A stable name for caching (the level's text). */
@@ -322,7 +330,8 @@ export function drawContours(
       })
     }
     if (style.draw !== 'bands' && style.stroke.width > 0) {
-      const stroke = resolveStroke(style.stroke, kit.palette, g.color)
+      const line = groupStroke(style.stroke, graphDashes(kit.graph, kit.theme), g.index)
+      const stroke = resolveStroke(line, kit.palette, g.color)
       const part = kit.part(layer, g.key, 'contour')
       contourLines(grid, ls).forEach((line, k) => {
         const pts = toPx(line.x, line.y)

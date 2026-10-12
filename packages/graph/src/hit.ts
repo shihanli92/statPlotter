@@ -98,6 +98,40 @@ function primHit(n: SceneNode, p: Prim, x: number, y: number, tol: number): bool
 }
 
 /**
+ * Roadmap 49c: a dendrogram branch's leg down to a leaf under (x, y) (the node's coordinates; the
+ * branch's segment nearest the point): a node of its own for the leaf's hover card, part of the
+ * branch (`within`), its target and layer. Null elsewhere on the branch, or on other marks.
+ */
+export function treeLegAt(n: SceneNode, x: number, y: number): SceneNode | null {
+  const legs = n.tree?.legs
+  if (!legs?.length || n.prim?.type !== 'polyline') return null
+  const pts = n.prim.points
+  let seg = -1
+  let best = Number.POSITIVE_INFINITY
+  for (let i = 1; i < pts.length; i++) {
+    const d = segmentDistance(x, y, pts[i - 1]!, pts[i]!)
+    if (d < best) [seg, best] = [i - 1, d]
+  }
+  const leg = legs.find((l) => l.seg === seg)
+  if (!leg) return null
+  const [a, b] = [pts[seg]!, pts[seg + 1]!]
+  return {
+    id: `${n.id}/leaf/${leg.seg}`,
+    ...(n.target ? { target: n.target } : {}),
+    ...(n.layer ? { layer: n.layer } : {}),
+    prim: { type: 'polyline', points: [a, b], stroke: n.prim.stroke },
+    bbox: {
+      x: Math.min(a[0], b[0]),
+      y: Math.min(a[1], b[1]),
+      w: Math.abs(b[0] - a[0]),
+      h: Math.abs(b[1] - a[1]),
+    },
+    tree: { of: n.tree!.of, leaf: leg.leaf },
+    within: n,
+  }
+}
+
+/**
  * The topmost scene element at (x, y) in the root's coordinates, following node transforms;
  * `tol` (points, in root coordinates) widens thin strokes and small marks. Null when the point is
  * on no painted element.
@@ -123,7 +157,8 @@ export function hitTest(root: SceneNode, x: number, y: number, tol = 2): SceneHi
       // A point of a cloud (roadmap 34e): found in its grid, given a node of its own.
       const i = cloudHit(n.prim, lx, ly, lt)
       if (i >= 0) hit = { node: cloudPointNode({ ...n, ...(target ? { target } : {}) }, i), target }
-    } else if (n.prim && primHit(n, n.prim, lx, ly, lt)) hit = { node: n, target }
+    } else if (n.prim && primHit(n, n.prim, lx, ly, lt))
+      hit = { node: treeLegAt(n, lx, ly) ?? n, target }
     for (const c of n.children ?? []) walk(c, target, lx, ly, lt)
   }
   walk(root, undefined, x, y, tol)
@@ -144,9 +179,11 @@ export function boxInRoot(root: SceneNode, node: SceneNode): Box | null {
       y = oy + n.transform.y * s
       k = s * (n.transform.scale || 1)
     }
-    const own = node.cloud && (n === node.cloud.node || n.prim === node.cloud.node.prim)
+    // A cloud's point, or a part of a node (a tree's leg, roadmap 49c), in its node's coordinates.
+    const of = node.cloud?.node ?? node.within
+    const own = !!of && (n === of || n.prim === of.prim)
     if (own || n === node || (n.id === node.id && n.point === node.point && n.prim === node.prim)) {
-      // A cloud's point: its own bounds, in the cloud's coordinates.
+      // A cloud's point or a part: its own bounds, in its node's coordinates.
       const b = own ? node.bbox! : nodeBounds(n)
       if (b) out = { x: x + b.x * k, y: y + b.y * k, w: b.w * k, h: b.h * k }
       return true

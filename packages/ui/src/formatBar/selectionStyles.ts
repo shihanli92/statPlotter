@@ -16,6 +16,7 @@ import {
   seriesPlaces,
   TABLE_TEXT_SIZE,
   type Theme,
+  treeStyle,
 } from '@ps/graph'
 import {
   type ColorRef,
@@ -404,6 +405,21 @@ export function elementTarget(
             ),
             layerField: { graph, layer, key: k, field: lineField },
           }
+      }
+      // Roadmap 49c: a dendrogram's line, one look for the whole tree (its Appearance rows'
+      // `style.line`, written whole; a cut tree's coloured branches keep their clusters' colours).
+      if (layer.geom === 'dendrogram' && k === null) {
+        const drawn = treeStyle(layer, theme).line
+        t.line = {
+          node,
+          path: ['layers', { id: layer.id }, 'style', 'line'],
+          partial: false,
+          optional: false,
+          shown: drawn,
+          fallback: drawn,
+          palette,
+          layerField: { graph, layer, key: null, field: 'line' },
+        }
       }
       // Roadmap 46b: a result's reference line (an identity line, a line at a value) as a whole:
       // its line, written whole (a layer's line style is a whole stroke).

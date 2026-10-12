@@ -70,7 +70,12 @@ import { layoutSourceSheets } from '../export/workbooks.ts'
 import { setEditedStyle } from '../formatBar/editStyle.ts'
 import { type BarElement, FormatBar } from '../formatBar/FormatBar.tsx'
 import { itemTarget } from '../formatBar/selectionStyles.ts'
-import { CanvasOverlay, GuideLines, InsertionLine } from '../graph/CanvasOverlay.tsx'
+import {
+  CanvasOverlay,
+  GuideLines,
+  InsertionLine,
+  TreeHandleRect,
+} from '../graph/CanvasOverlay.tsx'
 import { dragOutcome, type ElementDrag } from '../graph/canvasDrag.ts'
 import { type DragTarget, selectionOf as dragKeyOf, dragTargetAt } from '../graph/canvasEdit.ts'
 import { ELEMENT_SNAP_PX } from '../graph/canvasSnap.ts'
@@ -129,6 +134,7 @@ import {
   moveEdits,
   moveLabel,
 } from '../graph/selectionEdits.ts'
+import { layerAlone, pageTreeHandle, treeHandle } from '../graph/treeDrag.ts'
 import {
   EVERY_POINT_HINT,
   EVERY_POINT_LABEL,
@@ -2043,6 +2049,35 @@ export function LayoutView({
     const g = graphItem(layout.items.findIndex((it) => it.id === itemId))
     return g ? [{ g, paths: pageElementsOf(psel, itemId).map((e) => e.path) }] : []
   })
+  /**
+   * Roadmap 49c: a heat map's tree selected alone in a graph on the page: the handle on its outer
+   * edge (in page points, following the graph while it is dragged), dragged to resize the tree as
+   * on the graph view (the move scaled by the item's), one undo step.
+   */
+  const treeAt = (() => {
+    const tree = !drag && !tool ? layerAlone(elems.map((e) => e.path)) : null
+    const g = tree ? graphItem(layout.items.findIndex((it) => it.id === elems[0]!.item)) : null
+    if (!tree || !g) return null
+    const laid = graphOutcome?.laid.find((l) => l.index === g.index)
+    const at = shown.items[g.index]
+    const h = treeHandle(laid?.scene ?? g.scene, laid?.graph ?? g.graph, tree)
+    return h && at?.type === 'graph' ? { index: g.index, handle: pageTreeHandle(h, at) } : null
+  })()
+  const startTreeDrag = (e: React.PointerEvent) => {
+    if (e.button !== 0 || !treeAt) return
+    e.preventDefault()
+    e.stopPropagation()
+    ;(e.target as Element).setPointerCapture(e.pointerId)
+    const p = toPt(e)
+    const layer = treeAt.handle.layer
+    setGdrag({
+      drag: { kind: 'tree', layer, dx: 0, dy: 0, free: e.altKey },
+      startX: p.x,
+      startY: p.y,
+      index: treeAt.index,
+      started: false,
+    })
+  }
   const graphOfItem = (itemId: LayoutItemId) => {
     const it = layout.items.find((x) => x.id === itemId)
     const g = it?.type === 'graph' ? project.nodes[it.graph] : undefined
@@ -2188,7 +2223,7 @@ export function LayoutView({
                 gdrag?.drag.kind === 'resize'
                   ? 'Shift keeps the proportions, ⌘/Ctrl keeps the text size, '
                   : ''
-              }Alt: no snapping`}
+              }${gdrag?.drag.kind === 'tree' ? 'Alt: not rounded to half a point' : 'Alt: no snapping'}`}
             />
           ) : elems.length ? (
             <ToolbarHint text={partsHint} />
@@ -2452,6 +2487,14 @@ export function LayoutView({
                   <InsertionLine line={graphOutcome.insertion} k={k * overlay.item.scale} />
                 )}
               </g>
+            )}
+            {treeAt && (
+              <TreeHandleRect
+                handle={treeAt.handle}
+                k={k}
+                active={gdrag?.drag.kind === 'tree'}
+                onPointerDown={startTreeDrag}
+              />
             )}
             {snapped && <GuideLines guides={snapped.guides} k={k} />}
             {live && <GuideLines guides={live.guides} k={k} />}

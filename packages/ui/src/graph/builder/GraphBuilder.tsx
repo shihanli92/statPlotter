@@ -330,6 +330,8 @@ function BuilderForm({
     // Roadmap 49a: a user preset's cycles of symbols and line patterns.
     if (s.shapes) g = { ...g, style: { ...g.style, shapes: s.shapes } }
     if (s.dashes) g = { ...g, style: { ...g.style, dashes: s.dashes } }
+    // Roadmap 49d: a user preset's fill colours by data set.
+    if (s.fillPalette) g = { ...g, style: { ...g.style, fillPalette: s.fillPalette } }
     g = withBuilderLevels(g, s, graph)
     return forPreview ? { ...g, id: (graph?.id ?? 'builderPreview') as NodeId } : g
   }
@@ -496,6 +498,9 @@ function BuilderForm({
               : {}),
             ...((s.dashes ?? graph?.style.dashes)
               ? { dashes: s.dashes ?? graph?.style.dashes }
+              : {}),
+            ...((s.fillPalette ?? graph?.style.fillPalette)
+              ? { fillPalette: s.fillPalette ?? graph?.style.fillPalette }
               : {}),
           },
           drawOrder: s.drawOrder ?? graph?.drawOrder,
@@ -1438,6 +1443,7 @@ function MapVariables({
             onChange={(on) => act({ type: 'densityColor', on })}
           />
         )}
+      {!tt && appearance('fill', 'Fill')}
       {!tt && appearance('shape', 'Shape')}
       {!tt && appearance('size', 'Size')}
       {!tt && appearance('label', 'Label')}

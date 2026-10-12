@@ -5,6 +5,7 @@ import {
   aesVariables,
   COLOR_MAPS,
   GRADIENT_COLORS,
+  graphFillPalette,
   graphRows,
   layerStyle,
   levelShape,
@@ -41,6 +42,7 @@ import { layerPath } from './layers.ts'
 
 const LABELS: Record<Aesthetic, string> = {
   color: 'Colour',
+  fill: 'Fill',
   shape: 'Shape',
   size: 'Size',
   label: 'Labels',
@@ -84,15 +86,16 @@ export function variableCommands(ctx: PanelContext, field: Aesthetic, key: strin
     ...(key && field !== 'label' && !graph.legend.show
       ? [{ type: 'node.set' as const, id: graph.id, path: ['legend', 'show'], value: true }]
       : []),
+    // A number colour (roadmap 49d: or fill) starts on viridis with a colour bar.
     ...(key &&
-    field === 'color' &&
-    !graph.scales?.color &&
+    (field === 'color' || field === 'fill') &&
+    !graph.scales?.[field] &&
     !table.dataSets.find((d) => d.id === key)?.text
       ? [
           {
             type: 'node.set' as const,
             id: graph.id,
-            path: ['scales', 'color'],
+            path: ['scales', field],
             value: { colors: 'viridis', bar: { show: true } },
           },
         ]
@@ -117,12 +120,16 @@ export function variableOptions(
         ? !d.text
         : field === 'color' && !points
           ? !d.text && d.id !== graph.mapping?.y && d.id !== graph.mapping?.x
-          : true,
+          : // Roadmap 49d: fill by any variable but the axes' (the groups' fills them as data sets).
+            field === 'fill' && !points
+            ? d.id !== graph.mapping?.y && d.id !== graph.mapping?.x
+            : true,
   )
   // Roadmap 34e: text variables of more than 1,000 levels are no colour or shape (they stay
   // listed while chosen); many levels are counted in the label.
   return [
-    { value: '', label: 'None' },
+    // Roadmap 49d: no fill variable is the colour's (fill and outline one colour, as before).
+    { value: '', label: field === 'fill' ? 'Same as the colour' : 'None' },
     ...fits
       .filter(
         (d) => field === 'label' || field === 'size' || d.id === vars[field] || !tooManyLevels(d),
@@ -151,7 +158,7 @@ export function AppearanceByVariableSection({ ctx }: { ctx: PanelContext }) {
       onChange={(v) => choose(field, v)}
     />
   )
-  const title = (field: 'color' | 'shape' | 'size') => {
+  const title = (field: 'color' | 'fill' | 'shape' | 'size') => {
     const v = mappedVariable(table, graph, vars[field], rows)
     if (!v) return null
     return (
@@ -166,6 +173,9 @@ export function AppearanceByVariableSection({ ctx }: { ctx: PanelContext }) {
     )
   }
   const color = mappedVariable(table, graph, vars.color, rows)
+  // Roadmap 49d: the fill variable, on a scale of its own (absent: the colour's).
+  const fill = mappedVariable(table, graph, vars.fill, rows)
+  const fillPalette = graphFillPalette(graph, ctx.theme)
   const shape = mappedVariable(table, graph, vars.shape, rows)
   const shapeLayer = points ?? graph.layers.find((l) => l.geom === 'points')
   const base = shapeLayer
@@ -208,8 +218,38 @@ export function AppearanceByVariableSection({ ctx }: { ctx: PanelContext }) {
           {more(color.order)}
         </div>
       )}
-      {color?.type === 'number' && <ColorScaleFields ctx={ctx} />}
+      {color?.type === 'number' && <ColorScaleFields ctx={ctx} which="color" />}
       {color && title('color')}
+      {picker('fill')}
+      {fill?.type === 'text' && fill.key !== (textColor ? vars.color : undefined) && (
+        <div className="level-colors">
+          {(fill.order ?? []).slice(0, MAX_LISTED_LEVELS).map((t, k) => (
+            <ColorField
+              key={t}
+              label={t}
+              value={colorOf(
+                graph.seriesOverrides[levelKey(t)]?.fill,
+                palette,
+                fillPalette?.[k % fillPalette.length] ??
+                  colorOf(
+                    graph.seriesOverrides[levelKey(t)]?.color,
+                    palette,
+                    palette[k % palette.length]!,
+                  ),
+              )}
+              palette={palette}
+              onChange={(_, ref) =>
+                ctx.set(['seriesOverrides', levelKey(t), 'fill'], ref, `Fill of ${t}`)
+              }
+            />
+          ))}
+          {more(fill.order)}
+        </div>
+      )}
+      {fill?.type === 'number' && fill.key !== vars.color && (
+        <ColorScaleFields ctx={ctx} which="fill" />
+      )}
+      {fill && fill.key !== vars.color && title('fill')}
       {picker('shape')}
       {shape && (
         <div className="level-shapes">
@@ -242,12 +282,15 @@ export function AppearanceByVariableSection({ ctx }: { ctx: PanelContext }) {
   )
 }
 
-/** A number variable's colours: map, range, out-of-range and missing colours, colour bar. */
-function ColorScaleFields({ ctx }: { ctx: PanelContext }) {
+/**
+ * A number variable's colours: map, range, out-of-range and missing colours, colour bar — the
+ * colour's scale, or (roadmap 49d) the fill's.
+ */
+function ColorScaleFields({ ctx, which }: { ctx: PanelContext; which: 'color' | 'fill' }) {
   const { graph, palette } = ctx
-  const c: ColorScale = graph.scales?.color ?? {}
+  const c: ColorScale = graph.scales?.[which] ?? {}
   const set = (field: keyof ColorScale, v: unknown, label: string) =>
-    ctx.set(['scales', 'color', field], v, label)
+    ctx.set(['scales', which, field], v, label)
   const kind = Array.isArray(c.colors) ? 'two' : (c.colors ?? 'gradient')
   const two = Array.isArray(c.colors) ? c.colors : GRADIENT_COLORS
   const fixed = c.min !== undefined || c.max !== undefined
@@ -343,13 +386,13 @@ function ColorScaleFields({ ctx }: { ctx: PanelContext }) {
               {
                 type: 'node.set',
                 id: graph.id,
-                path: ['scales', 'color', 'min'],
+                path: ['scales', which, 'min'],
                 value: v ? 0 : undefined,
               },
               {
                 type: 'node.set',
                 id: graph.id,
-                path: ['scales', 'color', 'max'],
+                path: ['scales', which, 'max'],
                 value: v ? 1 : undefined,
               },
             ],

@@ -531,6 +531,31 @@ describe('the format painter', () => {
     expect(f.g().seriesOverrides[f.ds[1]!]?.color).toEqual({ rgb: '#aa0000' })
   })
 
+  it('roadmap 49d: a data set’s own fill goes with its colour; none copied clears the target’s', () => {
+    const f = fixture()
+    const one = ['layers', f.points.id, 'series', f.ds[0]!] as StylePath
+    const two = ['layers', f.points.id, 'series', f.ds[1]!] as StylePath
+    f.store.dispatch({
+      type: 'node.set',
+      id: f.graph.id,
+      path: ['seriesOverrides', f.ds[0]!, 'fill'],
+      value: { rgb: '#eeeeee' },
+    })
+    const copied = copyFormat(f.targetOf(one), graphsOf(f))!
+    expect(copied.dataSet?.fill).toEqual({ rgb: '#eeeeee' })
+    // Without colour: neither.
+    f.store.dispatch(pasteCommands(copied, [f.targetOf(two)]).commands)
+    expect(f.g().seriesOverrides[f.ds[1]!]?.fill).toBeUndefined()
+    f.store.dispatch(pasteCommands(copied, [f.targetOf(two)], { color: true }).commands)
+    expect(f.g().seriesOverrides[f.ds[1]!]?.fill).toEqual({ rgb: '#eeeeee' })
+    // A data set without one, pasted with colour, clears the target's.
+    const three = ['layers', f.points.id, 'series', f.ds[2]!] as StylePath
+    const plain = copyFormat(f.targetOf(three), graphsOf(f))!
+    expect(plain.dataSet?.fill).toBeUndefined()
+    f.store.dispatch(pasteCommands(plain, [f.targetOf(two)], { color: true }).commands)
+    expect(f.g().seriesOverrides[f.ds[1]!]?.fill).toBeUndefined()
+  })
+
   it('roadmap 49a: a shape by data set is copied as such; the bar shows the data set’s', () => {
     const f = fixture()
     const one = ['layers', f.points.id, 'series', f.ds[0]!] as StylePath

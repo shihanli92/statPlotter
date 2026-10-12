@@ -151,9 +151,10 @@ function summaryLines(stats: PlotStats, stat: ReturnType<typeof statOf>): HoverL
 export function markInfo(
   project: Project,
   graph: GraphNode,
-  node: Pick<SceneNode, 'target' | 'point'>,
+  node: Pick<SceneNode, 'target' | 'point' | 'tree'>,
   result?: ResultLookup,
 ): MarkInfo | null {
+  if (node.tree) return treeInfo(graph, node)
   const mark = markSeries(node)
   if (!mark) return null
   const table = sourceTable(project, graph.seriesSource.table, result)
@@ -215,6 +216,40 @@ export function markInfo(
 }
 
 const nodeIsTable = (project: Project, id: NodeId) => project.nodes[id]?.kind === 'table'
+
+/** Whether a mark has a hover card: a data set's mark, or a dendrogram's (roadmap 49c). */
+export const hasHoverCard = (node: Pick<SceneNode, 'target' | 'tree'>): boolean =>
+  !!node.tree || markSeries(node) !== null
+
+/**
+ * Roadmap 49c: a dendrogram's card, headed by its tree ("Row dendrogram", or the layer's name): a
+ * branch's merge height (R's), the leaves under it and, cut, their cluster when they are all in
+ * one; a leaf's row or column and, cut, its cluster.
+ */
+function treeInfo(graph: GraphNode, node: Pick<SceneNode, 'target' | 'tree'>): MarkInfo | null {
+  const t = node.tree!
+  const id = node.target?.[0] === 'layers' ? String(node.target[1]) : undefined
+  const layer = graph.layers.find((l) => l.id === id)
+  const title = layer?.name || (t.of === 'rows' ? 'Row dendrogram' : 'Column dendrogram')
+  const cluster = (c: number | undefined) => (c ? [{ label: 'Cluster', value: String(c) }] : [])
+  if (t.leaf)
+    return {
+      title,
+      lines: [
+        { label: t.of === 'rows' ? 'Row' : 'Column', value: t.leaf.name },
+        ...cluster(t.leaf.cluster),
+      ],
+    }
+  if (!t.merge) return null
+  return {
+    title,
+    lines: [
+      { label: 'Height', value: sig(t.merge.height) },
+      { label: 'Leaves', value: String(t.merge.leaves) },
+      ...cluster(t.merge.cluster),
+    ],
+  }
+}
 
 /**
  * A histogram bar's card (roadmap 34f): the data set (a level of a graph of variables' colour

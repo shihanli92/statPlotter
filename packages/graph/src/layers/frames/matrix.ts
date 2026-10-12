@@ -173,7 +173,18 @@ export function layoutMatrix(kit: LayerKit): Scene {
     const tree = treeStyle(layer, theme)
     const clusters = treeClusters(hc, layer.stat.cut, warnings)
     const at = place(tree, tree.gap + (tree.strip && clusters ? tree.stripWidth + STRIP_GAP : 0))
-    const t = { target: ['layers', layer.id], palette, hc, tree, clusters, id }
+    // What its hover cards name the leaves by (roadmap 49c).
+    const of = layer.stat.of
+    const names = of === 'rows' ? rows.map((_, i) => rowName(data, i)) : series.map(seriesTitle)
+    const t = {
+      target: ['layers', layer.id],
+      palette,
+      hc,
+      tree,
+      clusters,
+      id,
+      facts: { of, names },
+    }
     const nodes = [...stripNodes({ ...t, rect: at.strip }), ...treeNodes({ ...t, place: at.tree })]
     const drawn = { layer, tree, clusters, nodes }
     trees.push(drawn)

@@ -38,8 +38,15 @@ export interface CopiedFormat {
   fill?: FillStyle | null
   /** Symbols as drawn (a points layer's data set or layer). */
   mark?: { shape: SymbolShape; size: number }
-  /** A data set: its own formats in its layers, by geom; its colour. */
-  dataSet?: { styles: Partial<Record<string, Record<string, unknown>>>; color: ColorRef }
+  /**
+   * A data set: its own formats in its layers, by geom; its colour; roadmap 49d: its own fill
+   * colour (absent: none, its fills follow the graph's fill colours or its colour).
+   */
+  dataSet?: {
+    styles: Partial<Record<string, Record<string, unknown>>>
+    color: ColorRef
+    fill?: ColorRef
+  }
 }
 
 /** What the primary target draws, to paste elsewhere (null: nothing it has can be pasted). */
@@ -72,7 +79,12 @@ export function copyFormat(t: Target | null, graphs: (id: NodeId) => GraphNode |
       const raw = styles.points?.shape
       styles.points = { ...styles.points, ...out.mark, ...(isBySeries(raw) ? { shape: raw } : {}) }
     }
-    out.dataSet = { styles, color: t.fill.value ?? { rgb: t.fill.shown } }
+    const fill = g?.seriesOverrides[key]?.fill
+    out.dataSet = {
+      styles,
+      color: t.fill.value ?? { rgb: t.fill.shown },
+      ...(fill ? { fill } : {}),
+    }
   }
   return Object.keys(out).length ? out : null
 }
@@ -108,8 +120,18 @@ export function pasteCommands(
       const changes = fields.map((f): [string, unknown] => [f, own[f]])
       commands.push(...styleCommands(t.dataSet.graph, layer, k, changes))
     } else if (t.mark && copied.mark) commands.push(...markCommands([t.mark], copied.mark))
-    if (opts.color && copied.dataSet && t.fill?.kind === 'identity')
+    if (opts.color && copied.dataSet && t.fill?.kind === 'identity') {
       commands.push(...fillCommands([t.fill], copied.dataSet.color))
+      // Roadmap 49d: its fill colour with its colour (none copied: the target's own cleared).
+      const graph = t.dataSet?.graph
+      if (graph && !t.fill.path && (copied.dataSet.fill || graph.seriesOverrides[t.fill.key]?.fill))
+        commands.push({
+          type: 'node.set',
+          id: graph.id,
+          path: ['seriesOverrides', t.fill.key, 'fill'],
+          value: copied.dataSet.fill,
+        })
+    }
   }
   return { commands, count }
 }

@@ -13,7 +13,7 @@ import {
   SizeScale,
 } from './layers.ts'
 import { treesAsLayers } from './migrations/v2to3.ts'
-import { Dash } from './style.ts'
+import { Dash, RGB } from './style.ts'
 import { type DataTable, TableKind } from './table.ts'
 
 /** A variable's type, as a preset of a graph of variables keeps it. */
@@ -52,8 +52,10 @@ export const PresetRecipe = z
      */
     shapes: z.array(SymbolShape).min(1).max(24).optional(),
     dashes: z.array(Dash).min(1).max(12).optional(),
-    /** Colour maps and bubble sizes (no value ranges). */
-    scales: z.object({ color: ColorScale, size: SizeScale }).partial().optional(),
+    /** Roadmap 49d: the graph's fill colours by data set. */
+    fillPalette: z.array(RGB).min(1).max(64).optional(),
+    /** Colour maps (a fill variable's too, roadmap 49d) and bubble sizes (no value ranges). */
+    scales: z.object({ color: ColorScale, fill: ColorScale, size: SizeScale }).partial().optional(),
     /**
      * A graph of a multiple-variables table's variables (roadmap 34a): the types of the variables
      * on its axes and colour, never the variables (the table's first ones of those types are
@@ -65,6 +67,11 @@ export const PresetRecipe = z
         y: VariableType,
         /** Text: groups (34a); a number (roadmap 34b): the points coloured on a colour map. */
         color: VariableType.optional(),
+        /**
+         * Roadmap 49d: the type of the variable mapped to fill, or 'color' when it is the colour's
+         * variable.
+         */
+        fill: z.union([VariableType, z.literal('color')]).optional(),
         measure: LevelMeasure.optional(),
         /** Roadmap 34b: the types of the variables mapped to shape, size and labels. */
         shape: z.literal('text').optional(),
@@ -194,9 +201,11 @@ export function presetRecipe(
   const without = <T extends object>(o: T | undefined, keys: readonly string[]) =>
     o ? Object.fromEntries(Object.entries(o).filter(([k]) => !keys.includes(k))) : undefined
   const colorScale = without(graph.scales?.color, ['min', 'max', 'midpoint'])
+  const fillScale = without(graph.scales?.fill, ['min', 'max', 'midpoint'])
   const sizeScale = without(graph.scales?.size, ['low', 'high'])
   const scales = {
     ...(colorScale && Object.keys(colorScale).length ? { color: colorScale } : {}),
+    ...(fillScale && Object.keys(fillScale).length ? { fill: fillScale } : {}),
     ...(sizeScale && Object.keys(sizeScale).length ? { size: sizeScale } : {}),
   }
   // The types of the variables a graph of variables maps (not the variables: the table's own).
@@ -211,6 +220,7 @@ export function presetRecipe(
   const [x, y] = [type(m?.x), type(m?.y)]
   const more = m && {
     color: type(m.color),
+    fill: m.fill !== undefined && m.fill === m.color ? ('color' as const) : type(m.fill),
     shape: type(m.shape) === 'text' ? ('text' as const) : undefined,
     size: type(m.size) === 'number' ? ('number' as const) : undefined,
     label: type(m.label),
@@ -233,6 +243,7 @@ export function presetRecipe(
     ...(graph.drawOrder === 'series' ? { drawOrder: 'series' } : {}),
     ...(graph.style.shapes ? { shapes: graph.style.shapes } : {}),
     ...(graph.style.dashes ? { dashes: graph.style.dashes } : {}),
+    ...(graph.style.fillPalette ? { fillPalette: graph.style.fillPalette } : {}),
     ...(Object.keys(scales).length ? { scales } : {}),
     ...(variables ? { variables } : {}),
   })

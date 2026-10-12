@@ -55,6 +55,7 @@ const RULES: readonly string[] = [
 const AES_TITLES: Record<AesKind, string> = {
   colorText: 'Colour (text variable)',
   colorNumber: 'Colour (number variable)',
+  fill: 'Fill (any variable)',
   shape: 'Shape (text variable)',
   size: 'Size (number variable)',
   label: 'Label (any variable)',
@@ -63,6 +64,7 @@ const AES_TITLES: Record<AesKind, string> = {
 /** The rules of mapped appearance (`aesAllowed`). */
 const AES_RULES: readonly string[] = [
   'Shape, size, labels and colour by a number variable act on points of every row (identity), each its row’s; a text colour variable makes the groups of a category graph (the grouped frame) and colours an XY graph’s rows and its lines by group.',
+  'Fill (roadmap 49d) is a second colour scale: a text or number variable fills points of every row, each its row’s, while colour keeps their outlines; mapping the groups’ variable fills them as data sets.',
   'On XY graphs (roadmap 34c) a text colour variable also colours each group’s ellipse, hull and path, and colour by either type each row’s vector; (roadmap 34g) it splits density contours into one set per group, each in its colour. Points can also be coloured by their local density (`colorBy`), on the colour scale in place of a variable.',
   'Text × text graphs count rows: their colour is the Y variable; nothing else is mapped.',
 ]

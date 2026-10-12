@@ -37,7 +37,7 @@ export type KeyRole =
   | 'aes'
   /**
    * A variable on a graph's axes or mapped to appearance (`mapping.x`, `y`, `color`; roadmap 34a;
-   * `shape`, `size`, `label`, 34b).
+   * `shape`, `size`, `label`, 34b; `fill`, 49d).
    */
   | 'mapping'
   /** A level's key in `scales.shape.levels` (its symbol; roadmap 34b). */
@@ -142,7 +142,7 @@ function seriesKinds(graph: Pick<GraphNode, 'layers'>): (key: string) => SeriesK
 }
 
 /** The fields of a graph's mapping naming variables (roadmap 34a, 34b). */
-const MAPPED_FIELDS = ['x', 'y', 'color', 'shape', 'size', 'label'] as const
+const MAPPED_FIELDS = ['x', 'y', 'color', 'fill', 'shape', 'size', 'label'] as const
 
 /** Every reference of a graph (see the module comment), in document order. */
 export function graphRefs(graph: GraphNode): GraphRef[] {
@@ -476,7 +476,7 @@ export function mapGraphRefs(graph: GraphNode, m: RefMapper): GraphNode {
       } else {
         const next: Record<string, unknown> = { ...g.mapping, x: mx, y: my }
         let changed = mx !== x || my !== y
-        for (const field of ['color', 'shape', 'size', 'label'] as const) {
+        for (const field of ['color', 'fill', 'shape', 'size', 'label'] as const) {
           const k = g.mapping[field]
           if (k === undefined) continue
           const to = mapKey(k, 'mapping')

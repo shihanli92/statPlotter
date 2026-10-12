@@ -54,6 +54,26 @@ function treeMarks(scene: Scene, id: string): SceneNode[] {
   return out
 }
 
+/**
+ * The layer a selection of a graph's parts names when it is one whole layer alone (a tree's
+ * handle shows then: on the graph view and, roadmap 49c, on a graph placed on a page).
+ */
+export function layerAlone(paths: readonly (readonly unknown[])[]): string | null {
+  const p = paths.length === 1 ? paths[0]! : null
+  return p?.[0] === 'layers' && p.length === 2 ? String(p[1]) : null
+}
+
+/**
+ * Roadmap 49c: a tree's handle on a graph placed on a page — in page points, the graph item at
+ * (x, y) drawn at `scale` (a drag's page move divided by it is the move in graph points).
+ */
+export function pageTreeHandle(
+  handle: TreeHandle,
+  item: { x: number; y: number; scale: number },
+): TreeHandle {
+  return { ...handle, x: item.x + handle.x * item.scale, y: item.y + handle.y * item.scale }
+}
+
 /** The handle of a tree beside a heat map, if the scene draws it. */
 export function treeHandle(scene: Scene, graph: GraphNode, id: string): TreeHandle | null {
   const l = besideTree(graph, id)

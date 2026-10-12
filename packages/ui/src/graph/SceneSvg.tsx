@@ -19,6 +19,7 @@ import {
   type StylePath,
   symbolPath,
   transformAttr,
+  treeLegAt,
   unionBoxes,
 } from '@ps/graph'
 import {
@@ -678,6 +679,11 @@ export function SceneSvg({
         const point = cloudPointNode(node, i)
         return { node: point, target: point.target }
       }
+    } else if (node?.tree?.legs?.length) {
+      // A dendrogram's branch (roadmap 49c): its leg down to a leaf is the leaf's (hover cards;
+      // a graph's marks are in the scene's coordinates, as a cloud's).
+      const at = scenePoint(e)
+      return { node: (at && treeLegAt(node, at.x, at.y)) || node, target: node.target }
     } else if (node && !isBackground(node.target)) return { node, target: node.target }
     // On nothing, a background or between a cloud's points: what is within reach (O10).
     const at = scenePoint(e)
@@ -762,15 +768,14 @@ export function SceneSvg({
       onClick={onClick}
       onPointerOver={onHover}
       onPointerMove={(e) => {
-        // Over a cloud's image the point under the pointer changes as it moves; over a
-        // background, what is within reach.
+        // Over a cloud's image the point under the pointer changes as it moves, as along a
+        // tree's branch (its legs down to leaves, roadmap 49c); over a background, what is
+        // within reach.
         const el = e.target as Element
-        if (el.tagName === 'image') onHover(e)
-        else {
-          const id = el.closest('[data-id]')?.getAttribute('data-id')
-          const n = id ? index.map.get(id) : undefined
-          if (!n || isBackground(n.target)) onMoveOverBackground(e)
-        }
+        const id = el.tagName === 'image' ? null : el.closest('[data-id]')?.getAttribute('data-id')
+        const n = id ? index.map.get(id) : undefined
+        if (el.tagName === 'image' || n?.tree?.legs?.length) onHover(e)
+        else if (!n || isBackground(n.target)) onMoveOverBackground(e)
       }}
       onPointerLeave={() => {
         cancelAnimationFrame(frame.current?.id ?? 0)

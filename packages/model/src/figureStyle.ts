@@ -83,6 +83,11 @@ export const FigureStyle = z.object({
   /** The categorical colours, in order (data sets and levels take them in turn). */
   palette: z.array(RGB).min(1).max(64).optional(),
   /**
+   * Roadmap 49d: the fill colours data sets take in turn where a layer's fill is the data set's
+   * (absent: their colours, the palette's), as a whole like the palette.
+   */
+  fillPalette: z.array(RGB).min(1).max(64).optional(),
+  /**
    * Roadmap 49a: the symbols and line patterns data sets take in turn where a layer's shape or
    * dash is the data set's (as their colours take the palette's), each list as a whole.
    */

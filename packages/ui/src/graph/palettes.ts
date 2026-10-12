@@ -1,3 +1,5 @@
+import { mixColor } from '@ps/graph'
+
 /** Colour schemes offered for a graph's palette (data sets take colours in order). */
 export const PALETTES: { id: string; name: string; colors: string[] }[] = [
   {
@@ -103,3 +105,10 @@ export const PALETTES: { id: string; name: string; colors: string[] }[] = [
 /** The preset matching a palette exactly, if any. */
 export const paletteId = (colors: readonly string[] | undefined) =>
   colors ? PALETTES.find((p) => p.colors.join() === colors.join())?.id : undefined
+
+/**
+ * Roadmap 49d: lighter colours of a palette (each mixed half with white) — fills of their own
+ * beside the data sets' colours ("Light fill, dark outline").
+ */
+export const lighterPalette = (colors: readonly string[]): string[] =>
+  colors.map((c) => mixColor(c, '#ffffff', 0.5))

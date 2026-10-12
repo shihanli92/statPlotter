@@ -1,16 +1,19 @@
 import type { Command } from '@ps/engine'
 import {
   curveOnRight,
+  fillsByDataSet,
+  graphFillPalette,
   identityStyle,
+  mixColor,
   resolveColor,
   rightAxisAllowed,
   seriesColor,
   seriesOnRight,
 } from '@ps/graph'
-import type { Layer } from '@ps/model'
+import { isBySeries, type Layer } from '@ps/model'
 import { ColorField } from '../../components/ColorPicker.tsx'
 import { Section, Select } from '../../components/fields.tsx'
-import { PALETTES, paletteId } from '../palettes.ts'
+import { lighterPalette, PALETTES, paletteId } from '../palettes.ts'
 import type { PanelContext } from './context.ts'
 import { layerPath, type SeriesItem } from './layers.ts'
 import { setAxisCommands } from './yAxis.ts'
@@ -64,6 +67,154 @@ export function SeriesColor({
       }}
       onChange={(_, c) => ctx.set(['seriesOverrides', item.key, 'color'], c, 'Colour')}
     />
+  )
+}
+
+/**
+ * Roadmap 49d: whether a graph has a layer filling by data set (points, bars, boxes, violins,
+ * ellipses and hulls; a graph of variables' points by level): its fill colours are offered.
+ */
+export const fillsGraph = (graph: PanelContext['graph']): boolean =>
+  graph.layers.some(
+    (l) => l.geom === 'polygon' || (l.geom === 'points' && !!l.aes) || fillsByDataSet(graph, l),
+  )
+
+/** What a series' fill row is called (roadmap 49d: its fill colour in every layer). */
+export const seriesFillLabel = (item: Pick<SeriesItem, 'kind'>): string =>
+  `${item.kind === 'dataSet' ? 'Data set' : item.kind === 'output' ? 'Curve' : 'Function'} fill (every layer)`
+
+/**
+ * Roadmap 49d: whether a graph gives fills colours of their own (a fill palette, its own or its
+ * style's, or any data set's or level's own fill): its series then show their fill rows.
+ */
+export const usesFillChannel = (ctx: Pick<PanelContext, 'graph' | 'theme'>): boolean => {
+  const own = (f: unknown) => f !== undefined && !isBySeries(f)
+  return (
+    !!graphFillPalette(ctx.graph, ctx.theme) ||
+    own(ctx.graph.style.seriesDefaults?.fill) ||
+    Object.values(ctx.graph.seriesOverrides).some((o) => own(o.fill))
+  )
+}
+
+/** The fill colour a series takes where a layer's fill is by data set (its own, else the fill
+ * palette's at its place, else its colour). */
+function itemFill(ctx: PanelContext, item: SeriesItem, dataSets: number): string {
+  const own = identityStyle(ctx.theme, ctx.graph, item.key, item.kind !== 'dataSet').fill
+  if (own && !isBySeries(own)) return resolveColor(own, ctx.palette)
+  const list = graphFillPalette(ctx.graph, ctx.theme)
+  const index = item.kind === 'dataSet' ? item.index : dataSets + item.index
+  return list?.length ? list[index % list.length]!.toLowerCase() : itemColor(ctx, item, dataSets)
+}
+
+/**
+ * Roadmap 49d: a series' fill colour beside its colour — fills by data set take it in every layer
+ * (ggplot's fill scale beside the colour's) — when the graph gives fills colours of their own;
+ * otherwise a link to give it one (a lighter colour of its own to start from).
+ */
+export function SeriesFill({
+  ctx,
+  item,
+  dataSets,
+}: {
+  ctx: PanelContext
+  item: SeriesItem
+  dataSets: number
+}) {
+  const path = ['seriesOverrides', item.key, 'fill']
+  if (!usesFillChannel(ctx))
+    return (
+      <button
+        type="button"
+        className="link"
+        onClick={() =>
+          ctx.set(
+            path,
+            { rgb: mixColor(itemColor(ctx, item, dataSets), '#ffffff', 0.5) },
+            'Fill colour',
+          )
+        }
+      >
+        Set a separate fill colour
+      </button>
+    )
+  const { fill: _, ...own } = ctx.graph.seriesOverrides[item.key] ?? {}
+  const auto = {
+    ...ctx,
+    graph: { ...ctx.graph, seriesOverrides: { ...ctx.graph.seriesOverrides, [item.key]: own } },
+  }
+  return (
+    <ColorField
+      label={seriesFillLabel(item)}
+      value={itemFill(ctx, item, dataSets)}
+      palette={ctx.palette}
+      automatic={{
+        on: ctx.graph.seriesOverrides[item.key]?.fill === undefined,
+        css: itemFill(auto, item, dataSets),
+        onPick: () => ctx.set(path, undefined, 'Fill colour'),
+      }}
+      onChange={(_, c) => ctx.set(path, c, 'Fill colour')}
+    />
+  )
+}
+
+/**
+ * Roadmap 49d: every data set's fill colours — the same as their colours (absent), lighter ones,
+ * a scheme of their own — and back; data sets' own fills cleared with "Same as their colours".
+ */
+export function FillSchemeFields({ ctx }: { ctx: PanelContext }) {
+  const { graph, palette } = ctx
+  const own = graph.style.fillPalette
+  const light = lighterPalette(palette.slice(0, Math.max(1, Math.min(palette.length, 8))))
+  const id = !own ? 'same' : own.join() === light.join() ? 'lighter' : (paletteId(own) ?? 'custom')
+  const ownFills = Object.entries(graph.seriesOverrides).filter(([, o]) => o.fill !== undefined)
+  const list = graphFillPalette(graph, ctx.theme)
+  return (
+    <>
+      <Select
+        label="Fill colours of the data sets"
+        value={id}
+        options={[
+          { value: 'same', label: 'Same as their colours' },
+          { value: 'lighter', label: 'Lighter colours' },
+          ...PALETTES.map((p) => ({ value: p.id, label: p.name })),
+          ...(id === 'custom' ? [{ value: 'custom', label: 'Custom' }] : []),
+        ]}
+        onChange={(v) => {
+          if (v === 'custom') return
+          const next =
+            v === 'same'
+              ? undefined
+              : v === 'lighter'
+                ? light
+                : PALETTES.find((p) => p.id === v)?.colors
+          ctx.dispatch(
+            [
+              { type: 'node.set', id: graph.id, path: ['style', 'fillPalette'], value: next },
+              // Back to the colours: data sets' own fills go too.
+              ...(v === 'same'
+                ? ownFills.map(
+                    ([k]): Command => ({
+                      type: 'node.set',
+                      id: graph.id,
+                      path: ['seriesOverrides', k, 'fill'],
+                      value: undefined,
+                    }),
+                  )
+                : []),
+            ],
+            'Fill colours',
+          )
+        }}
+      />
+      {list && (
+        <div className="palette-preview" aria-hidden>
+          {list.map((c, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: a place in the list
+            <span key={i} style={{ background: c }} />
+          ))}
+        </div>
+      )}
+    </>
   )
 }
 
@@ -234,6 +385,7 @@ export function ColourSchemeFields({
           }
         />
       )}
+      {!whole && fillsGraph(graph) && <FillSchemeFields ctx={ctx} />}
       {colorsSet && !whole && (
         <button
           type="button"

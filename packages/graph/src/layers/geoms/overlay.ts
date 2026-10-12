@@ -1,10 +1,24 @@
-import type { ArrowHead, LayerOf, StrokeStyle } from '@ps/model'
+import {
+  type ArrowHead,
+  type Dash,
+  isBySeries,
+  type LayerOf,
+  type SeriesStroke,
+  type StrokeStyle,
+} from '@ps/model'
 import { confidenceEllipse, convexHull, ellipseOutline } from '@ps/stats'
 import { arrowHead, lineWithHeads } from '../../layout/arrows.ts'
 import { clipPolyline, type Extent, runsAround } from '../../layout/common.ts'
 import type { Scale } from '../../scale.ts'
 import type { Fill, SceneNode, Stroke, StylePath } from '../../scene.ts'
-import { DEFAULT_THEME, resolveFill, resolveStroke, type Theme } from '../../theme.ts'
+import {
+  DEFAULT_DASHES,
+  DEFAULT_THEME,
+  graphDashes,
+  resolveFill,
+  resolveStroke,
+  type Theme,
+} from '../../theme.ts'
 import type { LayerKit } from '../kit.ts'
 
 // Group overlays, paths and vectors on XY graphs (roadmap 34c): a closed shape per group — its
@@ -22,6 +36,17 @@ export interface OverlayGroup {
   target: StylePath
   /** Its colour (fills and lines of `{ series: true }`). */
   color: string
+  /**
+   * Roadmap 49d: its fill colour where it differs from its colour (an XY data set's fill colour,
+   * a level's of the variable it is a group of; absent: `color`).
+   */
+  fill?: string
+  /**
+   * Roadmap 49d: its place among the groups (an XY data set's colour index, a level's in its
+   * variable's order), at which a line pattern by group takes the graph's line styles' entry
+   * (absent: 0).
+   */
+  index?: number
   /** For warnings ("“Low”"). */
   label: string
   xs: readonly number[]
@@ -95,6 +120,20 @@ export function overlayStyle<G extends 'polygon' | 'path' | 'segment'>(
     ...l.style,
     ...l.series?.[key]?.style,
   } as unknown as Style<G>
+}
+
+/**
+ * Roadmap 49d: an overlay's line with a pattern by group (`{ series: true }`) resolved — the
+ * graph's line styles' entry at the group's place (wrapping, as data sets' do; decision 1214 left
+ * these fixed); any other line as it is.
+ */
+export function groupStroke(
+  stroke: SeriesStroke,
+  dashes: readonly Dash[] = DEFAULT_DASHES,
+  index = 0,
+): StrokeStyle {
+  if (!isBySeries(stroke.dash)) return stroke as StrokeStyle
+  return { ...stroke, dash: dashes[Math.max(0, index) % dashes.length]! }
 }
 
 /** A group's ellipse or hull in data coordinates, or why there is none. */
@@ -249,7 +288,8 @@ export function drawPolygon(
   const ring = layer.stat.kind === 'ellipse' ? px.slice(0, -1) : px
   const part = kit.part(layer, g.key, layer.stat.kind)
   const target = [...g.target, 'polygon']
-  const fill = style.draw !== 'outline' ? resolveFill(style.fill, kit.palette, g.color) : null
+  const fill =
+    style.draw !== 'outline' ? resolveFill(style.fill, kit.palette, g.fill ?? g.color) : null
   if (fill) {
     // Corners inside an axis break go to its edge, and the fill is cut at the breaks (G2).
     const [ex, ey] = [axes.xEdge ?? axes.x, axes.yEdge ?? axes.y]
@@ -269,7 +309,8 @@ export function drawPolygon(
     })
   }
   if (style.draw !== 'fill' && style.border.width > 0) {
-    const stroke = resolveStroke(style.border, kit.palette, g.color)
+    const border = groupStroke(style.border, graphDashes(kit.graph, kit.theme), g.index)
+    const stroke = resolveStroke(border, kit.palette, g.color)
     clipPolyline([...ring, ring[0]!], axes.W, axes.H).forEach((run, k) => {
       kit.add(layer, g.key, {
         id: g.id(`${part}/${k}`),
@@ -310,7 +351,8 @@ export function drawPath(
   touch?: (row: number, py: number) => void,
 ): void {
   const style = overlayStyle(layer, g.key, kit.theme)
-  const stroke = resolveStroke(style.stroke, kit.palette, g.color)
+  const line = groupStroke(style.stroke, graphDashes(kit.graph, kit.theme), g.index)
+  const stroke = resolveStroke(line, kit.palette, g.color)
   const runs: [number, number][][] = [[]]
   g.xs.forEach((x, i) => {
     const y = g.ys[i]!
@@ -369,6 +411,8 @@ export function drawSegment(
     id: string
     target: StylePath
     color: string
+    /** Roadmap 49d: the row's group's place (a line pattern by group; absent: 0). */
+    index?: number
     from: [number, number]
     to: [number, number]
   },
@@ -378,7 +422,8 @@ export function drawSegment(
   const [x1, y1] = o.from
   const [x2, y2] = o.to
   if (!axes.ok(x1, y1) || !axes.ok(x2, y2)) return
-  const stroke = resolveStroke(style.stroke, kit.palette, o.color)
+  const line = groupStroke(style.stroke, graphDashes(kit.graph, kit.theme), o.index)
+  const stroke = resolveStroke(line, kit.palette, o.color)
   const [a, b]: [number, number][] = [
     [axes.x(x1), axes.y(y1)],
     [axes.x(x2), axes.y(y2)],
@@ -419,30 +464,42 @@ export function drawSegment(
   )
 }
 
-/** The fill and outline a polygon layer's legend swatch draws (null: none). */
+/**
+ * The fill and outline a polygon layer's legend swatch draws (null: none). Roadmap 49d: the
+ * group's fill colour and place (its outline's pattern by group) when given.
+ */
 export function polygonSwatch(
   layer: LayerOf<'polygon'>,
   key: string,
   palette: readonly string[],
   color: string,
   theme: Pick<Theme, 'overlay'> = DEFAULT_THEME,
+  group: { fill?: string; dashes?: readonly Dash[]; index?: number } = {},
 ): { fill: Fill | null; stroke: Stroke | null } {
   const style = overlayStyle(layer, key, theme)
   return {
-    fill: style.draw !== 'outline' ? resolveFill(style.fill, palette, color) : null,
+    fill: style.draw !== 'outline' ? resolveFill(style.fill, palette, group.fill ?? color) : null,
     stroke:
       style.draw !== 'fill' && style.border.width > 0
-        ? resolveStroke(style.border, palette, color)
+        ? resolveStroke(groupStroke(style.border, group.dashes, group.index), palette, color)
         : null,
   }
 }
 
-/** A path or vector layer's line, for legend samples. */
+/**
+ * A path or vector layer's line, for legend samples (roadmap 49d: its pattern by group at the
+ * group's place, `index`, of the graph's line styles, `dashes`).
+ */
 export function lineStyleOf(
   layer: LayerOf<'path'> | LayerOf<'segment'>,
   key: string,
   theme: Pick<Theme, 'overlay'> = DEFAULT_THEME,
+  dashes?: readonly Dash[],
+  index?: number,
 ): { stroke: StrokeStyle; head: ArrowHead | null } {
   const style = overlayStyle(layer, key, theme) as Style<'path'> | Style<'segment'>
-  return { stroke: style.stroke, head: style.arrow === 'none' ? null : style.head }
+  return {
+    stroke: groupStroke(style.stroke, dashes, index),
+    head: style.arrow === 'none' ? null : style.head,
+  }
 }

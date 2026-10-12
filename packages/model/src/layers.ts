@@ -355,6 +355,12 @@ export const Aes = z
     y: DataSetKey,
     size: DataSetKey,
     color: DataSetKey,
+    /**
+     * Roadmap 49d: a variable whose values fill each row's point on a scale of its own (a text
+     * variable's levels, a number variable's colour map: `scales.fill`), as ggplot's `fill =`
+     * beside `colour =`; absent: fills follow the colour variable.
+     */
+    fill: DataSetKey,
     shape: DataSetKey,
     group: DataSetKey,
     label: DataSetKey,
@@ -388,6 +394,11 @@ export const VariableMapping = z.object({
    * 34b): each row's marks (points) coloured on a continuous colour map.
    */
   color: DataSetKey.optional(),
+  /**
+   * Roadmap 49d: a variable filling each row's point on a scale of its own (absent: fills follow
+   * the colour: the groups' or the colour variable's).
+   */
+  fill: DataSetKey.optional(),
   /** Text × text: what is counted (absent = counts). */
   measure: LevelMeasure.optional(),
   /** Roadmap 34b: a text variable whose levels give each row's point its symbol. */
@@ -560,7 +571,8 @@ export const PolygonStyle = z
   .object({
     draw: z.enum(['outline', 'fill', 'both']),
     fill: FillStyle,
-    border: StrokeStyle,
+    /** Roadmap 49d: its pattern may be the group's (`SeriesStroke`). */
+    border: SeriesStroke,
   })
   .partial()
 /**
@@ -568,11 +580,11 @@ export const PolygonStyle = z
  * each path, or at every step along it) and the head's shape and size.
  */
 export const PathStyle = z
-  .object({ stroke: StrokeStyle, arrow: z.enum(['none', 'end', 'along']), head: ArrowHead })
+  .object({ stroke: SeriesStroke, arrow: z.enum(['none', 'end', 'along']), head: ArrowHead })
   .partial()
 /** Roadmap 34c: vectors — the line, heads (at the end, both ends or none), the head. */
 export const SegmentStyle = z
-  .object({ stroke: StrokeStyle, arrow: z.enum(['none', 'end', 'both']), head: ArrowHead })
+  .object({ stroke: SeriesStroke, arrow: z.enum(['none', 'end', 'both']), head: ArrowHead })
   .partial()
 
 /**
@@ -599,7 +611,8 @@ export const ContourStyle = z
   .object({
     ...DensityColors,
     draw: z.enum(['lines', 'bands', 'both']),
-    stroke: StrokeStyle,
+    /** Roadmap 49d: its pattern may be the group's (`SeriesStroke`). */
+    stroke: SeriesStroke,
     opacity: z.number().min(0).max(1),
   })
   .partial()
@@ -731,6 +744,11 @@ export const MAX_LEVELS = 10_000
 export const SeriesIdentity = z
   .object({
     color: ColorRef,
+    /**
+     * Roadmap 49d: its fill colour, where a layer's fill is the data set's (absent: the graph's
+     * fill palette's at its place, else its colour).
+     */
+    fill: ColorRef,
     yAxis: z.enum(['left', 'right']),
     pointLabels: PointLabels,
     /** Front to back: this data set's layers in the `series` plane; others follow the list. */
@@ -815,6 +833,12 @@ export const GraphStyle = z.object({
   /** Base text style for everything (font family, size, colour); elements refine it. */
   text: TextStyle.partial().optional(),
   palette: z.array(RGB).optional(),
+  /**
+   * Roadmap 49d: the fill colours data sets (and a colour variable's levels) take in turn where a
+   * layer's fill is the data set's, as their colours take the palette's (absent: the style's, else
+   * their colours: fill and outline one group colour).
+   */
+  fillPalette: z.array(RGB).min(1).max(64).optional(),
   /**
    * Roadmap 49a: the symbols data sets take in turn where a layer's shape is the data set's
    * (`{ series: true }`), as their colours take the palette's (absent: the style's, else circle,
@@ -935,7 +959,16 @@ export const GraphNode = z.object({
   /** Each data set's (output's, function's) identity, shared by every layer drawing it. */
   seriesOverrides: z.record(SeriesKey, SeriesIdentity),
   style: GraphStyle,
-  scales: z.object({ color: ColorScale, size: SizeScale, shape: ShapeScale }).partial().optional(),
+  scales: z
+    .object({
+      color: ColorScale,
+      /** Roadmap 49d: a number variable mapped to fill (absent: the colour's when it is the same). */
+      fill: ColorScale,
+      size: SizeScale,
+      shape: ShapeScale,
+    })
+    .partial()
+    .optional(),
   /**
    * Multiple-variables tables: the variables on a category or grouped graph's axes (34a), and
    * those mapped to colour, shape, size and labels of its points (34b).

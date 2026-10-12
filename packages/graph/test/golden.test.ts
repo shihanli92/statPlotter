@@ -5,6 +5,7 @@ import { axisExtrasCases } from './axisExtrasCases.ts'
 import { byGroupCases } from './byGroupCases.ts'
 import { cutoffCases } from './cutoffCases.ts'
 import { dendrogramCases } from './dendrogramCases.ts'
+import { fillOutlineCases } from './fillOutlineCases.ts'
 import {
   appearanceCases,
   cellsCases,
@@ -149,6 +150,15 @@ describe('golden SVGs: dendrograms as layers (roadmap 49c)', () => {
 
 describe('golden SVGs: aesthetics by data set or fixed (roadmap 49a)', () => {
   it.each(byGroupCases())('%s', async (name, table, graph) => {
+    const scene = layoutGraph({ project: projectOf(table), graph, fonts })
+    expect(scene.warnings).toEqual([])
+    await expect(svgOf(scene)).toMatchFileSnapshot(golden(name))
+  })
+})
+
+describe('golden SVGs: fill and outline mapped separately (roadmap 49d)', () => {
+  it.each(fillOutlineCases())('%s', async (name, table, graph) => {
+    expect(GraphNode.safeParse(graph).success).toBe(true)
     const scene = layoutGraph({ project: projectOf(table), graph, fonts })
     expect(scene.warnings).toEqual([])
     await expect(svgOf(scene)).toMatchFileSnapshot(golden(name))

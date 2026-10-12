@@ -1,20 +1,23 @@
 import { DocumentStore } from '@ps/engine'
-import { layoutGraph, presetGraph, type StylePath } from '@ps/graph'
+import { DENDROGRAM_THEME, layoutGraph, presetGraph, type StylePath } from '@ps/graph'
 import {
   createProject,
   createTable,
   type DataTable,
   type GraphNode,
   type Layer,
+  type LayerOf,
   type NodeId,
   newSeriesId,
 } from '@ps/model'
 import { describe, expect, it } from 'vitest'
+import { clusteredMap, genesTable } from '../../graph/test/dendrogramCases.ts'
 import { appearanceTable, fonts, sampleTable } from '../../graph/test/helpers.ts'
 import {
   elementTarget,
   fillCommands,
   lineCommands,
+  lineValues,
   markCommands,
   markValues,
   sharedCapabilities,
@@ -139,5 +142,43 @@ describe('format bar controls reach the drawing', () => {
     expect(t.fill).toBeUndefined()
     expect(markValues([t.mark!])!.sizeMapped).toBe(true)
     expect(sharedCapabilities([t]).has('mark')).toBe(true)
+  })
+
+  it('roadmap 49c: a tree’s Line (colour, width, style), where its Appearance rows write it', () => {
+    const table = genesTable()
+    const grey = { color: { rgb: '#555555' }, width: 1.5, dash: 'solid' } as const
+    const graph = clusteredMap(table, { style: { line: grey } })
+    const s = setup(table, graph)
+    const row = expectReach(s, ['layers', 'rowTree'])
+    const col = expectReach(s, ['layers', 'columnTree'])
+    expect(s.changes(lineCommands([row.line!], { dash: 'dash' })), 'line style').toBe(true)
+    expect(row.fill).toBeUndefined()
+    expect(row.mark).toBeUndefined()
+    expect(row.line?.shown).toEqual(grey)
+    expect(col.line?.shown).toEqual(DENDROGRAM_THEME.line)
+    expect([...sharedCapabilities([row, col])]).toEqual(['line'])
+    // Both trees: mixed where they differ.
+    const v = lineValues([row.line!, col.line!])!
+    expect(v.width).toEqual({ value: 1.5, mixed: true })
+    expect(v.color.mixed).toBe(true)
+    expect(v.dash).toEqual({ value: 'solid', mixed: false })
+    // A width for both: each tree's whole line at its `style.line`, the Appearance rows' path.
+    const cmds = lineCommands([row.line!, col.line!], { width: 2 })
+    const at = (id: string) => ['layers', { id }, 'style', 'line']
+    expect(cmds).toEqual([
+      { type: 'node.set', id: graph.id, path: at('rowTree'), value: { ...grey, width: 2 } },
+      {
+        type: 'node.set',
+        id: graph.id,
+        path: at('columnTree'),
+        value: { ...DENDROGRAM_THEME.line, width: 2 },
+      },
+    ])
+    s.store.dispatch(cmds)
+    const tree = (id: string) => s.g().layers.find((l) => l.id === id) as LayerOf<'dendrogram'>
+    expect(tree('rowTree').style?.line).toEqual({ ...grey, width: 2 })
+    expect(tree('columnTree').style).toEqual({ line: { ...DENDROGRAM_THEME.line, width: 2 } })
+    // A data set's or another layer's line isn't a tree's: no shared group with the cells.
+    expect(sharedCapabilities([row, s.target(['layers', 'cells'])]).has('line')).toBe(false)
   })
 })

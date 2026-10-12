@@ -692,7 +692,13 @@ export const LegendSpec = z.object({
    * variable's name; '' none). `color` also heads a grouped graph of variables' levels.
    */
   titles: z
-    .object({ color: z.string().max(200), shape: z.string().max(200), size: z.string().max(200) })
+    .object({
+      color: z.string().max(200),
+      /** Roadmap 49d: a fill variable's legend. */
+      fill: z.string().max(200),
+      shape: z.string().max(200),
+      size: z.string().max(200),
+    })
     .partial()
     .optional(),
 })

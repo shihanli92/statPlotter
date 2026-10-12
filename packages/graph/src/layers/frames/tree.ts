@@ -83,7 +83,15 @@ export function layoutTree(kit: LayerKit): Scene {
   const across = (h: number) => (steps ? (down ? h * W : H - h * H) : va.end(h * top))
 
   const target = ['layers', layer.id]
-  const t = { hc: hc!, tree, clusters, palette, id: `dendrogram/${of}`, target }
+  const t = {
+    hc: hc!,
+    tree,
+    clusters,
+    palette,
+    id: `dendrogram/${of}`,
+    target,
+    facts: { of, names },
+  }
   const stripped = tree.strip && !!clusters
   const nodes = hc
     ? [

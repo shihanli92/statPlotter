@@ -30,6 +30,8 @@ const GRAPH = [
   'examples',
   'export',
   'figureExport',
+  // Roadmap 49d: fill and outline mapped separately (fill colours, a fill variable, dashes).
+  'fillOutline',
   'format',
   // Decision 1212: the Format panel's Open in window, its pop-ups inside the modal dialog.
   'formatWindow',

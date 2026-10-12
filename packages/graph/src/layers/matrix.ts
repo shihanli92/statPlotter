@@ -452,8 +452,15 @@ export function checkLayers(
 // --- Variables mapped to appearance (roadmap 34b) -------------------------------------------
 
 /** An aesthetic with the type of variable mapped to it. */
-export type AesKind = 'colorText' | 'colorNumber' | 'shape' | 'size' | 'label'
-export const AES_KINDS: readonly AesKind[] = ['colorText', 'colorNumber', 'shape', 'size', 'label']
+export type AesKind = 'colorText' | 'colorNumber' | 'fill' | 'shape' | 'size' | 'label'
+export const AES_KINDS: readonly AesKind[] = [
+  'colorText',
+  'colorNumber',
+  'fill',
+  'shape',
+  'size',
+  'label',
+]
 
 /** Every geom a graph of a number variable by a text variable's levels draws. */
 const LEVEL_GEOMS = (Object.keys(GEOM_STATS) as Geom[]).filter((g) => GEOM_STATS[g].mvTextNumber)
@@ -480,6 +487,8 @@ export const AES_GEOMS: Readonly<Record<AesKind, Partial<Record<MatrixKind, read
     mvNumberText: ROW_MARKS,
     multipleVariables: [...ROW_MARKS, 'segment'],
   },
+  // Roadmap 49d: a second colour scale, filling each row's point (text or number variable).
+  fill: { mvTextNumber: ROW_MARKS, mvNumberText: ROW_MARKS, multipleVariables: ROW_MARKS },
   shape: { mvTextNumber: ROW_MARKS, mvNumberText: ROW_MARKS, multipleVariables: ROW_MARKS },
   size: { mvTextNumber: ROW_MARKS, mvNumberText: ROW_MARKS, multipleVariables: ROW_MARKS },
   label: { mvTextNumber: ROW_MARKS, mvNumberText: ROW_MARKS, multipleVariables: ROW_MARKS },
@@ -487,10 +496,11 @@ export const AES_GEOMS: Readonly<Record<AesKind, Partial<Record<MatrixKind, read
 
 /** The aesthetic kind of a variable of a type mapped to colour, shape, size or labels. */
 export function aesKind(
-  aes: 'color' | 'shape' | 'size' | 'label',
+  aes: 'color' | 'fill' | 'shape' | 'size' | 'label',
   type: 'number' | 'text',
 ): AesKind | null {
   if (aes === 'color') return type === 'text' ? 'colorText' : 'colorNumber'
+  if (aes === 'fill') return 'fill'
   if (aes === 'shape') return type === 'text' ? 'shape' : null
   if (aes === 'size') return type === 'number' ? 'size' : null
   return 'label'
@@ -499,6 +509,7 @@ export function aesKind(
 const AES_WORDS: Record<AesKind, string> = {
   colorText: 'colour by a text variable',
   colorNumber: 'colour by a number variable',
+  fill: 'fill by a variable',
   shape: 'shape',
   size: 'size',
   label: 'labels',
@@ -513,7 +524,7 @@ const AES_WORDS: Record<AesKind, string> = {
 export function aesAllowed(
   kind: MatrixKind,
   frame: Frame,
-  aes: 'color' | 'shape' | 'size' | 'label',
+  aes: 'color' | 'fill' | 'shape' | 'size' | 'label',
   type: 'number' | 'text',
   layers: readonly Layer[],
   cells?: { rows: number } | null,

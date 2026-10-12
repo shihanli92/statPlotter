@@ -63,14 +63,16 @@ export function identityStyle(
   const chain = curve
     ? [graph.seriesOverrides[key]]
     : [graph.style.seriesDefaults, graph.seriesOverrides[key]]
-  const last = <K extends 'color' | 'yAxis' | 'pointLabels'>(k: K) =>
+  const last = <K extends 'color' | 'fill' | 'yAxis' | 'pointLabels'>(k: K) =>
     chain.reduce<NonNullable<(typeof chain)[0]>[K]>((v, s) => s?.[k] ?? v, undefined)
   const pointLabels = last('pointLabels')
+  const fill = last('fill')
   return {
     ...d,
     color: last('color') ?? d.color,
     yAxis: last('yAxis') ?? d.yAxis,
     ...(pointLabels ? { pointLabels } : {}),
+    ...(fill ? { fill } : {}),
   }
 }
 

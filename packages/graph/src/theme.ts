@@ -38,6 +38,11 @@ export interface Theme {
    */
   shapes?: readonly SymbolShape[]
   dashes?: readonly Dash[]
+  /**
+   * Roadmap 49d: the fill colours data sets take in turn where a layer's fill is the data set's (a
+   * style's; absent: their colours, fill and outline one group colour).
+   */
+  fillPalette?: readonly string[]
   text: TextStyle
   tickLabel: TextStyle
   axisTitle: TextStyle
@@ -156,6 +161,8 @@ type Full<T> = Required<NonNullable<T>>
  */
 export interface ResolvedSeriesStyle {
   color: ColorRef
+  /** Roadmap 49d: the data set's own fill colour (its identity's), if any. */
+  fill?: ColorRef
   points: Full<SeriesStyle['points']>
   bar: Omit<Full<SeriesStyle['bar']>, 'binWidth' | 'baseline'> & {
     binWidth?: number
@@ -519,6 +526,7 @@ export function themeOf(style: FigureStyle | undefined): Theme {
     categorical: style.palette ? categoricalOf(style.palette) : d.categorical,
     ...(style.shapes ? { shapes: style.shapes } : {}),
     ...(style.dashes ? { dashes: style.dashes } : {}),
+    ...(style.fillPalette ? { fillPalette: style.fillPalette } : {}),
     text: roleText(d.text, f, t.annotation),
     tickLabel: roleText(d.tickLabel, f, t.tickLabel),
     axisTitle: roleText(d.axisTitle, f, t.axisTitle),
@@ -663,6 +671,15 @@ export const graphDashes = (
   graph: Pick<GraphNode, 'style'>,
   theme: Pick<Theme, 'dashes'>,
 ): readonly Dash[] => graph.style.dashes ?? theme.dashes ?? DEFAULT_DASHES
+
+/**
+ * Roadmap 49d: a graph's fill colours by data set — its own, else its style's; undefined when
+ * neither has any (data sets' fills are then their colours, as before).
+ */
+export const graphFillPalette = (
+  graph: Pick<GraphNode, 'style'>,
+  theme: Pick<Theme, 'fillPalette'>,
+): readonly string[] | undefined => graph.style.fillPalette ?? theme.fillPalette
 
 /** A data set's colour: its own, else the palette's `index`th (wrapping around). */
 export const seriesColor = (color: ColorRef, palette: readonly string[], index: number): string =>

@@ -32,7 +32,7 @@ import {
 } from '../../layout/legend.ts'
 import { type PointMarkContext, pointLayer } from '../../layout/points.ts'
 import type { Scene, SceneNode, StylePath } from '../../scene.ts'
-import { type ResolvedSeriesStyle, resolveStroke, seriesColor } from '../../theme.ts'
+import { graphDashes, type ResolvedSeriesStyle, resolveStroke, seriesColor } from '../../theme.ts'
 import { isLogScale } from '../../transform.ts'
 import {
   curveSources,
@@ -167,11 +167,15 @@ function overlayGroup(kit: LayerKit, p: XYSeries, centres: boolean): OverlayGrou
       rows.push(r.row)
     }
   }
+  // Roadmap 49d: its fill colour (fills by data set) and place (a line pattern by group).
+  const fill = kit.fillOf(key)
   return {
     key,
     id: (part) => `series/${key}/${part}`,
     target: ['seriesOverrides', key],
     color: p.color,
+    ...(fill ? { fill } : {}),
+    index: p.s.index,
     label: `“${p.s.title}”`,
     xs,
     ys,
@@ -704,7 +708,10 @@ function legendEntries(kit: LayerKit, d: XYData, fns: readonly XYCurve[]): Legen
           { bar, box, line: line ?? anyLine, points: symbols },
           key,
         )
-        const pathStroke = !line && path ? lineStyleOf(path, key, kit.theme).stroke : undefined
+        const dashes = graphDashes(kit.graph, kit.theme)
+        const groupFill = polygon ? kit.fillOf(key) : undefined
+        const pathStroke =
+          !line && path ? lineStyleOf(path, key, kit.theme, dashes, p.s.index).stroke : undefined
         // Audit 2 (G4): nothing above stands for the data set (an area under no line, an error
         // envelope, error bars or the replicates' lines alone): the glyph of a layer drawing it
         // (`glyphLayer`). The replicates' lines are in their faded colour.
@@ -729,7 +736,13 @@ function legendEntries(kit: LayerKit, d: XYData, fns: readonly XYCurve[]): Legen
           },
           curve,
           bar: bar ? ('bar' as const) : box ? ('box' as const) : area ? ('area' as const) : false,
-          polygon: polygon ? polygonSwatch(polygon, key, palette, p.color, kit.theme) : undefined,
+          polygon: polygon
+            ? polygonSwatch(polygon, key, palette, p.color, kit.theme, {
+                ...(groupFill ? { fill: groupFill } : {}),
+                dashes,
+                index: p.s.index,
+              })
+            : undefined,
           ...(alone && aloneStyle
             ? {
                 glyph: alone[0] as 'line' | 'area' | 'band' | 'errorbar',

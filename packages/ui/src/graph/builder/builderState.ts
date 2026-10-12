@@ -79,6 +79,8 @@ export interface BuilderState {
   /** Roadmap 49a: a user preset's cycles of symbols and line patterns (the graph's style's). */
   shapes?: NonNullable<GraphNode['style']['shapes']>
   dashes?: NonNullable<GraphNode['style']['dashes']>
+  /** Roadmap 49d: a user preset's fill colours by data set (the graph's style's). */
+  fillPalette?: NonNullable<GraphNode['style']['fillPalette']>
   /**
    * Multiple variables (roadmap 34a): the variables on a category, grouped or matrix graph's axes
    * (a text variable among them); absent for the variables as columns or mapped on XY points.
@@ -94,7 +96,7 @@ export interface BuilderState {
 }
 
 /** What a variable can be mapped to besides the axes (roadmap 34b). */
-export type Appearance = 'color' | 'shape' | 'size' | 'label'
+export type Appearance = 'color' | 'fill' | 'shape' | 'size' | 'label'
 
 /** How the data sets of a grouped graph sit in each row. */
 export type Groups = 'dodge' | 'aligned' | 'stack' | 'percent'
@@ -124,7 +126,7 @@ export type BuilderAction =
    */
   | {
       type: 'aes'
-      field: 'x' | 'y' | 'size' | 'color' | 'shape' | 'label' | 'group' | 'xend' | 'yend'
+      field: 'x' | 'y' | 'size' | 'color' | 'fill' | 'shape' | 'label' | 'group' | 'xend' | 'yend'
       key?: string
     }
   /**
@@ -289,6 +291,7 @@ export function builderReducer(table: DataTable, s: BuilderState, a: BuilderActi
         mapping: _m,
         shapes: _sh,
         dashes: _da,
+        fillPalette: _fp,
         ...rest
       } = s
       const turned = turnedBy(table, spec.mapping)
@@ -312,6 +315,7 @@ export function builderReducer(table: DataTable, s: BuilderState, a: BuilderActi
         mapping: _m,
         shapes: _sh,
         dashes: _da,
+        fillPalette: _fp,
         ...rest
       } = s
       const { spec } = a
@@ -331,6 +335,7 @@ export function builderReducer(table: DataTable, s: BuilderState, a: BuilderActi
         ...(spec.scales ? { scales: spec.scales } : {}),
         ...(spec.shapes ? { shapes: spec.shapes } : {}),
         ...(spec.dashes ? { dashes: spec.dashes } : {}),
+        ...(spec.fillPalette ? { fillPalette: spec.fillPalette } : {}),
         ...(spec.mapping ? { mapping: spec.mapping } : {}),
       }
     }
@@ -525,7 +530,8 @@ export function appearanceVariables(s: BuilderState): Partial<Record<Appearance,
   const hist = histogramLayer(s)
   const from = s.mapping ?? (hist ? { color: hist.aes?.color } : points?.aes) ?? {}
   const out: Partial<Record<Appearance, string>> = {}
-  for (const f of ['color', 'shape', 'size', 'label'] as const) if (from[f]) out[f] = from[f]
+  for (const f of ['color', 'fill', 'shape', 'size', 'label'] as const)
+    if (from[f]) out[f] = from[f]
   return out
 }
 
@@ -613,11 +619,14 @@ function mapVariable(
   })
 }
 
-/** A builder's variables mapped to shape, size and labels (its mapping's or mapped points'). */
-function appearanceOf(s: BuilderState): Pick<VariableMapping, 'shape' | 'size' | 'label'> {
+/**
+ * A builder's variables mapped to fill (roadmap 49d), shape, size and labels (its mapping's or
+ * mapped points').
+ */
+function appearanceOf(s: BuilderState): Pick<VariableMapping, 'fill' | 'shape' | 'size' | 'label'> {
   const from = s.mapping ?? s.layers.find((l) => l.geom === 'points' && l.aes)?.aes ?? {}
-  const out: Pick<VariableMapping, 'shape' | 'size' | 'label'> = {}
-  for (const f of ['shape', 'size', 'label'] as const) if (from[f]) out[f] = from[f]
+  const out: Pick<VariableMapping, 'fill' | 'shape' | 'size' | 'label'> = {}
+  for (const f of ['fill', 'shape', 'size', 'label'] as const) if (from[f]) out[f] = from[f]
   return out
 }
 
@@ -635,9 +644,10 @@ function mapAppearance(
   key: string | undefined,
 ): BuilderState {
   const number = !!key && !isText(table, key)
+  // A number colour (roadmap 49d: or fill) starts on viridis with a colour bar.
   const colorScale =
-    field === 'color' && number && !s.scales?.color
-      ? { scales: { ...s.scales, color: { colors: 'viridis' as const, bar: { show: true } } } }
+    (field === 'color' || field === 'fill') && number && !s.scales?.[field]
+      ? { scales: { ...s.scales, [field]: { colors: 'viridis' as const, bar: { show: true } } } }
       : {}
   if (!s.mapping) {
     if (histogramLayer(s))

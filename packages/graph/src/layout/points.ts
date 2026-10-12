@@ -21,15 +21,19 @@ export function pointOverride(
   return graph.pointOverrides?.[series as never]?.[key]
 }
 
-/** Stroke and fill of a point symbol in a colour (open shapes have no fill). */
+/**
+ * Stroke and fill of a point symbol in a colour (open shapes have no fill). Roadmap 49d: `fill`,
+ * the fill colour where the fill is by data set (absent: `color`).
+ */
 export function symbolPaint(
   points: Pick<ResolvedSeriesStyle['points'], 'shape' | 'border' | 'fill'>,
   palette: readonly string[],
   color: string,
+  fill: string = color,
 ): { stroke: Stroke; fill: Fill | null } {
   return {
     stroke: resolveStroke(points.border, palette, color),
-    fill: OPEN_SHAPES.has(points.shape) ? null : resolveFill(points.fill, palette, color),
+    fill: OPEN_SHAPES.has(points.shape) ? null : resolveFill(points.fill, palette, fill),
   }
 }
 
@@ -89,6 +93,11 @@ export function pointNodes(
     style: ResolvedSeriesStyle['points']
     /** The data set's colour. */
     color: string
+    /**
+     * Roadmap 49d: the data set's fill colour where it differs from its colour (a graph of
+     * variables' points take theirs from `ctx.aes` instead).
+     */
+    fill?: string
     cx: number
     cy: number
     /** The point's table row, row title and values, for automatic labels. */
@@ -111,6 +120,11 @@ export function pointNodes(
   const row = p.aesRow ?? 0
   const base = aes?.color ? aes.color(row) : p.color
   const color = o?.color ? resolveColor(o.color, ctx.palette, base) : base
+  // Roadmap 49d: the row's fill colour (its fill variable's, its level's), else the data set's
+  // (a point's own colour colours both).
+  const fillColor = o?.color
+    ? color
+    : (aes?.fill?.(row) ?? (aes?.color ? color : (p.fill ?? color)))
   const shape = o?.shape ?? aes?.shape?.(row) ?? p.style.shape
   const size = o?.size ?? aes?.size?.(row) ?? p.style.size
   const paint = () =>
@@ -118,6 +132,7 @@ export function pointNodes(
       { shape, border: o?.border ?? p.style.border, fill: o?.fill ?? p.style.fill },
       ctx.palette,
       color,
+      fillColor,
     )
   if (p.cloud) {
     const { into, row: r, sub, k } = p.cloud
@@ -127,7 +142,7 @@ export function pointNodes(
           const { stroke, fill } = paint()
           return into.paintOf(shape, stroke, fill)
         })()
-      : into.paintFor(p.style, shape, color, paint)
+      : into.paintFor(p.style, shape, fillColor === color ? color : `${color}${fillColor}`, paint)
     into.add(p.cx, p.cy, size, index, r, sub, k)
     if (ctx.labels?.wants(p.series, p.key))
       ctx.labels.add({ ...p.label, series: p.series, key: p.key, cx: p.cx, cy: p.cy, size, color })

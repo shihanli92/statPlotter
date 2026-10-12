@@ -54,8 +54,11 @@ export function recipeMapping(
   const x = pick(v.x)
   const y = pick(v.y)
   if (!x || !y) return undefined
+  const color = pick(v.color)
   const more = {
-    color: pick(v.color),
+    color,
+    // Roadmap 49d: the fill variable, or the colour's.
+    fill: v.fill === 'color' ? color : pick(v.fill),
     shape: pick(v.shape),
     size: pick(v.size),
     label: pick(v.label),
@@ -133,6 +136,8 @@ export interface RecipeExtras {
   /** Roadmap 49a: the graph's cycles of symbols and line patterns. */
   shapes?: NonNullable<GraphNode['style']['shapes']>
   dashes?: NonNullable<GraphNode['style']['dashes']>
+  /** Roadmap 49d: the graph's fill colours by data set. */
+  fillPalette?: NonNullable<GraphNode['style']['fillPalette']>
 }
 
 /**
@@ -189,5 +194,6 @@ export function recipeLayers(
     ...(recipe.scales ? { scales: recipe.scales } : {}),
     ...(recipe.shapes ? { shapes: recipe.shapes } : {}),
     ...(recipe.dashes ? { dashes: recipe.dashes } : {}),
+    ...(recipe.fillPalette ? { fillPalette: recipe.fillPalette } : {}),
   }
 }

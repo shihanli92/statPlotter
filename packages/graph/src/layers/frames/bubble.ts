@@ -6,6 +6,7 @@ import {
   levelKey,
   pointKey,
 } from '@ps/model'
+import { mappedVariable } from '../../aesthetics.ts'
 import { graphRows, variableValues } from '../../data.ts'
 import { CloudBuilder, drawOrder, drawsCloud } from '../../layout/cloud.ts'
 import {
@@ -155,8 +156,15 @@ export function layoutBubble(kit: LayerKit): Scene {
   const rowTitles = data.table?.rowTitles
   const index = Math.max(0, data.table?.dataSets.findIndex((d) => d.id === yKey) ?? 0)
   const baseColor = seriesColor(style.color, palette, index)
+  const baseFill = kit.fillOf(yKey)
   const sizeOf = (r: BubbleRow) => looks?.row?.size?.(r.row) ?? style.points.size
   const colorOf = (row: number) => looks?.row?.color?.(row) ?? baseColor
+  // Roadmap 49d: the fill colours of rows (a fill variable's, a colour level's fill colour) and of
+  // the points as a whole (the Y variable's fill colour), for groups' ellipses and hulls.
+  const fills: GroupFills = {
+    of: (row) => looks?.row?.fill?.(row) ?? colorOf(row),
+    base: kit.fillOf(yKey),
+  }
 
   // The drawing order (roadmap 34e): largest bubbles first, so small ones stay visible on top
   // (the table's order, the default); by the colour (else size) variable's value, highest on
@@ -204,6 +212,7 @@ export function layoutBubble(kit: LayerKit): Scene {
       key: pointKey(r.row),
       style: style.points,
       color: baseColor,
+      ...(baseFill ? { fill: baseFill } : {}),
       cx,
       cy,
       label: { row: r.row, title: rowTitles?.[r.row] ?? null, x: r.x, y: r.y },
@@ -264,7 +273,7 @@ export function layoutBubble(kit: LayerKit): Scene {
   const overlays = overlayLayers(kit)
   for (const l of overlays.polygons)
     if (kit.shows(l, yKey))
-      for (const g of overlayGroups(kit, data, undefined, colorOf, baseColor))
+      for (const g of overlayGroups(kit, data, undefined, colorOf, baseColor, fills))
         drawPolygon(kit, l, g, axes)
   for (const l of overlays.paths)
     if (kit.shows(l, yKey))
@@ -284,6 +293,7 @@ export function layoutBubble(kit: LayerKit): Scene {
           id: `series/${yKey}/${part}/${r.row}`,
           target,
           color: colorOf(r.row),
+          index: groupIndex(kit, data, r.row),
           from: [r.x, r.y],
           to: [xe[r.row]!, ye[r.row]!],
         },
@@ -634,30 +644,53 @@ function extentOf(kit: LayerKit, data: BubbleData, axis: 'x' | 'y', log: boolean
  * grouped once per layout and grouping variable (audit 2, G7: they were sorted and grouped for
  * every layer and both extents).
  */
+/**
+ * Roadmap 49d: the fill colours of a graph of variables' groups — a row's (its fill variable's
+ * level's, or its colour level's fill colour) and the points' as a whole (absent: their colour).
+ */
+interface GroupFills {
+  of: (row: number) => string
+  base: string | undefined
+}
+
 function overlayGroups(
   kit: LayerKit,
   data: BubbleData,
   by: string | undefined,
   colorOf: (row: number) => string,
   baseColor: string,
+  fills?: GroupFills,
 ): (OverlayGroup & { name: string; by: string | undefined })[] {
   const { table, vars } = data
   const yKey = vars.y ?? ''
   if (!table) return []
-  const { key, text, byColor, groups } = groupsOf(kit, data, by)
-  return groups.map(({ name, first, xs, ys, rows }, g) => ({
-    key: yKey,
-    id: (part) => `series/${yKey}/${part}/${g}`,
-    target: ['seriesOverrides', yKey],
-    color: byColor ? colorOf(first) : baseColor,
-    label: text ? `“${name}”` : 'the points',
-    // Every row one group: named after the points' Y variable (as its legend entry would be).
-    name: text ? name : (data.titles[yKey] ?? ''),
-    by: key,
-    xs,
-    ys,
-    rows,
-  }))
+  const { key, text, byColor, groups, order } = groupsOf(kit, data, by)
+  // Roadmap 49d: a group's fill is its level's fill colour when the groups are the fill
+  // variable's levels, or the colour variable's with no fill variable; the points' as a whole
+  // when they are one group; else its colour.
+  const fillVar = kit.all('points', (l) => !!l.aes)[0]?.aes?.fill
+  const byFill = !!text && (key === fillVar || (byColor && fillVar === undefined))
+  const fillOf = (first: number): string | undefined =>
+    !fills ? undefined : byFill ? fills.of(first) : text ? undefined : fills.base
+  return groups.map(({ name, first, xs, ys, rows }, g) => {
+    const fill = fillOf(first)
+    return {
+      key: yKey,
+      id: (part: string) => `series/${yKey}/${part}/${g}`,
+      target: ['seriesOverrides', yKey],
+      color: byColor ? colorOf(first) : baseColor,
+      ...(fill ? { fill } : {}),
+      // Roadmap 49d: its level's place in its variable's order (a line pattern by group).
+      index: text ? Math.max(0, order.indexOf(name)) : 0,
+      label: text ? `“${name}”` : 'the points',
+      // Every row one group: named after the points' Y variable (as its legend entry would be).
+      name: text ? name : (data.titles[yKey] ?? ''),
+      by: key,
+      xs,
+      ys,
+      rows,
+    }
+  })
 }
 
 /** The rows grouped by a variable (`overlayGroups`), once per layout and variable. */
@@ -690,8 +723,20 @@ function groupsOf(kit: LayerKit, data: BubbleData, by: string | undefined) {
         rows: list.map((r) => r.row),
       }
     })
-    return { key, text, byColor, groups }
+    // Roadmap 49d: the levels in the graph's order (each group's place, as its colour's).
+    const order =
+      text && table
+        ? (mappedVariable(table, kit.graph, key, graphRows(kit.graph, table))?.order ?? [])
+        : []
+    return { key, text, byColor, groups, order }
   })
+}
+
+/** Roadmap 49d: a row's group's place (its level's in the grouping variable's order; else 0). */
+function groupIndex(kit: LayerKit, data: BubbleData, row: number): number {
+  const { text, order } = groupsOf(kit, data, undefined)
+  const t = text?.[row]?.trim()
+  return t ? Math.max(0, order.indexOf(t)) : 0
 }
 
 /**
@@ -808,6 +853,7 @@ function densityGroups(
         id: g.id,
         target: g.target,
         color: g.color,
+        ...(g.index ? { index: g.index } : {}),
         members: members.length === p.rows.length ? null : members,
         // The grouping variable too: groups of another variable may share level names.
         name: `${k}\u0000${g.by ?? ''}\u0000${g.name}`,

@@ -950,7 +950,7 @@ interface GraphNode {                                   // schema v2 (roadmap 33
   title: TextSpec | null
   titleOffset?: Offset                                  // the title dragged from its computed place
   style: GraphStyle                                     // graph-wide (§6.2)
-  scales?: { color?: ColorScale; size?: SizeScale; shape?: ShapeScale }  // heat maps' colour; variables mapped to colour, size, shape (§6.1d)
+  scales?: { color?: ColorScale; fill?: ColorScale; size?: SizeScale; shape?: ShapeScale }  // heat maps' colour; variables mapped to colour, fill (49d, §6.1q), size, shape (§6.1d)
   mapping?: VariableMapping                             // multiple variables: the variables on the axes and mapped to appearance (§6.1c, §6.1d)
   levels?: Record<DataSetKey, string[]>                 // the graph's order of text variables' levels (§6.1c)
   levelOrder?: 'appearance' | 'natural'                 // the order of levels `levels` doesn't list (§6.1h); absent = appearance
@@ -970,6 +970,7 @@ type Frame =
 
 interface SeriesIdentity {
   color?: ColorRef; yAxis?: 'left' | 'right'; pointLabels?: PointLabels
+  fill?: ColorRef                                       // roadmap 49d: its fill colour where fills are by data set (§6.1q)
   order?: LayerId[]                                     // front to back: its layers when drawing by data set
 }
 
@@ -1011,7 +1012,7 @@ interface Layer {                                       // one member per geom (
   visible?: boolean                                     // false: kept with its formats, not drawn
   data?: LayerData                                      // absent = the graph's table
   on?: LayerId                                          // attached to a host: error bars, labels, centre lines
-  aes?: { x?, y?, size?, color?, shape?, group?, label?, xend?, yend?: DataSetKey }  // multiple-variables tables only (label, shape: 34b; xend, yend: 34c)
+  aes?: { x?, y?, size?, color?, fill?, shape?, group?, label?, xend?, yend?: DataSetKey }  // multiple-variables tables only (label, shape: 34b; xend, yend: 34c; fill: 49d)
   seriesHidden?: boolean                                // data sets drawn only where series[k].hide === false
   legend?: 'auto' | 'hide'
 }
@@ -1251,7 +1252,7 @@ interface SizeScale {                                   // GraphNode.scales.size
 }
 interface ShapeScale { levels?: Record<SeriesKey, SymbolShape> }  // GraphNode.scales.shape: a level's symbol by its key
 LegendSpec.reverse?: boolean                            // each group of entries reversed
-LegendSpec.titles?: { color?; shape?; size?: string }   // headings (absent: the variable's name; '': none)
+LegendSpec.titles?: { color?; fill?; shape?; size?: string }   // headings (absent: the variable's name; '': none; fill: 49d)
 PointLabels.source: … | 'variable'; PointLabels.offset?: { dx; dy }  // labels from the label variable; their offset
 ```
 
@@ -1936,7 +1937,7 @@ interface LegendSpec {
   reverse?: boolean                                     // each group reversed (not a group `order` lists)
   order?: string[]                                      // 47b: entry keys in the legend's order, within each group
   labels?: Record<string, RichText>                     // 47b: legend-only labels by entry key
-  titles?: { color?; shape?; size?: string }            // headings of mapped variables' guides
+  titles?: { color?; fill?; shape?; size?: string }     // headings of mapped variables' guides (fill: 49d)
 }
 ```
 
@@ -2009,8 +2010,8 @@ PresetRecipe.shapes?, PresetRecipe.dashes?              // a preset's (§9.4)
   layer's, as before; it may itself be by data set.
 - **Which lines** may be dashed by data set: those the style resolver resolves per data set —
   lines and steps, error bars, centre lines. Ellipses' and hulls' outlines, paths, vectors and
-  contours take a fixed pattern (their own resolver, `overlayStyle`); connecting lines and the
-  grand mean are one line, not a data set's (decision 1214).
+  contours took a fixed pattern (decision 1214) until roadmap 49d gave them a pattern by group
+  (§6.1q); connecting lines and the grand mean are one line, not a data set's.
 - **Carried by**: styles (`styleFromGraph` saves the lists the graph or its style has; Reset to
   style clears them with the palette), user presets (the recipe's `shapes`, `dashes`; the layers
   keep their by-data-set values), Match format (`style` whole), the format painter (a data set's
@@ -2066,8 +2067,75 @@ interface DendrogramStyle {                             // sparse over `Theme.de
 - **Scene**: `dendrogram/rows|columns/<merge>` polylines (a merge of several colours a group of
   `…/a`, `…/bar`, `…/b`), `…/strip/<leaf>` bands, targeting `['layers', id]`; drawn in the
   layer's group by layer, in the `dendrograms` plane by data set. Graph view: a selected tree's
-  outer edge has a handle; dragging it sets `depth` (one step, `canvasDrag` `tree`).
+  outer edge has a handle; dragging it sets `depth` (one step, `canvasDrag` `tree`); roadmap 49d:
+  on layout pages too (the move divided by the item's scale), the format bar's Line group writes
+  its `style.line`, and hover cards tell a branch's merge height, leaves and cluster or a leaf's
+  row or column and cluster — facts the geom puts on its scene nodes (`SceneNode.tree`: `of`,
+  `merge`, `leaf`, `legs`), never drawn; a leg down to a leaf is found by the pointer's place
+  (`treeLegAt`, decisions 1262–1265).
 - `graphRefs`: a tree refers to nothing outside its graph.
+
+### 6.1q Fill and outline mapped separately (roadmap 49d)
+
+As ggplot's `fill =` beside `colour =`: fills and outlines are two colour scales. Optional fields
+and union members only, no schema version change (decisions 1254–1261); absent, a graph draws as
+before — fills by data set in the data set's colour — so every golden, v1/v2 fixture and example
+fingerprint is unchanged. An app older than 0.3.6 drops the new fields when it reads a file
+(zod strips unknown keys: fills fall back to the colours) and refuses a file with an overlay
+line patterned by group (a union member).
+
+```ts
+SeriesIdentity.fill?: ColorRef           // a data set's (level's) fill colour; also style.seriesDefaults.fill
+GraphStyle.fillPalette?: RGB[]           // 1–64: data sets' fill colours in turn (absent: the style's, else their colours)
+FigureStyle.fillPalette?, PresetRecipe.fillPalette?
+Aes.fill?, VariableMapping.fill?: DataSetKey  // a variable filling each row's point on its own scale
+GraphNode.scales.fill?: ColorScale       // a number fill variable's colours (absent: the colour's when the same variable)
+LegendSpec.titles.fill?: string          // the fill legend's heading
+PolygonStyle.border, PathStyle.stroke, SegmentStyle.stroke, ContourStyle.stroke: SeriesStroke  // dash by group
+PresetRecipe.variables.fill?: 'number' | 'text' | 'color'   // 'color': the colour's variable
+```
+
+- **Which colour a fill by data set is** (decision 1254): `{ series: true }` *in a fill* is the
+  series' fill colour — its own (`seriesOverrides[k].fill`, else `style.seriesDefaults.fill`),
+  else the graph's fill palette at its place (`graphFillPalette`: the graph's, else its style's;
+  the place is its colour's, `seriesPlaces`), else its colour. Outlines and lines by data set stay
+  its colour. So "By data set" in the Fill row is the fill scale, in the Outline row the colour
+  scale, as `aes(fill = g)` and `aes(colour = g)`.
+- **Resolved by the style resolver** (decision 1255): `LayerKit.style` puts the fill colour into
+  the resolved style's fills (points — box outliers and estimation differences too — bars, boxes
+  and violins: `fillsByDataSet`) as 49a's shapes and dashes, so drawing code and legends see a
+  concrete colour; the same style object when no fill colour is set. Not a dot plot's or a
+  Significance layer's points (their statistics' colours), 100% bars and slices (a colour per
+  category), nor points of rows filled by variables (below). Ellipses and hulls fill in their
+  group's fill colour (`OverlayGroup.fill`); areas, bands and density bands keep the colour.
+- **Fill by a variable** (decision 1256), on multiple-variables tables: an XY graph's mapped
+  points' `aes.fill`, a category or grouped graph's `mapping.fill` (points of every row; mapping
+  the groups' own variable fills them as data sets). A text variable's levels take their fill
+  colours (`seriesOverrides[levelKey].fill`, else the fill palette at the level's place, else the
+  level's colour); a number variable its colour scale `scales.fill` (else the colour's when it is
+  the colour's variable; the UI starts viridis with a colour bar). Without a fill variable rows
+  are filled in their colour — with a fill palette, a text colour variable's levels in their fill
+  colours (`RowLook.fill`). Rows without a value take the scale's `missing`. A row's own format's
+  colour colours both. The matrix (§6.2a): fill acts on points of every row.
+- **Legends** (decision 1257): fill and colour of the same thing make one legend whose keys show
+  both — the data sets' entries (glyphs from the resolved style), or a colour variable's levels as
+  symbols outlined in the level's colour and filled in its fill colour (a fill mapping the colour's
+  variable, or a fill palette over its levels). Different things make separate legends: the fill
+  variable's guide after the colour's, headed by `legend.titles.fill` else its name, group
+  `<prefix>/fill`, keys `<prefix>/fill/<levelKey>` (swatches; symbols when shape maps the same
+  variable), a number variable's colour bar (`<prefix>/fill/bar`) or swatches, and "Missing".
+  Legend editing (47b) orders, hides and relabels each group.
+- **Line patterns by group** (decision 1259; amends 1214): ellipses', hulls' outlines, paths,
+  vectors and contour lines may be dashed `{ series: true }`, each group taking the graph's line
+  styles in turn (`groupStroke`) at its place — an XY data set's index, a level's place in its
+  variable's order (a vector its row's group's) — their legend samples too.
+- **References**: `graphRefs` walks `aes.fill` (role `aes`) and `mapping.fill` (role `mapping`).
+- **Carried by** (decision 1260): styles (`styleFromGraph` saves the fill palette the graph or its
+  style has; Reset to style clears it with the palette), user presets (`fillPalette`,
+  `scales.fill` without value ranges, `variables.fill`), Match format (`style`, `scales` and the
+  data sets' identities as a whole, own fills included), the format painter (a data set's own fill
+  pasted with its colour; none copied clears the target's) and Change layers (layers kept keep
+  their styles, the graph its fill palette).
 
 ### 6.2 Style cascade
 
@@ -2099,6 +2167,7 @@ interface GraphStyle {                                  // graph-wide (v2)
   seriesDefaults?: { color?; yAxis?; pointLabels? }     // every data set's identity defaults
   text?: Partial<TextStyle>; palette?: RGB[]; frame?: 'axes' | 'box' | 'none' | 'arrows'  // arrows: roadmap 36 (§6.1k)
   shapes?: SymbolShape[]; dashes?: Dash[]               // roadmap 49a: data sets' shapes and line patterns in turn (§6.1o)
+  fillPalette?: RGB[]                                   // roadmap 49d: data sets' fill colours in turn (§6.1q; absent: their colours)
   arrows?: CornerArrows                                 // roadmap 36: the corner arrows' length, corner and line
   background?: FillStyle; plotBackground?: FillStyle; bracket?: BracketStyle
   categoryGap?: number; orientation?: 'vertical' | 'horizontal'   // category and grouped frames
@@ -2151,7 +2220,9 @@ XY graphs (`graphType: 'xy.scatter'`) add three SeriesStyle groups: `points.repl
 (shading of an output's lo/hi band). Fitted curves are `ExtraSeries` referencing an analysis output;
 `ExtraSeries.colorOf` names the data set whose colour the curve takes by default.
 
-A `ColorRef` is `{ palette: i }`, `{ rgb }`, or `{ series: true }` (the owning series' colour, used
+A `ColorRef` is `{ palette: i }`, `{ rgb }`, or `{ series: true }` (roadmap 49d: in a fill, the
+owning series' fill colour, which is its colour unless a fill colour is set, §6.1q; elsewhere the
+owning series' colour, used
 e.g. for error bars and bar fills). Default colour for series *i* is palette entry *i*, resolved
 against the theme palette, so changing theme recolours every graph that hasn't pinned explicit
 colours. Style templates ("Magic", Phase 5)
@@ -2175,6 +2246,7 @@ interface FigureStyle {                                 // every field optional
   symbolSize?: Pt; barFillOpacity?: number              // 0–1: translucent bars and boxes
   palette?: RGB[]                                       // categorical colours, in order
   shapes?: SymbolShape[]; dashes?: Dash[]               // roadmap 49a: data sets' symbols and line patterns in turn (§6.1o)
+  fillPalette?: RGB[]                                   // roadmap 49d: data sets' fill colours in turn (§6.1q)
   colorMap?: ColorMapName                               // default continuous colour (heat maps, densities)
   axes?: { frame?: 'plain' | 'offset'; tickDirection?; tickLength?: Pt; minorTickLength?: Pt }
   pValue?: { style?: 'GP' | 'APA' | 'NEJM'; digits?: number }
@@ -2330,11 +2402,13 @@ Variables mapped to appearance (roadmap 34b), by the layers they act on (— = n
 |---|---|---|---|
 | Colour (text variable) | points, line, polygon, path, segment, contour | every layer (the groups) | every layer (the groups) |
 | Colour (number variable) | points, segment | points | points |
+| Fill (any variable) | points | points | points |
 | Shape (text variable) | points | points | points |
 | Size (number variable) | points | points | points |
 | Label (any variable) | points | points | points |
 
 - Shape, size, labels and colour by a number variable act on points of every row (identity), each its row’s; a text colour variable makes the groups of a category graph (the grouped frame) and colours an XY graph’s rows and its lines by group.
+- Fill (roadmap 49d) is a second colour scale: a text or number variable fills points of every row, each its row’s, while colour keeps their outlines; mapping the groups’ variable fills them as data sets.
 - On XY graphs (roadmap 34c) a text colour variable also colours each group’s ellipse, hull and path, and colour by either type each row’s vector; (roadmap 34g) it splits density contours into one set per group, each in its colour. Points can also be coloured by their local density (`colorBy`), on the colour scale in place of a variable.
 - Text × text graphs count rows: their colour is the Y variable; nothing else is mapped.
 
@@ -3717,6 +3791,8 @@ A user preset (`.pspreset`, JSON; `model/src/presetFile.ts`) is a graph's layers
                                   // `aes: {}` where the layer maps variables (the table's defaults)
     orientation?: 'horizontal', drawOrder?: 'series',
     shapes?, dashes?,             // roadmap 49a: the graph's cycles of symbols and line patterns
+    fillPalette?,                 // roadmap 49d: the graph's fill colours by data set; scales.fill too,
+                                  // variables.fill a type or 'color' (the colour's variable)
     scales?: { color?, size? },   // colour maps and sizes, no value ranges (nor levels' symbols)
     variables?: { x, y: 'number' | 'text'; color?: 'number' | 'text'; measure?;  // a graph of variables (34a)
                   shape?: 'text'; size?: 'number'; label?: 'number' | 'text' } },  // 34b; XY graphs too

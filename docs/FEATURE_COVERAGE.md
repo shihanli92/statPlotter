@@ -181,5 +181,6 @@ analyses produce tables that other analyses and graphs can use (Phase 13).
 | Grand mean line (column graphs) | ✅ (30) |
 | Heat maps (grouped and multiple-variables tables) | ✅ (30: sequential / diverging colour maps, fixed range and midpoint, z-scores by row or column, clustering matching R's hclust with dendrograms, values in cells, colour scale) |
 | Dendrograms: layers of their own beside a heat map or alone; side, size and gap per tree (dragged on the canvas), equal-step heights; cut into k clusters or at a height (R's cutree) with coloured branches, a cluster strip and legend entries | ✅ (49c) |
+| Fill and outline mapped separately (ggplot's `fill =` beside `colour =`): each data set's fill colour beside its colour, a fill palette (lighter colours, schemes), a fill variable on its own scale with merged or separate legends; ellipses, hulls, paths, vectors and contours dashed by group | ✅ (49d) |
 | Bar labels (mean, median, n) | ✅ (17; also SD, SEM, the bar's value; above or inside) |
 | Point labels (row titles, X / Y values; volcano plots) | ◐ (22: all points, thresholds or chosen rows, moved apart with leader lines; on by default for Multiple t tests' discoveries; dragging a label is 22's canvas part) |

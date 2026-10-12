@@ -147,7 +147,7 @@ const FULL = {
       id: 'bubbles',
       geom: 'points',
       stat: { kind: 'identity' },
-      aes: { x: 'a', y: 'b', size: 'c', color: 'd', shape: 'e', group: 'f', label: 'g' },
+      aes: { x: 'a', y: 'b', size: 'c', color: 'd', fill: 'n', shape: 'e', group: 'f', label: 'g' },
     },
     // Roadmap 34c: vectors end at two more variables.
     { id: 'vectors', geom: 'segment', stat: { kind: 'identity' }, aes: { xend: 'l', yend: 'm' } },
@@ -211,7 +211,7 @@ const FULL = {
   legend: { show: true, position: 'right', hidden: ['b', 'c1'] },
   title: null,
   style: { seriesDefaults: { pointLabels: { source: 'x', which: 'rows', rows: [0] } } },
-  mapping: { x: 'g', y: 'a', color: 'h', shape: 'i', size: 'j', label: 'k' },
+  mapping: { x: 'g', y: 'a', color: 'h', fill: 'o', shape: 'i', size: 'j', label: 'k' },
   levels: { g: ['High', 'Low'], h: ['M'] },
   scales: { shape: { levels: { lv_4d: 'square' } } },
 } as unknown as GraphNode
@@ -261,6 +261,7 @@ describe('graphRefs', () => {
       x: 'a2',
       size: 'c2',
       color: 'd2',
+      fill: 'n2',
       shape: 'e2',
       group: 'f2',
       label: 'g2',
@@ -270,6 +271,7 @@ describe('graphRefs', () => {
       x: 'g2',
       y: 'a2',
       color: 'h2',
+      fill: 'o2',
       shape: 'i2',
       size: 'j2',
       label: 'k2',
@@ -297,11 +299,14 @@ describe('graphRefs', () => {
     expect(next.mapping).toBeUndefined()
     expect(next.levels).toEqual({ h2: ['M'] })
     const noColor = mapGraphRefs(graph, {
-      key: (k) => (['h', 'i', 'j', 'k'].includes(k) ? 'drop' : 'keep'),
+      key: (k) => (['h', 'i', 'j', 'k', 'o'].includes(k) ? 'drop' : 'keep'),
     })
     expect(noColor.mapping).toEqual({ x: 'g', y: 'a' })
     expect(keys).toContainEqual(['shapes', 'lv_4d', 'level'])
     expect(keys).toContainEqual(['mapping', 'k', 'dataSet'])
+    // Roadmap 49d: the fill variable too.
+    expect(keys).toContainEqual(['mapping', 'o', 'dataSet'])
+    expect(keys).toContainEqual(['aes', 'n', 'dataSet'])
   })
 
   it('drops an output with every place naming it, and output layers left empty', () => {

@@ -2,12 +2,15 @@ import type { Command } from '@ps/engine'
 import {
   type Aesthetic,
   aesVariables,
+  fillsByDataSet,
   graphDashes,
+  graphFillPalette,
   graphShapes,
   identityStyle,
   layerStyle,
   mappedPointsLayer,
   overlayStyle,
+  resolveColor,
   seriesColor,
   seriesPlaces,
   treeStyle,
@@ -26,8 +29,10 @@ import {
 import type { ReactNode } from 'react'
 import { NumberInput, Section, Select } from '../../components/fields.tsx'
 import { ColorRefField, DASHES, SHAPES } from '../../components/formatFields.tsx'
-import { variableCommands, variableOptions } from './AppearanceByVariable.tsx'
+import { lighterPalette } from '../palettes.ts'
+import { variableCommands, variableOptions, variableTarget } from './AppearanceByVariable.tsx'
 import type { PanelContext } from './context.ts'
+import { usesFillChannel } from './DataSetSection.tsx'
 import type { LayerEdit } from './LayerFields.tsx'
 import { layerPath, styleCommands } from './layers.ts'
 
@@ -133,9 +138,15 @@ export function appearanceRows(graph: PanelContext['graph'], layer: Layer): Appe
       if (stat === 'dotplot' || stat === 'threshold') return []
       const { xy, mapped } = mapsVariables(graph, layer)
       // A graph of variables' XY points: colours by the colour variable, no data sets to cycle.
+      // Roadmap 49d: the fill by a variable of its own (`aes.fill`), the outline by the colour's.
       const color: readonly Mode[] = xy ? ['variable', 'fixed', 'none'] : BY
+      const fill: readonly Mode[] = mapped ? [...BY, 'variable'] : color
+      const [f, o, ...rest] = FILL_OUTLINE(fill, color)
       return [
-        ...FILL_OUTLINE(color, color),
+        { ...f!, ...(xy || mapped ? { aes: 'fill' as const } : {}) },
+        o!,
+        { ...rest[0]!, ...(xy ? { aes: 'color' as const } : {}) },
+        ...rest.slice(1),
         {
           kind: 'shape',
           field: 'shape',
@@ -163,8 +174,9 @@ export function appearanceRows(graph: PanelContext['graph'], layer: Layer): Appe
     case 'violin':
       return FILL_OUTLINE(BY, BY)
     case 'polygon':
-      // Whether fill or outline is drawn is the layer's Draw.
-      return [...FILL_OUTLINE(BY_NO_NONE, BY_NO_NONE), ...LINE('border', [], FIXED).slice(2)]
+      // Whether fill or outline is drawn is the layer's Draw. Roadmap 49d: the outline's pattern
+      // by group (the graph's line styles in turn) or fixed.
+      return [...FILL_OUTLINE(BY_NO_NONE, BY_NO_NONE), ...LINE('border', [], BY_NO_NONE).slice(2)]
     case 'errorbar':
     case 'center':
       return LINE('line', BY_NO_NONE, BY_NO_NONE)
@@ -176,7 +188,8 @@ export function appearanceRows(graph: PanelContext['graph'], layer: Layer): Appe
       return LINE('line', FIXED, FIXED)
     case 'path':
     case 'segment':
-      return LINE('stroke', BY_NO_NONE, FIXED)
+      // Roadmap 49d: a pattern by group too.
+      return LINE('stroke', BY_NO_NONE, BY_NO_NONE)
     case 'dendrogram':
       // Roadmap 49c: a tree's lines, one look (a cut tree's clusters take their own colours).
       return LINE('line', FIXED, FIXED)
@@ -245,17 +258,33 @@ export function handSet(e: Pick<LayerEdit, 'layer' | 'items' | 'key'>, field: st
 const colorMode = (c: ColorRef | undefined, xy: boolean): Mode =>
   c && isBySeries(c) ? (xy ? 'variable' : 'series') : 'fixed'
 
+/**
+ * Roadmap 49d: whether a category or grouped graph of variables fills its points of every row by a
+ * variable of their own (`mapping.fill`, not its groups' text colour variable).
+ */
+export function rowFilled(ctx: PanelContext): boolean {
+  const m = ctx.graph.mapping
+  if (m?.fill === undefined) return false
+  if (m.fill !== m.color) return true
+  const table = variableTarget(ctx)?.table
+  return !table?.dataSets.find((d) => d.id === m.color)?.text
+}
+
 /** The mode of a row for one data set's value. */
 function modeOf(
   row: AppearanceRow,
   value: unknown,
   vars: Partial<Record<Aesthetic, string>>,
   xy: boolean,
+  filledByRow = false,
 ): Mode {
   switch (row.kind) {
     case 'fill': {
       const f = value as FillStyle | undefined
-      return !f || f.type === 'none' ? 'none' : colorMode(f.color, xy)
+      if (!f || f.type === 'none') return 'none'
+      // Roadmap 49d: points of every row filled by a variable of their own.
+      if (!xy && row.aes === 'fill' && filledByRow && isBySeries(f.color)) return 'variable'
+      return colorMode(f.color, xy)
     }
     case 'outline': {
       const s = value as StrokeStyle | undefined
@@ -292,6 +321,8 @@ export const RECIPES = [
   { id: 'filledBlack', label: 'Filled by group, black outline' },
   { id: 'outlinedWhite', label: 'Outlined by group, white fill' },
   { id: 'solid', label: 'Solid by group' },
+  // Roadmap 49d: fill and outline by group, each its own colours (the fills lighter).
+  { id: 'lightDark', label: 'Light fill, dark outline by group' },
 ] as const
 export type RecipeId = (typeof RECIPES)[number]['id']
 
@@ -315,11 +346,30 @@ export function recipeChanges(e: LayerEdit, id: RecipeId): [string, unknown][] {
         ['border', line(series)],
       ]
     case 'solid':
+    case 'lightDark':
       return [
         ['fill', { type: 'solid', color: series, opacity: 1 }],
         ['border', line(series)],
       ]
   }
+}
+
+/**
+ * Roadmap 49d: what a recipe sets besides the layer — "Light fill, dark outline by group" gives
+ * the data sets lighter fill colours (the colour scheme's, mixed half with white) unless the graph
+ * has fill colours of its own already.
+ */
+export function recipeGraphCommands(ctx: PanelContext, id: RecipeId): Command[] {
+  if (id !== 'lightDark' || usesFillChannel(ctx)) return []
+  const n = Math.max(1, Math.min(ctx.palette.length, 8))
+  return [
+    {
+      type: 'node.set',
+      id: ctx.graph.id,
+      path: ['style', 'fillPalette'],
+      value: lighterPalette(ctx.palette.slice(0, n)),
+    },
+  ]
 }
 
 /** The geoms the recipes apply to (a fill and an outline). */
@@ -363,7 +413,12 @@ export function AppearanceSection({
             <button
               key={r.id}
               type="button"
-              onClick={() => ctx.dispatch(writeCommands(e, recipeChanges(e, r.id)), r.label)}
+              onClick={() =>
+                ctx.dispatch(
+                  [...writeCommands(e, recipeChanges(e, r.id)), ...recipeGraphCommands(ctx, r.id)],
+                  r.label,
+                )
+              }
             >
               {r.label}
             </button>
@@ -427,7 +482,8 @@ function RowFields({ e, row }: { e: LayerEdit; row: AppearanceRow }) {
   const values = keys.map((k) => rawField(e, k, row.field))
   const vars = row.aes || row.kind === 'fill' || row.kind === 'outline' ? aesVariables(graph) : {}
   const { xy } = mapsVariables(graph, layer)
-  const modes = values.map((v) => modeOf(row, v, vars, xy))
+  const filledByRow = row.aes === 'fill' && rowFilled(ctx)
+  const modes = values.map((v) => modeOf(row, v, vars, xy, filledByRow))
   const mode = modes[0]!
   const mixedMode = differ(modes)
   const set = (changes: [string, unknown][], label: string, more: Command[] = []) =>
@@ -462,6 +518,17 @@ function RowFields({ e, row }: { e: LayerEdit; row: AppearanceRow }) {
       ctx.palette,
       place(k),
     )
+  /**
+   * Roadmap 49d: a data set's fill colour where the layer fills by data set — its own, else the
+   * graph's fill palette's at its place — else its colour.
+   */
+  const dataSetFillCss = (k: string) => {
+    if (!fillsByDataSet(graph, layer, rowFilled(ctx))) return dataSetCss(k)
+    const own = graph.seriesOverrides[k]?.fill ?? graph.style.seriesDefaults?.fill
+    if (own && !isBySeries(own)) return resolveColor(own, ctx.palette)
+    const list = graphFillPalette(graph, ctx.theme)
+    return list?.length ? list[place(k) % list.length]! : dataSetCss(k)
+  }
   switch (row.kind) {
     case 'fill': {
       const fill = base as FillStyle | undefined
@@ -471,25 +538,49 @@ function RowFields({ e, row }: { e: LayerEdit; row: AppearanceRow }) {
           ? (values[0] as Extract<FillStyle, { type: 'solid' }>).color
           : undefined
       const solid = (color: ColorRef): FillStyle => ({ type: 'solid', color, opacity })
+      // Roadmap 49d: a fixed fill or none overrides a fill variable (as ggplot's fixed `fill =`):
+      // it is unmapped, with its legend.
+      const unmapFill =
+        row.aes === 'fill' && vars.fill !== undefined ? variableCommands(ctx, 'fill', '') : []
       const onMode = (m: Mode) => {
-        if (m === 'none') return set([[row.field, { type: 'none' }]], 'No fill')
+        if (m === 'none') return set([[row.field, { type: 'none' }]], 'No fill', unmapFill)
         if (m === 'fixed')
           return set(
             [[row.field, solid(firstColor && !isBySeries(firstColor) ? firstColor : WHITE)]],
             'Fixed fill',
+            unmapFill,
           )
-        const map = m === 'variable' && vars.color === undefined ? firstVariable(ctx, 'color') : []
-        return set([[row.field, solid({ series: true })]], 'Fill by data set', map)
+        // By variable: the fill's own variable — the first that fits unless the points' colour
+        // has one to follow (XY) or one is mapped already.
+        const map =
+          m === 'variable' && vars.fill === undefined && (!xy || vars.color === undefined)
+            ? firstVariable(ctx, 'fill')
+            : m === 'series'
+              ? unmapFill
+              : []
+        return set(
+          [[row.field, solid({ series: true })]],
+          m === 'variable' ? 'Fill by variable' : 'Fill by data set',
+          map,
+        )
       }
+      const fillVariable = mode === 'variable' && !mixedMode && row.aes === 'fill'
       return (
         <div className="field-row appearance-row">
           {modeSelect(onMode)}
-          {mode !== 'none' || mixedMode ? (
+          {fillVariable ? (
+            <Select
+              label="Fill variable"
+              value={vars.fill ?? ''}
+              options={variableOptions(ctx, 'fill').filter((o) => xy || o.value !== '')}
+              onChange={(v) => ctx.dispatch(variableCommands(ctx, 'fill', v), 'Fill by variable')}
+            />
+          ) : mode !== 'none' || mixedMode ? (
             <ColorRefField
               label="Fill colour"
               value={firstColor}
               palette={ctx.palette}
-              fallback={dataSetCss(keys[0]!)}
+              fallback={dataSetFillCss(keys[0]!)}
               allowSeries={row.modes.includes('series') || row.modes.includes('variable')}
               mixed={differ(
                 values.map((v) =>
@@ -565,10 +656,21 @@ function RowFields({ e, row }: { e: LayerEdit; row: AppearanceRow }) {
         )
       }
       const name = outline ? 'Outline colour' : 'Line colour'
+      // Roadmap 49d: an XY graph of variables' outline by the colour variable, chosen here.
+      const outlineVariable = mode === 'variable' && !mixedMode && row.aes === 'color'
       return (
         <div className="field-row appearance-row">
           {modeSelect(onMode)}
-          {mode !== 'none' || mixedMode ? (
+          {outlineVariable ? (
+            <Select
+              label="Outline variable"
+              value={vars.color ?? ''}
+              options={variableOptions(ctx, 'color')}
+              onChange={(v) =>
+                ctx.dispatch(variableCommands(ctx, 'color', v), 'Outline by variable')
+              }
+            />
+          ) : mode !== 'none' || mixedMode ? (
             <ColorRefField
               label={name}
               value={first?.color}

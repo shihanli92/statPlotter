@@ -206,6 +206,32 @@ export interface SceneNode {
    * and the legend's other parts.
    */
   legendEntry?: { key: string; group: string }
+  /** Roadmap 49c: a dendrogram's branch or leaf, for its hover card (nothing drawn reads it). */
+  tree?: TreeMark
+  /**
+   * Roadmap 49c: a part of a drawn node made for hovering it (a tree branch's leg down to a leaf,
+   * `hitTest`): that node, `bbox` in its coordinates.
+   */
+  within?: SceneNode
+}
+
+/** Roadmap 49c: a leaf of a dendrogram — its row's or column's name, its cluster (cut). */
+export interface TreeLeaf {
+  name: string
+  cluster?: number
+}
+
+/**
+ * Roadmap 49c: what a dendrogram's mark stands for, for its hover card: a branch (a merge's ⊓ or
+ * a part of it: R's merge height, the leaves under it, their cluster when one) or a leaf (a
+ * cluster strip's band, or a branch's leg down to a leaf). The tree is of the rows or columns.
+ */
+export interface TreeMark {
+  of: 'rows' | 'columns'
+  merge?: { height: number; leaves: number; cluster?: number }
+  leaf?: TreeLeaf
+  /** A branch's legs down to leaves: its polyline's segment (point `seg` to the next) and leaf. */
+  legs?: { seg: number; leaf: TreeLeaf }[]
 }
 
 /** Roadmap 47b: one of a legend's entries, shown or hidden (`Scene.legend`). */

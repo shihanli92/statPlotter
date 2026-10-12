@@ -45,6 +45,11 @@ export const LEGEND_MAX_LEVELS = 50
 
 export interface RowLook {
   color?: (row: number) => string
+  /**
+   * Roadmap 49d: a row's fill colour where the points' fill is by data set — its fill variable's,
+   * or its colour variable's level's fill colour (absent: its colour).
+   */
+  fill?: (row: number) => string
   shape?: (row: number) => SymbolShape | undefined
   size?: (row: number) => number | undefined
 }
@@ -65,6 +70,13 @@ export interface LooksInput {
   palette: readonly string[]
   /** A level's colour by its key and place (its identity's, else the palette's). */
   levelColor: (key: string, index: number) => string
+  /**
+   * Roadmap 49d: a level's fill colour by its key and place (its identity's fill, else the graph's
+   * fill palette's, else its colour) — and whether any is set (`fillChannel`): without, rows are
+   * filled in their colours as before.
+   */
+  levelFill?: (key: string, index: number) => string
+  fillChannel?: boolean
   /** The mapped points' symbol: the shape sequence starts from it; samples draw in it. */
   points: ResolvedSeriesStyle['points']
   /**
@@ -130,32 +142,32 @@ function variables(
 export function graphLooks(input: LooksInput): GraphLooks {
   const { graph, palette, drawn, points } = input
   const vars = variables(input)
-  const { color, shape, size, label } = vars
+  const { color, fill, shape, size, label } = vars
   const titles = graph.legend.titles ?? {}
   const seriesVar = input.seriesVariable
+
+  /** A text variable's levels in the graph's order, each its colour by its key and place. */
+  const levelsOf = (v: MappedVariable, colorOf: (key: string, index: number) => string) => {
+    const order = v.order ?? []
+    const at = new Map(order.map((t, k) => [t, k]))
+    const cache = new Map<string, string>()
+    return {
+      order,
+      color: (t: string) => {
+        let c = cache.get(t)
+        if (!c) {
+          c = colorOf(levelKey(t), at.get(t) ?? 0)
+          cache.set(t, c)
+        }
+        return c
+      },
+    }
+  }
 
   // Colour: a text variable's levels on the palette (by the graph's order), a number variable on
   // its colour scale. The data sets' own variable colours them as data sets.
   const perRowColor = !!color && color.key !== seriesVar
-  const colorLevels =
-    color?.type === 'text'
-      ? (() => {
-          const order = color.order ?? []
-          const at = new Map(order.map((t, k) => [t, k]))
-          const cache = new Map<string, string>()
-          return {
-            order,
-            color: (t: string) => {
-              let c = cache.get(t)
-              if (!c) {
-                c = input.levelColor(levelKey(t), at.get(t) ?? 0)
-                cache.set(t, c)
-              }
-              return c
-            },
-          }
-        })()
-      : undefined
+  const colorLevels = color?.type === 'text' ? levelsOf(color, input.levelColor) : undefined
   const colorScale =
     color?.type === 'number'
       ? continuousColor(
@@ -171,6 +183,41 @@ export function graphLooks(input: LooksInput): GraphLooks {
         return t ? colorLevels!.color(t) : missing
       }
     : undefined
+
+  // Roadmap 49d: fill on a scale of its own (ggplot's `fill =`): a fill variable's levels (each
+  // its fill colour: its own, the fill palette's, else its colour) or values; without one, a text
+  // colour variable's levels take their fill colours when the graph sets any. The data sets' own
+  // variable fills them as data sets (the style resolver's fills by data set).
+  const levelFill = input.levelFill ?? input.levelColor
+  const perRowFill = !!fill && fill.key !== seriesVar
+  const fillLevels =
+    fill?.type === 'text' && perRowFill
+      ? levelsOf(fill, levelFill)
+      : !fill && input.fillChannel && perRowColor && color?.type === 'text'
+        ? levelsOf(color, levelFill)
+        : undefined
+  const fillSpec = fillSpecOf(graph, fill, color)
+  const fillScale =
+    fill?.type === 'number' && perRowFill
+      ? continuousColor(
+          drawn.map((r) => fill.values![r]!),
+          fillSpec,
+        )
+      : undefined
+  const fillMissing = fillSpec?.missing ?? MISSING_POINT_COLOR
+  const rowFill =
+    perRowFill && fill
+      ? (r: number) => {
+          if (fillScale) return fillScale.color(fill.values![r]!)
+          const t = fill.levels![r]
+          return t ? fillLevels!.color(t) : fillMissing
+        }
+      : fillLevels && color
+        ? (r: number) => {
+            const t = color.levels![r]
+            return t ? fillLevels.color(t) : missing
+          }
+        : undefined
 
   // Shape: the level's own symbol, else the sequence from the points' own.
   const shapeOrder = shape?.order ?? []
@@ -197,9 +244,10 @@ export function graphLooks(input: LooksInput): GraphLooks {
     : undefined
 
   const row: RowLook | undefined =
-    rowColor || rowShape || rowSize
+    rowColor || rowFill || rowShape || rowSize
       ? {
           ...(rowColor ? { color: rowColor } : {}),
+          ...(rowFill ? { fill: rowFill } : {}),
           ...(rowShape ? { shape: rowShape } : {}),
           ...(rowSize ? { size: rowSize } : {}),
         }
@@ -269,6 +317,33 @@ export function graphLooks(input: LooksInput): GraphLooks {
           ]
         : []
 
+    /** A few swatches of a number variable's colours over its scale's range (fixed, else the
+     * values it shows), not the raw data's. */
+    const scaleSwatches = (
+      aes: 'color' | 'fill',
+      scale: ContinuousColor,
+      v: MappedVariable,
+    ): LegendEntry[] => {
+      const shows = drawn.some((r) => scale.shows(v.values![r]!))
+      const refs = shows ? legendValues(scale.lo, scale.hi, 4) : []
+      const fmt = tickFormatter({ mode: 'auto' }, refs)
+      return refs.map((x, k): LegendEntry => {
+        const key = `${prefix}/${aes}/${k}`
+        return {
+          key,
+          id: `legend/${key}`,
+          target,
+          group: `${prefix}/${aes}`,
+          label: fmt(x)
+            .map((t) => t.text)
+            .join(''),
+          sample: (sx, cy) => [
+            swatch(`legend/${key}`, target, scale.color(x), sx + (sampleWidth - SWATCH) / 2, cy),
+          ],
+        }
+      })
+    }
+
     // Sizes: a few round values, largest first, over the scale's range (fixed, else the data's).
     if (size && sizer && sizeValues.length) {
       const refs = legendValues(sizer.lo, sizer.hi, 3, true)
@@ -308,6 +383,12 @@ export function graphLooks(input: LooksInput): GraphLooks {
     // Colour: the levels drawn (with their symbols when shape maps the same variable), a few
     // swatches of a number variable, or its colour bar.
     const merged = !!shape && !!color && shape.key === color.key
+    // Roadmap 49d: fill mapping the colour's variable (or following it with fill colours of its
+    // own) is one legend whose keys show both, as ggplot merges guides of one variable.
+    const fillMerged =
+      !!color && perRowColor && (fill ? perRowFill && fill.key === color.key : !!fillLevels)
+    const colorFill = fillMerged && fillLevels ? (t: string) => fillLevels.color(t) : undefined
+    const symbols = merged || !!colorFill
     /**
      * Roadmap 41: rows drawn in the missing colour (no level, no value, or one the scale can't
      * show) get a last entry, "Missing", in that colour.
@@ -328,7 +409,7 @@ export function graphLooks(input: LooksInput): GraphLooks {
           group: `${prefix}/color`,
           fixed: true,
           sample: (x, cy) =>
-            merged
+            symbols
               ? [
                   symbolNode(
                     `legend/${key}`,
@@ -362,16 +443,17 @@ export function graphLooks(input: LooksInput): GraphLooks {
             label: t,
             group: `${prefix}/color`,
             sample: (x, cy) =>
-              merged
+              symbols
                 ? [
                     symbolNode(
                       id,
                       target,
-                      { ...points, shape: shapeOf(t) },
+                      merged ? { ...points, shape: shapeOf(t) } : points,
                       c,
                       palette,
                       x + sampleWidth / 2,
                       cy,
+                      colorFill?.(t),
                     ),
                   ]
                 : [swatch(id, target, c, x + (sampleWidth - SWATCH) / 2, cy)],
@@ -390,38 +472,106 @@ export function graphLooks(input: LooksInput): GraphLooks {
           ...missingEntry(),
         )
       } else if (colorScale) {
-        // Over the scale's range (fixed, else the values it shows), not the raw data's.
-        const shows = drawn.some((r) => colorScale.shows(color.values![r]!))
-        const refs = shows ? legendValues(colorScale.lo, colorScale.hi, 4) : []
-        const fmt = tickFormatter({ mode: 'auto' }, refs)
-        const items = refs.map((v, k): LegendEntry => {
-          const key = `${prefix}/color/${k}`
-          return {
-            key,
-            id: `legend/${key}`,
-            target,
-            group: `${prefix}/color`,
-            label: fmt(v)
-              .map((t) => t.text)
-              .join(''),
-            sample: (x, cy) => [
-              swatch(
-                `legend/${key}`,
-                target,
-                colorScale.color(v),
-                x + (sampleWidth - SWATCH) / 2,
-                cy,
-              ),
-            ],
-          }
-        })
-        out.push(...heading('color', color.title), ...ordered(items), ...missingEntry())
+        out.push(
+          ...heading('color', color.title),
+          ...ordered(scaleSwatches('color', colorScale, color)),
+          ...missingEntry(),
+        )
       }
     }
 
-    // Shape: the levels drawn, each its symbol in grey (merged into the colour legend above, or
-    // into the data sets' legend when they are its levels).
-    if (shape && !merged && shape.key !== seriesVar && drawn.length) {
+    // Roadmap 49d: fill by a variable of its own — a legend of its own (ggplot's separate guides):
+    // its levels' fill colours (symbols when shape maps the same variable), a few swatches of a
+    // number variable, or its colour bar; "Missing" last.
+    const fillGuide = !!fill && perRowFill && !fillMerged && drawn.length > 0
+    const shapeInFill = fillGuide && !!shape && !merged && shape.key === fill!.key
+    if (fillGuide && fill) {
+      const fillMissingEntry = (): LegendEntry[] => {
+        const lacks = fillScale
+          ? drawn.some((r) => !fillScale.shows(fill.values![r]!))
+          : drawn.some((r) => !fill.levels![r])
+        if (!lacks) return []
+        const key = `${prefix}/fill/missing`
+        return [
+          {
+            key,
+            id: `legend/${key}`,
+            target,
+            label: 'Missing',
+            group: `${prefix}/fill`,
+            fixed: true,
+            sample: (x, cy) => [
+              swatch(`legend/${key}`, target, fillMissing, x + (sampleWidth - SWATCH) / 2, cy),
+            ],
+          },
+        ]
+      }
+      if (fillLevels) {
+        const levels = present(fill)
+        const at = new Map(fillLevels.order.map((t, k) => [t, k]))
+        const items = capped(levels).map((t): LegendEntry => {
+          const k = at.get(t)!
+          const c = fillLevels.color(t)
+          const id = `legend/${prefix}/fill/${k}`
+          const key = `${prefix}/fill/${levelKey(t)}`
+          return {
+            key,
+            id,
+            target,
+            label: t,
+            group: `${prefix}/fill`,
+            sample: (x, cy) =>
+              shapeInFill
+                ? [
+                    symbolNode(
+                      id,
+                      target,
+                      { ...points, shape: shapeOf(t) },
+                      SAMPLE_GREY,
+                      palette,
+                      x + sampleWidth / 2,
+                      cy,
+                      c,
+                    ),
+                  ]
+                : [swatch(id, target, c, x + (sampleWidth - SWATCH) / 2, cy)],
+          }
+        })
+        out.push(
+          ...heading('fill', fill.title),
+          ...ordered(items),
+          ...more('fill', levels),
+          ...fillMissingEntry(),
+        )
+      } else if (fillScale && fillSpec?.bar?.show === true) {
+        out.push(...heading('fill', fill.title), {
+          ...colorBarEntry({
+            ctx: input.ctx,
+            palette,
+            target,
+            key: `${prefix}/fill/bar`,
+            scale: fillScale,
+            ...(fillSpec.bar.ticks ? { ticks: fillSpec.bar.ticks } : {}),
+            ...(fillSpec.bar.format ? { format: fillSpec.bar.format } : {}),
+            ...(colorTransform(fillSpec).kind !== 'linear'
+              ? { transform: colorTransform(fillSpec) }
+              : {}),
+          }),
+          group: `${prefix}/fill`,
+        })
+        out.push(...fillMissingEntry())
+      } else if (fillScale) {
+        out.push(
+          ...heading('fill', fill.title),
+          ...ordered(scaleSwatches('fill', fillScale, fill)),
+          ...fillMissingEntry(),
+        )
+      }
+    }
+
+    // Shape: the levels drawn, each its symbol in grey (merged into the colour or fill legend
+    // above, or into the data sets' legend when they are its levels).
+    if (shape && !merged && !shapeInFill && shape.key !== seriesVar && drawn.length) {
       const levels = present(shape)
       const items = capped(levels).map((t): LegendEntry => {
         const k = shapeAt.get(t)!
@@ -487,6 +637,8 @@ function symbolNode(
   palette: readonly string[],
   cx: number,
   cy: number,
+  /** Roadmap 49d: its fill colour where the points' fill is by data set (absent: `color`). */
+  fill?: string,
 ): SceneNode {
   const size = Math.min(points.size, 12)
   return {
@@ -498,9 +650,21 @@ function symbolNode(
       cx,
       cy,
       size,
-      ...symbolPaint(points, palette, color),
+      ...symbolPaint(points, palette, color, fill),
     },
   }
+}
+
+/**
+ * Roadmap 49d: the colour scale of a number variable mapped to fill — the graph's fill scale,
+ * else, when it is the colour's variable, the colour's (one variable, one scale).
+ */
+function fillSpecOf(
+  graph: Pick<GraphNode, 'scales'>,
+  fill: MappedVariable | undefined,
+  color: MappedVariable | undefined,
+): ColorScale | undefined {
+  return graph.scales?.fill ?? (fill && fill.key === color?.key ? graph.scales?.color : undefined)
 }
 
 /**

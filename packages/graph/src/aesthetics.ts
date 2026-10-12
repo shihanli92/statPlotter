@@ -31,9 +31,12 @@ import { type Transform, transformOf } from './transform.ts'
 // frames get each row's look (`RowLook`) and the legend's guides from here, so no frame code
 // branches on a table kind.
 
-/** What a variable can be mapped to besides the axes. */
-export type Aesthetic = 'color' | 'shape' | 'size' | 'label'
-export const AESTHETICS: readonly Aesthetic[] = ['color', 'shape', 'size', 'label']
+/**
+ * What a variable can be mapped to besides the axes (roadmap 49d: `fill`, a second colour scale
+ * beside `color`, as ggplot's `fill =` beside `colour =`).
+ */
+export type Aesthetic = 'color' | 'fill' | 'shape' | 'size' | 'label'
+export const AESTHETICS: readonly Aesthetic[] = ['color', 'fill', 'shape', 'size', 'label']
 
 /** The variables a graph maps to appearance, by aesthetic. */
 export type AesVariables = Partial<Record<Aesthetic, string>>

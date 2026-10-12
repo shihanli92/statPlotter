@@ -1,6 +1,8 @@
 import {
+  type FillStyle,
   type Geom,
   type GraphNode,
+  isBySeries,
   type Layer,
   type LayerData,
   type LayerOf,
@@ -17,7 +19,13 @@ import { cloudsOfRuns, drawsCloud, isLoneSymbol, isRowSymbol } from '../layout/c
 import { type GraphContext, layoutBasics } from '../layout/common.ts'
 import { evenSample, type SampledPoints, type SampleUnit } from '../layout/screen.ts'
 import type { SceneNode, StylePath } from '../scene.ts'
-import { type ResolvedSeriesStyle, seriesColor, type Theme } from '../theme.ts'
+import {
+  graphFillPalette,
+  type ResolvedSeriesStyle,
+  resolveColor,
+  seriesColor,
+  type Theme,
+} from '../theme.ts'
 import { type GraphLooks, graphLooks } from './looks.ts'
 import { dataOf, identityStyle, layerStyle, pointsOption } from './theme.ts'
 
@@ -53,6 +61,34 @@ export function seriesPlaces(
   for (const l of graph.layers)
     if (l.data?.from === 'functions') for (const f of l.data.functions) add(f.id)
   return places
+}
+
+/**
+ * Roadmap 49d: the geoms whose fills by data set (`{ series: true }` in a fill) are a data set's
+ * fill colour — the fill channel — rather than its colour: points (and a box's outliers, an
+ * estimation plot's differences), bars, boxes and violins. Not a dot plot's or Significance
+ * layer's points (their statistics' colours), 100% bars and slices (a colour per category), nor
+ * points filled row by row by mapped variables (`RowLook.fill`).
+ */
+const CHANNEL_FILLS: ReadonlySet<Geom> = new Set(['points', 'bar', 'box', 'violin', 'difference'])
+
+/**
+ * Roadmap 49d: whether a layer's fills by data set take the data set's fill colour. `rowFilled`:
+ * the graph's points of every row are filled by a variable of their own (a category or grouped
+ * graph of variables' `mapping.fill`, not its groups' variable).
+ */
+export function fillsByDataSet(
+  graph: Pick<GraphNode, 'frame'>,
+  layer: Layer,
+  rowFilled = false,
+): boolean {
+  if (!CHANNEL_FILLS.has(layer.geom)) return false
+  const stat = layer.stat.kind
+  if (stat === 'dotplot' || stat === 'threshold' || stat === 'fraction') return false
+  if (layer.geom !== 'points') return true
+  // An XY graph of variables' mapped points are filled row by row (`RowLook.fill`).
+  if (graph.frame === 'xy' && layer.aes) return false
+  return !(rowFilled && stat === 'identity')
 }
 
 /** A frame's own plane drawn by data set: its layers, and its marks of some of them. */
@@ -144,15 +180,80 @@ export class LayerKit {
     }
     let s = byKey.get(key)
     if (!s) {
-      s = layerStyle(this.theme, this.graph, layer, key, this.stat(layer, key), () =>
-        this.cycleIndex(key),
+      s = this.filled(
+        layer,
+        key,
+        layerStyle(this.theme, this.graph, layer, key, this.stat(layer, key), () =>
+          this.cycleIndex(key),
+        ),
       )
       byKey.set(key, s)
     }
     return s
   }
 
+  /**
+   * Roadmap 49d: a series' fill colour where a layer's fill is the data set's — its own
+   * (`seriesOverrides[key].fill`, else the graph's default), else the graph's fill palette's at
+   * its place (`graphFillPalette`); undefined when neither is set: its fill is its colour, as
+   * before. `curve`: an analysis output or function.
+   */
+  fillOf(key: string, curve = false): string | undefined {
+    const own = this.identity(key, curve).fill
+    if (own && !isBySeries(own)) return resolveColor(own, this.palette)
+    const list = graphFillPalette(this.graph, this.theme)
+    return list?.length ? list[this.cycleIndex(key) % list.length]!.toLowerCase() : undefined
+  }
+
+  /**
+   * Roadmap 49d: a resolved style with its fills by data set (points', bars', boxes') in the
+   * series' fill colour (`fillOf`) — resolved here, as shapes and dashes by data set are, so the
+   * drawing code and legends see a concrete colour. Returned as it is (the same object) when the
+   * series has no fill colour of its own, so graphs without one draw exactly as before.
+   */
+  private filled(layer: Layer, key: string, s: ResolvedSeriesStyle): ResolvedSeriesStyle {
+    if (!fillsByDataSet(this.graph, layer, this.rowFilled)) return s
+    if (s.fill === undefined && !graphFillPalette(this.graph, this.theme)) return s
+    const fill = this.fillOf(key, dataOf(this.graph, layer).from !== 'table')
+    if (fill === undefined) return s
+    const color = { rgb: fill }
+    const sub = (f: FillStyle): FillStyle =>
+      f.type === 'solid' && isBySeries(f.color) ? { ...f, color } : f
+    return {
+      ...s,
+      points: { ...s.points, fill: sub(s.points.fill) },
+      bar: { ...s.bar, fill: sub(s.bar.fill) },
+      box: { ...s.box, fill: sub(s.box.fill) },
+    }
+  }
+
   private places: ReadonlyMap<string, number> | undefined
+
+  /**
+   * Roadmap 49d: whether the graph sets fill colours of their own anywhere — a fill palette (its
+   * own or its style's), a default fill or a data set's or level's own fill.
+   */
+  get fillChannel(): boolean {
+    const own = (f: unknown) => f !== undefined && !isBySeries(f)
+    return (
+      !!graphFillPalette(this.graph, this.theme) ||
+      own(this.graph.style.seriesDefaults?.fill) ||
+      Object.values(this.graph.seriesOverrides).some((o) => own(o.fill))
+    )
+  }
+
+  /**
+   * Roadmap 49d: whether a category or grouped graph of variables fills its points of every row
+   * by a variable (`mapping.fill`) other than its groups' (its text colour variable).
+   */
+  get rowFilled(): boolean {
+    const m = this.graph.mapping
+    if (m?.fill === undefined) return false
+    if (m.fill !== m.color) return true
+    const { project, result } = this.ctx
+    const table = sourceTable(project, this.graph.seriesSource.table, result)
+    return !table?.dataSets.find((d) => d.id === m.color)?.text
+  }
 
   /**
    * Roadmap 49a: a series' place in the graph (`seriesPlaces`), at which its shape and line
@@ -334,6 +435,16 @@ export class LayerKit {
       drawn: o.drawn,
       palette: this.palette,
       levelColor: (key, k) => seriesColor(this.identity(key).color, this.palette, k),
+      // Roadmap 49d: a level's fill colour (its own, the fill palette's at its place, its colour).
+      levelFill: (key, k) => {
+        const own = this.identity(key).fill
+        if (own && !isBySeries(own)) return resolveColor(own, this.palette)
+        const list = graphFillPalette(this.graph, this.theme)
+        return list?.length
+          ? list[k % list.length]!.toLowerCase()
+          : seriesColor(this.identity(key).color, this.palette, k)
+      },
+      fillChannel: this.fillChannel,
       points: o.points ?? style.points,
       ...(o.seriesVariable !== undefined ? { seriesVariable: o.seriesVariable } : {}),
       ...(o.density ? { density: o.density } : {}),

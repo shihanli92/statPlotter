@@ -13,8 +13,11 @@ import { fonts, projectOf, sampleTable, TABLE_KINDS } from './helpers.ts'
 
 // Roadmap 23: a graph's scale multiplies everything it draws, exactly.
 
-/** Numbers that aren't lengths: rotation angles, opacities, placed subtrees' own scale, paths. */
-const NOT_LENGTHS = new Set(['angle', 'opacity', 'scale', 'target'])
+/**
+ * Numbers that aren't lengths: rotation angles, opacities, placed subtrees' own scale, paths, a
+ * dendrogram's hover facts (merge heights, counts, clusters: roadmap 49c).
+ */
+const NOT_LENGTHS = new Set(['angle', 'opacity', 'scale', 'target', 'tree'])
 
 /** Expects every length in `b` to be `s` times the one in `a`, and everything else equal. */
 function expectScaled(a: unknown, b: unknown, s: number, path = ''): void {
