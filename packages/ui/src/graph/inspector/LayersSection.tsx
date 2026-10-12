@@ -15,6 +15,7 @@ import {
   styleContext,
   stylesFor,
   withNested,
+  withNewLayerLook,
 } from '@ps/graph'
 import { type Layer, sourceTable } from '@ps/model'
 import { type KeyboardEvent, type MouseEvent, useEffect, useId, useRef, useState } from 'react'
@@ -55,6 +56,9 @@ export function addStyleCommands(ctx: PanelContext, styleId: string): Command[] 
   let layer = newStyleLayer(style, c, position)
   if (table.tableKind === 'nested' && (layer.geom === 'points' || layer.geom === 'center'))
     layer = withNested([layer], nestedOf(graph.layers))[0] ?? layer
+  // The look a new layer starts with, by the rule new graphs' layers follow (decision 1273:
+  // bars beside points light and outlined, else solid); the graph's layers keep theirs.
+  layer = withNewLayerLook(graph.layers, layer)
   return [
     {
       type: 'graph.addLayer',

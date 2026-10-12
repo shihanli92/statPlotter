@@ -6,66 +6,66 @@
 <g data-id="series">
 <g data-id="layer/bars">
 <g data-id="series/a/bar">
-<rect x="44.794" y="128.278" width="32.4" height="97.2" fill="#0072b2" stroke="#0072b2" stroke-width="0.5"/>
+<rect x="44.794" y="128.278" width="32.4" height="97.2" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="0.5"/>
 </g>
 <g data-id="series/b/bar">
-<rect x="98.794" y="85.078" width="32.4" height="140.4" fill="#d55e00" stroke="#d55e00" stroke-width="0.5"/>
+<rect x="98.794" y="85.078" width="32.4" height="140.4" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="0.5"/>
 </g>
 <g data-id="series/c/bar">
-<rect x="152.794" y="153.478" width="32.4" height="72" fill="#009e73" stroke="#009e73" stroke-width="0.5"/>
+<rect x="152.794" y="153.478" width="32.4" height="72" fill="#009e73" fill-opacity="0.4" stroke="#009e73" stroke-width="0.5"/>
 </g>
 </g>
 <g data-id="layer/points">
 <g data-id="series/a/point/0">
-<path d="M56.494,139.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M56.494,139.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/a/point/1">
-<path d="M61.743,117.478a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M61.743,117.478a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/a/point/2">
-<path d="M61.743,146.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M61.743,146.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/a/point/3">
-<path d="M56.494,124.678a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M56.494,124.678a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/a/point/4">
-<path d="M51.246,131.878a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M51.246,131.878a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/a/point/5">
-<path d="M56.494,110.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M56.494,110.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/0">
-<path d="M110.494,95.878a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M110.494,95.878a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/1">
-<path d="M115.743,74.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M115.743,74.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/2">
-<path d="M115.743,103.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M115.743,103.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/3">
-<path d="M110.494,67.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M110.494,67.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/4">
-<path d="M110.494,81.478a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M110.494,81.478a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/5">
-<path d="M105.246,88.678a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M105.246,88.678a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/0">
-<path d="M159.246,160.678a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M159.246,160.678a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/1">
-<path d="M169.743,146.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M169.743,146.278a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/2">
-<path d="M164.494,153.478a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M164.494,153.478a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/3">
-<path d="M164.494,167.878a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M164.494,167.878a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/4">
-<path d="M164.494,139.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M164.494,139.078a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 </g>
 <g data-id="layer/error">
@@ -197,7 +197,7 @@
 <g data-id="legend">
 <g data-id="legend/a">
 <g data-id="legend/a/swatch">
-<rect x="207.994" y="48.478" width="14" height="10" fill="#0072b2" stroke="#0072b2" stroke-width="0.5"/>
+<rect x="207.994" y="48.478" width="14" height="10" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="0.5"/>
 </g>
 <g data-id="legend/a/label">
 <text fill="#000000" xml:space="preserve"><tspan x="225.994" y="55.503" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="6">Control</tspan></text>
@@ -205,7 +205,7 @@
 </g>
 <g data-id="legend/b">
 <g data-id="legend/b/swatch">
-<rect x="207.994" y="64.478" width="14" height="10" fill="#d55e00" stroke="#d55e00" stroke-width="0.5"/>
+<rect x="207.994" y="64.478" width="14" height="10" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="0.5"/>
 </g>
 <g data-id="legend/b/label">
 <text fill="#000000" xml:space="preserve"><tspan x="225.994" y="71.503" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="6">Drug A</tspan></text>
@@ -213,7 +213,7 @@
 </g>
 <g data-id="legend/c">
 <g data-id="legend/c/swatch">
-<rect x="207.994" y="80.478" width="14" height="10" fill="#009e73" stroke="#009e73" stroke-width="0.5"/>
+<rect x="207.994" y="80.478" width="14" height="10" fill="#009e73" fill-opacity="0.4" stroke="#009e73" stroke-width="0.5"/>
 </g>
 <g data-id="legend/c/label">
 <text fill="#000000" xml:space="preserve"><tspan x="225.994" y="87.503" font-family="'PS Liberation Serif', 'Liberation Serif', 'Times New Roman', Times, serif" font-size="6">Drug B</tspan></text>

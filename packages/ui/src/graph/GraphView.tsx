@@ -16,6 +16,7 @@ import {
   styleAllowed,
   styleContext,
   stylesFor,
+  withNewLayerLook,
 } from '@ps/graph'
 import {
   type GraphNode,
@@ -1039,7 +1040,8 @@ export function GraphView({
             .filter((s) => s.attaches && styleAllowed(s, c).allowed)
             .filter((s) => (s.id === 'error' ? l.geom === 'bar' || l.geom === 'points' : true))
             .map((s) => {
-              const layer = { ...newStyleLayer(s, c), on: l.id }
+              // Its look as a new layer's (decision 1273); the graph's layers keep theirs.
+              const layer = withNewLayerLook(graph.layers, { ...newStyleLayer(s, c), on: l.id })
               return { style: s, layer }
             })
         : []

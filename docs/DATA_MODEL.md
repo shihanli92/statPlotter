@@ -2152,16 +2152,23 @@ the context rules of the graph's `look`. A layer style field falls back to the s
 from (`styleSections`), so a migrated graph resolves to v1's values. "All data sets" in Format graph writes `layer.style`, one
 data set `layer.series[key].style` (decisions 59 / 78 with the layer as the extra key).
 
-**New layers' looks** (audit 3, RFR-5 and RTA-12; `newLayerLooks`, `graph/src/newDefaults.ts`):
-the layers a new graph is made with (`newGraphNode`: presets, the builder) and the layers Change
-layers or Duplicate as… brings (`withLayers`: those the graph doesn't keep) are written with the
-looks a new graph starts with — bars of the table's data solid in their data set's colour
-(`fill`, the theme's are 35%), the table's points over bars white with a black border (`fill`,
-`border`), and lines through each replicate unfaded (`fade: 0`) unless a line at the mean is
-drawn too (a fade written so is taken back when one comes). Fields the layer has are kept. The
-theme's defaults are unchanged, so graphs already made — v1 documents migrated, graphs saved
-before — draw as they did; the synthetic examples are built with the theme's looks
-(`presetGraph(…, { looks: 'theme' })`), as their v1 documents draw.
+**New layers' looks** (audit 3, RFR-5 and RTA-12, amended by decisions 1272–1273;
+`newLayerLooks`, `graph/src/newDefaults.ts`): the layers a new graph is made with
+(`newGraphNode`: presets, the builder), the layers Change layers or Duplicate as… brings
+(`withLayers`: those the graph doesn't keep) and a layer Add layer adds (`withNewLayerLook`) are
+written with the looks a new layer starts with — bars of the table's data solid in their data
+set's colour (`fill`, the theme's are 35%), but bars drawn with the table's points (the same data
+sets) lighter: their colour at 40% (`fill`; their outline the theme's, 1 pt in that colour or a
+style's bar outline width), and lines through each replicate unfaded (`fade: 0`) unless a line
+at the mean is drawn too (a fade written so is taken back when one comes). Points are never
+restyled because bars are drawn: they keep the theme's look, their data set's colour. Fields the
+layer has are kept, and a layer the graph already has is never restyled by one added (points
+added to solid bars leave the bars solid). The theme's defaults are unchanged, so graphs already
+made — v1 documents migrated, graphs saved before — draw as they did; the synthetic examples are
+built with the theme's looks (`presetGraph(…, { looks: 'theme' })`), as their v1 documents
+draw. The builder's preview draws the graph Create makes (`builtGraph`, `builderPreviewGraph`:
+the same layers and looks, a new graph with its project's style's axis frames and legend place
+as `node.add` gives it; decision 1274).
 
 ```ts
 interface GraphStyle {                                  // graph-wide (v2)

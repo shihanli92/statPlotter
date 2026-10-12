@@ -49,9 +49,26 @@ const isCloud = (n: SceneNode): boolean =>
 /**
  * Lays out a graph of a table made by `make` (held by nothing else) and keeps the scene: which
  * of the project, the table and a column's values are still reachable once collected (and that
- * the scene holds next to nothing of the heap besides).
+ * the scene holds next to nothing of the heap besides). The heap measure is noisy on a shared
+ * CI runner (once 54 and 57 bytes a point there, about 5 here), so it is taken up to three
+ * times and the smallest counts: a scene that kept the layout's working set would hold 480 to
+ * 790 bytes a point every time. The references are checked on every attempt.
  */
 async function retained(make: () => DataTable, graphOf: (t: DataTable) => GraphNode) {
+  const kept = new Set<string>()
+  let best = Number.POSITIVE_INFINITY
+  for (let attempt = 0; attempt < 3 && best >= 50; attempt++) {
+    const m = await measure(make, graphOf)
+    for (const k of m.kept) kept.add(k)
+    best = Math.min(best, m.perPoint)
+  }
+  // About 5 bytes (was 480 to 790: the layout's rows, looks, project and caches).
+  expect(best).toBeLessThan(50)
+  return [...kept]
+}
+
+/** One layout of `retained`: what it keeps reachable, and the scene's heap per point. */
+async function measure(make: () => DataTable, graphOf: (t: DataTable) => GraphNode) {
   const collect = async () => {
     for (let i = 0; i < 3; i++) {
       await new Promise((r) => setTimeout(r, 0))
@@ -89,9 +106,7 @@ async function retained(make: () => DataTable, graphOf: (t: DataTable) => GraphN
   // layout keeps (fonts, columns' categories) count on neither side.
   scene = null
   const perPoint = (withScene - (await collect())) / rows
-  // About 5 bytes (was 480 to 790: the layout's rows, looks, project and caches).
-  expect(perPoint).toBeLessThan(50)
-  return kept
+  return { kept, perPoint }
 }
 
 describe('a laid-out scene (audit 3, P1)', () => {

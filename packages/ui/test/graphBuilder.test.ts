@@ -1,3 +1,4 @@
+import { DocumentStore } from '@ps/engine'
 import {
   BUILDER_PRESETS,
   builderPresetsFor,
@@ -11,16 +12,19 @@ import {
   stylesFor,
   withLayers,
 } from '@ps/graph'
-import { type DataTable, GraphNode, TableKind } from '@ps/model'
+import { type DataTable, GraphNode, type NodeId, TableKind } from '@ps/model'
 import { describe, expect, it } from 'vitest'
 import { fonts, projectOf, sampleTable, sampleVariables } from '../../graph/test/helpers.ts'
 import {
   type BuilderAction,
   type BuilderState,
+  type BuildInput,
   builderChange,
   builderIssues,
   builderOf,
+  builderPreviewGraph,
   builderReducer,
+  builtGraph,
   groupsOf,
   initialBuilder,
   styleChoices,
@@ -394,5 +398,71 @@ describe('graph builder: the combinations of roadmap 33d', () => {
     expect(s.layers.find((l) => l.geom === 'line')!.aes).toEqual({ group: 'd' })
     expect(s.layers.find((l) => l.geom === 'points')!.aes?.size).toBeUndefined()
     expect(builderIssues(table, s)).toEqual([])
+  })
+})
+
+describe('graph builder: the preview is the graph Create makes (decision 1274)', () => {
+  /** The builder's input for a new graph of every data set and row. */
+  const inputOf = (table: DataTable, s: BuilderState, graph?: GraphNode): BuildInput => ({
+    s,
+    table,
+    graph,
+    name: 'G',
+    dataSets: table.dataSets.map((d) => d.id),
+    rows: [],
+    rowsAvailable: [],
+  })
+  /** The graph as `node.add` (fresh) puts it in a project with a style of its own. */
+  const created = (table: DataTable, g: GraphNode) => {
+    const project = projectOf(table)
+    project.settings = {
+      ...project.settings,
+      style: { axes: { frame: 'offset' }, legend: { position: 'top' } },
+    } as typeof project.settings
+    const store = new DocumentStore(project)
+    store.dispatch({ type: 'node.add', node: g, fresh: true }, 'New graph')
+    return { node: store.getState().nodes[g.id] as GraphNode, settings: project.settings }
+  }
+
+  it('every preset of every table kind: the same layers, looks and graph', () => {
+    for (const kind of TableKind.options) {
+      for (const p of presetsFor(kind)) {
+        // A dot plot (roadmap 34g) groups by a text variable: a table with some.
+        const table = p.id === 'dotPlot' ? sampleVariables() : sampleTable(kind)
+        const s = run(table, [{ type: 'preset', id: p.id }])
+        const made = builtGraph(inputOf(table, s))
+        const { node, settings } = created(table, made)
+        const shown = builderPreviewGraph(inputOf(table, s), settings)
+        expect(shown.layers, `${p.id} on ${kind}`).toEqual(made.layers)
+        expect({ ...shown, id: node.id }, `${p.id} on ${kind}`).toEqual(node)
+      }
+    }
+  })
+
+  it('bars with points: the preview’s points in their colour, its bars light (as made)', () => {
+    const table = sampleTable('column')
+    let s = run(table, [{ type: 'preset', id: 'pointsMean' }])
+    s = run(table, [{ type: 'toggle', style: 'bars' }], s)
+    const made = builtGraph(inputOf(table, s))
+    const shown = builderPreviewGraph(inputOf(table, s), projectOf(table).settings)
+    expect(shown.layers).toEqual(made.layers)
+    const bars = made.layers.find((l) => l.geom === 'bar')!
+    expect(bars.style).toMatchObject({ fill: { color: { series: true }, opacity: 0.4 } })
+    expect(made.layers.find((l) => l.geom === 'points')!.style?.fill).toBeUndefined()
+  })
+
+  it('Change layers: the preview shows the graph as changed', () => {
+    const table = sampleTable('column')
+    const graph = { ...presetGraph(table, 'bars'), id: 'g' as NodeId }
+    const s = run(table, [{ type: 'preset', id: 'barsPoints' }], builderOf(graph, table))
+    const changed = builtGraph(inputOf(table, s, graph))
+    expect(builderPreviewGraph(inputOf(table, s, graph), projectOf(table).settings)).toEqual(
+      changed,
+    )
+    // The bars kept solid; the points added in their colour.
+    expect(changed.layers.find((l) => l.geom === 'bar')!.style).toEqual(
+      graph.layers.find((l) => l.geom === 'bar')!.style,
+    )
+    expect(changed.layers.find((l) => l.geom === 'points')!.style?.fill).toBeUndefined()
   })
 })

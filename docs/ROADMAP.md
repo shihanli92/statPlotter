@@ -2038,3 +2038,19 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     caught up, the middle button seen by nothing on the canvas (happy-dom); Playwright
     `mouseZoom.spec.ts` (new: also a page's hover card under the wheel and after a zoom) in
     Chromium, WebKit and Firefox.
+    **Fix after 0.3.7 (no version change; decision 1271).** The scene-retention test takes its
+    heap measure up to three times and the smallest counts (the bound unchanged): one measure on
+    the shared CI runner was noisy (54 and 57 bytes a point once each).
+    **Fix after 0.3.7 (no version change; decisions 1272–1275).** Bars no longer restyle points
+    (the user's report): the table's points keep their data set's colour, and bars made with
+    them start a lighter version of their colour (40%, the theme's outline in that colour); bars
+    without points stay solid. The same rule decides a new layer's look wherever layers are added,
+    Add layer included, and never restyles layers already there. The builder's preview draws the
+    graph Create makes (one function for both, the project style's axis frames and legend place
+    too). The Tawk and Johnston examples' own solid bars are made lighter where points are drawn
+    on them (Johnston's 6p keeps its black outlines, its points outlined in black). Goldens of
+    graphs with bars and points (21 and the journal-style page), the Johnston, Tawk and
+    Swaminathan example fingerprints and thumbnails (Tawk, Swaminathan) change in those layers'
+    styles (and Tawk's and Johnston's format notes) only; `ANALYSES_VERSION` unchanged. Tests: `newLooks`, the builder's preview
+    against Create for every preset, Add layer's looks (unit); `graphBuilder.spec.ts` (the Bars
+    with points preview and graph) and `examples.spec.ts` in Chromium, WebKit and Firefox.

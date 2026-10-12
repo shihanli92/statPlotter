@@ -6,60 +6,60 @@
 <g data-id="series">
 <g data-id="layer/bars">
 <g data-id="series/lv_46/bar/0">
-<rect x="55.042" y="125.785" width="19.2" height="90" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="55.042" y="125.785" width="19.2" height="90" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="series/lv_46/bar/1">
-<rect x="115.042" y="60.985" width="19.2" height="154.8" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="115.042" y="60.985" width="19.2" height="154.8" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="series/lv_46/bar/2">
-<rect x="175.042" y="104.185" width="19.2" height="111.6" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="175.042" y="104.185" width="19.2" height="111.6" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="series/lv_4d/bar/0">
-<rect x="79.042" y="140.185" width="19.2" height="75.6" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="79.042" y="140.185" width="19.2" height="75.6" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 <g data-id="series/lv_4d/bar/1">
-<rect x="139.042" y="82.585" width="19.2" height="133.2" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="139.042" y="82.585" width="19.2" height="133.2" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 <g data-id="series/lv_4d/bar/2">
-<rect x="199.042" y="111.385" width="19.2" height="104.4" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="199.042" y="111.385" width="19.2" height="104.4" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 </g>
 <g data-id="layer/points">
 <g data-id="series/lv_46/point/0/0">
-<path d="M67.816,129.385a5.226,5.226 0 1,0 10.452,0a5.226,5.226 0 1,0 -10.452,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M67.816,129.385a5.226,5.226 0 1,0 10.452,0a5.226,5.226 0 1,0 -10.452,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/0/1">
-<path d="M57.995,122.185a6.647,6.647 0 1,0 13.294,0a6.647,6.647 0 1,0 -13.294,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M57.995,122.185a6.647,6.647 0 1,0 13.294,0a6.647,6.647 0 1,0 -13.294,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/1/0">
-<path d="M126.574,64.585a4.826,4.826 0 1,0 9.653,0a4.826,4.826 0 1,0 -9.653,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M126.574,64.585a4.826,4.826 0 1,0 9.653,0a4.826,4.826 0 1,0 -9.653,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/1/1">
-<path d="M119.493,57.385a5.149,5.149 0 1,0 10.297,0a5.149,5.149 0 1,0 -10.297,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M119.493,57.385a5.149,5.149 0 1,0 10.297,0a5.149,5.149 0 1,0 -10.297,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/2/0">
-<path d="M186.579,107.785a6.463,6.463 0 1,0 12.926,0a6.463,6.463 0 1,0 -12.926,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M186.579,107.785a6.463,6.463 0 1,0 12.926,0a6.463,6.463 0 1,0 -12.926,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/2/1">
-<path d="M178.903,100.585a5.739,5.739 0 1,0 11.478,0a5.739,5.739 0 1,0 -11.478,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M178.903,100.585a5.739,5.739 0 1,0 11.478,0a5.739,5.739 0 1,0 -11.478,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/0/0">
-<path d="M90.84,137.583h12.404v12.404h-12.404Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M90.84,137.583h12.404v12.404h-12.404Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/0/1">
-<path d="M83.027,130.97h11.23v11.23h-11.23Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M83.027,130.97h11.23v11.23h-11.23Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/1/0">
-<path d="M151.715,80.858h10.654v10.654h-10.654Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M151.715,80.858h10.654v10.654h-10.654Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/1/1">
-<path d="M143.747,74.09h9.79v9.79h-9.79Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M143.747,74.09h9.79v9.79h-9.79Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/2/0">
-<path d="M211.598,109.541h10.888v10.888h-10.888Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M211.598,109.541h10.888v10.888h-10.888Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/2/1">
-<path d="M202.594,101.738h12.095v12.095h-12.095Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M202.594,101.738h12.095v12.095h-12.095Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 </g>
 <g data-id="layer/error">
@@ -197,7 +197,7 @@
 </g>
 <g data-id="legend/lv_46">
 <g data-id="legend/lv_46/swatch">
-<rect x="238.642" y="54.785" width="14" height="10" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="238.642" y="54.785" width="14" height="10" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="legend/lv_46/level/symbol">
 <path d="M243.642,59.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
@@ -208,7 +208,7 @@
 </g>
 <g data-id="legend/lv_4d">
 <g data-id="legend/lv_4d/swatch">
-<rect x="238.642" y="70.785" width="14" height="10" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="238.642" y="70.785" width="14" height="10" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 <g data-id="legend/lv_4d/level/symbol">
 <path d="M243.87,74.013h3.544v3.544h-3.544Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>

@@ -1,4 +1,4 @@
-import type { FontRegistry } from '@ps/graph'
+import { type FontRegistry, NEW_LIGHT_BAR_FILL } from '@ps/graph'
 import { type DataTable, type GraphNode, type Layer, type Project, rowCategoryKey } from '@ps/model'
 import { columnTable, flatTable, groupedTable } from '../synthetic/builder.ts'
 import {
@@ -187,20 +187,23 @@ const reversedRows = (why: string): NonNullable<Panel['edit']> => ({
 
 type Format = NonNullable<GraphSpec['format']>
 
-/** Bars filled solid in their colours (the presets fill them pale), a title or none. */
+/**
+ * Bars filled solid in their colours (the presets fill them pale), a title or none. Bars with
+ * points drawn on them are a lighter version of their colour (40%, outlined in it), as new
+ * graphs' are (decision 1275): solid, the points in the same colour vanish into them.
+ */
 const looks = (title: string | null, more?: Format): Format => ({
-  does: `Bars filled solid; ${title ? `titled “${title}”` : 'no title'}, as the figure.${more ? ` ${more.does}` : ''}`,
+  does: `Bars filled in their colours: solid, or lighter (40%) under the points drawn on them; ${title ? `titled “${title}”` : 'no title'}, as the figure.${more ? ` ${more.does}` : ''}`,
   apply: (g0, table) => {
+    const points = g0.layers.some((l) => l.geom === 'points' && l.visible !== false)
+    const fill = points
+      ? NEW_LIGHT_BAR_FILL
+      : { type: 'solid', color: { series: true }, opacity: 1 }
     const g: GraphNode = {
       ...g0,
       title: title === null ? null : g0.title && { ...g0.title, content: [{ text: title }] },
       layers: g0.layers.map((l) =>
-        l.geom === 'bar'
-          ? ({
-              ...l,
-              style: { ...l.style, fill: { type: 'solid', color: { series: true }, opacity: 1 } },
-            } as Layer)
-          : l,
+        l.geom === 'bar' ? ({ ...l, style: { ...l.style, fill } } as Layer) : l,
       ),
     }
     return more ? more.apply(g, table) : g

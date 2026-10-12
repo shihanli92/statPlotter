@@ -13,13 +13,11 @@ import {
   histogramLayer,
   iconKindFor,
   iconViewBox,
-  isEmbeddingPair,
   layerTitle,
   layoutGraph,
   levelsNote,
   mappingAxes,
   matrixKindOf,
-  newGraphNode,
   PLOT_FAMILIES,
   type PlotStyle,
   plotIcon,
@@ -37,8 +35,6 @@ import {
   userPresetId,
   userPresetsFor,
   WHISKER_LABELS,
-  withLayers,
-  withOrientation,
 } from '@ps/graph'
 import {
   type DataSetColumn,
@@ -99,15 +95,16 @@ import {
   areasOf,
   axisVariables,
   type BuilderState,
-  builderChange,
+  type BuildInput,
   builderOf,
+  builderPreviewGraph,
   builderReducer,
+  builtGraph,
   densityColored,
   type Groups,
   groupsOf,
   initialBuilder,
   styleChoices,
-  withBuilderLevels,
 } from './builderState.ts'
 import { useLatest } from './latest.ts'
 
@@ -297,44 +294,20 @@ function BuilderForm({
   const turnable = s.frame === 'category' || s.frame === 'grouped'
 
   /**
-   * The graph the builder makes (or changes), as the preview shows it (`from`: the table it is
-   * laid out of, a big table's sample in the preview).
+   * What the builder makes the graph of (`builtGraph`; `from`: the table it is laid out of, a big
+   * table's sample in the preview). The preview draws the graph Create makes (decision 1274).
    */
-  const made = (forPreview: boolean, from: DataTable = table): GraphNode => {
-    const change = builderChange(s)
-    let g = graph ? withLayers(graph, change, from) : newGraphNode(from, change, name)
-    if (!graph) {
-      const allSets = dataSets.length === table.dataSets.length
-      const allRows =
-        !sliceable ||
-        (rows.length === rowsAvailable.length && rows.every((r, i) => r === rowsAvailable[i]))
-      g = {
-        ...g,
-        seriesSource: {
-          table: table.id,
-          include: allSets ? 'all' : dataSets,
-          ...(allRows ? {} : { rows }),
-        },
-      }
-    }
-    if (turnable || graph?.style.orientation) g = withOrientation(g, s.horizontal)
-    // Roadmap 36: a new graph of an embedding's two axes (UMAP_1 by UMAP_2) draws corner arrows.
-    if (!graph && g.frame === 'xy') {
-      const v = axisVariables(s)
-      const titleOf = (k: string | undefined) => table.dataSets.find((d) => d.id === k)?.title ?? ''
-      if (v.x && v.y && isEmbeddingPair(titleOf(v.x), titleOf(v.y)))
-        g = { ...g, style: { ...g.style, frame: 'arrows' } }
-    }
-    if (s.drawOrder) g = { ...g, drawOrder: s.drawOrder }
-    if (s.scales) g = { ...g, scales: { ...g.scales, ...s.scales } }
-    // Roadmap 49a: a user preset's cycles of symbols and line patterns.
-    if (s.shapes) g = { ...g, style: { ...g.style, shapes: s.shapes } }
-    if (s.dashes) g = { ...g, style: { ...g.style, dashes: s.dashes } }
-    // Roadmap 49d: a user preset's fill colours by data set.
-    if (s.fillPalette) g = { ...g, style: { ...g.style, fillPalette: s.fillPalette } }
-    g = withBuilderLevels(g, s, graph)
-    return forPreview ? { ...g, id: (graph?.id ?? 'builderPreview') as NodeId } : g
-  }
+  const input = (from: DataTable = table): BuildInput => ({
+    s,
+    table,
+    from,
+    graph,
+    name,
+    dataSets,
+    rows,
+    rowsAvailable,
+  })
+  const made = (): GraphNode => builtGraph(input())
 
   // The preview (roadmap 34f): a big table's is drawn from a sample of its rows
   // (`previewSource`; the graph made draws them all) and laid out only for the last of quick
@@ -354,7 +327,7 @@ function BuilderForm({
         // variables, their points standing for rows about 5,000 in all (decision 452).
         const sample = src.project.nodes[table.id]
         const { graph: g, sets } = previewGraph(
-          made(true, sample?.kind === 'table' ? sample : table),
+          builderPreviewGraph(input(sample?.kind === 'table' ? sample : table), project.settings),
           table,
         )
         const p = graph ? src.project : withGraphs(src.project, [g])
@@ -385,18 +358,18 @@ function BuilderForm({
     if (!s.layers.length) return setError('Choose at least one plot style.')
     if (mode.kind === 'change' && graph) {
       const target = mode.store ?? store
-      const cmds = graphChangeCommands(graph, made(false))
+      const cmds = graphChangeCommands(graph, made())
       if (cmds.length) target.dispatch(cmds, 'Change layers')
       onClose()
       return
     }
     if (mode.kind === 'duplicate' && graph) {
-      duplicate(made(false))
+      duplicate(made())
       return
     }
     if (!dataSets.length) return setError('Choose at least one data set.')
     if (sliceable && !rows.length) return setError('Choose at least one row.')
-    const base = made(false)
+    const base = made()
     // A set of split graphs (roadmap 34d): live with the table, on a page's grid when asked.
     const opts = {
       by: split === 'none' ? ('level' as const) : split,

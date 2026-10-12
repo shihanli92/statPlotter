@@ -1,4 +1,4 @@
-import { withTrees } from '@ps/graph'
+import { NEW_LIGHT_BAR_FILL, withTrees } from '@ps/graph'
 import { createTable, type DataTable, type Layer, type Project } from '@ps/model'
 import {
   type AnalysisSpec,
@@ -143,9 +143,13 @@ const stackedCounts: Format = {
   }),
 }
 
-/** Solid bars outlined in black (the figure's white and gray bars need an outline to show). */
+/**
+ * Bars outlined in black (the figure's white and gray bars need an outline to show), in their
+ * colour, lighter (40%) under the points drawn on them as new graphs' bars are (decision 1275),
+ * and the points outlined in black too: the white ones vanish on white paper otherwise.
+ */
 const outlinedBars: Format = {
-  does: 'Bars in solid colour outlined in black, as the figure.',
+  does: 'Bars in their colours outlined in black, lighter (40%) under the points, the points outlined in black, as the figure.',
   apply: (g) => ({
     ...g,
     layers: g.layers.map((l) =>
@@ -154,11 +158,16 @@ const outlinedBars: Format = {
             ...l,
             style: {
               ...l.style,
-              fill: { type: 'solid', color: { series: true }, opacity: 1 },
+              fill: NEW_LIGHT_BAR_FILL,
               border: { color: { rgb: BLACK }, width: 0.5, dash: 'solid' },
             },
           } as Layer)
-        : l,
+        : l.geom === 'points'
+          ? ({
+              ...l,
+              style: { ...l.style, border: { color: { rgb: BLACK }, width: 0.5, dash: 'solid' } },
+            } as Layer)
+          : l,
     ),
   }),
 }

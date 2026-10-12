@@ -172,4 +172,26 @@ describe('moving layers', () => {
     const front = { ...withBars, layers: [...graph.layers, withBars.layers[0]!] }
     expect(addStyleCommands({ ...ctx, graph: front }, 'error')[0]).toMatchObject({ at: n })
   })
+
+  it('a layer added takes a new layer’s look; the layers there keep theirs (decision 1273)', () => {
+    const ctxOf = (graph: GraphNode, project: PanelContext['project']) =>
+      ({ graph, project, lookup: () => undefined, dispatch: () => {} }) as unknown as PanelContext
+    // Bars added beside points: light (the theme's outline in their colour); the points untouched.
+    const p = setup('points')
+    const [bars] = addStyleCommands(ctxOf(p.graph, p.project), 'bars')
+    expect((bars as { layer: Layer }).layer.style).toEqual({
+      fill: { type: 'solid', color: { series: true }, opacity: 0.4 },
+    })
+    // Points added to solid bars: in their colour (no look written), the bars left solid.
+    const b = setup('bars')
+    const [points] = addStyleCommands(ctxOf(b.graph, b.project), 'points')
+    expect(points).toMatchObject({ type: 'graph.addLayer', layer: { geom: 'points' } })
+    expect((points as { layer: Layer }).layer.style).toBeUndefined()
+    // Bars added to a graph without points: solid.
+    const e = setup('meanSd')
+    const [solid] = addStyleCommands(ctxOf(e.graph, e.project), 'bars')
+    expect((solid as { layer: Layer }).layer.style).toEqual({
+      fill: { type: 'solid', color: { series: true }, opacity: 1 },
+    })
+  })
 })

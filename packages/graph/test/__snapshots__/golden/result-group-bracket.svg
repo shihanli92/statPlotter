@@ -6,54 +6,54 @@
 <g data-id="series">
 <g data-id="layer/bars">
 <g data-id="series/a/bar">
-<rect x="38.035" y="136.585" width="32.4" height="79.2" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="38.035" y="136.585" width="32.4" height="79.2" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="series/b/bar">
-<rect x="92.035" y="129.385" width="32.4" height="86.4" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="92.035" y="129.385" width="32.4" height="86.4" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 <g data-id="series/c/bar">
-<rect x="146.035" y="141.385" width="32.4" height="74.4" fill="#009e73" stroke="#009e73" stroke-width="1"/>
+<rect x="146.035" y="141.385" width="32.4" height="74.4" fill="#009e73" fill-opacity="0.4" stroke="#009e73" stroke-width="1"/>
 </g>
 <g data-id="series/d/bar">
-<rect x="200.035" y="74.185" width="32.4" height="141.6" fill="#cc79a7" stroke="#cc79a7" stroke-width="1"/>
+<rect x="200.035" y="74.185" width="32.4" height="141.6" fill="#cc79a7" fill-opacity="0.4" stroke="#cc79a7" stroke-width="1"/>
 </g>
 </g>
 <g data-id="layer/points">
 <g data-id="series/a/point/0">
-<path d="M51.735,143.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M51.735,143.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/a/point/1">
-<path d="M51.735,129.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M51.735,129.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/a/point/2">
-<path d="M51.735,136.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M51.735,136.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/0">
-<path d="M105.735,136.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M105.735,136.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/1">
-<path d="M105.735,122.185a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M105.735,122.185a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/b/point/2">
-<path d="M105.735,129.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M105.735,129.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/0">
-<path d="M159.735,150.985a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M159.735,150.985a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/1">
-<path d="M159.735,129.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M159.735,129.385a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 <g data-id="series/c/point/2">
-<path d="M159.735,143.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M159.735,143.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#009e73" stroke="#009e73" stroke-width="0.75"/>
 </g>
 <g data-id="series/d/point/0">
-<path d="M213.735,86.185a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M213.735,86.185a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#cc79a7" stroke="#cc79a7" stroke-width="0.75"/>
 </g>
 <g data-id="series/d/point/1">
-<path d="M213.735,64.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M213.735,64.585a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#cc79a7" stroke="#cc79a7" stroke-width="0.75"/>
 </g>
 <g data-id="series/d/point/2">
-<path d="M213.735,71.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M213.735,71.785a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0Z" fill="#cc79a7" stroke="#cc79a7" stroke-width="0.75"/>
 </g>
 </g>
 <g data-id="layer/error">

@@ -81,6 +81,60 @@ test('a grouped graph of bars (mean), points and SEM error bars', async ({ page 
   await expectUndo(page, 'New graph')
 })
 
+test('bars with points: the points keep their colour, the bars light, in the preview as made', async ({
+  page,
+}) => {
+  // Decisions 1272 and 1274: bars never restyle the points; bars drawn with points are a
+  // lighter version of their colour, outlined in it; the preview shows what Create makes.
+  await openExample(page, 'getting-started')
+  await openSheet(page, 'Dose response (3 groups)', 'Data Tables')
+  const b = await openBuilder(page)
+  await pickPreset(b, 'Bars with points')
+  /** Each data set's points' and bars' colours, as drawn. */
+  const looks = (scope: Locator) =>
+    scope.evaluate((svg) => {
+      const sets = new Map<string, { points: string[]; bars: string[] }>()
+      for (const el of svg.querySelectorAll('[data-id^="series/"]')) {
+        const id = el.getAttribute('data-id')!
+        const set = id.split('/')[1]!
+        const at = sets.get(set) ?? { points: [], bars: [] }
+        sets.set(set, at)
+        const mark = el.matches('path, rect') ? el : el.querySelector('path, rect')
+        if (!mark) continue
+        const look = [
+          mark.getAttribute('fill'),
+          mark.getAttribute('fill-opacity') ?? '1',
+          mark.getAttribute('stroke'),
+        ].join(' ')
+        if (id.includes('/point/')) at.points.push(look)
+        else if (id.endsWith('/bar')) at.bars.push(look)
+      }
+      return [...sets.values()]
+        .filter((s) => s.points.length && s.bars.length)
+        .map((s) => ({ points: [...new Set(s.points)], bars: [...new Set(s.bars)] }))
+    })
+  /** Points filled and outlined in their data set's colour; bars that colour at 40%, outlined. */
+  const expectLooks = async (scope: Locator) => {
+    const sets = await looks(scope)
+    expect(sets.length).toBeGreaterThan(1)
+    for (const s of sets) {
+      expect(s.points).toHaveLength(1)
+      const [fill, opacity, stroke] = s.points[0]!.split(' ')
+      expect(fill).not.toBe('#ffffff')
+      expect([opacity, stroke]).toEqual(['1', fill])
+      expect(s.bars).toEqual([`${fill} 0.4 ${fill}`])
+    }
+    return sets
+  }
+  await expect(pointMarks(builderPreview(b)).first()).toBeAttached()
+  const shown = await expectLooks(builderPreview(b))
+  await b.getByRole('button', { name: 'Create', exact: true }).click()
+  await expect(b).toBeHidden()
+  const svg = canvas(page)
+  await expect(pointMarks(svg).first()).toBeAttached()
+  expect(await expectLooks(svg)).toEqual(shown)
+})
+
 test('unavailable plot styles say why, and the preset row follows the arrow keys', async ({
   page,
 }) => {

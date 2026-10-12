@@ -6,60 +6,60 @@
 <g data-id="series">
 <g data-id="layer/bars">
 <g data-id="series/lv_46/bar/0">
-<rect x="55.042" y="125.785" width="19.2" height="90" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="55.042" y="125.785" width="19.2" height="90" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="series/lv_46/bar/1">
-<rect x="115.042" y="60.985" width="19.2" height="154.8" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="115.042" y="60.985" width="19.2" height="154.8" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="series/lv_46/bar/2">
-<rect x="175.042" y="104.185" width="19.2" height="111.6" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="175.042" y="104.185" width="19.2" height="111.6" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="series/lv_4d/bar/0">
-<rect x="79.042" y="140.185" width="19.2" height="75.6" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="79.042" y="140.185" width="19.2" height="75.6" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 <g data-id="series/lv_4d/bar/1">
-<rect x="139.042" y="82.585" width="19.2" height="133.2" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="139.042" y="82.585" width="19.2" height="133.2" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 <g data-id="series/lv_4d/bar/2">
-<rect x="199.042" y="111.385" width="19.2" height="104.4" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="199.042" y="111.385" width="19.2" height="104.4" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 </g>
 <g data-id="layer/points">
 <g data-id="series/lv_46/point/0/0">
-<path d="M62.642,129.385a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M62.642,129.385a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/0/1">
-<path d="M62.642,122.185a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M62.642,122.185a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/1/0">
-<path d="M122.642,64.585a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M122.642,64.585a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/1/1">
-<path d="M122.642,57.385a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M122.642,57.385a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/2/0">
-<path d="M182.642,107.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M182.642,107.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_46/point/2/1">
-<path d="M182.642,100.585a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M182.642,100.585a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#0072b2" stroke="#0072b2" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/0/0">
-<path d="M86.642,143.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M86.642,143.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/0/1">
-<path d="M86.642,136.585a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M86.642,136.585a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/1/0">
-<path d="M146.642,86.185a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M146.642,86.185a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/1/1">
-<path d="M146.642,78.985a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M146.642,78.985a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/2/0">
-<path d="M206.642,114.985a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M206.642,114.985a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 <g data-id="series/lv_4d/point/2/1">
-<path d="M206.642,107.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#ffffff" stroke="#000000" stroke-width="0.75"/>
+<path d="M206.642,107.785a2,2 0 1,0 4,0a2,2 0 1,0 -4,0Z" fill="#d55e00" stroke="#d55e00" stroke-width="0.75"/>
 </g>
 </g>
 <g data-id="layer/error">
@@ -192,7 +192,7 @@
 <g data-id="legend">
 <g data-id="legend/lv_46">
 <g data-id="legend/lv_46/swatch">
-<rect x="238.642" y="38.785" width="14" height="10" fill="#0072b2" stroke="#0072b2" stroke-width="1"/>
+<rect x="238.642" y="38.785" width="14" height="10" fill="#0072b2" fill-opacity="0.4" stroke="#0072b2" stroke-width="1"/>
 </g>
 <g data-id="legend/lv_46/label">
 <text fill="#000000" xml:space="preserve"><tspan x="256.642" y="47.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">F</tspan></text>
@@ -200,7 +200,7 @@
 </g>
 <g data-id="legend/lv_4d">
 <g data-id="legend/lv_4d/swatch">
-<rect x="238.642" y="54.785" width="14" height="10" fill="#d55e00" stroke="#d55e00" stroke-width="1"/>
+<rect x="238.642" y="54.785" width="14" height="10" fill="#d55e00" fill-opacity="0.4" stroke="#d55e00" stroke-width="1"/>
 </g>
 <g data-id="legend/lv_4d/label">
 <text fill="#000000" xml:space="preserve"><tspan x="256.642" y="63.599" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="11">M</tspan></text>

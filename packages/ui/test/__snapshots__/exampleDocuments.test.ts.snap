@@ -16,7 +16,7 @@ exports[`example documents > grouped 1`] = `"dcd99e1f64353ec063820ed7dea4c71b75b
 
 exports[`example documents > hoffmann 1`] = `"1aeb7a5630cae09f82fb5d25a12546f39a94073d293035413fbc63e44ed348e9"`;
 
-exports[`example documents > johnston 1`] = `"18eec98bf896a5f821c44959957b4a7dd8e5e1842b335ef06a28a25a5000a4b6"`;
+exports[`example documents > johnston 1`] = `"41a5b86762e13c22e8a3545b8464e43860c2b844461a023d165b61474c047453"`;
 
 exports[`example documents > more-graphs 1`] = `"27d3f0c0ba65756de98daf9c03e929afc0bbcad8388d9246388763879dcfe258"`;
 
@@ -28,9 +28,9 @@ exports[`example documents > single-cell 1`] = `"cb2fbfc387b33f1df5a8b1090de885d
 
 exports[`example documents > stucchi 1`] = `"1649bafd6f251fc5f131cb2556bc6b257f78e5017dad9cbd8427f44cd7b910cd"`;
 
-exports[`example documents > swaminathan 1`] = `"612c05fe2276e2cc55edae6b289d1b7670e54ae7fd0804286e82da1bcdcd8a0f"`;
+exports[`example documents > swaminathan 1`] = `"ca1a14708c629d896cb85ff06dffcdc5c77fbc8856740052bfccefd6e93045ef"`;
 
-exports[`example documents > tawk 1`] = `"f4b036fa694c9a5d1ec441a8864c5eefd84551001a65da4a2b01f5075dd90466"`;
+exports[`example documents > tawk 1`] = `"330ea793e175ecb8776061db3409c909aa742e36cc90d9807edd0f9c07a0a4b5"`;
 
 exports[`sample tables > column 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[34.1,38.5,29.8,41.2,35.6,32.3,36.9,30.4]}],"title":"Control"},{"id":"id2","subcolumns":[{"type":"number","values":[45.2,52.8,48.1,39.7,50.3,47.6,44.9,51.5]}],"title":"Treated"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":8,"rowTitles":null,"tableKind":"column","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
 

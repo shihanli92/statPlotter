@@ -10,6 +10,7 @@ import {
   frameChoiceSelected,
   histogramLayer,
   hostsFirst,
+  isEmbeddingPair,
   type LayerChange,
   layerMovedBy,
   layerMovedTo,
@@ -19,6 +20,7 @@ import {
   NESTED_DEFAULTS,
   type NestedOptions,
   nestedOf,
+  newGraphNode,
   newStyleLayer,
   type PresetLayers,
   plotStyle,
@@ -35,7 +37,9 @@ import {
   stylesFor,
   UNSTACKED,
   variableHistogram,
+  withLayers,
   withNested,
+  withOrientation,
   withStyleLayer,
 } from '@ps/graph'
 import {
@@ -47,8 +51,11 @@ import {
   type Layer,
   type LevelMeasure,
   type LevelOrder,
+  type NodeId,
   type Position,
+  type ProjectSettings,
   type Stat,
+  styledNewGraph,
   type UserPreset,
   type VariableMapping,
 } from '@ps/model'
@@ -885,4 +892,83 @@ export function builderIssues(table: DataTable, s: BuilderState): string[] {
     const a = styleAllowed(st, others)
     return a.allowed ? [] : [`${l.id}: ${a.reason}`]
   })
+}
+
+/** What the builder makes a graph of (`builtGraph`). */
+export interface BuildInput {
+  s: BuilderState
+  /** The graph's table. */
+  table: DataTable
+  /** The table laid out of (a big table's sample in the preview; default `table`). */
+  from?: DataTable
+  /** The graph changed (Change layers) or copied (Duplicate as…); absent: a new graph. */
+  graph?: GraphNode
+  name: string
+  /** A new graph's data sets and (grouped, contingency and XY tables) rows chosen. */
+  dataSets: readonly string[]
+  rows: readonly number[]
+  rowsAvailable: readonly number[]
+}
+
+/** Tables whose rows a new graph can draw some of. */
+export const sliceableKind = (table: DataTable): boolean =>
+  table.tableKind === 'grouped' || table.tableKind === 'contingency' || table.tableKind === 'xy'
+
+/**
+ * The graph the builder makes (Create, Duplicate as…) or changes (Change layers) of its state:
+ * its layers with the looks new layers start with (`newGraphNode`, `withLayers`:
+ * `newLayerLooks`).
+ */
+export function builtGraph(input: BuildInput): GraphNode {
+  const { s, table, graph, name, dataSets, rows, rowsAvailable } = input
+  const from = input.from ?? table
+  const sliceable = sliceableKind(table)
+  const turnable = s.frame === 'category' || s.frame === 'grouped'
+  const change = builderChange(s)
+  let g = graph ? withLayers(graph, change, from) : newGraphNode(from, change, name)
+  if (!graph) {
+    const allSets = dataSets.length === table.dataSets.length
+    const allRows =
+      !sliceable ||
+      (rows.length === rowsAvailable.length && rows.every((r, i) => r === rowsAvailable[i]))
+    g = {
+      ...g,
+      seriesSource: {
+        table: table.id,
+        include: allSets ? 'all' : [...dataSets],
+        ...(allRows ? {} : { rows: [...rows] }),
+      },
+    }
+  }
+  if (turnable || graph?.style.orientation) g = withOrientation(g, s.horizontal)
+  // Roadmap 36: a new graph of an embedding's two axes (UMAP_1 by UMAP_2) draws corner arrows.
+  if (!graph && g.frame === 'xy') {
+    const v = axisVariables(s)
+    const titleOf = (k: string | undefined) => table.dataSets.find((d) => d.id === k)?.title ?? ''
+    if (v.x && v.y && isEmbeddingPair(titleOf(v.x), titleOf(v.y)))
+      g = { ...g, style: { ...g.style, frame: 'arrows' } }
+  }
+  if (s.drawOrder) g = { ...g, drawOrder: s.drawOrder }
+  if (s.scales) g = { ...g, scales: { ...g.scales, ...s.scales } }
+  // Roadmap 49a: a user preset's cycles of symbols and line patterns.
+  if (s.shapes) g = { ...g, style: { ...g.style, shapes: s.shapes } }
+  if (s.dashes) g = { ...g, style: { ...g.style, dashes: s.dashes } }
+  // Roadmap 49d: a user preset's fill colours by data set.
+  if (s.fillPalette) g = { ...g, style: { ...g.style, fillPalette: s.fillPalette } }
+  return withBuilderLevels(g, s, graph)
+}
+
+/**
+ * The graph the builder's preview draws: the graph Create makes (`builtGraph`) as the document
+ * holds it once made — a new graph with its project's style's axis frames and legend place, as
+ * `node.add` (fresh) gives it — under the id it is laid out with (fix after 0.3.7, decision 1274:
+ * the preview shows what Create makes).
+ */
+export function builderPreviewGraph(
+  input: BuildInput,
+  settings: Pick<ProjectSettings, 'theme' | 'style'>,
+): GraphNode {
+  const g = builtGraph(input)
+  if (input.graph) return { ...g, id: input.graph.id }
+  return { ...styledNewGraph(g, settings), id: 'builderPreview' as NodeId }
 }
