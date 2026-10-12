@@ -1532,6 +1532,13 @@ table.results.kv td:first-child {
   align-items: flex-start;
   gap: 12px;
 }
+/* Roadmap 50: a canvas or page dragged with the middle button scrolls; the grabbing hand all over
+   it, whatever is under the pointer. */
+.canvas[data-panning],
+.canvas[data-panning] * {
+  /* biome-ignore lint/complexity/noImportantStyles: over the scene's own inline move cursor */
+  cursor: grabbing !important;
+}
 /* Centre with auto margins, not align-items: they drop to 0 when the graph is wider than the
    canvas, so its left side stays reachable by scrolling. */
 .canvas > * {

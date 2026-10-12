@@ -1,4 +1,4 @@
-import { type KeyInput, matchesShortcut, parseShortcut } from './shortcut.ts'
+import { formatShortcut, type KeyInput, matchesShortcut, parseShortcut } from './shortcut.ts'
 
 // Keys a view handles itself, outside the command registry (audit 2, U20): on a row of the
 // navigator, on the graph's canvas, on a layout page. One table, read by the Keyboard shortcuts
@@ -87,6 +87,45 @@ export const VIEW_KEY_SECTIONS: readonly { title: string; items: readonly ViewKe
   { title: 'On the canvas', items: Object.values(CANVAS_KEYS) },
   { title: 'On a page', items: Object.values(PAGE_KEYS) },
 ]
+
+/**
+ * Roadmap 50: what the mouse and trackpad do on the graph's canvas and on pages, for the sheet's
+ * "With the mouse or trackpad" and the zoom box's tooltip. Gestures are not keys: each is written
+ * for macOS and for the other systems.
+ */
+export interface ViewGesture {
+  label: string
+  mac: readonly string[]
+  other: readonly string[]
+}
+
+const gesture = (label: string, mac: string[], other = mac): ViewGesture => ({
+  label,
+  mac,
+  other,
+})
+
+export const POINTER_GESTURES = {
+  wheelZoom: gesture(
+    'Zoom in or out about the pointer',
+    ['⌥ + scroll', '⌃ + scroll'],
+    ['Alt + scroll', 'Ctrl + scroll'],
+  ),
+  pinch: gesture('Zoom on a trackpad, about the fingers', ['Pinch']),
+  middleDrag: gesture('Move around a zoomed graph or page', ['Middle-button drag']),
+  twoFingers: gesture('Move around on a trackpad (any direction)', ['Two-finger drag']),
+} as const
+
+/** A gesture as the sheet shows it on this platform. */
+export const gestureText = (g: ViewGesture, isMac: boolean): readonly string[] =>
+  isMac ? g.mac : g.other
+
+/** The zoom box's tooltip: its keys and gestures. */
+export function zoomHint(isMac: boolean): string {
+  const g = POINTER_GESTURES
+  const keys = `${formatShortcut('Mod+=', isMac)} / ${formatShortcut('Mod+-', isMac)}`
+  return `Zoom (${keys}; ${gestureText(g.wheelZoom, isMac).join(' or ')}, or pinch, zooms about the pointer). Move around a zoomed view with a middle-button or two-finger drag`
+}
 
 const parsed = new Map<string, ReturnType<typeof parseShortcut>>()
 

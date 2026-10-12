@@ -49,6 +49,8 @@ const GRAPH = [
   // Roadmap 47b: legend entries selected, moved, hidden and labelled; the legend's columns.
   'legendEditing',
   'mappedVariables',
+  // Roadmap 50: zoom and pan with the mouse (Alt / Ctrl + wheel, the middle button).
+  'mouseZoom',
   // Roadmap 46b: reference lines (identity lines, ± cut-offs, volcano thresholds).
   'referenceLines',
   'resultsOnGraphs',
@@ -242,6 +244,7 @@ const RULES = [
   [
     'packages/ui/src/layout/',
     [
+      'mouseZoom',
       'layouts',
       'layoutObjects',
       'layerSelection',

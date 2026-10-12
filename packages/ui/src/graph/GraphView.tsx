@@ -218,6 +218,7 @@ import {
 } from './selectionEdits.ts'
 import { swapMappedXY, swappable } from './swapXY.ts'
 import { layerAlone, treeHandle } from './treeDrag.ts'
+import { useMouseZoom } from './useMouseZoom.ts'
 import {
   EmptyGraphNote,
   EVERY_POINT_HINT,
@@ -619,6 +620,14 @@ export function GraphView({
   // Roadmap 46b: Insert › Volcano thresholds….
   const [volcanoDialog, setVolcanoDialog] = useState(false)
   const canvasRef = useRef<HTMLDivElement>(null)
+  // Roadmap 50: Alt / Ctrl + wheel and pinches zoom about the pointer; the middle button pans.
+  const { rasterZoom } = useMouseZoom({
+    canvas: canvasRef,
+    content: () => wrapRef.current?.querySelector(':scope > svg.scene') ?? null,
+    zooms: GRAPH_ZOOMS,
+    zoom,
+    setZoom,
+  })
   const focusCanvas = () => canvasRef.current?.focus({ preventScroll: true })
   /**
    * Audit 3 (A4): a run of Tabs on the canvas — the selection it started from and the one its
@@ -1957,6 +1966,7 @@ export function GraphView({
             <SceneSvg
               scene={scene}
               zoom={zoom}
+              rasterZoom={rasterZoom}
               selected={paths}
               onSelect={(t, hit, clicks, mods) => {
                 const dragged = afterDrag.current

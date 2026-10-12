@@ -3,8 +3,10 @@ import { useState } from 'react'
 import {
   type Command,
   formatShortcut,
+  gestureText,
   isMacPlatform,
   MENUS,
+  POINTER_GESTURES,
   useCommandRegistry,
   VIEW_KEY_SECTIONS,
 } from '../commands/index.ts'
@@ -81,6 +83,25 @@ export function ShortcutsDialog({ onClose }: { onClose: () => void }) {
             </dl>
           </section>
         ))}
+        {/* Roadmap 50: the mouse and trackpad on the canvas and pages. */}
+        <section>
+          <h3>With the mouse or trackpad</h3>
+          <dl>
+            {Object.values(POINTER_GESTURES).map((g) => (
+              <div key={g.label}>
+                <dt>{g.label}</dt>
+                <dd>
+                  {gestureText(g, isMac).map((text, i) => (
+                    <span key={text}>
+                      {i > 0 && ' '}
+                      <kbd>{text}</kbd>
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       </div>
     </Dialog>
   )

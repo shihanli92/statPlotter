@@ -1431,8 +1431,9 @@ LabelStyle.background?: 'none' | 'halo' | 'box'    // behind a group's name (abs
   canvas, layout pages, Format preview, builder preview) draws it as an image made by our own
   rasteriser (`render/pointRaster.ts`: each symbol a stamp of 4 × 4 samples per pixel, fill then
   stroke, blended in drawing order; deterministic, no browser canvas; PNG), at the screen's
-  resolution (zoom × CSS pixels per point × device pixel ratio), once per cloud and zoom; a cloud
-  laid out again with its points as they were, or all moved alike (a title moved, a drag's step),
+  resolution (zoom × CSS pixels per point × device pixel ratio), once per cloud and zoom (while
+  the wheel or a pinch zooms, at the zoom it started from until it rests 200 ms: decision 1269);
+  a cloud laid out again with its points as they were, or all moved alike (a title moved, a drag's step),
   shows the image it had, moved (decision 1113), and an image's object URL is revoked shortly
   after no element shows it (decision 1112). Export ›
   "Points as image" (off by default; remembered) draws the clouds as images at the export's

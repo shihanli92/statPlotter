@@ -78,17 +78,21 @@ describe('zoom', () => {
     expect(stepZoom(GRAPH_ZOOMS, 1.5, -1)).toBe(1.25)
     expect(stepZoom(GRAPH_ZOOMS, 1.1, 1)).toBe(1.25)
     expect(stepZoom(GRAPH_ZOOMS, 1.1, -1)).toBe(1)
-    expect(stepZoom(GRAPH_ZOOMS, 3, 1)).toBe(3)
-    expect(stepZoom(LAYOUT_ZOOMS, 0.5, -1)).toBe(0.5)
+    // Roadmap 50: the lists reach the wheel's limits (graphs 25%–800%, pages 25%–400%).
+    expect(stepZoom(GRAPH_ZOOMS, 3, 1)).toBe(4)
+    expect(stepZoom(GRAPH_ZOOMS, 8, 1)).toBe(8)
+    expect(stepZoom(GRAPH_ZOOMS, 0.25, -1)).toBe(0.25)
+    expect(stepZoom(LAYOUT_ZOOMS, 0.5, -1)).toBe(0.25)
+    expect(stepZoom(LAYOUT_ZOOMS, 4, 1)).toBe(4)
   })
 
   it('offers View › Zoom commands, disabled at the ends', () => {
     const set = vi.fn()
     const r = new CommandRegistry()
-    r.set('v', 'view', zoomCommands(LAYOUT_ZOOMS, 1.5, set))
+    r.set('v', 'view', zoomCommands(LAYOUT_ZOOMS, 4, set))
     expect(r.get('view.zoomIn')?.enabled).toBe(false)
     expect(r.run('view.zoomOut')).toBe(true)
-    expect(set).toHaveBeenLastCalledWith(1.25)
+    expect(set).toHaveBeenLastCalledWith(3)
     r.run('view.actualSize')
     expect(set).toHaveBeenLastCalledWith(1)
     const key = (k: string, shift = false) => ({

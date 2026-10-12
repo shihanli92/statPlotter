@@ -591,6 +591,7 @@ const isBackground = (t: StylePath | undefined) =>
 export function SceneSvg({
   scene,
   zoom,
+  rasterZoom = zoom,
   selected,
   onSelect,
   onPointerDownNode,
@@ -606,6 +607,11 @@ export function SceneSvg({
 }: {
   scene: Scene
   zoom: number
+  /**
+   * The zoom point clouds are drawn into images at: the zoom, or (roadmap 50) the zoom before the
+   * wheel's, until it rests.
+   */
+  rasterZoom?: number
   /** The selection keys to halo (several when several things are selected). */
   selected: readonly StylePath[]
   /**
@@ -807,7 +813,9 @@ export function SceneSvg({
       aria-label={label}
     >
       <rect x={0} y={0} width={scene.width} height={scene.height} fill="#ffffff" />
-      <RasterScale.Provider value={k * pixelRatio()}>{body}</RasterScale.Provider>
+      <RasterScale.Provider value={rasterZoom * PX_PER_PT * pixelRatio()}>
+        {body}
+      </RasterScale.Provider>
       {preview
         ? preview.length > 0 && (
             <g className="hover preview" pointerEvents="none">

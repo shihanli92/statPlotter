@@ -1,10 +1,16 @@
 import { type SampledPoints, SCREEN_POINTS, sampledNote } from '@ps/graph'
 import type { NodeId } from '@ps/model'
-import { useSyncExternalStore } from 'react'
+import { useState, useSyncExternalStore } from 'react'
+import { isMacPlatform, zoomHint } from '../commands/index.ts'
+import { Tooltip } from '../components/Tooltip.tsx'
+import { zoomChoices } from './zoom.ts'
 
 // Parts the graph and layout views share around their canvas.
 
-/** The view toolbar's zoom menu. */
+/**
+ * The view toolbar's zoom menu: its levels, and the zoom between them the wheel or a pinch left
+ * (roadmap 50), its tooltip the keys and gestures.
+ */
 export function ZoomSelect({
   zooms,
   zoom,
@@ -14,17 +20,20 @@ export function ZoomSelect({
   zoom: number
   onChange: (zoom: number) => void
 }) {
+  const [isMac] = useState(isMacPlatform)
   return (
-    <label className="inline">
-      Zoom{' '}
-      <select value={zoom} onChange={(e) => onChange(Number(e.target.value))}>
-        {zooms.map((z) => (
-          <option key={z} value={z}>
-            {Math.round(z * 100)}%
-          </option>
-        ))}
-      </select>
-    </label>
+    <Tooltip content={zoomHint(isMac)}>
+      <label className="inline">
+        Zoom{' '}
+        <select value={zoom} onChange={(e) => onChange(Number(e.target.value))}>
+          {zoomChoices(zooms, zoom).map((z) => (
+            <option key={z} value={z}>
+              {Math.round(z * 100)}%
+            </option>
+          ))}
+        </select>
+      </label>
+    </Tooltip>
   )
 }
 

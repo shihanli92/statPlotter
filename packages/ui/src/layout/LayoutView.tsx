@@ -135,6 +135,7 @@ import {
   moveLabel,
 } from '../graph/selectionEdits.ts'
 import { layerAlone, pageTreeHandle, treeHandle } from '../graph/treeDrag.ts'
+import { useMouseZoom } from '../graph/useMouseZoom.ts'
 import {
   EVERY_POINT_HINT,
   EVERY_POINT_LABEL,
@@ -417,6 +418,14 @@ export function LayoutView({
   const [textEdit, setTextEdit] = useState<number | null>(null)
   const [menu, setMenu] = useState<CommandMenuState | null>(null)
   const canvasRef = useRef<HTMLDivElement>(null)
+  // Roadmap 50: Alt / Ctrl + wheel and pinches zoom about the pointer; the middle button pans.
+  const { rasterZoom } = useMouseZoom({
+    canvas: canvasRef,
+    content: () => svgRef.current,
+    zooms: LAYOUT_ZOOMS,
+    zoom,
+    setZoom,
+  })
 
   const k = zoom * PX_PER_PT
   const theme = graphTheme(project)
@@ -1268,19 +1277,27 @@ export function LayoutView({
       return
     const b = boxInRoot(scene.root, mark.node)
     const r = svgRef.current?.getBoundingClientRect()
-    if (!b || !r) return
+    const c = canvasRef.current
+    if (!b || !r || !c) return
+    // Roadmap 50: in the canvas, where the page is (it scrolls with the page, and the wheel over
+    // it reaches the canvas: Alt + wheel zooms, the wheel scrolls).
+    const cr = c.getBoundingClientRect()
+    const x0 = r.left - cr.left - c.clientLeft + c.scrollLeft
+    const y0 = r.top - cr.top - c.clientTop + c.scrollTop
     const right = b.x + b.w / 2 > scene.width / 2
     setHovered({
       graph: mark.graph,
       at: right
-        ? {
-            position: 'fixed',
-            right: window.innerWidth - (r.left + b.x * k) + 8,
-            top: r.top + b.y * k - 4,
-          }
-        : { position: 'fixed', left: r.left + (b.x + b.w) * k + 8, top: r.top + b.y * k - 4 },
+        ? { left: x0 + b.x * k - 8, top: y0 + b.y * k - 4, transform: 'translateX(-100%)' }
+        : { left: x0 + (b.x + b.w) * k + 8, top: y0 + b.y * k - 4 },
     })
   }
+  // A card placed at another zoom is out of place: the next move over the mark shows it again.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: on a zoom change only
+  useEffect(() => {
+    hoverMark.clear()
+    setHovered(null)
+  }, [zoom])
   // biome-ignore lint/correctness/useExhaustiveDependencies: version tracks result changes
   const card = useMemo(
     () =>
@@ -2295,6 +2312,8 @@ export function LayoutView({
               )
           }}
           onKeyDown={(e) => {
+            // A hover card's Go to row has its own keys.
+            if ((e.target as Element).closest?.('.hover-card')) return
             if (e.key === 'Escape') {
               if (tool || drag?.mode === 'create') {
                 setTool(null)
@@ -2366,7 +2385,7 @@ export function LayoutView({
             onContextMenu={pageMenuAt}
           >
             <rect x={0} y={0} width={scene.width} height={scene.height} fill="#ffffff" />
-            <RasterScale.Provider value={k * pixelRatio()}>
+            <RasterScale.Provider value={rasterZoom * PX_PER_PT * pixelRatio()}>
               <NodeEl node={scene.root} />
             </RasterScale.Provider>
             {scene.items.map((b) => {
@@ -2569,6 +2588,14 @@ export function LayoutView({
               />
             </EditorDock.Provider>
           )}
+          {card && hovered && (
+            <HoverCard
+              info={card}
+              place={hovered.at}
+              events={hoverMark.card}
+              {...(onOpen && card.goTo ? { onGoTo: () => goToRow(card.goTo!) } : {})}
+            />
+          )}
           <Warnings warnings={scene.warnings} />
           {/* Roadmap 44: what is selected on the page, read out as it changes. */}
           <span
@@ -2703,14 +2730,6 @@ export function LayoutView({
           choices={tableSourceChoices(project, lookup)}
           onPick={insertTable}
           onClose={() => setTableDialog(false)}
-        />
-      )}
-      {card && hovered && (
-        <HoverCard
-          info={card}
-          place={hovered.at}
-          events={hoverMark.card}
-          {...(onOpen && card.goTo ? { onGoTo: () => goToRow(card.goTo!) } : {})}
         />
       )}
       {menu && <CommandMenu menu={menu} onClose={() => setMenu(null)} />}

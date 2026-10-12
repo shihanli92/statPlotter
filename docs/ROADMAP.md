@@ -65,6 +65,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.4 | 49b | merge of 49b, one layer at a time in the Format view (not tagged) |
 | 0.3.5 | 49c | merge of 49c, dendrograms as layers (not tagged) |
 | 0.3.6 | 49d | merge of 49d, fill and outline mapped separately (not tagged) |
+| 0.3.7 | 50 | merge of 50, zoom and pan with the mouse (not tagged) |
 
 ## Phases
 
@@ -2009,3 +2010,31 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     Fill and Outline variables on graphs of variables, a tree's hover cards (happy-dom); Playwright `fillOutline.spec.ts`
     (new) and `dendrogram.spec.ts` (a tree's handle on a page, the format bar's Line on trees,
     hover cards) in Chromium, WebKit and Firefox.
+
+50. ✅ **Zoom and pan with the mouse** — decisions 1266–1270 (the user's request: "Alt + scroll
+    to zoom in/out and a middle mouse button to move the plot when zoomed in"). On the graph
+    view's canvas and on layout pages, **Alt (Option) + wheel and Ctrl + wheel zoom about the
+    pointer**: the point under it stays under it (the canvas scrolls to keep it, as far as it
+    scrolls; a graph narrower than the canvas stays centred), ×1.1 a notch, continuous (deltas
+    normalised from lines and pages), within graphs' 25%–800% and pages' 25%–400% (the zoom lists
+    widened: 4 and 6 for graphs, 2 to 4 for pages). **A trackpad's pinch** zooms the same way
+    (Ctrl + wheel in Chromium and Firefox, gesture events in WebKit), never the page itself — the
+    canvas' wheel listener is not passive — and Alt + wheel never goes back in Firefox's history.
+    The zoom box shows a zoom between its levels ("133%") and ⌘= / ⌘- step on from it. **The
+    middle button dragged moves a zoomed graph or page**, taken before anything on the canvas
+    sees it (never selects, moves or edits, over any mark or item, with something selected; a
+    grabbing hand; pointer capture; no autoscroll or paste). **Two fingers on a trackpad** scroll
+    as before, both ways: the wheel without a modifier is never intercepted. While the wheel
+    zooms, point clouds keep their image until it rests (200 ms), one image per gesture. A hover
+    card on a page is in the page's canvas (it scrolls with it; the wheel and the middle button
+    over it act on the canvas) and a zoom clears it till the next move over the mark. View
+    state only, as the zoom box's: no undo step, nothing in the document. The shortcut sheet's
+    "With the mouse or trackpad" and the zoom box's tooltip list the gestures. UI only: every
+    golden, fixture and example fingerprint unchanged, `ANALYSES_VERSION` unchanged. (Space +
+    drag panning was considered and dropped at the user's choice.) Tests: the zoom's math —
+    anchoring, clamping, delta normalisation, pinch rate, stepping from between levels, the zoom
+    box's choices, the gestures' text (unit); the hook on a canvas — Alt and Ctrl + wheel
+    anchored, plain, Shift and ⌘ scrolling left alone, the ends, the clouds' resolution held then
+    caught up, the middle button seen by nothing on the canvas (happy-dom); Playwright
+    `mouseZoom.spec.ts` (new: also a page's hover card under the wheel and after a zoom) in
+    Chromium, WebKit and Firefox.

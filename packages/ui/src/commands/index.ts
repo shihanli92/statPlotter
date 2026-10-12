@@ -39,9 +39,13 @@ export {
 } from './shortcut.ts'
 export {
   CANVAS_KEYS,
+  gestureText,
   isViewKey,
   NAVIGATOR_KEYS,
   PAGE_KEYS,
+  POINTER_GESTURES,
   VIEW_KEY_SECTIONS,
+  type ViewGesture,
   type ViewKey,
+  zoomHint,
 } from './viewKeys.ts'
