@@ -551,9 +551,11 @@ tests.
 
 ### 3.2 The tree as data
 
-`analyses/src/guide/` holds one file per goal (`compareGroups.ts`, `relationships.ts`,
-`curves.ts`, `counts.ts`, `survival.ts`, `describe.ts`, `explore.ts`, `plan.ts`) and an index of
-entries by table kind:
+`analyses/src/guide/` holds the questions by table kind and goal (`compareGroups.ts` and
+`describe.ts` for column tables, `grouped.ts`, `xy.ts`, `counts.ts` for contingency and parts of
+whole, `variables.ts` for survival and multiple variables; as built in 51a, which grouped the
+goals planned here by table kind), the facts it may know (`facts.ts`), the helpers that build
+leaves (`build.ts`), the map of the path (`map.ts`, 51f) and an index of entries by table kind:
 
 ```ts
 interface GuideEntry {
@@ -781,8 +783,19 @@ Q What kind of values? Measurements / change by a factor / scores
                approach:'fdr', fdrMethod:'bky', q:5}
   "One test per row, with a false discovery rate so that most discoveries are real."
   Also: two-way ANOVA (when the rows are levels of a factor you care about)
-Compare three or more groups at each row
-  → multipleOneWay {…, approach:'fdr', fdrMethod:'bky', q:5} (FDR across rows, S9)
+Compare three or more groups at each row (audit 4 S14, decision 1355)
+Q Were the same subjects measured in every group?
+  ├─ Yes (unavailable unless raw) → twoWayAnova {repeated:'columns', comparisons:'withinRows', …}
+  │    "The same subjects in every group: two-way repeated-measures ANOVA compares the groups
+  │     within each row."
+  └─ No
+     Q What kind of values?
+       ├─ Measurements
+       │  Q Could a treatment change how much values vary, or do group sizes differ a lot?
+       │    ├─ Yes / Not sure → multipleOneWay {gaussian, equalSD:'welch', welchMethod:'dunnett-t3',
+       │    │                    approach:'fdr', fdrMethod:'bh', q:5}
+       │    └─ No → multipleOneWay {gaussian, equalSD:'yes', approach:'fdr', fdrMethod:'bh', q:5}
+       └─ Scores or ranks → multipleOneWay {gaussian:false, …} (Kruskal-Wallis, Dunn by Holm)
 Three factors (2 × 2 × k) → threeWayAnova (4 data sets; else elsewhere: multifactor ANOVA)
 ```
 
@@ -1008,7 +1021,9 @@ behave alike):
 Only the options column scrolls (U9); the rail, the sketch and the footer stay. The footer's
 method line updates as options change (text only). OK becomes **Analyze** (create) or **Apply**
 (edit). Edit mode opens with the rail collapsed to the current method and a **Change method…**
-button (U28); the title is "Edit “Welch's t test: Treated vs Control”" (§8.6).
+button (U28); the title is "Edit parameters of “Welch's t test: Treated vs Control”" (§8.6;
+audit 4 A17: editing an analysis has one name, **Edit parameters…**, in the Analyze menu, the
+results' toolbar and an error's link, and its undo step is "Edit parameters").
 
 ### 4.2 Options in the experiment's words
 
@@ -1141,7 +1156,7 @@ test's P. They appear in the side panel under the sketch: ✓ ok lines, ! notes,
 is disabled with the first block as its reason (`aria-describedby`).
 
 After OK, a failing result shows **Error** in the results toolbar instead of "Up to date", and the
-error's link is the right one: **Change parameters…** when the failure is about the options, **Go
+error's link is the right one: **Edit parameters…** when the failure is about the options, **Go
 to table** when it's about the values (`Diagnostic.where?: 'params' | 'table'`, set by
 `validate`).
 
@@ -1177,11 +1192,18 @@ unchanged in shape. The sketch shows the outcome against each predictor (§5.6).
 - Greyed options are `aria-disabled` (still focusable, so the reason is read), with the reason
   in `aria-describedby`.
 - Chips: a `listbox` with `aria-orientation="horizontal"`, Space toggles inclusion, Alt + ←/→
-  moves, ⇄ is a button; the comparison sentence is `aria-live="polite"`.
+  moves, C makes a chosen group the control (audit 4 A9: the pointer's ☆ is not a button inside
+  the option), ⇄ is a button; each chip is named "Vehicle, 1st, control"; the listbox is
+  described by how many to choose and these keys; the comparison sentence is
+  `aria-live="polite"`.
 - The sketch: §5.7. Checks: a list; a block is prefixed "Error:" and carries an icon, not colour
-  alone (U29).
-- ⌘Enter = Analyze / Apply; Escape closes; focus returns to the opener.
-- `prefers-reduced-motion`: no sketch transitions.
+  alone (U29). What keeps Analyze disabled is also said in a polite status as it appears, and
+  again on ⌘Enter while blocked (audit 4 A2).
+- ⌘Enter = Analyze / Apply; Escape clears the search's query, then closes the list opened over
+  the options, then the dialog (audit 4 A11); focus returns to the opener. With the list folded,
+  the focus goes to the strip naming the method (audit 4 A3). Help › Keyboard shortcuts lists
+  these keys ("In the Analyze dialog", audit 4 A18).
+- `prefers-reduced-motion`: no sketch transitions; Guide me's scrolls jump (audit 4 A16).
 
 ---
 
@@ -1325,8 +1347,9 @@ difference's direction ("Treated − Control"), without points (their Y is −lo
   changes the band shape; GBW draws event markers sized by the number at risk ("weights early
   events more"); trend shows the groups' order with scores 1…k; the hazard ratio's reference group
   is highlighted.
-- **Text alternative** (U29): the panel group is `role="img"` with `aria-describedby` the
-  `description`, generated from the same spec: "3 groups (Vehicle, 1 mg/kg, 10 mg/kg), 8 values
+- **Text alternative** (U29): the panel group is `role="img"`, named by the sketch's heading
+  (audit 4 A1), with `aria-describedby` the `description` (hidden from the reading flow, read
+  once with the picture), generated from the same spec: "3 groups (Vehicle, 1 mg/kg, 10 mg/kg), 8 values
   each, not matched; comparing each group with Vehicle: 2 comparisons." The counts line is
   `aria-live="polite"` and changes only when the design changes (groups, matching, comparisons),
   not on every keystroke. The sketch is never needed to complete a task: clicking a group to set
@@ -1338,7 +1361,13 @@ difference's direction ("Treated − Control"), without points (their Y is −lo
   milliseconds), debounced 120 ms, then drawn as a scene. Large tables are sampled by **rows**
   (so pairs and subjects stay whole): at most 2,000 rows per group, every k-th row in table order
   (deterministic), with "Showing 2,000 of 30,000 rows" in the counts. Cells tables (34f) use the
-  point-cloud drawing the graphs already use.
+  point-cloud drawing the graphs already use. Audit 4 (P3, decision 1405): fewer rows when there
+  are many groups, replicates or panels, so a sketch draws at most 4,000 values in all
+  (`SKETCH_MAX_POINTS`); rank sketches rank every value (the rank sums are the whole data's) and
+  draw the sampled rows' ranks; a cumulative curve goes through at most 1,000 of its steps.
+- Audit 4 (U1, P2, decisions 1401–1404): the debounced input is one object per change (an open
+  dialog doing nothing does no work), and the data's facts (`analysisFacts`, `tableFacts`) are read
+  once per input, in passes that copy nothing.
 - A timing guard (`growthRatio`, CPU time at two sizes) keeps sketch building linear in the rows
   shown.
 
@@ -1502,6 +1531,7 @@ In the recommended merge order (§10.2):
 | 51b | 1.5.1 | `Diagnostic.where`; checks share `validate` with `run` (messages unchanged) |
 | 51d | 1.6.0 | summary blocks, row keys, user names, sheet order, the sign convention for new analyses |
 | 51e | 1.6.1 | dose-response warnings, one model-comparison verdict |
+| Audit 4, step 2 | 1.6.2 | user equations past the parser's limits are errors (T1); other results unchanged |
 
 ---
 
@@ -1640,7 +1670,7 @@ always the test's name next to its P; n per group; 3 significant digits.
 | One sample | "The mean of {A}, {m}, is {d} {above\|below} {value} (95% CI of the difference …); P = {p}, one-sample t test." | — |
 | One-way + Dunnett | "Compared with {control}, {list: '{g} is higher by {d} (95% CI …, adjusted P = {p})'}; Dunnett's test for {m} comparisons. Overall: {the groups differ \| no evidence the means differ} (one-way ANOVA, P = {p})." | "Compared with Vehicle, 10 mg/kg is higher by 12.0 (95% CI 7.7 to 16.3, adjusted P < 0.0001) and 1 mg/kg by 5.8 (95% CI 1.5 to 10.1, adjusted P = 0.007); Dunnett's test for 2 comparisons." (illustrative) |
 | One-way + Tukey | "{j} of {m} pairs differ after Tukey's adjustment: {up to 3, largest first}{; and {k} more in the table}. Overall … (one-way ANOVA, P = {p})." | — |
-| Kruskal-Wallis | "Values tend to differ between groups (Kruskal-Wallis, {exact\|approximate} P = {p}); Dunn's test (Holm) finds {j} of {m} pairs differ: …" | — |
+| Kruskal-Wallis, Friedman | "Values tend to differ between groups (Kruskal-Wallis, {exact\|approximate} P = {p}); Dunn's test (Holm) finds {j} of {m} pairs differ: {g} is higher than {h} (medians {mg} and {mh}, adjusted P = {p})" — the higher group and the medians, never a rank difference (audit 4 S1) | "High is higher than Low (medians 202 mg and 10.1 mg, adjusted P = 0.0096)" |
 | RM one-way | "Within subjects, the mean {changes \| shows no evidence of change} across {conditions} (repeated-measures ANOVA, Geisser-Greenhouse corrected, P = {p}; {n} subjects)." | — |
 | Two-way | interaction P < 0.05: "The effect of {colFactor} depends on {rowFactor} (interaction P = {p}, two-way ANOVA); the comparisons within each {rowFactor} describe it." Else: "{colFactor}: P = {p}; {rowFactor}: P = {p}; no evidence that one changes the effect of the other (interaction P = {p})." | — |
 | Multiple t | "{d} of {n} rows are discoveries at FDR {Q}% ({method}), comparing {B} with {A} by {test} in each row." | — |
@@ -1650,6 +1680,16 @@ always the test's name next to its P; n per group; 3 significant digits.
 | Survival | "Median survival {m1} days on {A}, {m2} on {B}, not reached on {C}; the curves {differ \| show no evidence of differing} (log-rank P = {p}). Hazard ratio {B} vs {control}: {hr} (95% CI …)." | — |
 | Contingency | "{Outcome}: {p1}% in {row1}, {p2}% in {row2}; relative risk {rr} (95% CI …); P = {p}, Fisher's exact test." / trend: "rises with {rows} (chi-square for trend, P = {p})" | — |
 | Descriptive, normality, PCA… | one line per group or a one-line status ("No evidence against a normal distribution in A (Shapiro-Wilk P = 0.42); see the QQ plot.") | — |
+
+Audit 4 (decisions 1341–1348): a verdict is three-valued — below 0.05, not, or a P that wasn't
+computed ("P could not be computed", never "no evidence"); a direction is never taken from a
+value that wasn't computed (Mann-Whitney falls back on the medians; "the slope of A could not be
+computed"); a one-tailed result against the prediction reads as the unpaired t test's ("…, the
+opposite way to the prediction (predicted: …); one-tailed P = 0.99, {test}") in every family with
+a predicted direction; several correlation pairs are counted by the corrected P the table
+decides by (q or Holm), named; wording follows the run ("not corrected for the {n} rows"; the
+comparisons that describe an interaction are the ones chosen); a parameter held constant reads
+"Y0 = 100 (constant)".
 
 Tests: a snapshot of every family's sentence for fixtures covering both P branches, both
 directions, missing CIs, and long group lists; the accessible text is the sentence itself (U29).
@@ -1667,7 +1707,7 @@ and row label (roadmap 35); renaming rows would break them. So:
   `columnKeys?: string[]`, `rowKeys?: string[]`), e.g. `meanA`, `nB`, `diff`, `ci`.
 - `ResultRef` `cell` gains optional `rowKey`, `blockKey`, `columnKey`; resolution tries keys
   first, then labels as today, then a per-analysis table of former labels
-  (`analyses/src/legacyLabels.ts`: "Mean of column A" → `meanA`, "Difference between medians" →
+  (`model/src/results.ts`, `LEGACY_ROW_KEY_LIST` and `BLOCK_RENAMES`: "Mean of column A" → `meanA`, "Difference between medians" →
   `shift`, the "Šídák" titles → their keys…).
 - New ready results use keys. Nothing in a document is rewritten (no migration);
   `graphResults.test.ts` resolves every ready result against new results, and a fixture document
@@ -1700,7 +1740,7 @@ A note block above every comparisons table, from the method and family:
 | Šidák / Bonferroni | "Šidák: the 4 planned comparisons as one family; adjusted P values and CIs." |
 | Holm-Šidák | "Holm-Šidák: adjusted P values for the 4 comparisons; no CIs (step-down methods have none)." |
 | FDR | "q values: of the comparisons called discoveries, about 5% are expected to be false." |
-| Two-way per row | "Each Genotype is its own family of 3 comparisons (Šidák)." |
+| Two-way per row | "Each level of Genotype is its own family of 3 comparisons (Šidák). Adjusted P values and 95% CIs." — one family's count and what applies within it, never "the 9 as one family" (audit 4 S3) |
 | Uncorrected | "Fisher's LSD: no adjustment; with 6 comparisons the chance of at least one false positive is about 26%." |
 | Games-Howell / T3 | "Dunnett's T3: all 3 pairs, without assuming equal SDs; adjusted P values and CIs." |
 | Dunn | "Dunn's test (Holm): adjusted P values for the 3 pairs, from the ranks of all groups." |
@@ -1780,6 +1820,13 @@ equation of `EQUATIONS` has a goal (or is listed as "All equations" only) and an
 **Thumbnails**: each model's curve at typical parameter values, drawn as a tiny transient graph
 (§5.1) with the parameters labelled (Top, Bottom, EC50 at the midpoint); snapshot-tested.
 
+**Each model's own choices** (audit 4 U5, A5; the user's answer Q4): parameter names differ
+between models, so a model's constraints, initial values and limits are its own; the dialog keeps
+those of every model left for its life (`FormContext.models`) and returns them with the model.
+Arrow keys still pick (a radio group) and step from the chosen model; picking the chosen model
+changes nothing. An initial value or limit that isn't a number is marked while typed and puts
+back the last value when its box is left (audit 4 A10).
+
 ### 9.2 Log-X detection (S8)
 
 From `TableFacts.x` (descriptive, before any fit):
@@ -1801,6 +1848,11 @@ asks "Is X the dose or log(dose)?" with the same hint (§3.5).
 | Plateau not reached | Top or Bottom lies beyond the range of the observed Y by more than that range: "The top plateau isn't reached by the data: Top = 412 is far above the highest response (180). Fix Top (e.g. 100 for normalized data) or test higher doses." |
 | EC50 poorly determined | the CI of logEC50 is wider than the X range: "The data don't determine the EC50 well (its 95% CI spans more than the doses tested)." |
 
+A profile-likelihood limit is only where the profile crosses its target: a side whose refits
+fail, or whose profile never reaches the target or jumps across it, is unbounded (±∞, "to
+infinity"), as R's profile gives NA there — never the edge of where the model can be evaluated
+(audit 4 S9, decision 1353).
+
 Each names a constraint fix ("Fix Bottom = 0") that opens Edit on the constraint. They are rules
 on fitted numbers, not new statistics; tested on fixtures. The profile-likelihood CI becomes the
 default for new fits (`ciMethod: 'profile'`, pinned `symmetric` for saved ones).
@@ -1818,6 +1870,12 @@ default for new fits (`ciMethod: 'profile'`, pinned `symmetric` for saved ones).
   nested; two built-in equations by their declared relatives; a user equation against anything:
   AICc only).
 - The sketch shows both models' starting shapes; no verdict live.
+- Audit 4 (decisions 1351, 1352; the user's answer Q6): the constants set on the fitted model apply
+  to the parameters of the same name in the other model, so the F test compares nested fits under
+  the same constraints; a constant on a parameter only one model has, or a simpler model left
+  with no fewer free parameters (DFn ≤ 0), means AICc with a warning. The comparison shows each
+  model's fit; a fit that failed, or an F test or AICc that isn't defined, gives "—" and a
+  warning, never a preferred model; an ambiguous alternative is never preferred.
 
 ### 9.5 The curve-fit sketch
 
@@ -2075,7 +2133,8 @@ need it (the image then scales to the panel). Its colours are the dialog's (`SCH
 light and dark, chosen by the app's `data-theme`) on a transparent background — unlike the
 sketch's white paper, as it is a diagram of the question rather than a figure of data. The
 question, "no effect", notes and next step are HTML text around the image (the question is a
-polite live region); the image is `role="img"` described by the spec's text alternative.
+polite live region); the image is `role="img"` named "Schematic of what will be tested" and
+described by the spec's text alternative, hidden from the reading flow (audit 4 A1).
 
 ### 12.3 Never a result
 
@@ -2110,4 +2169,11 @@ questions still on the new path (the same question asked further on) and the val
 answers asked for — and drops the others (51a dropped every later answer). Changing "Were the
 same subjects measured?" from No to Yes keeps "What kind of values? Measurements" and drops the
 scatter question, which the paired branch doesn't ask: the paired t test is recommended at once.
+
+Audit 4 (A4): the dialog calls `reanswerHiding`, which hides the dropped answers (view state, with
+Guide me's memory for the table, never stored) instead of deleting them, and gives one back when
+its question is on the path again. Arrowing through a question's radios answers it at each step;
+↓ then ↑ now returns the later answers and the recommendation. A group asked for (the control)
+that is no longer among the data sets the questions are about takes its initial value, as its
+select shows it (audit 4 U3).
 

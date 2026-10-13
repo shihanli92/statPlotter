@@ -56,6 +56,74 @@ export function clusterOrder(
   warnings: string[],
 ): HClust | null {
   if (rows.length < 2) return null
+  if (rows.length > MAX_CLUSTERED) return clusterAnew(rows, h, what, warnings)
+  // Audit 4 (P4): the same values clustered the same way, as every layout and the Format view
+  // ask (each a fresh copy of the values): the clustering found before.
+  const distance = h.distance ?? 'euclidean'
+  const linkage = h.linkage ?? 'complete'
+  const hit = clusterings.find(
+    (c) =>
+      c.distance === distance && c.linkage === linkage && c.what === what && same(c.rows, rows),
+  )
+  if (hit) {
+    clusterings.splice(clusterings.indexOf(hit), 1)
+    clusterings.unshift(hit)
+    if (hit.warning) warnings.push(hit.warning)
+    return hit.hc
+  }
+  const own: string[] = []
+  const hc = clusterAnew(rows, h, what, own)
+  warnings.push(...own)
+  remember({ rows, distance, linkage, what, hc, ...(own[0] ? { warning: own[0] } : {}) })
+  return hc
+}
+
+interface Clustering {
+  rows: readonly (readonly number[])[]
+  distance: string
+  linkage: string
+  what: string
+  hc: HClust | null
+  warning?: string
+}
+
+/** The clusterings found last, the latest first. */
+const clusterings: Clustering[] = []
+/** Kept while their values hold at most this many cells in all (a heat map's few, at most). */
+const CLUSTERED_CELLS = 4_000_000
+
+function remember(c: Clustering) {
+  clusterings.unshift(c)
+  let cells = 0
+  for (let i = 0; i < clusterings.length; i++) {
+    const r = clusterings[i]!.rows
+    cells += r.length * (r[0]?.length ?? 0)
+    if (i >= 8 || (i > 0 && cells > CLUSTERED_CELLS)) {
+      clusterings.length = i
+      break
+    }
+  }
+}
+
+/** The same values (NaN as NaN). */
+function same(a: readonly (readonly number[])[], b: readonly (readonly number[])[]): boolean {
+  if (a === b) return true
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    const x = a[i]!
+    const y = b[i]!
+    if (x.length !== y.length) return false
+    for (let j = 0; j < x.length; j++) if (!Object.is(x[j], y[j])) return false
+  }
+  return true
+}
+
+function clusterAnew(
+  rows: readonly (readonly number[])[],
+  h: Pick<HeatmapStyle, 'distance' | 'linkage'>,
+  what: 'rows' | 'columns',
+  warnings: string[],
+): HClust | null {
   if (rows.length > MAX_CLUSTERED) {
     warnings.push(`Only up to ${MAX_CLUSTERED} ${what} are clustered; they keep their order.`)
     return null

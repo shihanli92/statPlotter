@@ -7,8 +7,6 @@ import {
   type ResultSheet,
   type ResultValue,
   type StrokeStyle,
-  summaryFirst,
-  summaryText,
   type TextStyle,
 } from '@ps/model'
 import type { FontRegistry } from './fonts/registry.ts'
@@ -211,8 +209,9 @@ export type PageTableGrid = { rows: PageTableCell[][] } | { error: string }
 
 /**
  * Roadmap 35: a results sheet as a table's cells, as the results view shows it (each block's
- * title, a table's column titles, a blank row between blocks), numbers to `digits` significant
- * digits when given (else as the results show them); numbers flagged for right alignment.
+ * title, a table's column titles, a blank row between blocks; no summary sentence), numbers to
+ * `digits` significant digits when given (else as the results show them); numbers flagged for
+ * right alignment.
  */
 export function resultSheetCells(
   sheet: ResultSheet,
@@ -235,14 +234,13 @@ export function resultSheetCells(
     return { text, ...(numeric ? { numeric: true } : {}) }
   }
   const out: PageTableCell[][] = []
-  for (const b of summaryFirst(sheet.blocks)) {
+  // Audit 4 (G1; the user's answer Q2): without the summary sentence, as before 0.3.11 — it
+  // took the header's place, made the table far wider and moved saved row ranges.
+  for (const b of sheet.blocks) {
+    if (b.type === 'summary') continue
     if (out.length) out.push([])
     if (b.type === 'note') {
       out.push([{ text: b.text }])
-      continue
-    }
-    if (b.type === 'summary') {
-      out.push([{ text: summaryText(b, settings) }])
       continue
     }
     if (b.title) out.push([{ text: b.title, style: 'title' }])

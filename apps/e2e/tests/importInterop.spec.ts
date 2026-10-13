@@ -213,7 +213,7 @@ test('missing codes and values at detection limits: LOD/2, marked, changed later
   await d.getByRole('button', { name: 'Import', exact: true }).click()
   await expect(d).toBeHidden()
 
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated'])
   // Control: 1.2, <0.5 → 0.25, -999 → empty; Treated: ND → empty, <LOD → 1/2.
   await expect(cell(page, 1, 0)).toHaveText(/0\.25/)
   await expect(cell(page, 2, 0)).toHaveText('')

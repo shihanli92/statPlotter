@@ -78,7 +78,13 @@ export function SchematicView({
         {spec.question}
       </p>
       {image && (
-        <figure className="schematic-figure" role="img" aria-describedby={`${id}-desc`}>
+        // Audit 4 (A1): a named picture, described by the spec's words.
+        <figure
+          className="schematic-figure"
+          role="img"
+          aria-label="Schematic of what will be tested"
+          aria-describedby={`${id}-desc`}
+        >
           <img
             src={image.src}
             alt=""
@@ -89,7 +95,8 @@ export function SchematicView({
           />
         </figure>
       )}
-      <p id={`${id}-desc`} className="visually-hidden">
+      {/* The picture's description only (audit 4 A1: the question was read three times). */}
+      <p id={`${id}-desc`} className="visually-hidden" aria-hidden="true">
         {spec.description}
       </p>
       {spec.noEffect && (

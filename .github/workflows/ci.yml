@@ -6,7 +6,7 @@ on:
   pull_request:
 
 # Read-only token for every job (code audit 2, decision 651): none writes to the repository;
-# the deploy job uses Cloudflare's token, and artifacts go through the run's own token.
+# the (private) deploy job uses Cloudflare's token, and artifacts go through the run's own token.
 permissions:
   contents: read
 
@@ -77,8 +77,11 @@ jobs:
             apps/e2e/test-results
           retention-days: 14
 
-  # Pushes to main that pass the checks and the Chromium end-to-end tests go live on Cloudflare Pages (project "plotter", behind
-  # Cloudflare Access). Needs the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets.
+  # The private deployment: in the private repository, pushes to main that pass the checks and the
+  # Chromium end-to-end tests would go live on Cloudflare Pages (project "plotter", behind
+  # Cloudflare Access), with the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets. Actions are
+  # turned off there (audit 4, T6), so nothing deploys from here: the public demo is built by
+  # Netlify from the public repository (docs/PUBLISHING.md), where this job is skipped.
   deploy:
     needs: [check, e2e]
     # Only in the project's own repository (audit 3, T11): a copy elsewhere has no secrets.

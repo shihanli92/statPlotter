@@ -1345,7 +1345,10 @@ export function TableView({
           <table role="presentation">
             <thead role="rowgroup">
               <tr role="row">
-                <th role="columnheader" className="corner" rowSpan={hasSub ? 2 : 1} />
+                {/* Audit 4 (A21): the row numbers' header, named for screen readers. */}
+                <th role="columnheader" className="corner" rowSpan={hasSub ? 2 : 1}>
+                  <span className="visually-hidden">Row</span>
+                </th>
                 {groups.map((g) => {
                   const w = widths.widthOf(g.col)
                   const titleKey = matchKey({ kind: 'title', c: g.index })

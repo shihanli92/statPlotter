@@ -346,8 +346,8 @@ export const chip = (d: Locator, title: string): Locator =>
     .getByRole('option')
     .filter({ has: d.page().locator('.chip-title').getByText(title, { exact: true }) })
 
-/** Roadmap 51b: the Analyze dialog editing an analysis ("Edit “…”"). */
-export const editDialog = (page: Page): Locator => dialog(page, /^Edit “/)
+/** Roadmap 51b: the Analyze dialog editing an analysis ("Edit parameters of “…”", audit 4 A17). */
+export const editDialog = (page: Page): Locator => dialog(page, /^Edit parameters of “/)
 
 /**
  * Roadmap 51a: the Analyze dialog's All analyses tab (Analyze… opens on Guide me the first time

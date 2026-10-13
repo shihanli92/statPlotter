@@ -2,22 +2,22 @@ import {
   type AnalysisResult,
   normalizeTable,
   paramsOf,
+  type ResultValue,
   resultSummary,
   summaryText,
 } from '@ps/model'
 import { EQUATIONS, modelFor } from '@ps/stats'
 import { describe, expect, it } from 'vitest'
+import { expectClose, loadFixture } from '../../stats/test/oracle.ts'
+import { analysisFacts, fieldStates, modelThumbnail } from '../src/dialogEntry.ts'
 import {
-  analysisFacts,
   comparisonFacts,
   curveWarnings,
   EQUATION_META,
   equationMeta,
-  fieldStates,
   goalOf,
   MODEL_GOALS,
   modelsNested,
-  modelThumbnail,
   nestedRelatives,
   nonlinearFitDef,
   nonlinearFitMVDef,
@@ -478,6 +478,105 @@ describe('one model comparison, chosen in advance (design §9.4, S18)', () => {
     expect(not.options.get('fTest')).toBe('These models aren’t nested; compare them by AICc.')
     expect(not.problem).toBe('These models aren’t nested; compare them by AICc.')
     expect(at({ compareWith: 'asymmetric-5pl-conc', compareBy: 'aicc' }).problem).toBeNull()
+  })
+
+  const compareRows = (r: AnalysisResult): Record<string, ResultValue> => {
+    const b = r.sheets.find((s) => s.key === 'compare')!.blocks[0]!
+    if (b.type !== 'table') throw new Error('no comparison table')
+    return Object.fromEntries(b.rows.map((x) => [(x[0] as { v: string }).v, x[1]!]))
+  }
+  const notes = (r: AnalysisResult) =>
+    r.sheets
+      .find((s) => s.key === 'compare')!
+      .blocks.flatMap((b) => (b.type === 'note' ? [b.text] : []))
+
+  it('audit 4 S4 (Q6): the constants set apply to both models, so the F test stays valid', () => {
+    const t = xyTable(
+      [-9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5],
+      [[2, 5, 11, 26, 50, 74, 89, 95, 98]],
+    )
+    const params = {
+      equation: 'asymmetric-5pl',
+      constraints: {
+        Bottom: { kind: 'constant', value: 0 },
+        Top: { kind: 'constant', value: 100 },
+      },
+      compareWith: 'agonist-response-variable-slope',
+    }
+    expect(comparisonFacts(params).modelsNested).toBe(true)
+    const r = run(t, params)
+    const rows = compareRows(r)
+    expect(rows['DFn, DFd']).toEqual({ kind: 'text', v: '1, 6' })
+    expect(Number.isFinite(v(rows['P value']))).toBe(true)
+    expect(notes(r)).toContain(
+      'The constants set (Bottom = 0, Top = 100) apply to both models, so they are compared under the same constraints.',
+    )
+    // Two phases with Plateau = 0 against one phase with Plateau = 0: two more parameters; F and
+    // P as R's nls gives them for the two constrained fits (the oracle case).
+    const f = loadFixture<
+      { data: { x: number[]; y: number[] }[] },
+      { compare: { F: number; p: number } }
+    >('nonlinear', 'decay_two_vs_one_phase_plateau_constant')
+    const decay = xyTable(f.input.data[0]!.x, [f.input.data[0]!.y])
+    const two = run(decay, {
+      equation: 'two-phase-decay',
+      constraints: { Plateau: { kind: 'constant', value: 0 } },
+      compareWith: 'one-phase-decay',
+    })
+    const twoRows = compareRows(two)
+    expect(twoRows['DFn, DFd']).toEqual({ kind: 'text', v: '2, 7' })
+    expectClose(v(twoRows.F), f.expected.compare.F, f.tol, 'F')
+    expectClose(v(twoRows['P value']), f.expected.compare.p, f.tol, 'P')
+    // A constant on a parameter only one model has: not nested, AICc with a note.
+    const only = { ...params, constraints: { S: { kind: 'constant', value: 2 } } }
+    expect(comparisonFacts(only).modelsNested).toBe(false)
+    const s = run(t, { ...only, compareBy: 'fTest' })
+    expect(warnings(s)).toContain(
+      'S is held constant in Asymmetric sigmoidal, 5PL, X is log(concentration) but log(agonist) vs. response — Variable slope (four parameters) has no such parameter, so the models aren’t nested and the F test doesn’t apply; they are compared by AICc.',
+    )
+    expect(said(s)).toMatch(/Preferred model: .* \(AICc, probability [\d.]+%\)\./)
+  })
+
+  it('audit 4 S9: a profile CI the data never close is unbounded, not an artifact', () => {
+    const t = xyTable([-9, -8.5, -8, -7.5, -7, -6.5, -6], [[2.1, 6.8, 7.9, 15, 18.5, 31, 33]])
+    const r = run(t, { equation: 'agonist-response-variable-slope' })
+    const b = r.sheets[0]!.blocks.find(
+      (x) => x.type === 'table' && x.title === '95% CI (profile likelihood)',
+    )
+    if (b?.type !== 'table') throw new Error('no CI table')
+    const ci = Object.fromEntries(b.rows.map((x) => [(x[0] as { v: string }).v, x[1]!]))
+    expect(ci.LogEC50).toMatchObject({ lo: Number.NEGATIVE_INFINITY, hi: Number.POSITIVE_INFINITY })
+    expect(ci.Bottom).toMatchObject({ lo: Number.NEGATIVE_INFINITY })
+    expect(said(r)).toMatch(/its CI is unbounded: the data don’t determine log EC50/)
+  })
+
+  it('audit 4 S5: a failed or undefined comparison has no verdict', () => {
+    const x = [0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10]
+    const y = x.map(
+      (q, i) => 50 * Math.exp(-q) + 50 * Math.exp(-0.002 * q) + (((i * 7) % 5) - 2) * 0.05,
+    )
+    const r = run(xyTable(x, [y]), { equation: 'one-phase-decay', compareWith: 'two-phase-decay' })
+    const rows = compareRows(r)
+    expect(rows['Fit of the alternative model']).toEqual({ kind: 'text', v: 'Did not converge' })
+    expect(rows['Preferred model (F test)']).toEqual({ kind: 'text', v: '—' })
+    expect(warnings(r).join('\n')).toMatch(
+      /The models can’t be compared for “.+”: the fit of Two phase decay did not converge\./,
+    )
+    expect(said(r)).toMatch(/The models could not be compared \(see the warnings\)\.$/)
+    expect(said(r)).not.toMatch(/Preferred model/)
+    // Seven points and five parameters: AICc isn't defined.
+    const x7 = [0, 1, 2, 4, 8, 12, 20]
+    const y7 = x7.map(
+      (q, i) => 10 + 60 * Math.exp(-0.8 * q) + 30 * Math.exp(-0.08 * q) + (((i * 7) % 5) - 2) * 0.3,
+    )
+    const a = run(xyTable(x7, [y7]), {
+      equation: 'one-phase-decay',
+      compareWith: 'two-phase-decay',
+      compareBy: 'aicc',
+    })
+    expect(compareRows(a)['Probability simpler model is correct']).toEqual({ kind: 'text', v: '—' })
+    expect(compareRows(a)['Preferred model (AICc)']).toEqual({ kind: 'text', v: '—' })
+    expect(said(a)).not.toMatch(/NaN|Preferred model/)
   })
 
   it('parameters compared between data sets: the verdict by the chosen method', () => {

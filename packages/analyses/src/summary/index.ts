@@ -7,7 +7,7 @@ import type {
   RunContext,
 } from '@ps/model'
 import { SUMMARIES } from './families.ts'
-import { ALPHA, comparisonRows, type Table } from './read.ts'
+import { ALPHA, type ComparisonRow, comparisonRows, sharedSide, type Table } from './read.ts'
 
 // Roadmap 51d (design §8.1–§8.4, U18, U21, S23): results that explain themselves. Every analysis'
 // result is finished here, after it is computed, from its own values: the summary sentence
@@ -63,7 +63,11 @@ const anyFalsePositive = (m: number) => 1 - (1 - ALPHA) ** m
 
 /**
  * Roadmap 51d (§8.4, S23): what a comparisons table's P values and CIs refer to — the family, the
- * method, simultaneous or not — from its title, its rows and the analysis' choices.
+ * method, simultaneous or not — from its title, its rows and the analysis' choices. Audit 4 S3:
+ * when each row (column) is its own family the caption counts one family's comparisons and
+ * never says "as one family" of them all; the control is the group every row is compared with
+ * (the table's labels: "KO − WT", "WT:Drug − WT:Vehicle"), the params' only when the rows share
+ * none.
  */
 export function familyCaption(
   t: Table,
@@ -76,69 +80,74 @@ export function familyCaption(
   const m = rows.length || t.rows.length
   if (!m) return null
   const ciCol = t.columns.find((c) => / CI of diff/.test(c))
-  const level = ciCol ? ciCol.split(' ')[0]! : null
+  const ci = (pre: string) => (ciCol ? `${pre}${ciCol.split(' ')[0]!} CIs` : `${pre}CIs`)
   const n = (k: number, word: string) => `${k} ${word}${k === 1 ? '' : 's'}`
-  const key = typeof params.control === 'string' ? params.control : ''
-  const control = input.find((d) => d.ref.key === key)?.title ?? input[0]?.title ?? 'the control'
   const qPct = typeof params.q === 'number' ? params.q : 5
   const fdr = /Benjamini|false discovery|FDR/i.test(title)
   const method = title.split(' — ')[0]!
-  let text: string
-  if (/^Tukey/.test(method))
-    text =
-      `Tukey: all ${n(m, 'pair')} as one family. P values and ${level ?? ''} CIs are adjusted so that the chance of any false positive among the ${m} is 5%.`.replace(
-        '  ',
-        ' ',
-      )
-  else if (/^Dunnett’s T3/.test(method))
-    text =
-      `Dunnett’s T3: all ${n(m, 'pair')}, without assuming equal SDs; adjusted P values and ${level ?? ''} CIs.`.replace(
-        '  ',
-        ' ',
-      )
-  else if (/^Dunnett/.test(method))
-    text =
-      `Dunnett: each of ${n(m, 'group')} − ${control}, one family; adjusted P values and simultaneous ${level ?? ''} CIs.`.replace(
-        '  ',
-        ' ',
-      )
-  else if (/^Games-Howell/.test(method))
-    text =
-      `Games-Howell: all ${n(m, 'pair')}, without assuming equal SDs; adjusted P values and ${level ?? ''} CIs.`.replace(
-        '  ',
-        ' ',
-      )
-  else if (/^Tamhane/.test(method))
-    text =
-      `Tamhane’s T2: all ${n(m, 'pair')}, without assuming equal SDs; adjusted P values and ${level ?? ''} CIs.`.replace(
-        '  ',
-        ' ',
-      )
-  else if (/^Holm-Šidák/.test(method))
-    text = `Holm-Šidák: adjusted P values for the ${n(m, 'comparison')}; no CIs (step-down methods have none).`
-  else if (/^(Šidák|Bonferroni)/.test(method))
-    text = `${method.split('’')[0]}: the ${n(m, 'comparison')} as one family; adjusted P values${level ? ` and ${level} CIs` : ''}.`
-  else if (/^Uncorrected Fisher/.test(method))
-    text = `Fisher’s LSD: no adjustment; with ${n(m, 'comparison')} the chance of at least one false positive is about ${Math.round(100 * anyFalsePositive(m))}%.`
-  else if (/^Newman-Keuls/.test(method))
-    text = `Newman-Keuls: step-down; it doesn’t keep the chance of any false positive among the ${m} at 5%, and gives no CIs.`
-  else if (fdr)
-    text = `q values: of the comparisons called discoveries, about ${qPct}% are expected to be false.`
-  else if (/^Dunn/.test(method)) {
-    const how = /, (\w[\w-]*)$/.exec(method)?.[1]
-    text = `Dunn’s test${how ? ` (${how})` : ''}: adjusted P values for the ${n(m, 'comparison')}, from the ranks of all groups.`
-  } else return null
   // Two-way and multiple one-way: each row (column) its own family unless one family was chosen.
   const within = / — within each (row|column)/.exec(title)?.[1] ?? (params.byRow ? 'row' : null)
-  if (within) {
-    const blocks = new Set(rows.map((r) => r.within)).size || 1
-    const per = Math.round(m / blocks)
-    const one = params.family === 'all' && !/^(Tukey|Dunnett|Newman)/.test(method)
-    const factor = within === 'row' ? factorNames?.rows || 'row' : factorNames?.columns || 'column'
-    if (!one)
-      return `Each ${factor === 'row' || factor === 'column' ? factor : `level of ${factor}`} is its own family of ${n(per, 'comparison')} (${method.split('’')[0]!.split(' ')[0]}). ${text.replace(/^[^:]*: /, '').replace(/^./, (c) => c.toUpperCase())}`
-  }
-  return text
+  const perBlock =
+    within !== null &&
+    !(params.family === 'all' && !/^(Tukey|Dunnett|Newman)/.test(method)) &&
+    !/^Uncorrected Fisher/.test(method)
+  const blocks = perBlock ? new Set(rows.map((r) => r.within)).size || 1 : 1
+  const per = Math.round(m / blocks)
+  const control = controlOf(rows, params, input)
+  // The method's sentence for the whole family (`all`) and for one of several (`each`).
+  let all: string
+  let each: string
+  if (/^Tukey/.test(method)) {
+    all = `Tukey: all ${n(m, 'pair')} as one family. P values and ${ci('')} are adjusted so that the chance of any false positive among the ${m} is 5%.`
+    each = `P values and ${ci('')} are adjusted so that the chance of any false positive among a family’s ${per} is 5%.`
+  } else if (/^(Dunnett’s T3|Games-Howell|Tamhane)/.test(method)) {
+    const name = /^Dunnett/.test(method)
+      ? 'Dunnett’s T3'
+      : /^Games/.test(method)
+        ? 'Games-Howell'
+        : 'Tamhane’s T2'
+    all = `${name}: all ${n(m, 'pair')}, without assuming equal SDs; adjusted P values and ${ci('')}.`
+    each = `Without assuming equal SDs; adjusted P values and ${ci('')}.`
+  } else if (/^Dunnett/.test(method)) {
+    all = `Dunnett: each of ${n(m, 'group')} − ${control}, one family; adjusted P values and simultaneous ${ci('')}.`
+    each = `Each group − ${control} within it; adjusted P values and simultaneous ${ci('')}.`
+  } else if (/^Holm-Šidák/.test(method)) {
+    all = `Holm-Šidák: adjusted P values for the ${n(m, 'comparison')}; no CIs (step-down methods have none).`
+    each = 'Adjusted P values; no CIs (step-down methods have none).'
+  } else if (/^(Šidák|Bonferroni)/.test(method)) {
+    all = `${method.split('’')[0]}: the ${n(m, 'comparison')} as one family; adjusted P values${ciCol ? ci(' and ') : ''}.`
+    each = `Adjusted P values${ciCol ? ci(' and ') : ''}.`
+  } else if (/^Uncorrected Fisher/.test(method)) {
+    all = `Fisher’s LSD: no adjustment; with ${n(m, 'comparison')} the chance of at least one false positive is about ${Math.round(100 * anyFalsePositive(m))}%.`
+    each = all
+  } else if (/^Newman-Keuls/.test(method)) {
+    all = `Newman-Keuls: step-down; it doesn’t keep the chance of any false positive among the ${m} at 5%, and gives no CIs.`
+    each = `Step-down; it doesn’t keep the chance of any false positive among a family’s ${per} at 5%, and gives no CIs.`
+  } else if (fdr) {
+    all = `q values: of the comparisons called discoveries, about ${qPct}% are expected to be false.`
+    each = `Of the comparisons called discoveries, about ${qPct}% are expected to be false.`
+  } else if (/^Dunn/.test(method)) {
+    const how = /, (\w[\w-]*)$/.exec(method)?.[1]
+    all = `Dunn’s test${how ? ` (${how})` : ''}: adjusted P values for the ${n(m, 'comparison')}, from the ranks of all groups.`
+    each = 'Adjusted P values, from the ranks of all groups.'
+  } else return null
+  if (!perBlock) return all
+  const factor = within === 'row' ? factorNames?.rows || 'row' : factorNames?.columns || 'column'
+  return `Each ${factor === 'row' || factor === 'column' ? factor : `level of ${factor}`} is its own family of ${n(per, 'comparison')} (${method.split('’')[0]!.split(' ')[0]}). ${each}`
+}
+
+/**
+ * The group every comparison is made against: the side all the rows share, else the params'
+ * control data set, else the first.
+ */
+function controlOf(
+  rows: readonly ComparisonRow[],
+  params: Record<string, unknown>,
+  input: readonly NormalizedDataSet[],
+): string {
+  const key = typeof params.control === 'string' ? params.control : ''
+  const named = input.find((d) => d.ref.key === key)?.title
+  return sharedSide(rows, named) ?? named ?? input[0]?.title ?? 'the control'
 }
 
 /** The sheets in the order of the question: the comparisons first when they were asked for. */

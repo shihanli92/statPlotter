@@ -6,29 +6,17 @@ import { xLooks } from '../curveAdvice.ts'
 
 const finite = (v: number) => !Number.isNaN(v) && Number.isFinite(v)
 
-/** The smallest and largest of `values` (no spread: tables can be large). */
-function extent(values: readonly number[]): [number, number] {
-  let lo = Number.POSITIVE_INFINITY
-  let hi = Number.NEGATIVE_INFINITY
-  for (const v of values) {
-    if (v < lo) lo = v
-    if (v > hi) hi = v
-  }
-  return [lo, hi]
-}
-
-/** The values of a data set (every replicate; a summary's means). */
-function valuesOf(d: NormalizedDataSet): number[] {
-  const out: number[] = []
-  const arrays = d.data.shape === 'replicates' ? d.data.reps : [d.data.mean]
-  for (const a of arrays) for (const v of a) if (finite(v)) out.push(v)
-  return out
-}
+/** Values of a data set: every replicate, a summary's means. */
+const arraysOf = (d: NormalizedDataSet): readonly Float64Array[] =>
+  d.data.shape === 'replicates' ? d.data.reps : [d.data.mean]
 
 /** How many values a data set has (a summary's N summed). */
 function countOf(d: NormalizedDataSet): number {
-  if (d.data.shape === 'replicates') return valuesOf(d).length
   let n = 0
+  if (d.data.shape === 'replicates') {
+    for (const a of d.data.reps) for (let i = 0; i < a.length; i++) if (finite(a[i]!)) n++
+    return n
+  }
   for (let r = 0; r < d.data.n.length; r++) {
     const v = d.data.n[r]!
     if (finite(v) && finite(d.data.mean[r]!)) n += v
@@ -38,24 +26,86 @@ function countOf(d: NormalizedDataSet): number {
 
 /** A row has a value in this data set (any replicate). */
 function hasRow(d: NormalizedDataSet, r: number): boolean {
-  const arrays = d.data.shape === 'replicates' ? d.data.reps : [d.data.mean]
-  return arrays.some((a) => finite(a[r] ?? Number.NaN))
+  for (const a of arraysOf(d)) if (finite(a[r] ?? Number.NaN)) return true
+  return false
 }
+
+/** Every value is 0 or 1, and both occur (stops at the first other value). */
+function isBinary(d: NormalizedDataSet): boolean {
+  let zero = false
+  let one = false
+  for (const a of arraysOf(d))
+    for (let i = 0; i < a.length; i++) {
+      const v = a[i]!
+      if (!finite(v)) continue
+      if (v === 0) zero = true
+      else if (v === 1) one = true
+      else return false
+    }
+  return zero && one
+}
+
+/** At most this many values are looked at for the count of distinct values. */
+const DISTINCT_SAMPLE = 100_000
+
+/**
+ * Audit 4 (P2): the facts of an input, once per input (the dialog asks again on every change of
+ * the options and of the schematic; the input is the same until the data sets or the data change).
+ */
+const cache = new WeakMap<readonly NormalizedDataSet[], Map<TableKind, TableFacts>>()
 
 /**
  * The facts of the data sets chosen from a table of `kind`. Text variables (multiple-variables
- * tables) count as variables, not groups.
+ * tables) count as variables, not groups. The same input gives the same (shared) facts.
  */
 export function tableFacts(kind: TableKind, input: readonly NormalizedDataSet[]): TableFacts {
+  let byKind = cache.get(input)
+  if (!byKind) {
+    byKind = new Map()
+    cache.set(input, byKind)
+  }
+  let facts = byKind.get(kind)
+  if (!facts) {
+    facts = computeFacts(kind, input)
+    byKind.set(kind, facts)
+  }
+  return facts
+}
+
+function computeFacts(kind: TableKind, input: readonly NormalizedDataSet[]): TableFacts {
   const numeric = input.filter((d) => !d.text)
   const groups = numeric.map((d) => ({ key: d.ref.key as string, title: d.title, n: countOf(d) }))
-  const all = numeric.flatMap(valuesOf)
+  // One pass over every value (no copies: tables can be large).
+  let count = 0
+  let positives = 0
+  let lo = Number.POSITIVE_INFINITY
+  let hi = Number.NEGATIVE_INFINITY
+  let whole = true
+  const distinct = new Set<number>()
+  let sampled = 0
+  const codes = kind === 'survival' ? new Set<number>() : null
+  for (const d of numeric)
+    for (const a of arraysOf(d))
+      for (let i = 0; i < a.length; i++) {
+        const v = a[i]!
+        if (!finite(v)) continue
+        count++
+        if (v > 0) {
+          positives++
+          if (v < lo) lo = v
+          if (v > hi) hi = v
+        }
+        if (whole && !(v >= 0 && Number.isInteger(v))) whole = false
+        if (sampled < DISTINCT_SAMPLE) {
+          sampled++
+          distinct.add(v)
+        }
+        codes?.add(v)
+      }
   const rows = input.reduce((m, d) => Math.max(m, d.rowCount), 0)
   let completeRows = 0
   if (numeric.length)
     for (let r = 0; r < rows; r++) if (numeric.every((d) => hasRow(d, r))) completeRows++
-  const positive = all.filter((v) => v > 0)
-  const distinct = new Set(all.slice(0, 100_000))
   const titles = input[0]?.rowTitles ?? []
   const numericRowTitles = titles.filter(
     (t) => t !== null && t.trim() !== '' && finite(Number(t)),
@@ -66,9 +116,9 @@ export function tableFacts(kind: TableKind, input: readonly NormalizedDataSet[])
     groups,
     raw: numeric.every((d) => d.data.shape === 'replicates'),
     completeRows,
-    allPositive: all.length > 0 && positive.length === all.length,
-    spanRatio: positive.length ? extent(positive)[1] / extent(positive)[0] : 0,
-    wholeNumbers: all.length > 0 && all.every((v) => v >= 0 && Number.isInteger(v)),
+    allPositive: count > 0 && positives === count,
+    spanRatio: positives ? hi / lo : 0,
+    wholeNumbers: count > 0 && whole,
     distinctValues: distinct.size,
     replicates: input.reduce(
       (m, d) => Math.max(m, d.data.shape === 'replicates' ? d.data.reps.length : 1),
@@ -116,14 +166,11 @@ export function tableFacts(kind: TableKind, input: readonly NormalizedDataSet[])
     }
   }
 
-  if (kind === 'survival') facts.survival = { codes: [...new Set(all)].sort((a, b) => a - b) }
+  if (codes) facts.survival = { codes: [...codes].sort((a, b) => a - b) }
 
   if (kind === 'multipleVariables') {
     const of = (d: NormalizedDataSet) => ({ key: d.ref.key as string, title: d.title })
-    const binary = numeric.filter((d) => {
-      const s = new Set(valuesOf(d))
-      return s.size === 2 && s.has(0) && s.has(1)
-    })
+    const binary = numeric.filter(isBinary)
     facts.variables = {
       numbers: numeric.filter((d) => !binary.includes(d)).map(of),
       texts: input.filter((d) => d.text).map(of),

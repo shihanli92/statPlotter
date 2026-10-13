@@ -5,9 +5,9 @@ import {
   GUIDE_ENTRIES,
   guidePaths,
   METHOD_CARDS,
-  registry,
   tableFacts,
-} from '../src/index.ts'
+} from '../src/dialogEntry.ts'
+import { registry } from '../src/index.ts'
 
 // Roadmap 51a (design §2.3): every analysis, field and option has its text; cards are complete
 // and reachable; lengths and the writing style of §2.4 hold. (No product names: the repository's

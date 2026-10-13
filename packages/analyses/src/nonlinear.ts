@@ -162,6 +162,8 @@ export const NonlinearParamsSchema = z.object({
   /**
    * Roadmap 51e (§9.3): profile-likelihood CIs for new fits (asymmetric, honest for EC50 and other
    * skewed parameters); the asymptotic (symmetric) ones as an option, pinned for saved analyses.
+   * Audit 4 (P1, Q1): a global fit of more than PROFILE_ALL_MAX_DATA_SETS data sets profiles its
+   * shared parameters only (each data set's own: asymptotic, with a note).
    */
   ciMethod: z.enum(['symmetric', 'profile']).default('profile'),
   band: z.enum(['none', 'confidence', 'prediction']).default('none'),
@@ -196,12 +198,25 @@ type ResolvedEquation =
 /**
  * The model of `params`: the built-in equation, or the user-defined equation parsed from
  * `params.userEquation` (an error carries the parser's message and position). Initial values
- * from `params.initialValues` override the automatic ones.
+ * from `params.initialValues` override the automatic ones. Audit 4 (T1): never throws — an
+ * unexpected failure reading the equation is an error like any other (the run, the sketch and
+ * the form all show it).
  */
-export function resolveEquation(
-  params: Pick<NonlinearParams, 'equation' | 'userEquation' | 'initialValues'> &
-    Partial<Pick<NonlinearParams, 'initialRules'>>,
-): ResolvedEquation {
+export function resolveEquation(params: EquationParams): ResolvedEquation {
+  try {
+    return resolve(params)
+  } catch (e) {
+    return {
+      ok: false,
+      message: `The equation can’t be read: ${e instanceof Error ? e.message : String(e)}`,
+    }
+  }
+}
+
+type EquationParams = Pick<NonlinearParams, 'equation' | 'userEquation' | 'initialValues'> &
+  Partial<Pick<NonlinearParams, 'initialRules'>>
+
+function resolve(params: EquationParams): ResolvedEquation {
   const init = params.initialValues ?? {}
   const rules = params.initialRules ?? {}
   /** A typed initial value, else the parameter's rule applied to the data set, else undefined. */
@@ -285,10 +300,32 @@ export function effectiveConstraint(
 }
 
 /**
+ * Audit 4 S4 (Q6): the constants the user set on the fitted model, applied to the other model's
+ * parameters of the same name so both are fitted under the same constraints (`alt`), and the
+ * names of those the other model has no parameter for (`only`: the models aren't nested then).
+ */
+export function sameConstants(
+  mainParams: readonly string[],
+  alt: Pick<EquationDef, 'params'>,
+  constraints: NonlinearParams['constraints'],
+): { alt: NonlinearParams['constraints']; only: string[] } {
+  const out: NonlinearParams['constraints'] = {}
+  const only: string[] = []
+  for (const [name, c] of Object.entries(constraints)) {
+    if (!c || !isFixed(c) || !mainParams.includes(name)) continue
+    if (alt.params.includes(name)) out[name] = c
+    else only.push(name)
+  }
+  return { alt: out, only }
+}
+
+/**
  * Roadmap 51e (§9.4, §4.4 row 22): what a curve fit's params ask to compare — another model, or
  * parameters between data sets — and whether that comparison is between nested models (a
  * parameter shared or not always is; two built-in models when one is a special case of the
  * other with fewer free parameters; a user-defined equation never), for the dialog's F test.
+ * Audit 4 S4: the constants set apply to both models; a constant on a parameter only one model
+ * has, or a simpler model left with no fewer free parameters, means not nested.
  */
 export function comparisonFacts(params: Record<string, unknown>): {
   modelComparison: boolean
@@ -301,13 +338,17 @@ export function comparisonFacts(params: Record<string, unknown>): {
   const alt = other === 'none' || other === id ? undefined : equation(other)
   const comparesParams = names.length > 0 && (!main || names.some((n) => main.params.includes(n)))
   if (!alt) return { modelComparison: comparesParams, modelsNested: true }
+  if (!main) return { modelComparison: true, modelsNested: false }
   const constraints = (params.constraints ?? {}) as NonlinearParams['constraints']
+  const same = sameConstants(main.params, alt, constraints)
   const free = (e: EquationDef, c: NonlinearParams['constraints']) =>
     e.params.filter((n) => effectiveConstraint(e, n, { constraints: c }).kind === 'fit').length
+  const [mainFree, altFree] = [free(main, constraints), free(alt, same.alt)]
   const nested =
-    !!main &&
-    (isSpecialCase(main.id, alt.id) || isSpecialCase(alt.id, main.id)) &&
-    free(main, constraints) !== free(alt, {})
+    same.only.length === 0 &&
+    (isSpecialCase(main.id, alt.id)
+      ? mainFree < altFree
+      : isSpecialCase(alt.id, main.id) && altFree < mainFree)
   return { modelComparison: true, modelsNested: nested }
 }
 
@@ -450,15 +491,39 @@ function fitAll(
   steps?: FitSteps,
 ): Fitted[] {
   if (constraints.some((c) => c.kind === 'shared') && data.length > 1) {
-    const fit = nonlinearFit(eq, data, optionsFor(data, opts, constraints, weights))
+    const fit = nonlinearFit(
+      eq,
+      data,
+      profiling(optionsFor(data, opts, constraints, weights), steps, data.length),
+    )
     advance(steps, data.length)
     return data.map((d, i) => ({ ...d, fit, i }))
   }
   return data.map((d) => {
-    const fit = nonlinearFit(eq, [d], optionsFor([d], opts, constraints, weights))
+    const fit = nonlinearFit(
+      eq,
+      [d],
+      profiling(optionsFor([d], opts, constraints, weights), steps, 1),
+    )
     advance(steps, 1)
     return { ...d, fit, i: 0 }
   })
+}
+
+/**
+ * Audit 4 (P1): progress within a fit of `n` data sets with profile CIs — the fit and each
+ * parameter profiled an equal share of its `n` steps (profiling is most of its time); the last
+ * parameter's is the fit's own report (`advance`).
+ */
+function profiling(o: FitOptions, steps: FitSteps | undefined, n: number): FitOptions {
+  if (!steps || !o.profileCI) return o
+  const at = steps.done
+  return {
+    ...o,
+    onProfile: (done, total) => {
+      if (done < total) steps.progress(at + (n * (done + 1)) / (total + 1), steps.total)
+    },
+  }
 }
 
 /**
@@ -472,6 +537,12 @@ export const migrateNonlinear = (raw: unknown, from: number): unknown =>
         ...(from < 2 ? ([[['compareBy'], 'both']] as const) : []),
         [['ciMethod'], 'symmetric'],
       ])
+
+/**
+ * Audit 4 (P1, Q1): a global fit of more data sets than this profiles its shared parameters
+ * only; each data set's own parameters get asymptotic CIs (with a note).
+ */
+export const PROFILE_ALL_MAX_DATA_SETS = 10
 
 export const nonlinearFitDef: AnalysisDef<NonlinearParams> = {
   id: 'nonlinearFit',
@@ -866,6 +937,15 @@ function runFit(
     confLevel: params.confidenceLevel,
     profileCI: params.ciMethod === 'profile' && !robust,
   }
+  // Audit 4 (P1, Q1): a global fit of many data sets profiles its shared parameters only.
+  const profileShared = !!opts.profileCI && nShared > 0 && data.length > PROFILE_ALL_MAX_DATA_SETS
+  if (profileShared) {
+    opts.profileCI = 'shared'
+    diagnostics.push({
+      level: 'info',
+      message: `With more than ${PROFILE_ALL_MAX_DATA_SETS} data sets, the confidence intervals of the shared parameters are profile likelihood and those of each data set’s own parameters are asymptotic (symmetric): profiling every parameter would take too long.`,
+    })
+  }
   if (params.band === 'prediction' && params.weighting === 'sd')
     diagnostics.push({
       level: 'info',
@@ -1116,7 +1196,13 @@ function fitBlocks(run: FitRun, rsdr: number[] | null, outliers: Outliers | null
         ]),
       ),
       labelTable(
-        `${level} CI (${params.ciMethod === 'profile' ? 'profile likelihood' : 'asymptotic'})`,
+        `${level} CI (${
+          run.opts.profileCI === 'shared'
+            ? 'profile likelihood when shared, else asymptotic'
+            : params.ciMethod === 'profile'
+              ? 'profile likelihood'
+              : 'asymptotic'
+        })`,
         cols,
         free.map((k): [string, ResultValue[]] => [
           eq.params[k]!,
@@ -1253,8 +1339,12 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
       message: `Unknown comparison model “${params.compareWith}”.`,
     })
   if (!alt || alt.id === params.equation) return null
+  // Audit 4 S4 (Q6): the constants set apply to the other model too, so the two fits are
+  // compared under the same constraints (5PL with Bottom = 0 and Top = 100 against 4PL with the
+  // same; two phases with Plateau = 0 against one phase with Plateau = 0).
+  const same = sameConstants(eq.params, alt, params.constraints)
   const altConstraints = alt.params.map((name) =>
-    effectiveConstraint(alt, name, { constraints: {} }),
+    effectiveConstraint(alt, name, { constraints: same.alt }),
   )
   const aFree = altConstraints.filter((c) => c.kind === 'fit').length
   const altFits = fitAll(
@@ -1268,22 +1358,46 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
   // Roadmap 51e (§9.4): nested structurally — one built-in model a special case of the other
   // (their declared relatives), with fewer free parameters; a user-defined equation never.
   // Analyses saved before 0.3.9 (both verdicts) keep their rule: different numbers of free
-  // parameters.
+  // parameters. Audit 4 S4: and never with a constant on a parameter only one model has, or a
+  // simpler model left with no fewer free parameters (DFn ≤ 0): AICc then, with a note.
   const legacy = params.compareBy === 'both'
   const user = params.equation === USER_EQUATION
   const mainSimpler = !user && isSpecialCase(params.equation, alt.id)
   const altSimpler = !user && isSpecialCase(alt.id, params.equation)
-  const nested = legacy ? nFree !== aFree : (mainSimpler || altSimpler) && nFree !== aFree
+  const structural = mainSimpler || altSimpler
+  const fewer = mainSimpler ? nFree < aFree : nFree > aFree
+  const nested = legacy ? nFree !== aFree : structural && same.only.length === 0 && fewer
   const simplerIsMain = legacy || !nested ? nFree <= aFree : mainSimpler
+  // S5: a fit that failed decides nothing; an ambiguous alternative is never preferred.
+  const decides = (f: NonlinearFit) => f.status === 'converged' || f.status === 'singular'
   const comps = fits.map((f, j) => {
     const a = altFits[j]!
     const simpler = simplerIsMain ? f.fit : a.fit
     const complex = simplerIsMain ? a.fit : f.fit
+    const c = compareFits(simpler, complex)
+    const simplerName = simplerIsMain ? eq.name : alt.name
+    const complexName = simplerIsMain ? alt.name : eq.name
+    const bad = !decides(simpler)
+      ? { name: simplerName, status: simpler.status }
+      : !decides(complex)
+        ? { name: complexName, status: complex.status }
+        : null
+    const failed = bad !== null
+    const ambiguous = !failed && complex.status === 'singular'
+    const pick = (complexWins: boolean | null) =>
+      failed || complexWins === null ? '—' : complexWins && !ambiguous ? complexName : simplerName
     return {
-      c: compareFits(simpler, complex),
-      simplerName: simplerIsMain ? eq.name : alt.name,
-      complexName: simplerIsMain ? alt.name : eq.name,
-      nested,
+      c,
+      ds: f.ds.title,
+      simplerName,
+      complexName,
+      simplerStatus: simpler.status,
+      complexStatus: complex.status,
+      bad,
+      failed,
+      ambiguous,
+      byF: nested ? pick(Number.isFinite(c.p) ? c.p < ALPHA : null) : 'Not nested',
+      byAICc: pick(Number.isFinite(c.probSimpler) ? c.probSimpler < 0.5 : null),
     }
   })
   // S18: one verdict, by the method chosen in advance (both for analyses saved before 0.3.9).
@@ -1293,36 +1407,57 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
   if (params.compareBy === 'fTest' && !nested)
     diagnostics.push({
       level: 'warning',
-      message:
-        'These models aren’t nested (neither is a special case of the other), so the F test doesn’t apply; they are compared by AICc.',
+      message: !structural
+        ? 'These models aren’t nested (neither is a special case of the other), so the F test doesn’t apply; they are compared by AICc.'
+        : same.only.length
+          ? `${listedNames(same.only)} ${same.only.length === 1 ? 'is' : 'are'} held constant in ${eq.name} but ${alt.name} has no such parameter, so the models aren’t nested and the F test doesn’t apply; they are compared by AICc.`
+          : 'With the constants set, the simpler model has no fewer free parameters than the other, so the F test doesn’t apply; they are compared by AICc.',
     })
+  const viaF = byF && !(params.compareBy === 'fTest' && byAICc)
+  for (const c of comps) {
+    const which = c.bad
+      ? `the fit of ${c.bad.name} ${c.bad.status === 'maxIterations' ? 'did not converge' : 'could not be done'}`
+      : (viaF ? c.byF : c.byAICc) === '—'
+        ? viaF
+          ? 'the F test is undefined'
+          : 'AICc is undefined (too few points for the parameters)'
+        : null
+    if (which)
+      diagnostics.push({
+        level: 'warning',
+        message: `The models can’t be compared for “${c.ds}”: ${which}.`,
+      })
+    else if (c.ambiguous)
+      diagnostics.push({
+        level: 'info',
+        message: `The fit of ${c.complexName} to “${c.ds}” is ambiguous, so it isn’t preferred: ${c.simplerName} is.`,
+      })
+  }
+  const status = (s: NonlinearFit['status']) => text(STATUS_TEXT[s])
   const fRows: [string, ResultValue[]][] = [
-    ['F', comps.map((c) => (c.nested ? num(c.c.F) : text('—')))],
-    ['DFn, DFd', comps.map((c) => text(c.nested ? `${c.c.dfn}, ${c.c.dfd}` : '—'))],
-    ['P value', comps.map((c) => (c.nested ? pval(c.c.p) : text('—')))],
-    ['P value summary', comps.map((c) => (c.nested ? psum(c.c.p) : text('—')))],
-    [
-      'Preferred model (F test)',
-      comps.map((c) =>
-        text(!c.nested ? 'Not nested' : c.c.p < ALPHA ? c.complexName : c.simplerName),
-      ),
-    ],
+    ['F', comps.map((c) => (nested ? num(c.c.F) : text('—')))],
+    ['DFn, DFd', comps.map((c) => text(nested ? `${c.c.dfn}, ${c.c.dfd}` : '—'))],
+    ['P value', comps.map((c) => (nested ? pval(c.c.p) : text('—')))],
+    ['P value summary', comps.map((c) => (nested ? psum(c.c.p) : text('—')))],
+    ['Preferred model (F test)', comps.map((c) => text(c.byF))],
   ]
   const aRows: [string, ResultValue[]][] = [
     ['AICc of simpler model', comps.map((c) => num(c.c.aiccSimpler))],
     ['AICc of alternative model', comps.map((c) => num(c.c.aiccComplex))],
     [
       'Probability simpler model is correct',
-      comps.map((c) => text(`${(c.c.probSimpler * 100).toFixed(2)}%`)),
+      comps.map((c) =>
+        text(Number.isFinite(c.c.probSimpler) ? `${(c.c.probSimpler * 100).toFixed(2)}%` : '—'),
+      ),
     ],
-    [
-      'Preferred model (AICc)',
-      comps.map((c) => text(c.c.probSimpler >= 0.5 ? c.simplerName : c.complexName)),
-    ],
+    ['Preferred model (AICc)', comps.map((c) => text(c.byAICc))],
   ]
   const rows: [string, ResultValue[]][] = [
     ['Null hypothesis (simpler model)', comps.map((c) => text(c.simplerName))],
     ['Alternative hypothesis', comps.map((c) => text(c.complexName))],
+    // S5: each model's fit, which a verdict depends on.
+    ['Fit of the simpler model', comps.map((c) => status(c.simplerStatus))],
+    ['Fit of the alternative model', comps.map((c) => status(c.complexStatus))],
     ...(byF && !(params.compareBy === 'fTest' && byAICc) ? fRows : []),
     ...(byAICc ? aRows : []),
   ]
@@ -1332,26 +1467,24 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
       : byAICc
         ? 'AICc'
         : 'Extra sum-of-squares F test'
-  // The verdict, for the summary sentence: the preferred model and the P (F test) or the
-  // probability (AICc) of each data set.
-  const viaF = byF && !(params.compareBy === 'fTest' && byAICc)
-  run.verdicts = comps.map((c, j) => ({
-    key: fits[j]!.ds.ref.key,
-    title: fits[j]!.ds.title,
-    by: viaF ? 'fTest' : 'aicc',
-    preferred: viaF
-      ? !c.nested
-        ? ''
-        : c.c.p < ALPHA
-          ? c.complexName
-          : c.simplerName
-      : c.c.probSimpler >= 0.5
-        ? c.simplerName
-        : c.complexName,
-    simpler: c.simplerName,
-    p: viaF ? c.c.p : Number.NaN,
-    probability: viaF ? Number.NaN : Math.max(c.c.probSimpler, 1 - c.c.probSimpler),
-  }))
+  // The verdict, for the summary sentence: the preferred model ('—' when the models couldn't be
+  // compared) and the P (F test) or the probability (AICc) of each data set.
+  run.verdicts = comps.map((c, j) => {
+    const preferred = viaF ? (c.byF === 'Not nested' ? '' : c.byF) : c.byAICc
+    const decided = preferred !== '' && preferred !== '—'
+    return {
+      key: fits[j]!.ds.ref.key,
+      title: fits[j]!.ds.title,
+      by: viaF ? 'fTest' : 'aicc',
+      preferred,
+      simpler: c.simplerName,
+      p: viaF && decided ? c.c.p : Number.NaN,
+      probability: !viaF && decided ? Math.max(c.c.probSimpler, 1 - c.c.probSimpler) : Number.NaN,
+    }
+  })
+  const constants = Object.entries(same.alt).map(([n, c]) =>
+    c.kind === 'constant' ? `${n} = ${c.value}` : n,
+  )
   return {
     key: 'compare',
     title: 'Comparison of fits',
@@ -1361,6 +1494,14 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
         fits.map((f) => f.ds.title),
         rows,
       ),
+      ...(constants.length
+        ? [
+            {
+              type: 'note' as const,
+              text: `The constants set (${constants.join(', ')}) apply to both models, so they are compared under the same constraints.`,
+            },
+          ]
+        : []),
       {
         type: 'note',
         text: 'The F test is valid only when the simpler model is a special case of the other (nested models); AICc compares any two models fitted to the same data.',
@@ -1368,6 +1509,12 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
     ],
   }
 }
+
+/** "Bottom", "Bottom and Top", "Bottom, Top and HillSlope". */
+const listedNames = (names: readonly string[]) =>
+  names.length <= 1
+    ? (names[0] ?? '')
+    : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
 
 /**
  * "Do the best-fit values of the chosen parameters differ between data sets?" (the Compare
@@ -1423,6 +1570,15 @@ function compareParamsSheet(
   }
   const c = compareFits(simpler, complex)
   const one = share.length === 1
+  // Audit 4 S5: a fit that didn't converge, or a statistic that isn't defined, decides nothing.
+  const failed = simpler.status === 'maxIterations' || complex.status === 'maxIterations'
+  if (failed)
+    diagnostics.push({
+      level: 'warning',
+      message: `The fits needed to compare ${names} between data sets did not converge, so whether ${names} ${one ? 'differs' : 'differ'} isn’t decided.`,
+    })
+  const fDecides = !failed && Number.isFinite(c.p)
+  const aDecides = !failed && Number.isFinite(c.probSimpler)
   // S18: one verdict, by the method chosen in advance (both for analyses saved before 0.3.9).
   const byF = params.compareBy !== 'aicc'
   const byAICc = params.compareBy !== 'fTest'
@@ -1444,9 +1600,11 @@ function compareParamsSheet(
               [
                 `Conclusion (alpha = ${ALPHA})`,
                 text(
-                  c.p < ALPHA
-                    ? `Reject the null hypothesis: ${names} ${one ? 'differs' : 'differ'}`
-                    : 'Do not reject the null hypothesis',
+                  !fDecides
+                    ? '—'
+                    : c.p < ALPHA
+                      ? `Reject the null hypothesis: ${names} ${one ? 'differs' : 'differ'}`
+                      : 'Do not reject the null hypothesis',
                 ),
               ],
             ] as [string, ResultValue][])
@@ -1457,7 +1615,7 @@ function compareParamsSheet(
               ['AICc of the alternative model', num(c.aiccComplex)],
               [
                 'Probability the null model is correct',
-                text(`${(c.probSimpler * 100).toFixed(2)}%`),
+                text(Number.isFinite(c.probSimpler) ? `${(c.probSimpler * 100).toFixed(2)}%` : '—'),
               ],
               ...(byF
                 ? []
@@ -1465,9 +1623,11 @@ function compareParamsSheet(
                     [
                       'Preferred model (AICc)',
                       text(
-                        c.probSimpler >= 0.5
-                          ? `${names} shared`
-                          : `${names} different between data sets`,
+                        !aDecides
+                          ? '—'
+                          : c.probSimpler >= 0.5
+                            ? `${names} shared`
+                            : `${names} different between data sets`,
                       ),
                     ],
                   ] as [string, ResultValue][])),
@@ -1491,8 +1651,8 @@ function compareParamsSheet(
   }
   return {
     sheet,
-    p: byF ? c.p : Number.NaN,
-    probShared: params.compareBy === 'aicc' ? c.probSimpler : Number.NaN,
+    p: byF && fDecides ? c.p : Number.NaN,
+    probShared: params.compareBy === 'aicc' && aDecides ? c.probSimpler : Number.NaN,
   }
 }
 

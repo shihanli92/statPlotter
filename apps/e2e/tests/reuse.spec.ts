@@ -144,7 +144,7 @@ test('change the analyzed table in the analysis parameters', async ({ page }) =>
   await typeCells(page, 0, 0, [['60']])
 
   await sheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results').click()
-  await page.getByRole('main').getByRole('button', { name: 'Parameters…' }).click()
+  await page.getByRole('main').getByRole('button', { name: 'Edit parameters…' }).click()
   const d = editDialog(page)
   await d.getByRole('combobox', { name: 'Analyze' }).selectOption({ label: 'Day 2' })
   await d.getByRole('combobox', { name: 'matching data sets' }).selectOption('title')
@@ -174,7 +174,7 @@ test('new graph like this: an empty table like the graph’s, and the graph on i
   await expect(d).toBeHidden()
   // The new table opens, empty, with the same data sets.
   await expect(grid(page)).toHaveAccessibleName('Day 2')
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated'])
   await expect(rowCells(page, 0)).toHaveText(['', ''])
   await typeCells(page, 0, 0, [['5', '6']])
   await sheet(page, 'Day 2', 'Graphs').click()
@@ -203,7 +203,7 @@ test('save a template (a download) and start a project from it', async ({ page }
   await expect(t).toBeHidden()
   await expect(page).toHaveTitle('Untitled — statPlotter')
   await expect(grid(page)).toHaveAccessibleName('Day 1')
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated'])
   await expect(rowCells(page, 0)).toHaveText(['', ''])
   await expect(sheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results')).toBeVisible()
 

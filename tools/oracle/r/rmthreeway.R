@@ -14,6 +14,10 @@
 # the sequential rank contribution of subject x (E intersect W) to [X Z] (terms ordered with
 # every term after those nested in it), or the residual df when E contains every repeated factor.
 # Cross-checks: lmer logLik (1e-7 abs), lmerTest F (1e-5).
+# params ddf = "satterthwaite" (audit 4 S15; the analysis' default): Satterthwaite's
+# denominator df from the analytic REML information at that optimum (satt_F, ref_rm.R), so the
+# fixture keeps rtol 1e-10; lmerTest's DenDF, which differentiates the deviance numerically at
+# lme4's optimum (agreeing to ~1e-7), is the cross-check at 1e-5.
 # RM ANOVA also gives the effect sizes (eta^2, partial eta^2 against the effect's own error
 # term, Cohen's f).
 
@@ -120,6 +124,7 @@ oracle <- function(input, params) {
   f <- reml_dense(d$y, X, Zs, start = ifelse(unname(th) < 1e-4, 0, unname(th)^2))
   stopifnot(abs(as.numeric(logLik(fm)) - f$logLik) < 1e-7, f$logLik >= as.numeric(logLik(fm)) - 1e-10)
   an <- anova(fm, type = 3, ddf = "Satterthwaite")
+  ddf <- if (is.null(params$ddf)) "containment" else params$ddf
   cols <- attr(X, "assign")
   effects <- lapply(seq_along(EFFECTS), function(j) {
     e <- EFFECTS[[j]]
@@ -128,6 +133,18 @@ oracle <- function(input, params) {
     Fv <- drop(t(b) %*% solve(f$cov[idx, idx, drop = FALSE], b)) / length(idx)
     term <- paste(FN[e], collapse = ":")
     stopifnot(abs(an[term, "F value"] - Fv) <= 1e-5 * Fv)
+    if (ddf == "satterthwaite") {
+      # Audit 4 S15: Satterthwaite's denominator df (the analysis' default since 0.3.9) from the
+      # analytic REML information at reml_dense's optimum (satt_F, ref_rm.R), cross-checked
+      # against lmerTest's DenDF, which differentiates numerically at lme4's optimum (they
+      # agree to ~1e-7 here, so 1e-5 as the check).
+      L <- matrix(0, length(idx), ncol(X)); L[cbind(seq_along(idx), idx)] <- 1
+      sf <- satt_F(f, L)
+      stopifnot(abs(sf$F - Fv) <= 1e-10 * Fv,
+                abs(an[term, "DenDF"] - sf$dfd) <= 1e-5 * sf$dfd)
+      return(list(F = Fv, df = length(idx), dfd = sf$dfd,
+                  p = pf(Fv, length(idx), sf$dfd, lower.tail = FALSE)))
+    }
     within <- intersect(e, W)
     containing <- if (length(within) == length(W)) integer(0) else
       which(vapply(proper, function(w) setequal(w, within), TRUE))

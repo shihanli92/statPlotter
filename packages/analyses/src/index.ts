@@ -5,8 +5,7 @@ import { correlationDef } from './correlation.ts'
 import { aggregateDef, filterRowsDef, percentagesDef, survivalTimeDef } from './dataManipulation.ts'
 import { fractionOfTotalDef, rowStatsDef } from './dataProcessing.ts'
 import { descriptive } from './descriptive.ts'
-import { attachDialog, withValidate } from './dialog/index.ts'
-import { attachExplanations } from './explain/index.ts'
+import { withValidate } from './dialog/validate.ts'
 import { aucDef, frequencyDef } from './frequency.ts'
 import { GRAPH_RESULTS } from './graphResults.ts'
 import { linearRegressionDef } from './linear.ts'
@@ -31,7 +30,6 @@ import { pStackDef } from './pStack.ts'
 import { mannWhitney, wilcoxon } from './rank.ts'
 import { coxRegressionDef, logisticRegressionDef, multipleRegressionDef } from './regression.ts'
 import { simulateColumnDef, simulateContingencyDef, simulateXYDef } from './simulate.ts'
-import { attachSketches } from './sketch/index.ts'
 import { smoothingDef } from './smoothing.ts'
 import { withSummaries } from './summary/index.ts'
 import { survivalDef } from './survival.ts'
@@ -75,7 +73,22 @@ import { demingDef, simpleLogisticDef } from './xyModels.ts'
 // ambiguous fit) with their fixes; one model-comparison verdict in the values and the summary;
 // nesting decided by the models' declared relatives (not the count of parameters) for fits saved
 // from 0.3.9 on; profile-likelihood CIs for new fits (saved ones pinned to the asymptotic CIs).
-export const ANALYSES_VERSION = '1.6.1'
+// 1.6.2 (audit 4, step 2): user equations past the parser's new limits (data set letters past
+// ZZ, nesting deeper than 200, more than 20,000 characters) are errors; every other equation's
+// result is unchanged.
+// 1.7.0 (audit 4, step 1): what the results say — rank comparisons name the medians (S1, a Median
+// row in Kruskal-Wallis' and Friedman's data summaries); summaries never take a direction or a
+// verdict from a value that wasn't computed, and one-tailed results against the prediction say
+// so (S6, S7); the correlation summary counts the corrected pairs (S2); comparisons captions
+// name each family and the control (S3); model comparisons with constants or a failed fit
+// (S4, S5); the log-rank hazard ratio's value (S8); profile CIs that never reach the target are
+// unbounded (S9); a constant parameter in the curve-fit summary (S11); multiple one-way ANOVAs'
+// alpha without a correction (S12); wording that follows the comparisons chosen (S13).
+// 1.8.0 (audit 4, step 3): a global curve fit of more than 10 data sets with profile CIs profiles
+// its shared parameters only; each data set's own parameters get asymptotic CIs, with a note and
+// the CI table's title saying so (P1, Q1; saved fits too, as audit 4 S9's profile CIs). Every
+// other result is unchanged.
+export const ANALYSES_VERSION = '1.8.0'
 
 export const ANALYSES: readonly AnalysisDef<unknown>[] = [
   descriptive,
@@ -140,15 +153,13 @@ for (const d of ANALYSES) {
   if (g) d.graphResults = g as AnalysisDef<unknown>['graphResults']
 }
 
-// Roadmap 51a: every analysis' explanations (its form's text, `cards`; `explain/`).
-attachExplanations(ANALYSES)
+// Audit 4 (P6): the explanations, the dialog's words, tiers and conditions and the live sketches
+// are attached by `@ps/analyses/dialog` (`dialogEntry.ts`), which the Analyze dialog and the
+// results import: the app starts and the worker runs without them.
 
-// Roadmap 51b: the Analyze dialog's words, tiers and conditions (`dialog/rules.ts`), and `run`
-// returning `validate`'s problem as its failure (one function for the dialog's checks and run).
-attachDialog(ANALYSES)
+// Roadmap 51b: `run` returning `validate`'s problem as its failure (one function for the
+// dialog's checks and run).
 withValidate(ANALYSES)
-// Roadmap 51b: each analysis' live sketch (`sketch/`).
-attachSketches(ANALYSES)
 // Roadmap 51d: every result finished — its summary sentence first, the sheets by the question,
 // details marked, the comparisons' headers (`summary/`).
 withSummaries(ANALYSES)
@@ -182,7 +193,6 @@ export {
   matchingRows,
   TIME_UNITS,
 } from './dataManipulation.ts'
-export * from './dialog/index.ts'
 export {
   EQUATION_META,
   type EquationMeta,
@@ -198,18 +208,7 @@ export {
   unitWords,
   type XScale,
 } from './explain/equations.ts'
-export {
-  CARD_FAMILIES,
-  CARDS_OF,
-  explainedForm,
-  FORM_TEXT,
-  fieldText,
-  METHOD_CARDS,
-  methodCard,
-  withNames,
-} from './explain/index.ts'
-export * from './guide/index.ts'
-export { isMethodField, type MethodState, methodChanges } from './methodChanges.ts'
+export { GUIDE_QUESTIONS, type GuideQuestionLine, topQuestions } from './guideQuestions.ts'
 export { type MethodsInput, methodsParagraph } from './methodsText.ts'
 export {
   labelOf,
@@ -228,10 +227,7 @@ export {
   resolveEquation,
   USER_EQUATION,
 } from './nonlinear.ts'
-export * from './schematic/index.ts'
 export { defaultParamValue, SIMULATIONS } from './simulate.ts'
-export { SKETCH_MAX_ROWS, SKETCHES, sampledRows } from './sketch/index.ts'
-export { modelThumbnail, THUMBNAIL_PLOT } from './sketch/thumbnail.ts'
 export { effectPlot } from './summary/effectPlot.ts'
 export {
   type ComparisonRow,

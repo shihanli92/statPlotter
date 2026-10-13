@@ -30,42 +30,42 @@ test.beforeEach(async ({ page }) => {
 /** Per kind: the column titles of a new empty table and the first row of its sample data. */
 const KINDS: Record<TableKindLabel, { titles: string[]; hint: RegExp; sampleRow: string[] }> = {
   Column: {
-    titles: ['', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', 'Group A', 'Group B', 'Group C'],
     hint: /Replicate values stacked in columns/,
     sampleRow: ['34.1', '45.2'],
   },
   XY: {
-    titles: ['', 'X', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', 'X', 'Group A', 'Group B', 'Group C'],
     hint: /XY table: X values in the first column/,
     sampleRow: ['-9', '1', '6.1', '2', '2.7', '4.5', '1.4'],
   },
   Grouped: {
-    titles: ['', '', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', '', 'Group A', 'Group B', 'Group C'],
     hint: /Grouped table: one row per level of the row factor/,
     sampleRow: ['Wild type', '37', '37.5', '42.2', '39.8', '43.4', '50.3', '44.2', '47.5'],
   },
   Contingency: {
-    titles: ['', '', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', '', 'Group A', 'Group B', 'Group C'],
     hint: /Contingency table: counts/,
     sampleRow: ['Treated', '15', '85'],
   },
   Survival: {
-    titles: ['', 'Days elapsed', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', 'Days elapsed', 'Group A', 'Group B', 'Group C'],
     hint: /Survival table: one subject per row/,
     sampleRow: ['12', '1', ''],
   },
   'Multiple variables': {
-    titles: ['', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', 'Group A', 'Group B', 'Group C'],
     hint: /Multiple variables: one row per observation/,
     sampleRow: ['40', '20.4', '0', '116.5', '0', '133', '0'],
   },
   'Parts of whole': {
-    titles: ['', '', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', '', 'Group A', 'Group B', 'Group C'],
     hint: /Parts of whole: one part \(category\) per row/,
     sampleRow: ['T cells', '412', '355'],
   },
   Nested: {
-    titles: ['', 'Group A', 'Group B', 'Group C'],
+    titles: ['Row', 'Group A', 'Group B', 'Group C'],
     hint: /Nested table: a column per group, a subcolumn per subject/,
     sampleRow: ['15.7', '21.6', '21.1', '26.4', '28', '26.1'],
   },
@@ -178,21 +178,21 @@ test('typing values and titles, with undo and redo', async ({ page }) => {
   await columnTitles(page).nth(1).dblclick()
   await grid(page).getByRole('textbox').fill('Dose')
   await page.keyboard.press('Enter')
-  await expect(columnTitles(page)).toHaveText(['', 'Dose', 'Response'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Dose', 'Response'])
 
   // Undo steps back through the X title, the data set title and the edited value; redo returns.
   await expect(tool(page, 'Undo Rename X column')).toBeEnabled()
   await pressShortcut(page, 'Mod+Z')
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Response'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'X', 'Response'])
   await pressShortcut(page, 'Mod+Z')
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Group A'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'X', 'Group A'])
   await pressShortcut(page, 'Mod+Z')
   await expect(cell(page, 1, 1)).toHaveText('-3')
   await pressShortcut(page, 'Mod+Shift+Z')
   await expect(cell(page, 1, 1)).toHaveText('-4')
   await pressShortcut(page, 'Mod+Shift+Z')
   await pressShortcut(page, 'Mod+Shift+Z')
-  await expect(columnTitles(page)).toHaveText(['', 'Dose', 'Response'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Dose', 'Response'])
   await expect(tool(page, 'Redo')).toBeDisabled()
 })
 
@@ -444,19 +444,19 @@ test('inserting and deleting rows and columns, with undo', async ({ page }) => {
 
   // Columns: + Column, Edit › Add column, Edit › Delete column.
   await page.getByRole('main').getByRole('button', { name: '+ Column' }).click()
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated', 'Group C'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated', 'Group C'])
   await runMenu(page, 'Edit', 'Add column')
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated', 'Group C', 'Group D'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated', 'Group C', 'Group D'])
   await cell(page, 0, 0).click()
   await runMenu(page, 'Edit', 'Delete column')
-  await expect(columnTitles(page)).toHaveText(['', 'Treated', 'Group C', 'Group D'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Treated', 'Group C', 'Group D'])
   await expect(rowCells(page, 0)).toHaveText(['45.2', '', ''])
   await pressShortcut(page, 'Mod+Z')
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated', 'Group C', 'Group D'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated', 'Group C', 'Group D'])
   await expect(rowCells(page, 0)).toHaveText(['34.1', '45.2', '', ''])
   await pressShortcut(page, 'Mod+Z')
   await pressShortcut(page, 'Mod+Z')
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated'])
 })
 
 test('replicate subcolumns of a grouped table', async ({ page }) => {
@@ -481,7 +481,7 @@ test('row titles on and off', async ({ page }) => {
   await newTable(page, { kind: 'Column', sample: true })
   const toggle = page.getByRole('main').getByRole('checkbox', { name: 'Row titles' })
   await toggle.check()
-  await expect(columnTitles(page)).toHaveText(['', '', 'Control', 'Treated'])
+  await expect(columnTitles(page)).toHaveText(['Row', '', 'Control', 'Treated'])
   await typeCells(page, 0, 0, [['Mouse 1']])
   await typeCells(page, 1, 0, [['Mouse 2']])
   await expect(rowCells(page, 0)).toHaveText(['Mouse 1', '34.1', '45.2'])
@@ -494,7 +494,7 @@ test('row titles on and off', async ({ page }) => {
     'true',
   )
   await view.getByRole('menuitemcheckbox', { name: /Row titles/ }).click()
-  await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Control', 'Treated'])
   await expect(toggle).not.toBeChecked()
   await pressShortcut(page, 'Mod+Z')
   await expect(rowCells(page, 0)).toHaveText(['Mouse 1', '34.1', '45.2'])

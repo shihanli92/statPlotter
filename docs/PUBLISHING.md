@@ -15,6 +15,7 @@ Everything at the version's commit except:
 | `docs/DECISIONS.md`, `docs/design/PAPER_PANELS.md` | the decision log and the paper panels' catalogue |
 | `packages/ui/src/examples/private/` | the papers whose source data aren't openly licensed, and the example of the user's own data |
 | `packages/ui/test/private/` | the tests that exist only for those examples |
+| `.github/dependabot.yml` | Dependabot's version updates: their pull requests could never merge into a tree the next version replaces whole (audit 4, T5) |
 
 The app and the tests find the private examples through `import.meta.glob`
 (`packages/ui/src/examples/privateExamples.ts`), so a tree without the folder builds and passes
@@ -27,12 +28,20 @@ repository)").
 
 - Settings › Code security: turn on Dependabot alerts and security updates, secret scanning with
   push protection, and private vulnerability reporting (all free for a public repository).
-  `.github/dependabot.yml` proposes weekly updates of the npm packages and the pinned Actions;
-  `.github/workflows/codeql.yml` scans the code (it runs only in `statPlotter`).
+  Dependabot's alerts say when a locked dependency has an advisory; its pull requests there (and
+  its version updates, which `.github/dependabot.yml` asks for in the private repository only)
+  can't be merged, since each version replaces the tree: make the update in the private
+  repository and publish the next version. `.github/workflows/codeql.yml` scans the code (it
+  runs only in `statPlotter`).
 - Settings › Actions › General: keep "Require approval for all outside collaborators" for fork
   pull requests. CI (`ci.yml`) runs the checks and the Chromium end-to-end tests there without
-  any secret; deploys, releases and the nightly runs are guarded to the private repository, and
-  no workflow uses `pull_request_target` (`ui/test/publication.test.ts` checks all of this).
+  any secret, and so do the nightly end-to-end tests in all three browsers (`e2e-nightly.yml`)
+  and the weekly Rust advisories check (`desktop.yml` `audit`), which run in the owner's
+  repositories, never in a fork (audit 4, T2); deploys and releases are guarded to the private
+  repository, and no workflow uses `pull_request_target` (`ui/test/publication.test.ts` checks
+  all of this). Actions are turned off in the private repository, so these public runs are the
+  only ones (GitHub emails a failed scheduled run; it pauses a public repository's schedules
+  after 60 days without a commit, which a published version restarts).
 
 ## Once: the demo on Netlify
 
@@ -71,8 +80,9 @@ site serves the app, delete that Worker (Workers & Pages › `statplotter` › S
 the public repository isn't deployed in two places. `wrangler.jsonc` was its configuration and is
 gone.
 
-**The private deployment** (project `plotter`, deployed by `ci.yml`) stays behind Cloudflare
-Access. Extend its Access policy to the preview deployments too (Workers & Pages › `plotter` ›
+**The private deployment** (project `plotter`, deployed by `ci.yml`'s `deploy` job, which runs
+only while the private repository's Actions are on: they are off, so it keeps its last build)
+stays behind Cloudflare Access. Extend its Access policy to the preview deployments too (Workers & Pages › `plotter` ›
 Settings › General › Access policy for preview deployments, or an Access application covering
 `*.plotter.pages.dev`): otherwise a preview URL would serve the private build without a login.
 
@@ -92,12 +102,17 @@ Settings › General › Access policy for preview deployments, or an Access app
    - a path under any `source_data` folder, a `.pzfx` file outside the test fixtures
      (`packages/io/test/fixtures/`, `apps/e2e/fixtures/`), a file left out, a file over 5 MB,
      a file named like a secret (`.env`, `*.pem`, `*.key`, …);
-   - absolute paths in a home folder (macOS or Windows);
+   - absolute paths in a home folder (macOS, Windows or Linux);
    - private words (held in the script as SHA-256 hashes only);
    - anything shaped like a secret: private keys, GitHub, `sk-…`, AWS, Slack and Google keys,
      Cloudflare tokens, `TAURI_SIGNING_PRIVATE_KEY=` with a value;
    - the names of the left-out papers' source files and folders (read from their specs before
      they are removed).
+
+   Text files are checked line by line; so are the members of zip archives (`.xlsx`, `.zip`:
+   each checked as a file of its own, paths included, and a member that can't be read is a hit)
+   and the text chunks of PNG images (`tEXt`, `zTXt`, `iTXt`, EXIF). Other binary files (JPEGs,
+   fonts) are checked by their path and size only (audit 4, T10).
 
    Then it verifies the snapshot on its own (`pnpm install --frozen-lockfile`, `pnpm check`, the
    web build, and the demo's install and build above in a fresh copy, whose output must hold

@@ -74,7 +74,7 @@ Roadmap 29; every edit is one undo step.
 | Dose-response warnings with their fixes: the EC50 outside the doses, a plateau not reached, an EC50 the data don't determine, too few doses, an ambiguous fit (Fix Bottom = 0 opens Edit with it) | ✅ | 51e |
 | Constraints, initial values | ✅ | Constant, shared, data set constant (column title or mean X), limits; initial values per parameter and rules for initial values (20). No constraints relating two parameters (Kfast > Kslow) |
 | Weighting | ✅ | 1/Y, 1/Y², 1/Y^K, 1/X, 1/X², 1/SD²; test for appropriate weighting (18) |
-| Symmetric and profile-likelihood CIs | ✅ | Profile likelihood by default for new fits (51e; global fits' per-data-set parameters too); saved fits keep the asymptotic CIs |
+| Symmetric and profile-likelihood CIs | ✅ | Profile likelihood by default for new fits (51e; global fits' per-data-set parameters too, up to 10 data sets: above, the shared ones only, audit 4 P1); saved fits keep the asymptotic CIs |
 | Hougaard's skewness | ✅ | 14; weighted fits too (18) |
 | Confidence and prediction bands | ✅ | |
 | Residual normality, runs test, replicates test | ✅ | 14; residual plot and table |

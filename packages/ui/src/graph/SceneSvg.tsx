@@ -31,7 +31,9 @@ import {
   type ReactNode,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from 'react'
@@ -44,6 +46,7 @@ import {
   pointSeries,
   sceneIndex,
 } from '../selection/sceneKeys.ts'
+import { rasterInWorker, rasterWorkerAvailable, SUPERSEDED } from '../worker/pointRaster.ts'
 import { assetUrl, cloudUrls } from './assetUrls.ts'
 import { textBox } from './canvasEdit.ts'
 
@@ -117,12 +120,224 @@ export function cloudRaster(
 /** A point cloud's image at `scale` pixels per point (made once per cloud and zoom). */
 export const cloudImage = (p: PointsPrim, scale: number) => cloudRaster(p, scale).img
 
+/**
+ * Audit 4 (P5): where the scene is seen (the canvas: its element, whose box on the screen is the
+ * part in view) and a key that changes once a scroll, a zoom or a resize has rested. A cloud whose
+ * image at the zoom would be larger than LARGE_CLOUD_PIXELS draws a whole image of a fixed size
+ * and, over it, the part in view (and around it) at the zoom's resolution.
+ */
+export interface RasterViewport {
+  el: () => Element | null
+  key: number
+}
+export const RasterView = createContext<RasterViewport | null>(null)
+
+/** Pixels of a cloud's whole image above which only the part in view is drawn sharp. */
+export const LARGE_CLOUD_PIXELS = 4_000_000
+
+/** A cloud's bounds (once per cloud: a pass over its points). */
+const cloudBounds = new WeakMap<PointsPrim, ReturnType<typeof pointsPrimBounds>>()
+function boundsOf(p: PointsPrim) {
+  if (!cloudBounds.has(p)) cloudBounds.set(p, pointsPrimBounds(p))
+  return cloudBounds.get(p) ?? null
+}
+
+/** Pixels of a cloud's whole image at `scale`. */
+export function cloudPixels(p: PointsPrim, scale: number): number {
+  const b = boundsOf(p)
+  return b ? b.w * scale * b.h * scale : 0
+}
+
+/** The part of the element's user space seen through `viewport`, or null when unknown. */
+function seenBox(el: Element | null, viewport: Element | null): Box | null {
+  const g = el as SVGGraphicsElement | null
+  if (!g || !viewport || typeof g.getScreenCTM !== 'function') return null
+  const ctm = g.getScreenCTM()
+  if (!ctm || typeof DOMPoint === 'undefined') return null
+  const inv = ctm.inverse()
+  const r = viewport.getBoundingClientRect()
+  const pts = [
+    [r.left, r.top],
+    [r.right, r.top],
+    [r.left, r.bottom],
+    [r.right, r.bottom],
+  ].map(([x, y]) => new DOMPoint(x, y).matrixTransform(inv))
+  const xs = pts.map((q) => q.x)
+  const ys = pts.map((q) => q.y)
+  const x = Math.min(...xs)
+  const y = Math.min(...ys)
+  const box = { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y }
+  return box.w > 0 && box.h > 0 && [x, y, box.w, box.h].every(Number.isFinite) ? box : null
+}
+
+const contains = (a: Box, b: Box) =>
+  b.x >= a.x && b.y >= a.y && b.x + b.w <= a.x + a.w && b.y + b.h <= a.y + a.h
+
+/** The part drawn for a view: the view and a quarter of it around (a short pan draws nothing). */
+const around = (v: Box): Box => ({
+  x: v.x - v.w / 4,
+  y: v.y - v.h / 4,
+  w: v.w * 1.5,
+  h: v.h * 1.5,
+})
+
+/** A large cloud's whole image, at a fixed size (the same at every zoom: made once). */
+const wholeImages = new WeakMap<PointsPrim, CloudRaster>()
+/** A large cloud's image of the part in view: one kept per cloud (the latest view's). */
+const partImages = new WeakMap<PointsPrim, CloudRaster & { clip: Box }>()
+
+/** The whole image made at about `scale` (a quarter either way), if any. */
+function wholeMade(p: PointsPrim, scale: number): CloudRaster | null {
+  const hit = wholeImages.get(p)
+  return hit && hit.scale >= scale / 1.25 && hit.scale <= scale * 1.25 ? hit : null
+}
+
+/**
+ * Audit 4 (P5): an image the worker draws (`rasterInWorker`) while `ask` holds — the image shown
+ * till then stays — given to `keep` when it comes (drawn on this thread when the worker can't).
+ * A zoom that rested drew a million points' image on the main thread: a two-second task.
+ */
+function useWorkerImage(
+  ask: boolean,
+  p: PointsPrim,
+  scale: number,
+  clip: Box | undefined,
+  keep: (r: CloudRaster) => void,
+) {
+  const [, redraw] = useReducer((n: number) => n + 1, 0)
+  const keepRef = useRef(keep)
+  keepRef.current = keep
+  const clipKey = clip ? `${clip.x},${clip.y},${clip.w},${clip.h}` : ''
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the clip by its numbers (clipKey)
+  useEffect(() => {
+    if (!ask) return
+    let live = true
+    const done = (img: CloudRaster['img']) => {
+      keepRef.current({ p, scale, img })
+      if (live) redraw()
+    }
+    const opts = { ...(clip ? { clip } : {}), level: 1 }
+    rasterInWorker(p, scale, clip).then(
+      // Superseded: a later request (another zoom) shows its image.
+      (img) => img !== SUPERSEDED && done(img),
+      () => done(pointsImagePrim(p, scale, opts)),
+    )
+    return () => {
+      live = false
+    }
+  }, [ask, p, scale, clipKey])
+}
+
+/** A large cloud: its whole image at a fixed size, the part in view at the zoom's over it. */
+function LargeCloudEl(props: {
+  p: PointsPrim
+  id: string
+  scale: number
+  view: RasterViewport
+  pixels: number
+}) {
+  const { p, id, scale, view, pixels } = props
+  const ref = useRef<SVGImageElement>(null)
+  // The part in view (in the cloud's coordinates) at the zoom it was seen at.
+  const [seen, setSeen] = useState<{ box: Box; scale: number } | null>(null)
+  // Looked at once the view has rested (its key) and at each zoom, after the zoom is drawn.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the view's key and the zoom say when
+  useLayoutEffect(() => {
+    const b = seenBox(ref.current, view.el())
+    setSeen((s) =>
+      s && b && s.scale === scale && contains(s.box, b) && contains(b, s.box)
+        ? s
+        : b && { box: b, scale },
+    )
+  }, [view, scale, p])
+
+  // The whole image (the same at every zoom); until the worker has made it, the image the cloud
+  // had at a lower zoom.
+  const wholeScale = scale * Math.sqrt(LARGE_CLOUD_PIXELS / pixels)
+  const made = wholeMade(p, wholeScale)
+  const before = cloudImages.get(p) ?? null
+  const askWhole = !made && !!before?.img && rasterWorkerAvailable()
+  const whole =
+    made ??
+    (askWhole
+      ? before!
+      : (() => {
+          const r = { p, scale: wholeScale, img: pointsImagePrim(p, wholeScale, { level: 1 }) }
+          wholeImages.set(p, r)
+          return r
+        })())
+  useWorkerImage(askWhole, p, wholeScale, undefined, (r) => wholeImages.set(p, r))
+
+  // The part in view at this zoom; until it is made, the part drawn last (held, as zooms hold).
+  const want = seen && seen.scale === scale ? seen.box : null
+  const last = partImages.get(p) ?? null
+  const ready = !!want && !!last && fits(last.scale, scale) && contains(last.clip, want)
+  const clip = want && !ready ? around(want) : undefined
+  const askPart = !!clip && !!last?.img && rasterWorkerAvailable()
+  let part: CloudRaster | null = last
+  if (clip && !askPart) {
+    const r = { p, scale, clip, img: pointsImagePrim(p, scale, { clip, level: 1 }) }
+    partImages.set(p, r)
+    part = r
+  }
+  useWorkerImage(askPart, p, scale, clip, (r) => partImages.set(p, { ...r, clip: clip! }))
+
+  const wa = whole.img?.asset
+  const pa = part?.img?.asset
+  useEffect(() => (wa ? cloudUrls.hold(wa) : undefined), [wa])
+  useEffect(() => (pa ? cloudUrls.hold(pa) : undefined), [pa])
+  const w = whole.img
+  const q = part?.img
+  return (
+    <>
+      {w ? (
+        <image
+          ref={ref}
+          data-id={id}
+          x={w.x}
+          y={w.y}
+          width={w.w}
+          height={w.h}
+          preserveAspectRatio="none"
+          href={cloudUrls.url(w.asset)}
+        />
+      ) : null}
+      {q ? (
+        <image
+          data-part="in view"
+          x={q.x}
+          y={q.y}
+          width={q.w}
+          height={q.h}
+          preserveAspectRatio="none"
+          href={cloudUrls.url(q.asset)}
+        />
+      ) : null}
+    </>
+  )
+}
+
 /** A point cloud drawn as our rasteriser's image (on screen; exports draw its symbols). */
 function PointsEl({ p, id, scale }: { p: PointsPrim; id: string; scale: number }) {
+  const view = useContext(RasterView)
+  const pixels = view ? cloudPixels(p, scale) : 0
+  if (view && pixels > LARGE_CLOUD_PIXELS)
+    return <LargeCloudEl p={p} id={id} scale={scale} view={view} pixels={pixels} />
+  return <CloudEl p={p} id={id} scale={scale} />
+}
+
+function CloudEl({ p, id, scale }: { p: PointsPrim; id: string; scale: number }) {
   // The image this element showed last, kept as long as the element (its scene keeps its cloud).
   const last = useRef<CloudRaster | null>(null)
-  const r = cloudRaster(p, scale, last.current)
+  const held = last.current
+  const hit = cloudImages.get(p)
+  // Audit 4 (P5): the same cloud at another zoom: the image shown stays until the worker has
+  // drawn the new one.
+  const ask =
+    !(hit && fits(hit.scale, scale)) && !!held?.img && held.p === p && rasterWorkerAvailable()
+  const r = ask ? held! : cloudRaster(p, scale, held)
   last.current = r
+  useWorkerImage(ask, p, scale, undefined, (c) => cloudImages.set(p, c))
   const asset = r.img?.asset
   // Its URL is held while shown (audit 3, P3).
   useEffect(() => (asset ? cloudUrls.hold(asset) : undefined), [asset])
@@ -592,6 +807,7 @@ export function SceneSvg({
   scene,
   zoom,
   rasterZoom = zoom,
+  rasterView = null,
   selected,
   onSelect,
   onPointerDownNode,
@@ -612,6 +828,8 @@ export function SceneSvg({
    * wheel's, until it rests.
    */
   rasterZoom?: number
+  /** Audit 4 (P5): where the canvas shows the scene (large clouds draw the part in view sharp). */
+  rasterView?: RasterViewport | null
   /** The selection keys to halo (several when several things are selected). */
   selected: readonly StylePath[]
   /**
@@ -814,7 +1032,7 @@ export function SceneSvg({
     >
       <rect x={0} y={0} width={scene.width} height={scene.height} fill="#ffffff" />
       <RasterScale.Provider value={rasterZoom * PX_PER_PT * pixelRatio()}>
-        {body}
+        <RasterView.Provider value={rasterView}>{body}</RasterView.Provider>
       </RasterScale.Provider>
       {preview
         ? preview.length > 0 && (

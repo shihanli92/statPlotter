@@ -48,3 +48,14 @@ export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 /** What went wrong, for a message: an error's message (its first line only), or the value. */
 export const errorMessage = (e: unknown, firstLine = false): string =>
   e instanceof Error ? (firstLine ? e.message.split('\n')[0]! : e.message) : String(e)
+
+/**
+ * Audit 4 (A16): how a scroll moves — smoothly, unless the user asked for reduced motion (then it
+ * jumps).
+ */
+export const scrollBehavior = (): ScrollBehavior =>
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? 'auto'
+    : 'smooth'

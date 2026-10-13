@@ -1,4 +1,4 @@
-import { accepts, type RoleAssignment, type RoleVariable } from '@ps/analyses'
+import { accepts, type RoleAssignment, type RoleVariable } from '@ps/analyses/dialog'
 import type { AnalysisRole } from '@ps/model'
 import { type DragEvent, useId, useRef } from 'react'
 
@@ -34,8 +34,18 @@ export function RoleBoxes({
     next[to.id] = to.max === 1 ? [key] : [...list, key]
     onChange(next)
   }
-  const remove = (key: string, from: AnalysisRole) =>
-    onChange({ ...assignment, [from.id]: (assignment[from.id] ?? []).filter((k) => k !== key) })
+  const boxes = useRef(new Map<string, HTMLFieldSetElement | null>())
+  const remove = (key: string, from: AnalysisRole) => {
+    const members = assignment[from.id] ?? []
+    const i = members.indexOf(key)
+    onChange({ ...assignment, [from.id]: members.filter((k) => k !== key) })
+    // Audit 4 (A12): the focus stays in the box — the next ×, else the previous, else Add….
+    setTimeout(() => {
+      const box = boxes.current.get(from.id)
+      const xs = box?.querySelectorAll<HTMLElement>('.chip-remove')
+      ;(xs?.[i] ?? xs?.[i - 1] ?? box?.querySelector<HTMLElement>('select'))?.focus()
+    }, 0)
+  }
   const drop = (e: DragEvent, to: AnalysisRole) => {
     e.preventDefault()
     const key = drag.current
@@ -53,6 +63,9 @@ export function RoleBoxes({
         return (
           <fieldset
             key={r.id}
+            ref={(el) => {
+              boxes.current.set(r.id, el)
+            }}
             className={`role-box${members.length < r.min ? ' missing' : ''}`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => drop(e, r)}

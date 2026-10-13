@@ -1,6 +1,6 @@
 import type { Command } from '@ps/engine'
 import { layerTitle, pointOverride, type Scene, type StylePath } from '@ps/graph'
-import { type GraphNode, type Layer, seriesShown } from '@ps/model'
+import { type GraphNode, type Layer, plural, seriesShown } from '@ps/model'
 import { isLegendEntryPath } from '../selection/sceneKeys.ts'
 import {
   applyDrag,
@@ -112,8 +112,6 @@ const annotationLabel = (a: GraphNode['annotations'][number]) =>
       : a.type === 'table'
         ? 'Delete results table'
         : 'Delete line'
-
-const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
 /** How many things of each kind a Delete acts on (roadmap 47). */
 export interface DeleteTally {

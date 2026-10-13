@@ -250,8 +250,11 @@ function topLevel(t: StylePath | undefined): StylePath | null {
       if (t[1] === undefined) return null
       if (t[2] === 'title' || t[2] === 'tickLabels') return t.slice(0, 3)
       return ['axes', t[1]]
+    // A layer's marks of a data set; audit 4 (A6): or the layer itself, when its marks target it
+    // (a heat map's tiles, its dendrograms, a density…), as a click selects it.
     case 'layers':
-      return t[2] === 'series' && t[3] !== undefined ? selectionKey(t) : null
+      if (t[1] === undefined) return null
+      return t[2] === 'series' ? (t[3] !== undefined ? selectionKey(t) : null) : ['layers', t[1]]
     default:
       return null
   }
@@ -286,7 +289,8 @@ function rank(p: StylePath, layerFront: (id: string) => number): [number, number
 /**
  * The graph's top-level elements in reading order (⌘A selects them; Tab steps through them): the
  * title, the Y axis (title, tick labels, line), each layer's data sets (front layer first, data
- * sets in drawing order), the right Y axis, the X axis (line, tick labels, title), the legend,
+ * sets in drawing order; a layer whose marks target the layer itself, as a heat map's tiles and
+ * dendrograms do, once: audit 4, A6), the right Y axis, the X axis (line, tick labels, title), the legend,
  * then the annotations. Only what the scene draws; `all` is the scene's nodes in drawing order.
  * Audit 3 (A1): the legend comes in whenever any part of it is drawn (its entries target their
  * data sets, and a legend without a box has no node targeting the legend itself).

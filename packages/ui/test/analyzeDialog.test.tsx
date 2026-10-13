@@ -228,7 +228,7 @@ describe('the Analyze dialog (51b)', () => {
       params: {},
     }
     const d = await open(setup([t, node]), { mode: 'edit', analysisId: node.id, ...callbacks() })
-    expect(d.querySelector('h2')?.textContent).toBe('Edit “Welch of Enzyme”')
+    expect(d.querySelector('h2')?.textContent).toBe('Edit parameters of “Welch of Enzyme”')
     expect(d.querySelector('.analyze3')?.classList.contains('editing')).toBe(true)
     expect(d.querySelector('.analyze-search')).toBeNull()
     expect(button(d, 'Apply')).toBeDefined()

@@ -1,7 +1,7 @@
 import { formatShortcut, type KeyInput, matchesShortcut, parseShortcut } from './shortcut.ts'
 
 // Keys a view handles itself, outside the command registry (audit 2, U20): on a row of the
-// navigator, on the graph's canvas, on a layout page. One table, read by the Keyboard shortcuts
+// navigator, on the graph's canvas, on a layout page, in the Analyze dialog (audit 4, A18). One table, read by the Keyboard shortcuts
 // sheet (its "In the navigator / On the canvas / On a page" sections) and by the handlers, which
 // test a key press with `isViewKey`. Only the navigator's Select all (roadmap 47) uses Mod (⌘ on
 // macOS, Ctrl elsewhere): its handler passes the platform.
@@ -61,6 +61,18 @@ export const CANVAS_KEYS = {
     'Shift+ArrowUp',
     'Shift+ArrowDown',
   ),
+  // Audit 4 (A18): the canvas scrolls (its keys are the browser's) when nothing is selected.
+  pan: key(
+    'With nothing selected, move around a zoomed graph',
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'PageUp',
+    'PageDown',
+    'Home',
+    'End',
+  ),
 } as const
 
 /** On a layout page (with the focus on it). */
@@ -79,6 +91,32 @@ export const PAGE_KEYS = {
   // Roadmap 47b: legend entries of a graph worked in on the page.
   entryEarlier: key('Move the selected legend entries earlier', 'Alt+ArrowUp', 'Alt+ArrowLeft'),
   entryLater: key('Move the selected legend entries later', 'Alt+ArrowDown', 'Alt+ArrowRight'),
+  // Audit 4 (A18): the canvas scrolls (its keys are the browser's) when nothing is selected.
+  pan: key(
+    'With nothing selected, move around a zoomed page',
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'PageUp',
+    'PageDown',
+    'Home',
+    'End',
+  ),
+} as const
+
+/**
+ * Audit 4 (A18): in the Analyze dialog — its own keys (`AnalyzeDialog`'s, which take ⌘ or Ctrl
+ * on every platform) and those of the group chips (`GroupChips`) and the search.
+ */
+export const ANALYZE_KEYS = {
+  tabs: key('Guide me or All analyses', 'Mod+1', 'Mod+2'),
+  search: key('Search the analyses (All analyses)', 'Mod+K'),
+  run: key('Analyze (Apply when editing)', 'Mod+Enter'),
+  back: key('Clear the search, then close the list opened over the options', 'Escape'),
+  include: key('On a group’s chip: include it or leave it out', ' '),
+  reorder: key('On a group’s chip: move it earlier or later', 'Alt+ArrowLeft', 'Alt+ArrowRight'),
+  control: key('On a group’s chip: make it the control', 'C'),
 } as const
 
 /** The sheet's sections of these keys, after the commands'. */
@@ -86,6 +124,7 @@ export const VIEW_KEY_SECTIONS: readonly { title: string; items: readonly ViewKe
   { title: 'In the navigator', items: Object.values(NAVIGATOR_KEYS) },
   { title: 'On the canvas', items: Object.values(CANVAS_KEYS) },
   { title: 'On a page', items: Object.values(PAGE_KEYS) },
+  { title: 'In the Analyze dialog', items: Object.values(ANALYZE_KEYS) },
 ]
 
 /**

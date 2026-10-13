@@ -34,6 +34,51 @@ export function sampledRows(rowCount: number, max = SKETCH_MAX_ROWS): number[] {
   return out
 }
 
+/**
+ * Audit 4 (P3): values a sketch draws at most over all its groups (§5.8 promises a sample; a
+ * cap per group let many groups, or many replicates, draw hundreds of thousands of points).
+ */
+export const SKETCH_MAX_POINTS = 4000
+
+/**
+ * The rows a sketch of these data sets draws: at most `maxRows`, and few enough that the values
+ * of every set at those rows (`perRow` each row; default each set's replicates) stay within
+ * SKETCH_MAX_POINTS. With the sample note when the table is larger.
+ */
+export function sketchRows(
+  input: readonly NormalizedDataSet[],
+  maxRows = SKETCH_MAX_ROWS,
+  perRow = input.reduce((s, d) => s + (d.data.shape === 'replicates' ? d.data.reps.length : 1), 0),
+): { rows: number[]; sampled?: { shown: number; total: number } } {
+  const total = input.reduce((m, d) => Math.max(m, d.rowCount), 0)
+  const cap = Math.max(1, Math.floor(SKETCH_MAX_POINTS / Math.max(1, perRow)))
+  const rows = sampledRows(total, Math.min(maxRows, cap))
+  return rows.length < total ? { rows, sampled: { shown: rows.length, total } } : { rows }
+}
+
+/**
+ * Audit 4 (P3): the midrank of each value among `sorted` (ascending, finite), as the stats'
+ * `midranks` gives it — by binary search, so a sketch ranks every value without sorting an index.
+ */
+export function midrankIn(sorted: Float64Array, v: number): number {
+  let lo = 0
+  let hi = sorted.length
+  while (lo < hi) {
+    const m = (lo + hi) >>> 1
+    if (sorted[m]! < v) lo = m + 1
+    else hi = m
+  }
+  const first = lo
+  hi = sorted.length
+  while (lo < hi) {
+    const m = (lo + hi) >>> 1
+    if (sorted[m]! <= v) lo = m + 1
+    else hi = m
+  }
+  // Positions first … lo − 1 (0-based) hold v: ranks first + 1 … lo, their mean.
+  return (first + lo + 1) / 2
+}
+
 /** A data set's replicate values at these rows (a summary's means), as cells. */
 export function setOf(d: NormalizedDataSet, rows: readonly number[]): SketchSet {
   const arrays = d.data.shape === 'replicates' ? d.data.reps : [d.data.mean]

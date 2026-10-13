@@ -93,6 +93,34 @@ describe('the production build', () => {
     expect(text(csv).length).toBeLessThan(250_000)
   })
 
+  it('keeps the Analyze dialog’s and the results’ parts out of the start and the worker (audit 4 P6)', () => {
+    // The explanations, the dialog's rules, sketches, guide and schematics, and the results view:
+    // a lazy chunk’s (`@ps/analyses/dialog`), not the start-up bundle’s (2,894 KB from 3,159).
+    const start = modulesOf(startChunks())
+    for (const path of [
+      'analyses/src/dialogEntry.ts',
+      'analyses/src/explain/cards/',
+      'analyses/src/explain/forms/',
+      'analyses/src/dialog/rules.ts',
+      'analyses/src/sketch/',
+      'analyses/src/guide/',
+      'analyses/src/schematic/',
+      'ui/src/analysis/ResultsView.tsx',
+    ])
+      expect(has(start, path), path).toBe(false)
+    expect(has(modulesOf(chunks()), 'analyses/src/dialogEntry.ts')).toBe(true)
+    // The worker runs, validates and summarises (856 KB from 974): a sketch's caption, a guide's
+    // question and a method card's text are not in it.
+    const analysis = text(workers().find((w) => w.fileName.includes('analysis.worker'))!)
+    expect(analysis.includes('Kruskal-Wallis')).toBe(true)
+    for (const s of [
+      'Each curve rises by one step per value',
+      'Is each group different from a control?',
+      'P is the chance of a difference at least this large if they did.',
+    ])
+      expect(analysis.includes(s), s).toBe(false)
+  })
+
   it('builds the figure export worker with the page’s own font files (roadmap 42)', () => {
     const figure = workers().find(isFigureWorker)!
     const code = text(figure)

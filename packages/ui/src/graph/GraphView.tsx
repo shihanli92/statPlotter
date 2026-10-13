@@ -623,13 +623,15 @@ export function GraphView({
   const [volcanoDialog, setVolcanoDialog] = useState(false)
   const canvasRef = useRef<HTMLDivElement>(null)
   // Roadmap 50: Alt / Ctrl + wheel and pinches zoom about the pointer; the middle button pans.
-  const { rasterZoom } = useMouseZoom({
+  const { rasterZoom, viewKey } = useMouseZoom({
     canvas: canvasRef,
     content: () => wrapRef.current?.querySelector(':scope > svg.scene') ?? null,
     zooms: GRAPH_ZOOMS,
     zoom,
     setZoom,
   })
+  // Audit 4 (P5): what the canvas shows of the scene, for large point clouds.
+  const rasterView = useMemo(() => ({ el: () => canvasRef.current, key: viewKey }), [viewKey])
   const focusCanvas = () => canvasRef.current?.focus({ preventScroll: true })
   /**
    * Audit 3 (A4): a run of Tabs on the canvas — the selection it started from and the one its
@@ -1972,6 +1974,7 @@ export function GraphView({
               scene={scene}
               zoom={zoom}
               rasterZoom={rasterZoom}
+              rasterView={rasterView}
               selected={paths}
               onSelect={(t, hit, clicks, mods) => {
                 const dragged = afterDrag.current

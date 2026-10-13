@@ -129,7 +129,8 @@ export function oneWaySketch(
           : 'Some subjects miss a value: a mixed-effects model will use the rest.',
       )
   } else if (ranks && raw) {
-    const r = ranksOf(input)
+    // Audit 4 (P3): every value ranked, the sampled rows' ranks drawn.
+    const r = ranksOf(input, rows)
     panel = {
       id: 'data',
       title: 'Ranks among all values (1 = smallest)',
@@ -387,8 +388,12 @@ export function manyRowsSketch(
 ): SketchSpec {
   if (input.length < 2)
     return dataSketch(input, ctx, 'Choose the data sets to compare in each row.')
-  const { rows: all } = rowsOf(input, ctx)
-  const rows = rowsWithData(input, all)
+  // Every row counted (one test each), the first MANY_ROWS drawn.
+  const total = input.reduce((m, d) => Math.max(m, d.rowCount), 0)
+  const rows = rowsWithData(
+    input,
+    Array.from({ length: total }, (_, r) => r),
+  )
   const shown = rows.slice(0, MANY_ROWS)
   const fdr = params.approach === 'fdr'
   const q100 = typeof params.q === 'number' ? params.q : 5

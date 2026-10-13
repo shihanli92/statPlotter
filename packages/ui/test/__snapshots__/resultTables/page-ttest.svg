@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300pt" height="200pt" viewBox="0 0 300 200">
+<g data-id="page">
+<g data-id="item/a">
+<g data-id="item/a/cell/0/0">
+<text fill="#000000" xml:space="preserve"><tspan x="24.05" y="29.947" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9" font-weight="bold">Data sets</tspan></text>
+</g>
+<g data-id="item/a/cell/1/0">
+<text fill="#000000" xml:space="preserve"><tspan x="24.05" y="43.602" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Difference</tspan></text>
+</g>
+<g data-id="item/a/cell/1/1">
+<text fill="#000000" xml:space="preserve"><tspan x="73.006" y="43.602" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="9">Treated − Control</tspan></text>
+</g>
+<g data-id="item/a/grid/0">
+<line x1="20" y1="20" x2="147.008" y2="20" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/1">
+<line x1="20" y1="33.655" x2="147.008" y2="33.655" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/2">
+<line x1="20" y1="47.309" x2="147.008" y2="47.309" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/3">
+<line x1="20" y1="60.964" x2="147.008" y2="60.964" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/4">
+<line x1="20" y1="20" x2="20" y2="60.964" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/5">
+<line x1="68.956" y1="20" x2="68.956" y2="60.964" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+<g data-id="item/a/grid/6">
+<line x1="147.008" y1="20" x2="147.008" y2="60.964" stroke="#999999" stroke-width="0.5" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+</svg>

@@ -38,6 +38,7 @@ export {
   type Shortcut,
 } from './shortcut.ts'
 export {
+  ANALYZE_KEYS,
   CANVAS_KEYS,
   gestureText,
   isViewKey,

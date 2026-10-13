@@ -14,6 +14,14 @@ export const hasModifiers = (m: InputModifiers): boolean =>
   m.atX !== undefined || !!m.pools?.length || m.byX === true
 
 /**
+ * The kind of table an analysis sees through its input's modifiers (as `modifyInput` makes it):
+ * values at one X are a column table's, each X a row a grouped table's (audit 4 U2: the Analyze
+ * dialog offers that kind's methods).
+ */
+export const modifiedTableKind = (m: InputModifiers, tableKind: TableKind): TableKind =>
+  m.atX !== undefined ? 'column' : m.byX ? 'grouped' : tableKind
+
+/**
  * Roadmap 51c: the X values of data sets (finite, each once, in order of first appearance): the
  * rows of `byX` (row r is the r-th of them).
  */

@@ -1,7 +1,8 @@
-import { type FieldState, fieldStates } from '@ps/analyses'
+import { type FieldState, fieldStates } from '@ps/analyses/dialog'
 import type { AnalysisFacts, FormField, FormOption, OptionExplain } from '@ps/model'
 import { type ReactNode, useId, useState } from 'react'
 import { Field, NumberBox } from '../components/fields.tsx'
+import type { ModelChoices } from './ModelPicker.tsx'
 
 type Params = Record<string, unknown>
 
@@ -20,6 +21,11 @@ export interface FormContext {
    * the options' `unavailable`); the ones not given don't restrict anything.
    */
   facts?: Partial<AnalysisFacts>
+  /**
+   * Audit 4 (A5, U5; the user's answer Q4): the curve fit's choices per model while another is
+   * shown (the dialog's, for its life), so returning to a model restores them.
+   */
+  models?: Map<string, ModelChoices>
 }
 
 /**

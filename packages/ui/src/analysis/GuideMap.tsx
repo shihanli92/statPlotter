@@ -1,4 +1,4 @@
-import type { GuideMapStep } from '@ps/analyses'
+import type { GuideMapStep } from '@ps/analyses/dialog'
 import { type KeyboardEvent, useEffect, useRef, useState } from 'react'
 
 // Roadmap 51f: the map of the path through Guide me, under the question chosen in the rail —

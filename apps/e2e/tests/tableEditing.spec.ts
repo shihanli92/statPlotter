@@ -150,26 +150,33 @@ test('selecting rows by their numbers, moving and inserting them', async ({ page
 test('dragging a column header, moving and inserting columns', async ({ page }) => {
   await newTable(page, { kind: 'XY', dataSets: 3, replicates: 1 })
   await typeCells(page, 0, 0, [['1', '10', '20', '30']])
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Group A', 'Group B', 'Group C'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'X', 'Group A', 'Group B', 'Group C'])
 
   await columnTitles(page).nth(2).dragTo(columnTitles(page).nth(4))
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Group B', 'Group C', 'Group A'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'X', 'Group B', 'Group C', 'Group A'])
   await expect(rowCells(page, 0)).toHaveText(['1', '20', '30', '10'])
   await expect(tool(page, 'Undo Move column')).toBeEnabled()
 
   // Move column left on the selection; X can't move.
   await columnTitles(page).nth(4).click()
   await runMenu(page, 'Edit', 'Move column left')
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Group B', 'Group A', 'Group C'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'X', 'Group B', 'Group A', 'Group C'])
   await columnTitles(page).nth(1).dragTo(columnTitles(page).nth(3))
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Group B', 'Group A', 'Group C'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'X', 'Group B', 'Group A', 'Group C'])
 
   // Insert column: before the selected one.
   await cell(page, 0, 2).click()
   await runMenu(page, 'Edit', 'Insert column')
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Group B', 'Group D', 'Group A', 'Group C'])
+  await expect(columnTitles(page)).toHaveText([
+    'Row',
+    'X',
+    'Group B',
+    'Group D',
+    'Group A',
+    'Group C',
+  ])
   for (let i = 0; i < 3; i++) await pressShortcut(page, 'Mod+Z')
-  await expect(columnTitles(page)).toHaveText(['', 'X', 'Group A', 'Group B', 'Group C'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'X', 'Group A', 'Group B', 'Group C'])
   await expect(rowCells(page, 0)).toHaveText(['1', '10', '20', '30'])
 })
 

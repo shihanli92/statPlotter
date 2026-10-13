@@ -2,9 +2,10 @@ import type { NormalizedDataSet, SketchContext, SketchPanel, SketchSpec } from '
 import { mean, midranks, sd } from '@ps/stats'
 import {
   columnTable,
+  midrankIn,
   type SketchSet,
-  sampledRows,
   setOf,
+  sketchRows,
   summaryTable,
   valuesOf,
   xyTable,
@@ -18,14 +19,13 @@ import { countOf, countsLine, nameList, plain, q, sizesText } from './words.ts'
 
 type Params = Record<string, unknown>
 
-/** The rows drawn, and the sample note when the table is larger. */
+/**
+ * The rows drawn (at most `ctx.maxRows`, and SKETCH_MAX_POINTS values over every group), and
+ * the sample note when the table is larger.
+ */
 export function rowsOf(input: readonly NormalizedDataSet[], ctx: SketchContext) {
-  const total = input.reduce((m, d) => Math.max(m, d.rowCount), 0)
-  const rows = sampledRows(total, ctx.maxRows)
-  return {
-    rows,
-    sampled: rows.length < total ? { shown: rows.length, total } : undefined,
-  }
+  const { rows, sampled } = sketchRows(input, ctx.maxRows)
+  return { rows, sampled }
 }
 
 /** One panel of the chosen groups as they are (a fallback, and too few groups chosen). */
@@ -244,7 +244,9 @@ export function mannWhitneySketch(
   if (input.length < 2 || input.some((d) => d.data.shape !== 'replicates'))
     return dataSketch(input, ctx, 'The Mann-Whitney test ranks the raw values of two groups.')
   const [A, B] = input as [NormalizedDataSet, NormalizedDataSet]
-  const ranked = ranksOf([A, B])
+  // Audit 4 (P3): every value ranked, the sampled rows' ranks drawn.
+  const { rows, sampled } = rowsOf([A, B], ctx)
+  const ranked = ranksOf([A, B], rows)
   const notes = [
     `Rank sums: ${q(A.title)} ${plain(ranked.sums[0]!)}, ${q(B.title)} ${plain(ranked.sums[1]!)}.`,
   ]
@@ -266,35 +268,61 @@ export function mannWhitneySketch(
     ],
     caption: 'Every value is replaced by its rank among all the values; ties share a rank.',
     description: `Two groups, ${q(A.title)} and ${q(B.title)}, ranked together from 1 to ${ranked.n}; the test compares where each group's ranks fall.`,
-    counts: countsLine([
-      '2 groups',
-      sizesText(ranked.sets.map((s) => s.reps[0]!.length)),
-      'ranks',
-      '1 comparison',
-    ]),
+    counts: countsLine(['2 groups', sizesText(ranked.sizes), 'ranks', '1 comparison']),
     notes,
+    ...(sampled ? { sampled } : {}),
   }
 }
 
-/** Every value's rank among all the groups' values (midranks for ties), by group. */
-export function ranksOf(groups: readonly NormalizedDataSet[]): {
-  sets: SketchSet[]
-  sums: number[]
-  n: number
-} {
+/**
+ * Every value's rank among all the groups' values (midranks for ties), by group: each group's
+ * size and rank sum over all its values, and the ranks drawn — the values at `rows` (every row
+ * by default; audit 4 P3: a sample of a large table's rows).
+ */
+export function ranksOf(
+  groups: readonly NormalizedDataSet[],
+  rows?: readonly number[],
+): { sets: SketchSet[]; sums: number[]; sizes: number[]; n: number } {
   const values = groups.map(valuesOf)
-  const all = values.flat()
-  const { ranks } = midranks(all)
+  let n = 0
+  for (const v of values) n += v.length
+  const sorted = new Float64Array(n)
   let at = 0
-  const sets: SketchSet[] = []
-  const sums: number[] = []
-  groups.forEach((g, i) => {
-    const r = Array.from(ranks.subarray(at, at + values[i]!.length))
-    at += values[i]!.length
-    sets.push({ key: g.ref.key, title: g.title, reps: [r] })
-    sums.push(r.reduce((s, v) => s + v, 0))
+  for (const v of values) {
+    sorted.set(v, at)
+    at += v.length
+  }
+  sorted.sort()
+  // Each group's values in order, walked along all of them: a rank per value in one pass. Ranks
+  // are halves, so the sums are exact in any order.
+  const sums = values.map((v) => {
+    const own = Float64Array.from(v).sort()
+    let s = 0
+    let lo = 0
+    let hi = 0
+    for (let i = 0; i < own.length; i++) {
+      const x = own[i]!
+      if (i === 0 || x !== own[i - 1]) {
+        while (sorted[lo]! < x) lo++
+        hi = lo
+        while (hi < n && sorted[hi]! <= x) hi++
+      }
+      s += (lo + hi + 1) / 2
+    }
+    return s
   })
-  return { sets, sums, n: all.length }
+  const sets = groups.map((g, i): SketchSet => {
+    if (!rows)
+      return { key: g.ref.key, title: g.title, reps: [values[i]!.map((x) => midrankIn(sorted, x))] }
+    const drawn: number[] = []
+    for (const a of g.data.shape === 'replicates' ? g.data.reps : [g.data.mean])
+      for (const r of rows) {
+        const x = a[r]
+        if (x !== undefined && Number.isFinite(x)) drawn.push(midrankIn(sorted, x))
+      }
+    return { key: g.ref.key, title: g.title, reps: [drawn] }
+  })
+  return { sets, sums, sizes: values.map((v) => v.length), n }
 }
 
 /** Wilcoxon (§5.2): the pairs, and the differences ranked by size with their sign. */
@@ -364,11 +392,14 @@ export function ksSketch(
       'The Kolmogorov-Smirnov test compares the raw values’ distributions.',
     )
   const [A, B] = input as [NormalizedDataSet, NormalizedDataSet]
-  const va = valuesOf(A).sort((s, t) => s - t)
-  const vb = valuesOf(B).sort((s, t) => s - t)
-  const x = [...va, ...vb]
-  const yA = [...va.map((_, i) => (i + 1) / va.length), ...vb.map(() => null)]
-  const yB = [...va.map(() => null), ...vb.map((_, i) => (i + 1) / vb.length)]
+  // Audit 4 (P3): each curve through at most ECDF_MAX_STEPS of its steps.
+  const ca = ecdfPoints(valuesOf(A))
+  const cb = ecdfPoints(valuesOf(B))
+  const x = [...ca.x, ...cb.x]
+  const yA = [...ca.y, ...cb.x.map(() => null)]
+  const yB = [...ca.x.map(() => null), ...cb.y]
+  const total = Math.max(A.rowCount, B.rowCount)
+  const shown = Math.max(ca.x.length, cb.x.length)
   return {
     panels: [
       {
@@ -391,7 +422,33 @@ export function ksSketch(
       'Each curve rises by one step per value; the test looks at the widest gap between them.',
     description: `The cumulative distributions of ${q(A.title)} and ${q(B.title)}; the test compares their shapes, not only their centres.`,
     counts: countsLine(['2 groups', sizesText([countOf(A), countOf(B)]), 'distributions']),
+    ...(ca.thinned || cb.thinned ? { sampled: { shown, total } } : {}),
   }
+}
+
+/** Audit 4 (P3): the steps a cumulative curve of the sketch is drawn through at most. */
+export const ECDF_MAX_STEPS = 1000
+
+/**
+ * A cumulative curve's points (value, fraction ≤ value): every step up to ECDF_MAX_STEPS, else
+ * that many evenly spaced among them, the first and the last included.
+ */
+export function ecdfPoints(values: readonly number[]): {
+  x: number[]
+  y: number[]
+  thinned: boolean
+} {
+  const v = Float64Array.from(values).sort()
+  const n = v.length
+  const m = Math.min(n, ECDF_MAX_STEPS)
+  const x: number[] = []
+  const y: number[] = []
+  for (let k = 0; k < m; k++) {
+    const i = m === n ? k : Math.round((k * (n - 1)) / (m - 1))
+    x.push(v[i]!)
+    y.push((i + 1) / n)
+  }
+  return { x, y, thinned: m < n }
 }
 
 /** One sample (§5.2): each group's values with a line at the hypothetical value. */

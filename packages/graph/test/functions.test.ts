@@ -6,6 +6,7 @@ import {
   newSeriesId,
 } from '@ps/model'
 import { describe, expect, it } from 'vitest'
+import { PATHOLOGICAL_EQUATIONS } from '../../stats/test/pathologicalEquations.ts'
 import {
   defaultFunctionParams,
   evaluateFunction,
@@ -141,5 +142,20 @@ describe('plot a function', () => {
     expect(Math.max(...pts.map((p) => p[0]))).toBeCloseTo(x.toPx(10), 6)
     const bad = setup([{ ...hill, equation: 'nope' }])
     expect(layoutGraph({ ...bad, fonts }).warnings.join(' ')).toMatch(/Unknown equation/)
+  })
+
+  it('a pathological user equation is a warning, never a hang or a throw (audit 4 T1)', () => {
+    for (const { label, text } of PATHOLOGICAL_EQUATIONS) {
+      // The graph schema allows 20,000 characters; longer texts only reach the parser.
+      if (text.length > 20000) continue
+      const { project, graph } = setup([
+        { ...hill, equation: 'user', userEquation: text, params: {} },
+      ])
+      expect(() => GraphNodeSchema.parse(graph), label).not.toThrow()
+      const t0 = performance.now()
+      const scene = layoutGraph({ project, graph, fonts })
+      expect(performance.now() - t0, label).toBeLessThan(3000)
+      expect(Array.isArray(scene.warnings), label).toBe(true)
+    }
   })
 })

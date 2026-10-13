@@ -51,5 +51,19 @@ export function pageTableGrid(
   if (!r) return { error: 'not computed yet' }
   const sheet = r.sheets.find((s) => s.key === source.sheet)
   if (!sheet) return { error: `“${node.name}” has no such results sheet` }
-  return { rows: cells(resultSheetRows(sheet, { mode: 'displayed', settings: project.settings })) }
+  // Audit 4 (G1; the user's answer Q2): as before 0.3.11 — no summary sentence, no table
+  // captions (the sentence took the header's place, and both moved saved row ranges onto other
+  // rows); the results view and exports keep them.
+  const blocks = sheet.blocks.flatMap((b) =>
+    b.type === 'summary'
+      ? []
+      : b.type === 'table' && b.caption
+        ? [{ ...b, caption: undefined }]
+        : [b],
+  )
+  return {
+    rows: cells(
+      resultSheetRows({ ...sheet, blocks }, { mode: 'displayed', settings: project.settings }),
+    ),
+  }
 }

@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { crc32, deflateSync } from 'node:zlib'
+import { strToU8, zipSync } from 'fflate'
 import { describe, expect, it } from 'vitest'
 
 // Roadmap 48: the pure parts of tools/publish-public.mjs, which publishes a version's tree to the
@@ -58,6 +60,9 @@ describe('publish-public: what is left out', () => {
       'packages/ui/src/examples/private/index.ts',
       'packages/ui/src/examples/private',
       'packages/ui/test/private/privatePapers.test.ts',
+      // Audit 4 (T5): Dependabot's version updates can't merge into a tree the next version
+      // replaces; the public repository has Dependabot's alerts and security updates instead.
+      '.github/dependabot.yml',
     ])
       expect(isExcluded(path), path).toBe(true)
     for (const path of [
@@ -69,6 +74,8 @@ describe('publish-public: what is left out', () => {
       'packages/ui/test/publishedExamples.test.ts',
       'docs/DECISIONS.md.bak/x',
       'CLAUDE.md.txt',
+      '.github/workflows/ci.yml',
+      'docs/dependabot.yml',
     ])
       expect(isExcluded(path), path).toBe(false)
   })
@@ -127,7 +134,7 @@ describe('publish-public: leak checks', () => {
     expect(of('apps/web/src/sourceData.ts')).toEqual([])
   })
 
-  it('finds absolute home paths, macOS and Windows', async () => {
+  it('finds absolute home paths, macOS, Windows and Linux', async () => {
     const { leakHits } = await tool()
     const of = (line: string) => rules(leakHits('a.ts', bytes(line)))
     expect(of(j("const p = '/", "Users/alice/data.csv'"))).toEqual(['home path'])
@@ -136,6 +143,64 @@ describe('publish-public: leak checks', () => {
     expect(of(j('D:/', 'Users/bob/x'))).toEqual(['home path'])
     expect(of('/usr/local/bin and /home/me and ~/Documents')).toEqual([])
     expect(of(j('/', 'Users/<you>/ (a placeholder)'))).toEqual([])
+    // Audit 4 (T10): Linux home folders too; the placeholders tests use (`/home/me/`, CI's
+    // `/home/runner/`) aren't anyone's.
+    expect(of(j("const p = '/", "home/alice/data.csv'"))).toEqual(['home path'])
+    expect(of(j('/', 'home/<you>/x'))).toEqual([])
+    expect(of('PathBuf::from("/home/me/data.csv") or /home/runner/work')).toEqual([])
+  })
+
+  // Audit 4 (T10): what binary files carry as text — the members of zip archives (.xlsx, .zip)
+  // and the text chunks of PNG images — is checked like a text file's lines.
+  it('checks the members of zip archives (xlsx) and the text chunks of PNG images', async () => {
+    const { leakHits } = await tool()
+    const home = j('/', 'Users/alice/x.csv')
+    const archive = zipSync({
+      'xl/worksheets/sheet1.xml': strToU8(`<row><c t="s"><v>${home}</v></c></row>`),
+      'xl/sharedStrings.xml': strToU8('<sst>clean</sst>'),
+    })
+    expect(leakHits('docs/a.xlsx', archive)).toEqual([
+      {
+        path: 'docs/a.xlsx!xl/worksheets/sheet1.xml',
+        rule: 'home path',
+        line: 1,
+        match: j('/', 'Users/alice/'),
+      },
+    ])
+    // Compressed or stored, nested in a folder of the archive.
+    const stored = zipSync({ 'data/notes.txt': [strToU8(`one\n${home}`), { level: 0 }] })
+    expect(rules(leakHits('a.zip', stored))).toEqual(['home path'])
+    expect(leakHits('a.zip', zipSync({ 'a.txt': strToU8('nothing here') }))).toEqual([])
+    // A member under a source_data folder is a leak by its path.
+    const data = zipSync({ [j('source', '_data/a.csv')]: strToU8('1,2') })
+    expect(rules(leakHits('a.zip', data))).toEqual(['source_data path'])
+
+    const png = (...chunks: [string, Uint8Array][]) => {
+      const parts: Uint8Array[] = [
+        Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+      ]
+      for (const [type, data] of [...chunks, ['IEND', new Uint8Array()] as [string, Uint8Array]]) {
+        const head = new Uint8Array(8)
+        new DataView(head.buffer).setUint32(0, data.length)
+        head.set(strToU8(type), 4)
+        const body = new Uint8Array([...strToU8(type), ...data])
+        const crc = new Uint8Array(4)
+        new DataView(crc.buffer).setUint32(0, crc32(body))
+        parts.push(head, data, crc)
+      }
+      return new Uint8Array(parts.flatMap((p) => [...p]))
+    }
+    const text = (s: string) => strToU8(s, true)
+    expect(rules(leakHits('docs/a.png', png(['tEXt', text(`Source\0${home}`)])))).toEqual([
+      'home path',
+    ])
+    const z = new Uint8Array([...text('Comment\0\0'), ...deflateSync(text(`made from ${home}`))])
+    expect(leakHits('docs/a.png', png(['zTXt', z]))).toEqual([
+      { path: 'docs/a.png (zTXt)', rule: 'home path', line: 1, match: j('/', 'Users/alice/') },
+    ])
+    const i = new Uint8Array([...text('XML:com.adobe.xmp\0\0\0\0\0'), ...strToU8(home)])
+    expect(rules(leakHits('docs/a.png', png(['iTXt', i])))).toEqual(['home path'])
+    expect(leakHits('docs/a.png', png(['tEXt', text('Software\0statPlotter')]))).toEqual([])
   })
 
   it('finds secrets by their shape, not their names', async () => {

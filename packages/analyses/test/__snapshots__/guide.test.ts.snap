@@ -111,8 +111,11 @@ rowsTwo | matched=no values=scores → multipleT {"design":"unpaired","distribut
 rowsTwo | matched=yes values=measure → multipleT {"design":"paired","distribution":"gaussian","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
 rowsTwo | matched=yes values=factor → multipleT {"design":"paired","distribution":"lognormal","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
 rowsTwo | matched=yes values=scores → multipleT {"design":"paired","distribution":"nonparametric","variance":"welch","approach":"fdr","fdrMethod":"bky","q":5}
-rowsMany | values=measure → multipleOneWay {"gaussian":true,"equalSD":"yes","comparisons":"allPairs","approach":"fdr","fdrMethod":"bh","q":5}
-rowsMany | values=scores → multipleOneWay {"gaussian":false,"comparisons":"allPairs","kwPMethod":"exactWhenPossible","dunnMethod":"holm","approach":"fdr","fdrMethod":"bh","q":5}
+rowsMany | matched=no values=measure scatter=yes → multipleOneWay {"gaussian":true,"equalSD":"welch","comparisons":"allPairs","welchMethod":"dunnett-t3","approach":"fdr","fdrMethod":"bh","q":5}
+rowsMany | matched=no values=measure scatter=no → multipleOneWay {"gaussian":true,"equalSD":"yes","comparisons":"allPairs","approach":"fdr","fdrMethod":"bh","q":5}
+rowsMany | matched=no values=measure scatter=unsure → multipleOneWay {"gaussian":true,"equalSD":"welch","comparisons":"allPairs","welchMethod":"dunnett-t3","approach":"fdr","fdrMethod":"bh","q":5}
+rowsMany | matched=no values=scores → multipleOneWay {"gaussian":false,"comparisons":"allPairs","kwPMethod":"exactWhenPossible","dunnMethod":"holm","approach":"fdr","fdrMethod":"bh","q":5}
+rowsMany | matched=yes → twoWayAnova {"repeated":"columns","interaction":true,"sphericity":"gg","comparisons":"withinRows","kind":"allPairs","family":"perBlock","allPairsMethod":"sidak","controlMethod":"dunnett","rmMethod":"auto","ddf":"satterthwaite"}
 threeFactors | groups=four → threeWayAnova {}
 threeFactors | groups=other → needs multipleVariables
 describeRows |  → rowStats {}

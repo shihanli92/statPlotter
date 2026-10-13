@@ -85,7 +85,7 @@ import { LevelOrderEditor } from '../LevelOrder.tsx'
 import { NestedFields } from '../NestedFields.tsx'
 import { ManagePresetsDialog, SavePresetDialog } from '../presets/PresetDialogs.tsx'
 import { usePresetLibrary } from '../presets/userPresetStore.ts'
-import { rowLabel, usedRows } from '../rows.ts'
+import { rowLabel, usedRows, variableLabel } from '../rows.ts'
 import { NodeEl } from '../SceneSvg.tsx'
 import { defaultSplitVariable, splitSet, textVariables } from '../split.ts'
 import {
@@ -1288,10 +1288,6 @@ function LayerTable({
     </div>
   )
 }
-
-/** A variable's name and type in the Map variables lists ("Group (text)"). */
-const variableLabel = (d: DataTable['dataSets'][number]) =>
-  `${d.title || d.id} (${d.text ? 'text' : d.formula !== undefined ? 'number, calculated' : 'number'})`
 
 /**
  * Multiple variables (roadmap 34a): the variables on X and Y, of any type; the frame follows the

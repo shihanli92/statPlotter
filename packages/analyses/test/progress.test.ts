@@ -83,30 +83,54 @@ describe('progress of long analyses changes no result', () => {
     expect(r.totals).toEqual(new Set([50]))
   })
 
+  /** Asymptotic CIs: a fit is one step (profile CIs report each parameter, below). */
+  const ASYMPTOTIC = { ciMethod: 'symmetric' }
+
   it('nonlinear regression: each data set fitted, over every fit the run makes', () => {
     const t = mmTable(4)
     const keys = normalizeTable(t).map((d) => d.ref.key)
     const cases: [string, object, number[]][] = [
-      ['one fit per data set', { equation: 'michaelis-menten' }, [0.25, 0.5, 0.75, 1]],
+      [
+        'one fit per data set',
+        { ...ASYMPTOTIC, equation: 'michaelis-menten' },
+        [0.25, 0.5, 0.75, 1],
+      ],
       [
         'shared Km: one global fit',
-        { equation: 'michaelis-menten', constraints: { Km: { kind: 'shared' } } },
+        { ...ASYMPTOTIC, equation: 'michaelis-menten', constraints: { Km: { kind: 'shared' } } },
         [1],
       ],
       [
         'ROUT, the fit and another model',
-        { equation: 'michaelis-menten', outliers: 'eliminate', compareWith: 'straight-line' },
+        {
+          ...ASYMPTOTIC,
+          equation: 'michaelis-menten',
+          outliers: 'eliminate',
+          compareWith: 'straight-line',
+        },
         [1 / 3, 5 / 12, 1 / 2, 7 / 12, 2 / 3, 3 / 4, 5 / 6, 11 / 12, 1],
       ],
       [
         'Km compared between data sets',
-        { equation: 'michaelis-menten', compareParams: ['Km'] },
+        { ...ASYMPTOTIC, equation: 'michaelis-menten', compareParams: ['Km'] },
         [1 / 12, 2 / 12, 3 / 12, 4 / 12, 8 / 12, 1],
       ],
-      ['robust', { equation: 'michaelis-menten', fitMethod: 'robust' }, [1]],
+      ['robust', { ...ASYMPTOTIC, equation: 'michaelis-menten', fitMethod: 'robust' }, [1]],
+      // Audit 4 (P1): with profile CIs, each data set's fit and then each parameter profiled.
+      [
+        'profile CIs: the fit, then each parameter',
+        { equation: 'michaelis-menten' },
+        Array.from({ length: 12 }, (_, k) => (k + 1) / 12),
+      ],
+      [
+        'profile CIs of a global fit: the fit, then each parameter',
+        { equation: 'michaelis-menten', constraints: { Km: { kind: 'shared' } } },
+        [1, 2, 3, 4, 5, 6].map((k) => k / 6),
+      ],
       [
         'two equations: each group its share',
         {
+          ...ASYMPTOTIC,
           equation: 'michaelis-menten',
           equationByDataSet: { [keys[3]!]: { equation: 'straight-line' } },
         },
@@ -134,6 +158,7 @@ describe('progress of long analyses changes no result', () => {
       y: keys[2],
       group: keys[1],
       equation: 'michaelis-menten',
+      ...ASYMPTOTIC,
     })
     expect(r.quiet.status).toBe('ok')
     expect(r.loud).toEqual(r.quiet)

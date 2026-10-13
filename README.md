@@ -6,6 +6,8 @@ publication-quality graphs and figure pages from them. Everything stays linked: 
 and every analysis, graph and figure that uses it updates.
 
 It runs in the browser and as a desktop app (macOS and Windows) from one TypeScript codebase.
+Desktop installers come with the first release; until then, build the desktop app from source
+([Desktop app](#desktop-app)).
 
 ![statPlotter showing a figure page with four graphs: grouped bars with significance brackets, a time course, a volcano plot and cytokine bars](docs/images/statplotter.png)
 
@@ -74,7 +76,9 @@ writes the production web build (static files) to `apps/web/dist`.
 
 ### Desktop app
 
-The desktop app uses [Tauri](https://tauri.app) and also needs Rust (stable) and, on macOS, the
+No installers are published yet: they come with the first release (built by GitHub Actions,
+[docs/RELEASING.md](docs/RELEASING.md)). Until then, build it yourself. The desktop app uses
+[Tauri](https://tauri.app) and also needs Rust (stable) and, on macOS, the
 Xcode command-line tools (on Windows, the prerequisites in Tauri's guide).
 
 ```bash

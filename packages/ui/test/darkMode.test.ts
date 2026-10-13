@@ -82,6 +82,16 @@ describe.each([
 })
 
 describe('tokens', () => {
+  // Audit 4 (A8): --accent-strong is a fill (the primary button's, under white text); as text on
+  // --accent-soft it read 2.55:1 in the dark colours (the model picker's chosen goal).
+  it('never colours text with the accent’s fill (--accent-strong)', () => {
+    const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+      .filter((m) => /(^|[;{\s])color:\s*var\(--accent-strong\)/.test(m[2]!))
+      .map((m) => m[1]!.trim())
+    expect(rules).toEqual([])
+    expect(contrast(dark.accent!, dark['accent-soft']!)).toBeGreaterThanOrEqual(4.5)
+  })
+
   it('every dark token redefines a light one', () => {
     for (const k of Object.keys(block(':root[data-theme="dark"]')))
       expect(light, k).toHaveProperty(k)

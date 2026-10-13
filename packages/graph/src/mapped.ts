@@ -9,6 +9,7 @@ import {
   naturalCompare,
   normalizeDataSet,
   orderedLevels,
+  plural,
   primaryValues,
   type VariableMapping,
 } from '@ps/model'
@@ -331,8 +332,6 @@ export function mappedRows(
 export const isMapped = (graph: Pick<GraphNode, 'mapping' | 'frame'>): boolean =>
   !!graph.mapping &&
   (graph.frame === 'category' || graph.frame === 'grouped' || graph.frame === 'matrix')
-
-const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
 /**
  * The notes a mapped graph adds to its warnings: variables missing or of the wrong type, and the

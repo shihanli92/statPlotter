@@ -102,7 +102,17 @@ function fitLines(c: Ctx, text: string, st: TextStyle, width: number, max: numbe
   const lines = wrapped.slice(0, max)
   let last = `${lines[max - 1]!} ${wrapped.slice(max).join(' ')}`
   const w = (s: string) => layoutText(c.fonts, [{ text: s }], st).width
-  while (last.length > 1 && w(`${last}…`) > width) last = last.slice(0, -1).trimEnd()
+  // The most whole characters that fit with the "…" (code points: never half of an astral one).
+  const chars = [...last]
+  const cut = (k: number) => chars.slice(0, k).join('').trimEnd()
+  let lo = 1
+  let hi = chars.length
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1
+    if (w(`${cut(mid)}…`) <= width) lo = mid
+    else hi = mid - 1
+  }
+  last = cut(lo)
   lines[max - 1] = `${last}…`
   return lines
 }
@@ -437,13 +447,16 @@ export function schematicScene(
   // Rows from the top: the column factor and headings, then each row.
   let y = PAD
   if (grid?.columns) {
+    // Centred over the columns, fitted within the drawing (audit 4 G4: never cut off).
+    const cx = x0 + (cols * bw + (cols - 1) * gap) / 2
+    const room = 2 * Math.min(cx - PAD, width - PAD - cx)
     const n = textNode(
       c,
       'factor/columns',
-      [grid.columns],
+      fitLines(c, grid.columns, FACTOR, room, 2),
       FACTOR,
       t.muted,
-      x0 + (cols * bw + (cols - 1) * gap) / 2,
+      cx,
       y,
     )
     nodes.push(n.node)
@@ -467,18 +480,21 @@ export function schematicScene(
     y += h + 4
   }
   if (grid?.rows && rowHeadW) {
+    // On its own line above the first row (audit 4 G4: beside the column headings it ran into
+    // the first row's heading and boxes), fitted within the drawing.
+    const left = x0 - leftRoom - rowHeadW
     const n = textNode(
       c,
       'factor/rows',
-      [grid.rows],
+      fitLines(c, grid.rows, FACTOR, width - PAD - left, 2),
       FACTOR,
       t.muted,
-      x0 - leftRoom - rowHeadW,
+      left,
       y,
       'start',
     )
     nodes.push(n.node)
-    y += grid.columnLevels.length ? 0 : n.h + 2
+    y += n.h + 2
   }
   const placed = new Map<string, Placed>()
   const rowTop: number[] = []
@@ -783,8 +799,15 @@ export function schematicScene(
   // The links' legend.
   if (spec.links.length) {
     y += 6
-    const label = spec.links[0]!.label ?? 'same subjects'
     const lx = PAD + 2
+    // Fitted within the drawing (audit 4 G4).
+    const label = fitLines(
+      c,
+      spec.links[0]!.label ?? 'same subjects',
+      MEASURE,
+      width - PAD - (lx + 22),
+      2,
+    )
     nodes.push({
       id: 'legend/link',
       children: [
@@ -804,10 +827,10 @@ export function schematicScene(
             fill: { color: t.link, opacity: 1 },
           },
         },
-        textNode(c, 'legend/link/label', [label], MEASURE, t.muted, lx + 22, y, 'start').node,
+        textNode(c, 'legend/link/label', label, MEASURE, t.muted, lx + 22, y, 'start').node,
       ],
     })
-    y += textHeight(c, 1, MEASURE)
+    y += textHeight(c, label.length, MEASURE)
   }
   const height = Math.max(y + PAD, rows ? 0 : 2 * PAD)
   const root: SceneNode = { id: 'schematic', children: nodes }

@@ -2,7 +2,8 @@ import { spawnSync } from 'node:child_process'
 import { describe, expect, it } from 'vitest'
 
 // Roadmap 48b: the commercial product whose .pzfx files the app imports is named nowhere in the
-// repository: not in the app, the documents, comments, identifiers, tests or file names. The
+// repository: not in the app, the documents, comments, identifiers, tests or file names; nor is
+// its vendor (audit 4, T10: before, only stats, analyses and the oracle checked the vendor). The
 // .pzfx format is described by its extension only. Left out of the check: the private history
 // and instructions (docs/DECISIONS.md, CLAUDE.md; neither is in the public copy). Allowed, and
 // only where listed: literals the file formats themselves fix (`ALLOWED`).
@@ -10,13 +11,17 @@ import { describe, expect, it } from 'vitest'
 const root = new URL('../../../', import.meta.url)
 /** The name, case ignored (built from pieces so that this file doesn't hold it). */
 const NAME = ['pr', 'ism'].join('')
-const NAME_RE = new RegExp(NAME, 'i')
+/** The vendor's name, likewise. */
+const VENDOR = ['graph', 'pad'].join('')
+const NAME_RE = new RegExp(`${NAME}|${VENDOR}`, 'i')
+/** The vendor as the schema and the lockfile write it. */
+const Vendor = `${'Gr'}aph${'P'}ad`
 
 /** Files never checked: the private history and instructions. */
 const EXEMPT = new Set(['docs/DECISIONS.md', 'CLAUDE.md'])
 
 /** The .pzfx XML schema's root element and its version attribute (every .pzfx file has them). */
-const SCHEMA = [`GraphPad${'Pr'}ismFile`, `${'Pr'}ismXMLVersion`]
+const SCHEMA = [`${Vendor}${'Pr'}ismFile`, `${'Pr'}ismXMLVersion`]
 
 /**
  * Literals that must match a file format, by the files that may hold them (a path, or a folder
@@ -29,7 +34,7 @@ const ALLOWED: [files: string[], literals: string[]][] = [
   [['packages/io/src/import/index.ts'], [`case '${NAME}':`]],
   [['packages/io/test/import.test.ts'], [`'new.${NAME}'`, `/\\.${NAME} files are not supported/`]],
   // The R package pzfx's own title and description in the oracle's lockfile (renv writes them).
-  [['tools/oracle/renv.lock'], [`'GraphPad ${'Pr'}ism'`]],
+  [['tools/oracle/renv.lock'], [`'${Vendor} ${'Pr'}ism'`]],
 ]
 
 const matches = (path: string, pattern: string) =>
@@ -55,9 +60,9 @@ const git = (args: string[]) =>
   spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
 
 describe('no brand', () => {
-  it('names the product in no tracked file, except the format literals listed', () => {
+  it('names the product or its vendor in no tracked file, except the format literals listed', () => {
     // Every line that matches, binary files included ("Binary file … matches").
-    const r = git(['grep', '-n', '-i', '-e', NAME])
+    const r = git(['grep', '-n', '-i', '-e', NAME, '-e', VENDOR])
     expect(r.status === 0 || r.status === 1, r.stderr).toBe(true)
     const found: string[] = []
     for (const hit of r.stdout.split('\n').filter(Boolean)) {
@@ -83,7 +88,7 @@ describe('no brand', () => {
     }
   })
 
-  it('has no tracked file or folder with the name in its path', () => {
+  it('has no tracked file or folder with either name in its path', () => {
     const paths = git(['ls-files']).stdout.split('\n').filter(Boolean)
     expect(paths.filter((p) => checked(p) && NAME_RE.test(p))).toEqual([])
   })

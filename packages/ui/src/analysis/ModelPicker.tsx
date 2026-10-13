@@ -6,12 +6,11 @@ import {
   goalOf,
   MODEL_GOALS,
   type ModelGoalId,
-  modelThumbnail,
-  THUMBNAIL_PLOT,
   USER_EQUATION,
   unitWords,
   type XScale,
 } from '@ps/analyses'
+import { modelThumbnail, THUMBNAIL_PLOT } from '@ps/analyses/dialog'
 import type { FontRegistry } from '@ps/graph'
 import { type KeyboardEvent, useId, useMemo, useState } from 'react'
 import { useServices } from '../context.tsx'
@@ -74,18 +73,42 @@ function ParamList({ meta }: { meta: EquationMeta }) {
   )
 }
 
-/** The params of a newly picked model: its own constraints, the goal's settings. */
-export function pickModel(params: Params, id: string, goal: GoalTab): Params {
+/** A model's own choices, kept while another is shown (the user's answer Q4, audit 4 A5). */
+export interface ModelChoices {
+  constraints: unknown
+  initialValues: unknown
+  limits: unknown
+}
+
+/**
+ * The params of a newly picked model: its own constraints, the goal's settings. Parameter names
+ * differ between models, so each model has its own constraints, starting values and limits:
+ * those of the model left are kept in `memory` (the dialog's, for its life) and those of the
+ * model picked come back from it (else start over). Picking the chosen model changes nothing.
+ */
+export function pickModel(
+  params: Params,
+  id: string,
+  goal: GoalTab,
+  memory?: Map<string, ModelChoices>,
+): Params {
+  if (params.equation === id) return params
+  if (typeof params.equation === 'string')
+    memory?.set(params.equation, {
+      constraints: params.constraints ?? {},
+      initialValues: params.initialValues ?? {},
+      limits: params.limits ?? {},
+    })
+  const back = memory?.get(id)
   const g = MODEL_GOALS.find((x) => x.id === goal)
   const eq = id === USER_EQUATION ? undefined : equation(id)
   const compared = Array.isArray(params.compareParams) ? (params.compareParams as string[]) : []
   return {
     ...params,
     equation: id,
-    // Parameter names differ between models: constraints, starting values and limits start over.
-    constraints: {},
-    initialValues: {},
-    limits: {},
+    constraints: back?.constraints ?? {},
+    initialValues: back?.initialValues ?? {},
+    limits: back?.limits ?? {},
     ...(params.compareWith === id ? { compareWith: 'none' } : {}),
     compareParams: eq ? compared.filter((n) => eq.params.includes(n)) : [],
     ...(g?.sets ?? {}),
@@ -133,7 +156,7 @@ function ModelCard({
   )
 }
 
-export const ModelPicker: CustomField = ({ label, params, onChange }) => {
+export const ModelPicker: CustomField = ({ label, params, onChange, context }) => {
   const id = useId()
   const current = String(params.equation ?? '')
   const [tab, setTab] = useState<GoalTab>(() =>
@@ -143,7 +166,10 @@ export const ModelPicker: CustomField = ({ label, params, onChange }) => {
   const goal = MODEL_GOALS.find((g) => g.id === tab)
   const meta = equationMeta(current)
   const eq = equation(current)
-  const pick = (m: string) => onChange(pickModel(params, m, tab))
+  const pick = (m: string, goalTab: GoalTab = tab) => {
+    const next = pickModel(params, m, goalTab, context.models)
+    if (next !== params) onChange(next)
+  }
   const shown: string[] = useMemo(() => {
     if (goal) return [...goal.models]
     if (tab !== 'all') return []
@@ -168,12 +194,14 @@ export const ModelPicker: CustomField = ({ label, params, onChange }) => {
     }
     if (!step || !shown.length) return
     e.preventDefault()
-    const next = (i + step + shown.length) % shown.length
+    // From the chosen model (audit 4 A5: keys repeated faster than the focus moved stepped from
+    // a stale card), and the focus moved at once.
+    const at = shown.indexOf(current)
+    const next = ((at >= 0 ? at : i) + step + shown.length) % shown.length
     pick(shown[next]!)
-    const group = e.currentTarget.parentElement
-    requestAnimationFrame(() =>
-      group?.querySelector<HTMLElement>(`[data-model="${shown[next]}"]`)?.focus(),
-    )
+    e.currentTarget.parentElement
+      ?.querySelector<HTMLElement>(`[data-model="${shown[next]}"]`)
+      ?.focus()
   }
   const tabs: { id: GoalTab; title: string }[] = [
     ...MODEL_GOALS.map((g) => ({ id: g.id as GoalTab, title: g.title })),
@@ -184,7 +212,8 @@ export const ModelPicker: CustomField = ({ label, params, onChange }) => {
   return (
     <fieldset className="model-picker">
       <legend>{label}</legend>
-      <div className="model-current" aria-live="polite">
+      {/* Not a live region (audit 4 A5): the focused card already says each model picked. */}
+      <div className="model-current">
         {current === USER_EQUATION ? (
           <span>Your own equation (written below).</span>
         ) : eq && meta ? (
@@ -216,14 +245,23 @@ export const ModelPicker: CustomField = ({ label, params, onChange }) => {
               className={tab === t.id ? 'active' : ''}
               onClick={() => {
                 setTab(t.id)
-                if (t.id === 'user') onChange(pickModel(params, USER_EQUATION, 'user'))
+                if (t.id === 'user') pick(USER_EQUATION, 'user')
               }}
               onKeyDown={(e) => {
                 const i = tabs.findIndex((x) => x.id === tab)
                 const step = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0
-                if (!step) return
+                // Audit 4 (A13): Home and End too.
+                const to =
+                  e.key === 'Home'
+                    ? 0
+                    : e.key === 'End'
+                      ? tabs.length - 1
+                      : step
+                        ? (i + step + tabs.length) % tabs.length
+                        : -1
+                if (to < 0) return
                 e.preventDefault()
-                const next = tabs[(i + step + tabs.length) % tabs.length]!
+                const next = tabs[to]!
                 setTab(next.id)
                 const list = e.currentTarget.parentElement
                 requestAnimationFrame(() =>
@@ -260,10 +298,21 @@ export const ModelPicker: CustomField = ({ label, params, onChange }) => {
             />
           )}
           {tab === 'user' ? (
-            <p className="help">
-              Write the equation below with X, Y and its parameters. A user-defined equation is
-              compared with other models by AICc only.
-            </p>
+            current === USER_EQUATION ? (
+              <p className="help">
+                Write the equation below with X, Y and its parameters. A user-defined equation is
+                compared with other models by AICc only.
+              </p>
+            ) : (
+              // Audit 4 (A13): reached by the keys (which show a goal, never pick): picked here.
+              <p className="help">
+                Your own equation with X, Y and its parameters, compared with other models by AICc
+                only.{' '}
+                <button type="button" onClick={() => pick(USER_EQUATION, 'user')}>
+                  Use my own equation
+                </button>
+              </p>
+            )
           ) : (
             <div
               role="radiogroup"

@@ -1,3 +1,5 @@
+// Audit 4 (P6): the forms' dialog parts, explanations and sketches (as the dialog has them).
+import '../src/dialogEntry.ts'
 // Analysis parameters naming table rows by index follow row inserts, deletes and reorders
 // (roadmap 29) through `ROW_PARAMS` in the model; this keeps that table and the plugins in step.
 

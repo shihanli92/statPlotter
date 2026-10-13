@@ -53,7 +53,8 @@ import { solveOde } from './ode.ts'
  * The parser builds a tape (a list of operations in evaluation order); evaluation runs it with
  * forward-mode automatic differentiation, so the fitter gets exact partial derivatives
  * (dY/dparameter) through intermediate variables, if/min/max branches and every function.
- * Nothing is ever passed to `eval` or `Function`.
+ * Nothing is ever passed to `eval` or `Function`. The text, the selectors and the nesting have
+ * limits (`EQUATION_LIMITS`): past them, an error, never a hang or a stack overflow.
  */
 
 // ---- tokens --------------------------------------------------------------------------------------
@@ -69,11 +70,28 @@ interface Token {
   sel?: Selector
 }
 
-/** Data sets a line applies to: listed 0-based indices, or all but them (`not`). */
+/**
+ * Data sets a line applies to: ranges of 0-based indices (`from` to `to`, every `step`), or all
+ * but them (`not`). Kept as ranges (audit 4 T1): `<A:ZZ>` is one range, never a list.
+ */
 interface Selector {
   not: boolean
-  sets: number[]
+  ranges: { from: number; to: number; step: number }[]
 }
+
+/**
+ * Audit 4 (T1): limits that keep a few characters from hanging or crashing the app. Data set
+ * letters go up to ZZ (702 data sets); expressions nest at most `depth` deep (parentheses,
+ * function calls, signs, NOT, powers); the text is at most `length` characters (as a graph's
+ * function curve); lines for particular data sets are compiled at most `compiledLines` times
+ * in all.
+ */
+export const EQUATION_LIMITS = {
+  dataSets: 702,
+  depth: 200,
+  length: 20000,
+  compiledLines: 200_000,
+} as const
 
 export class EquationError extends Error {
   /** 0-based character offset into the text. */
@@ -98,24 +116,34 @@ function parseSelector(body: string, pos: number): Selector {
   const s = body.replace(/\s+/g, '')
   const not = s.startsWith('~')
   const list = (not ? s.slice(1) : s).split(',')
-  const sets: number[] = []
+  const ranges: Selector['ranges'] = []
   const bad = () =>
     new EquationError(`“<${body}>” doesn’t name data sets (e.g. <A>, <~B>, <A:D>, <A:J,3>).`, pos)
   for (let i = 0; i < list.length; i++) {
     const m = /^([A-Za-z]+)(?::([A-Za-z]+))?$/.exec(list[i]!)
     if (!m) throw bad()
+    // Past ZZ before it is even converted (no huge numbers).
+    if (m[1]!.length > 2 || (m[2]?.length ?? 0) > 2)
+      throw new EquationError(
+        `“<${body}>”: data set letters go up to ${dataSetLetter(EQUATION_LIMITS.dataSets - 1)}.`,
+        pos,
+      )
     const a = dataSetIndex(m[1]!)
     const b = m[2] ? dataSetIndex(m[2]) : a
     let step = 1
     if (m[2] && /^\d+$/.test(list[i + 1] ?? '')) {
       step = Number(list[++i])
-      if (step < 1) throw bad()
+      if (!(step >= 1)) throw bad()
     }
     if (a < 0 || b < a) throw bad()
-    for (let k = a; k <= b; k += step) sets.push(k)
+    ranges.push({ from: a, to: b, step })
   }
-  return { not, sets }
+  return { not, ranges }
 }
+
+/** Whether data set `k` is in one of a selector's ranges. */
+const inRanges = (sel: Selector, k: number) =>
+  sel.ranges.some((r) => k >= r.from && k <= r.to && (k - r.from) % r.step === 0)
 
 function tokenize(text: string): Token[] {
   const out: Token[] = []
@@ -405,7 +433,7 @@ function splitLines(toks: Token[]): Line[] {
 }
 
 const applies = (sel: Selector | null, k: number) =>
-  sel === null || (sel.not ? !sel.sets.includes(k) : sel.sets.includes(k))
+  sel === null || (sel.not ? !inRanges(sel, k) : inRanges(sel, k))
 
 type Kind = 'explicit' | 'implicit' | 'differential'
 
@@ -575,15 +603,18 @@ class Parser {
   }
 
   private dependsOnXY(slot: number): boolean {
+    // A stack, not recursion (audit 4 T1: a long chain of intermediates is deep).
     const seen = new Set<number>()
-    const walk = (s: number): boolean => {
-      if (seen.has(s)) return false
+    const stack = [slot]
+    while (stack.length) {
+      const s = stack.pop()!
+      if (seen.has(s)) continue
       seen.add(s)
       const ins = this.tape[s]!
       if (ins.op === Op.X || ins.op === Op.Y) return true
-      return ins.args.some(walk)
+      for (const a of ins.args) stack.push(a)
     }
-    return walk(slot)
+    return false
   }
 
   private expectEnd(): void {
@@ -591,8 +622,26 @@ class Parser {
     if (end.kind !== 'end') throw new EquationError(`Unexpected “${end.text}”.`, end.pos)
   }
 
+  /** How deep the expression being parsed is nested (audit 4 T1: limited). */
+  private depth = 0
+
+  /** `f` one level deeper: past EQUATION_LIMITS.depth an error, never a stack overflow. */
+  private deeper(f: () => number): number {
+    if (++this.depth > EQUATION_LIMITS.depth) {
+      const t = this.peek()
+      this.depth = 0
+      throw new EquationError(
+        `The expression is nested too deeply (more than ${EQUATION_LIMITS.depth} levels of parentheses, functions, signs or powers).`,
+        t.pos,
+      )
+    }
+    const out = f()
+    this.depth--
+    return out
+  }
+
   private expr(): number {
-    return this.or()
+    return this.deeper(() => this.or())
   }
 
   private or(): number {
@@ -616,7 +665,7 @@ class Parser {
   private not(): number {
     if (this.isKeyword('not')) {
       this.next()
-      return this.emit(Op.Not, [this.not()])
+      return this.emit(Op.Not, [this.deeper(() => this.not())])
     }
     return this.compare()
   }
@@ -663,7 +712,7 @@ class Parser {
     const t = this.peek()
     if (t.kind === 'op' && (t.text === '-' || t.text === '+')) {
       this.next()
-      const a = this.unary()
+      const a = this.deeper(() => this.unary())
       return t.text === '-' ? this.emit(Op.Neg, [a]) : a
     }
     return this.power()
@@ -674,7 +723,7 @@ class Parser {
     const t = this.peek()
     if (t.kind === 'op' && t.text === '^') {
       this.next()
-      return this.emit(Op.Pow, [base, this.unary()])
+      return this.emit(Op.Pow, [base, this.deeper(() => this.unary())])
     }
     return base
   }
@@ -1383,23 +1432,57 @@ function programOf(
  */
 export function parseEquation(text: string): ParsedEquation {
   try {
+    if (text.length > EQUATION_LIMITS.length)
+      throw new EquationError(
+        `The equation is too long (${text.length.toLocaleString('en-US')} characters; at most ${EQUATION_LIMITS.length.toLocaleString('en-US')}).`,
+        EQUATION_LIMITS.length,
+      )
     const lines = splitLines(tokenize(text))
     const reg = new Registry()
-    const mentioned = [...new Set(lines.flatMap((l) => l.sel?.sets ?? []))].sort((a, b) => a - b)
+    // Data set letters stop at ZZ, so the data sets named are at most EQUATION_LIMITS.dataSets.
+    const named = new Array<boolean>(EQUATION_LIMITS.dataSets).fill(false)
+    for (const l of lines)
+      for (const r of l.sel?.ranges ?? [])
+        for (let k = r.from; k <= r.to; k += r.step) named[k] = true
+    const mentioned = named.flatMap((on, k) => (on ? [k] : []))
+    const mentionedSet = new Set(mentioned)
     const perDataSet = mentioned.length > 0
-    // Every data set named in a selector gets its program; "others" (-1) those not named.
+    // Every data set named in a selector gets its program; "others" (-1) those not named. Data
+    // sets with the same lines share one (compiled once; audit 4 T1).
     const keys = perDataSet ? [...mentioned, -1] : [-1]
     const variants = new Map<number, Variant | EquationError>()
+    const bySignature = new Map<string, Variant | EquationError>()
+    let compiled = 0
     for (const k of keys) {
-      const own = lines.filter((l) =>
-        k < 0 ? applies(l.sel, Number.MAX_SAFE_INTEGER) : applies(l.sel, k),
-      )
+      const own: Line[] = []
+      const at: number[] = []
+      lines.forEach((l, i) => {
+        if (k < 0 ? applies(l.sel, Number.MAX_SAFE_INTEGER) : applies(l.sel, k)) {
+          own.push(l)
+          at.push(i)
+        }
+      })
+      const signature = at.join(',')
+      const shared = bySignature.get(signature)
+      if (shared) {
+        variants.set(k, shared)
+        continue
+      }
+      compiled += own.length
+      if (compiled > EQUATION_LIMITS.compiledLines)
+        throw new EquationError(
+          'Too many lines for particular data sets: give fewer data sets their own lines.',
+          0,
+        )
+      let v: Variant | EquationError
       try {
-        variants.set(k, new Parser(own, reg).program())
+        v = new Parser(own, reg).program()
       } catch (e) {
         if (!(e instanceof EquationError) || !perDataSet) throw e
-        variants.set(k, e)
+        v = e
       }
+      variants.set(k, v)
+      bySignature.set(signature, v)
     }
     // Every named data set must compile; "others" may lack Y (only named data sets fit).
     for (const k of mentioned) {
@@ -1413,10 +1496,11 @@ export function parseEquation(text: string): ParsedEquation {
     })
     const parameters = order.map((j) => reg.names[j]!)
     const variables = [...reg.variables.values()]
-    for (const v of variants.values()) if (!(v instanceof EquationError)) remap(v, map)
+    // Each program once (data sets share them).
+    for (const v of bySignature.values()) if (!(v instanceof EquationError)) remap(v, map)
     const programs = new Map<number, EquationProgram>()
     const forDataSet = (k: number): EquationProgram => {
-      const key = perDataSet && mentioned.includes(k) ? k : -1
+      const key = perDataSet && mentionedSet.has(k) ? k : -1
       let prog = programs.get(key)
       if (!prog) {
         const v = variants.get(key)!

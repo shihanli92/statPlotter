@@ -2,7 +2,7 @@ import type { NormalizedDataSet, SketchContext, SketchPanel, SketchSpec } from '
 import { midranks } from '@ps/stats'
 import { equationMeta } from '../explain/equations.ts'
 import { type Constraint, effectiveConstraint, resolveEquation } from '../nonlinear.ts'
-import { type SketchSet, sampledRows, xyTable } from './tables.ts'
+import { type SketchSet, sketchRows, xyTable } from './tables.ts'
 import { dataSketch } from './twoGroups.ts'
 import { countsLine, nameList, plain, q } from './words.ts'
 
@@ -97,10 +97,9 @@ const extentOf = (pts: readonly Point[]) => {
   return { lo, hi }
 }
 
+/** The rows drawn (audit 4 P3: SKETCH_MAX_POINTS over every data set), and the sample note. */
 function sampled(input: readonly NormalizedDataSet[], ctx: SketchContext) {
-  const total = input.reduce((m, d) => Math.max(m, d.rowCount), 0)
-  const rows = sampledRows(total, ctx.maxRows)
-  return { rows, ...(rows.length < total ? { sampled: { shown: rows.length, total } } : {}) }
+  return sketchRows(input, ctx.maxRows)
 }
 
 /** Linear (and Deming) regression: the points, and the least-squares line's shape. */
@@ -181,7 +180,14 @@ export function correlationSketch(
   let names: [string, string] = ['X', 'Y']
   if (input.every((d) => d.x)) {
     pts = input.flatMap((d) => pointsOf(d, s.rows, false))
-    names = [ctx.xTitle ?? 'X', input.map((d) => d.title).join(', ')]
+    // Audit 4 (G3): a few names, then "and N more" (the axis title of thirty was 1,700 pt tall).
+    names = [
+      ctx.xTitle ?? 'X',
+      nameList(
+        input.map((d) => d.title),
+        3,
+      ),
+    ]
   } else if (input.length >= 2) {
     const [a, b] = input as [NormalizedDataSet, NormalizedDataSet]
     const xa = a.data.shape === 'replicates' ? a.data.reps[0]! : a.data.mean

@@ -187,3 +187,50 @@ test('roles for an analysis of variables: the outcome first, then Analyze', asyn
   await expect(d).toBeHidden()
   await expectUpToDate(page)
 })
+
+// Audit 4 (A11, A3): Escape steps back one thing at a time — the query, then the list opened over
+// the options — before it closes the dialog; with the list folded (1024 px) the focus starts on
+// the strip naming the method (the search is hidden).
+test('Escape clears the search, then closes the folded list, then the dialog', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await openExample(page, 'getting-started')
+  const d = await openAnalyze(page, 'Enzyme activity', 't test')
+  const search = d.getByRole('combobox', { name: 'Search analyses' })
+  await search.fill('kruskal')
+  await page.keyboard.press('Escape')
+  await expect(search).toHaveValue('')
+  await expect(d).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(d).toBeHidden()
+
+  await page.setViewportSize({ width: 1024, height: 768 })
+  await tool(page, 'Analyze…').click()
+  const narrow = dialog(page, 'Analyze “Enzyme activity”')
+  const toggle = narrow.locator('.rail-toggle')
+  await expect(toggle).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(narrow.getByRole('combobox', { name: 'Search analyses' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(narrow).toBeVisible()
+  await expect(toggle).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(narrow).toBeHidden()
+})
+
+// Audit 4 (A15): at 200 % zoom on a 768-pixel-high screen the dialog fits: its title and its
+// buttons are on screen.
+test('the dialog fits a short window (200 % zoom)', async ({ page }) => {
+  await page.setViewportSize({ width: 683, height: 340 })
+  await openExample(page, 'getting-started')
+  await openSheet(page, 'Enzyme activity', 'Data Tables')
+  await tool(page, 'Analyze…').click()
+  const d = dialog(page, 'Analyze “Enzyme activity”')
+  await expect(d).toBeVisible()
+  const box = (await d.boundingBox())!
+  expect(box.y).toBeGreaterThanOrEqual(0)
+  expect(box.y + box.height).toBeLessThanOrEqual(340)
+  await expect(d.getByRole('heading', { name: 'Analyze “Enzyme activity”' })).toBeInViewport()
+  await expect(d.getByRole('button', { name: 'Cancel' })).toBeInViewport({ ratio: 1 })
+})

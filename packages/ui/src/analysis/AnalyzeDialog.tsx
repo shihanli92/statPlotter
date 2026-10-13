@@ -1,4 +1,12 @@
 import {
+  type MonteCarloParams,
+  methodNameOf,
+  registry,
+  TRANSFORM_LOG10_X,
+  withInnerVersion,
+  withLog10X,
+} from '@ps/analyses'
+import {
   analysisChecks,
   analysisFacts,
   analysisSchematic,
@@ -8,22 +16,16 @@ import {
   comparingText,
   entriesFor,
   fieldStates,
-  type MonteCarloParams,
   methodChanges,
-  methodNameOf,
   type RoleAssignment,
   type RoleVariable,
-  registry,
   roleProblem,
   rolesOf,
   SKETCH_MAX_ROWS,
   setsWord,
   startingRoles,
-  TRANSFORM_LOG10_X,
   tableFacts,
-  withInnerVersion,
-  withLog10X,
-} from '@ps/analyses'
+} from '@ps/analyses/dialog'
 import {
   type Command,
   compatibleTables,
@@ -41,6 +43,9 @@ import {
   type DiagnosticFix,
   type FormField,
   type GraphNode,
+  hasModifiers,
+  modifiedTableKind,
+  modifyInput,
   type NodeId,
   type NormalizedDataSet,
   newNodeId,
@@ -59,11 +64,12 @@ import {
   useRef,
   useState,
 } from 'react'
+import { formatShortcut, isMacPlatform } from '../commands/shortcut.ts'
 import { Dialog, NoticeDialog } from '../components/Dialog.tsx'
 import type { ShowError } from '../components/Toasts.tsx'
 import { useUndoNotice } from '../components/undoNotice.tsx'
 import { useDoc, useResultState, useServices, useSourceTable } from '../context.tsx'
-import { showOnGraphsCommands } from '../graph/results/resultActions.ts'
+import { showOnGraphsCommands, templateShown } from '../graph/results/resultActions.ts'
 import { recentAnalyses } from '../recentChoices.ts'
 import { sourceProblem } from '../resultTables.ts'
 import { errorMessage } from '../util.ts'
@@ -74,7 +80,7 @@ import { GroupChips } from './GroupChips.tsx'
 import { type GuideChoice, GuidePanel, methodLine } from './GuidePanel.tsx'
 import { MethodCards } from './MethodCards.tsx'
 import { MethodChangeNotice } from './MethodHistory.tsx'
-import { pickModel } from './ModelPicker.tsx'
+import { type ModelChoices, pickModel } from './ModelPicker.tsx'
 import { variableInfo } from './mvFields.tsx'
 import { OptionTiers } from './OptionTiers.tsx'
 import { FieldCard, setPath } from './ParamsForm.tsx'
@@ -97,7 +103,13 @@ export type AnalyzeTab = 'guide' | 'all'
 const lastTabs = new Map<string, AnalyzeTab>()
 const guideMemory = new Map<
   string,
-  { entry: string | null; answers: Record<string, string>; selection: string[] }
+  {
+    entry: string | null
+    answers: Record<string, string>
+    /** Audit 4 (A4): answers hidden by a change, given back when the path returns to them. */
+    hidden: Record<string, string>
+    selection: string[]
+  }
 >()
 
 /** Roadmap 51b (§4.1): the dialog's size, remembered (a convenience: it may be lost). */
@@ -124,6 +136,9 @@ let schematicOpen = true
 
 /** Roadmap 51b (§5.8): the sketch and checks follow the options this long after a change (ms). */
 export const SKETCH_DEBOUNCE_MS = 120
+
+/** No data sets, one array (a new one each render would remake the input). */
+const NO_DATA_SETS: string[] = []
 
 /** A value that follows `value` once it has stood for `ms` (the first value at once). */
 function useDebounced<T>(value: T, ms: number): T {
@@ -283,12 +298,21 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   // Offered by the kind of the table analyzed (for a result table, the kind it declares).
   // (A table made just for the analysis offers those that need no data.)
   const draft = props.mode === 'create' ? props.draftTable : undefined
+  // Audit 4 (U2): an analysis edited with input modifiers (values at one X, pooled data sets,
+  // each X a row) reads its data sets through them, as it runs (`prepareJob`): their values,
+  // and the methods of the kind of table they make.
+  const modifiers = useMemo(() => {
+    const m = existing && {
+      atX: existing.input.atX,
+      pools: existing.input.pools,
+      byX: existing.input.byX,
+    }
+    return m && hasModifiers(m) ? m : null
+  }, [existing])
+  const kind = modifiers ? modifiedTableKind(modifiers, table.tableKind) : table.tableKind
   const defs = useMemo(
-    () =>
-      registry
-        .list()
-        .filter((d) => d.accepts.includes(table.tableKind) && (!draft || d.inputs.min === 0)),
-    [table, draft],
+    () => registry.list().filter((d) => d.accepts.includes(kind) && (!draft || d.inputs.min === 0)),
+    [kind, draft],
   )
   const wanted = props.mode === 'create' ? props.analysisId : undefined
   const [defId, setDefId] = useState(
@@ -310,16 +334,27 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   const setTab = (t: AnalyzeTab) => {
     setTabState(t)
     lastTabs.set(projectKey, t)
+    setNudged(0)
   }
+  // Audit 4 (A2): ⌘Enter pressed while Analyze is disabled (its reason said again).
+  const [nudged, setNudged] = useState(0)
   const remembered = guideMemory.get(table.id)
-  const startEntry = props.mode === 'create' ? props.entry : undefined
+  // Audit 4 (U10): a question this table's kind doesn't offer (Compare these columns… asks
+  // "Are the groups different?" of a nested table) opens the kind's first question instead.
+  const asked = props.mode === 'create' ? props.entry : undefined
+  const kindEntries = entriesFor(table.tableKind)
+  const startEntry =
+    asked === undefined || kindEntries.some((e) => e.id === asked) ? asked : kindEntries[0]?.id
   const [guide, setGuideState] = useState(() => ({
     entry: startEntry ?? remembered?.entry ?? null,
     answers: startEntry && startEntry !== remembered?.entry ? {} : (remembered?.answers ?? {}),
-    selection:
+    hidden: startEntry && startEntry !== remembered?.entry ? {} : (remembered?.hidden ?? {}),
+    // Audit 4 (U4): data sets deleted since (remembered, or asked for) are dropped.
+    selection: (
       (props.mode === 'create' ? props.dataSets : undefined) ??
       remembered?.selection ??
-      table.dataSets.slice(0, 64).map((d) => d.id as string),
+      table.dataSets.slice(0, 64).map((d) => d.id as string)
+    ).filter((k) => table.dataSets.some((d) => d.id === k)),
   }))
   const setGuide = (g: Partial<typeof guide>) => {
     const next = { ...guide, ...g }
@@ -353,20 +388,20 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   // Roadmap 51a (U3): a query finds the chooser's questions, this table's analyses and, greyed,
   // what other table kinds answer.
   const found = useMemo(
-    () => searchAnalyses(defs, table.tableKind, draft ? '' : query),
-    [defs, table.tableKind, query, draft],
+    () => searchAnalyses(defs, kind, draft ? '' : query),
+    [defs, kind, query, draft],
   )
   type Row =
     | { kind: 'def'; def: (typeof defs)[number] }
     | { kind: 'question'; id: string; label: string }
   const groups: { title: string | null; rows: Row[] }[] = useMemo(() => {
     if (!query.trim())
-      return analysisGroups(defs, table.tableKind, '').map((g) => ({
+      return analysisGroups(defs, kind, '').map((g) => ({
         title: g.title,
         rows: g.defs.map((d): Row => ({ kind: 'def', def: d })),
       }))
     if (draft)
-      return analysisGroups(defs, table.tableKind, query).map((g) => ({
+      return analysisGroups(defs, kind, query).map((g) => ({
         title: g.title,
         rows: g.defs.map((d): Row => ({ kind: 'def', def: d })),
       }))
@@ -380,7 +415,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
         rows: found.here.map((d): Row => ({ kind: 'def', def: d })),
       },
     ].filter((g) => g.rows.length)
-  }, [defs, table.tableKind, query, found, draft])
+  }, [defs, kind, query, found, draft])
   const rows = groups.flatMap((g) => g.rows)
   const [active, setActive] = useState(() =>
     Math.max(
@@ -393,6 +428,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   const tabId = useId()
   const sideId = useId()
   const reasonId = useId()
+  const factorsId = useId()
   const listRef = useRef<HTMLDivElement>(null)
   // Roadmap 51b (§4.1, U28): editing opens on the current method, the list folded away until
   // "Change method…"; a narrow dialog folds it too (a strip opening the list over the options).
@@ -405,9 +441,19 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   const searchRef = useRef<HTMLInputElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const changeRef = useRef<HTMLButtonElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
+  // Audit 4 (A3): the list folded (a narrow dialog): the search is hidden, so the focus goes to
+  // the strip's button, which names the method and opens the list.
+  const foldedRef = useRef(false)
   useEffect(() => {
     const t = setTimeout(() => {
-      if (tab === 'all') (changing ? searchRef.current : changeRef.current)?.focus()
+      if (tab === 'all')
+        (changing
+          ? foldedRef.current
+            ? toggleRef.current
+            : searchRef.current
+          : changeRef.current
+        )?.focus()
       else
         panelRef.current
           ?.querySelector<HTMLButtonElement>(
@@ -457,6 +503,8 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   // Roadmap 51b (§4.5): what each method had, so returning to it restores its choices; whether
   // the groups were chosen (by the chips, Guide me, an edited analysis) or are a default.
   const visited = useRef(new Map<string, MethodState>())
+  // Audit 4 (A5, U5; Q4): each curve-fit model's constraints, initial values and limits.
+  const models = useRef(new Map<string, ModelChoices>())
   const touched = useRef(props.mode === 'edit' || !!(props.mode === 'create' && props.dataSets))
 
   const changeSource = (id: NodeId, match: DataSetMatch) => {
@@ -492,19 +540,32 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     () => (roles && roleState ? applyRoles(roles, roleState, params) : null),
     [roles, roleState, params],
   )
-  const effectiveParams = roleApplied?.params ?? params
-  const usesData = def ? (def.usesData?.(effectiveParams) ?? true) : true
   const chosen = roleApplied?.dataSets ?? selected
-  const dataSets = usesData ? chosen : []
-
-  const tableInput = useMemo(
-    () =>
-      dataSets.flatMap((k) => {
-        const n = normalizeColumn(table, k)
-        return n ? [n] : []
-      }),
-    [table, dataSets],
+  // Audit 4 (U3): a control left out of the groups chosen is no control: the first chosen group
+  // is ('' — as the run compares, the chips and the sentence say, and Apply stores).
+  const ownParams = roleApplied?.params ?? params
+  const staleControl =
+    !!def?.form.some((f) => f.path.join('.') === 'control') &&
+    typeof ownParams.control === 'string' &&
+    ownParams.control !== '' &&
+    !chosen.includes(ownParams.control)
+  const effectiveParams = useMemo(
+    () => (staleControl ? { ...ownParams, control: '' } : ownParams),
+    [staleControl, ownParams],
   )
+  const usesData = def ? (def.usesData?.(effectiveParams) ?? true) : true
+  const dataSets = usesData ? chosen : NO_DATA_SETS
+
+  const read = useMemo((): { sets: NormalizedDataSet[]; error?: string } => {
+    const sets = dataSets.flatMap((k) => {
+      const n = normalizeColumn(table, k)
+      return n ? [n] : []
+    })
+    if (!modifiers) return { sets }
+    const m = modifyInput(sets, modifiers, table.tableKind)
+    return 'error' in m ? { sets: [], error: m.error } : { sets: m.input }
+  }, [table, dataSets, modifiers])
+  const tableInput = read.sets
   // Roadmap 51e (§9.2): "Transform X to log10" — a new curve fit of a data table is made of a
   // Transform analysis (X = log10(X)) and the fit of its result; until Analyze, the checks and the
   // sketch see the transformed X.
@@ -517,49 +578,71 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   const logX = transformFirst && canTransform
   const input = useMemo(() => (logX ? withLog10X(tableInput) : tableInput), [logX, tableInput])
   const facts = useMemo(
-    () => analysisFacts(table.tableKind, input, effectiveParams),
-    [table, input, effectiveParams],
+    () => analysisFacts(kind, input, effectiveParams),
+    [kind, input, effectiveParams],
   )
   const states = useMemo(
     () => (def ? fieldStates(def.form, effectiveParams, facts) : []),
     [def, effectiveParams, facts],
   )
+  // As the run's context (`prepareJob`): no X title for values at one X or each X a row.
   const context = useMemo(
-    () => ({ tableKind: table.tableKind, xTitle: table.x?.title ?? null }),
-    [table],
+    () => ({
+      tableKind: kind,
+      xTitle: modifiers?.atX !== undefined || modifiers?.byX ? null : (table.x?.title ?? null),
+    }),
+    [kind, modifiers, table],
   )
+  /** Audit 4 (U2): the modifiers can't read the data sets chosen (the run's message). */
+  const modifierCheck: Check[] = read.error
+    ? [{ level: 'block', message: read.error, where: 'table' }]
+    : []
   /** The checks of these options (blocks first). */
   const checksOf = (p: Params, sets: readonly NormalizedDataSet[]): Check[] =>
     def
-      ? analysisChecks({
-          def,
-          kind: table.tableKind,
-          input: sets,
-          params: p,
-          facts: analysisFacts(table.tableKind, sets, p),
-          ...(roles && roleState ? { roles: roleState } : {}),
-          context,
-        })
+      ? [
+          ...modifierCheck,
+          ...analysisChecks({
+            def,
+            kind,
+            input: sets,
+            params: p,
+            facts: analysisFacts(kind, sets, p),
+            ...(roles && roleState ? { roles: roleState } : {}),
+            context,
+          }),
+        ]
       : []
   // Roadmap 51b (§4.6, §5.8): the checks and the sketch follow the options, debounced.
-  const settled = useDebounced({ defId, params: effectiveParams, input }, SKETCH_DEBOUNCE_MS)
+  // Audit 4 (U1): one object per change of its parts — a new one each render restarted the
+  // debounce on every render, so the open dialog re-rendered every 120 ms with nothing changed.
+  const pending = useMemo(
+    () => ({ defId, params: effectiveParams, input }),
+    [defId, effectiveParams, input],
+  )
+  const settled = useDebounced(pending, SKETCH_DEBOUNCE_MS)
   const stale =
     settled.defId !== defId || settled.params !== effectiveParams || settled.input !== input
   const settledDef = registry.get(settled.defId)
   const checks = useMemo(
     () =>
       settledDef && settledDef === def
-        ? analysisChecks({
-            def: settledDef,
-            kind: table.tableKind,
-            input: settled.input,
-            params: settled.params,
-            facts: analysisFacts(table.tableKind, settled.input, settled.params),
-            ...(roleState && rolesOf(settledDef) ? { roles: roleState } : {}),
-            context,
-          })
+        ? [
+            ...(read.error
+              ? [{ level: 'block' as const, message: read.error, where: 'table' as const }]
+              : []),
+            ...analysisChecks({
+              def: settledDef,
+              kind,
+              input: settled.input,
+              params: settled.params,
+              facts: analysisFacts(kind, settled.input, settled.params),
+              ...(roleState && rolesOf(settledDef) ? { roles: roleState } : {}),
+              context,
+            }),
+          ]
         : [],
-    [settled, settledDef, def, roleState, table, context],
+    [settled, settledDef, def, roleState, kind, context, read.error],
   )
   const sketch: SketchSpec | null = useMemo(() => {
     if (!settledDef?.sketch || !usesData) return null
@@ -631,7 +714,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
       return analysisSchematic(
         settledDef.id,
         parsed.data as Record<string, unknown>,
-        tableFacts(table.tableKind, settled.input),
+        tableFacts(kind, settled.input),
         {
           rowTitles: settled.input[0]?.rowTitles ?? table.rowTitles ?? null,
           factors: factorNames,
@@ -641,8 +724,25 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     } catch {
       return null
     }
-  }, [settled, settledDef, usesData, roleState, table, factorNames])
+  }, [settled, settledDef, usesData, roleState, table, factorNames, kind])
   const [showSchematic, setShowSchematic] = useState(schematicOpen)
+
+  // Audit 4 (P2): what the option fields read of the table — once per table and choice, not on
+  // every render (a row per table row; each variable's levels).
+  const fieldContext = useMemo(
+    () => ({
+      dataSets: table.dataSets
+        .filter((d) => dataSets.includes(d.id))
+        .map((d) => ({ key: d.id, title: d.title, ...variableInfo(d) })),
+      rows: Array.from({ length: table.rowCount }, (_, i) => ({
+        index: i,
+        title: table.rowTitles?.[i] || `Row ${i + 1}`,
+      })),
+      facts,
+      models: models.current,
+    }),
+    [table, dataSets, facts],
+  )
 
   if (!def) {
     return (
@@ -714,10 +814,24 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   // Roadmap 51b (U14): offered while editing too (added to the graphs on Apply).
   const offered =
     def.graphResults && offeredParams.success
-      ? def
-          .graphResults(offeredParams.data, { tableKind: table.tableKind, dataSets })
-          .filter((t) => !!t.offer)
+      ? def.graphResults(offeredParams.data, { tableKind: kind, dataSets }).filter((t) => !!t.offer)
       : []
+  // Audit 4 (U7): editing, the results a graph of the table already shows are ticked (and
+  // never added twice).
+  const shownAlready = new Set(
+    existing && existing.analysisId === def.id
+      ? offered
+          .filter((t) =>
+            Object.values(project.nodes).some(
+              (n) =>
+                n.kind === 'graph' &&
+                n.seriesSource.table === table.id &&
+                templateShown(n, existing.id, t),
+            ),
+          )
+          .map((t) => t.id)
+      : [],
+  )
 
   /** Roadmap 51c (§7.1): the method's changes since the stored one (none when creating). */
   const changes = (() => {
@@ -740,8 +854,11 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
 
   // Roadmap 51d (U19): a grouped table's factor names, asked for beside the two-way and
   // many-rows analyses (taken from the table; stored on it, additively).
+  // Audit 4 (U6): of data tables only — a result table's would be written onto the analysis
+  // that made it, which its result never reads.
   const asksFactors =
     table.tableKind === 'grouped' &&
+    project.nodes[table.id]?.kind === 'table' &&
     ['twoWayAnova', 'threeWayAnova', 'multipleT', 'multipleOneWay'].includes(def.id)
   const factorCommands = (): Command[] => {
     if (!asksFactors) return []
@@ -834,6 +951,20 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     }
   }
 
+  /** Roadmap 51a: set up with Guide me (and whether its params were kept). */
+  const guideOrigin = (stored: unknown): Pick<AnalysisNode, 'origin'> =>
+    fromGuide.current && fromGuide.current.analysisId === def.id
+      ? {
+          origin: {
+            guide: {
+              entry: fromGuide.current.entry,
+              answers: fromGuide.current.answers,
+              followed: sameValue(fromGuide.current.params, stored),
+            },
+          },
+        }
+      : {}
+
   const submit = () => {
     if (tab === 'guide') return
     const parsed = ready()
@@ -855,6 +986,8 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
         const node: AnalysisNode = {
           ...newAnalysis(parsed.data),
           input: { source: tnode.id, dataSets },
+          // Audit 4 (U11): set up with Guide me, as a fit of the table itself would be.
+          ...guideOrigin(parsed.data),
         }
         store.dispatch(
           [
@@ -867,18 +1000,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
       } else if (props.mode === 'create') {
         const node: AnalysisNode = {
           ...newAnalysis(parsed.data, draft ? def.title : autoName(parsed.data)),
-          // Roadmap 51a: set up with Guide me (and whether its params were kept).
-          ...(fromGuide.current && fromGuide.current.analysisId === def.id
-            ? {
-                origin: {
-                  guide: {
-                    entry: fromGuide.current.entry,
-                    answers: fromGuide.current.answers,
-                    followed: sameValue(fromGuide.current.params, parsed.data),
-                  },
-                },
-              }
-            : {}),
+          ...guideOrigin(parsed.data),
         }
         store.dispatch(
           [
@@ -896,67 +1018,76 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
         )
         props.onCreated?.(node.id)
       } else {
-        // Roadmap 43: announced with its Undo ("Change analysis · Undo").
-        trackUndo(() =>
-          store.dispatch(
-            [
-              // Another table analyzed: the analysis, its graphs and what reads its results move.
-              ...(retargeted?.commands ?? []),
-              { type: 'node.set', id: props.analysisId, path: ['analysisId'], value: def.id },
-              {
-                type: 'node.set',
-                id: props.analysisId,
-                path: ['pluginVersion'],
-                value: def.version,
-              },
-              { type: 'analysis.setParams', id: props.analysisId, params: parsed.data },
-              { type: 'analysis.setInput', id: props.analysisId, dataSets },
-              ...factorCommands(),
-              // Roadmap 51d (U23): an automatic name follows the method and the groups.
-              ...(existing?.autoName && autoName(parsed.data) !== existing.name
-                ? [
-                    {
-                      type: 'node.set' as const,
-                      id: props.analysisId,
-                      path: ['name'],
-                      value: autoName(parsed.data),
+        const commands: Command[] = [
+          // Another table analyzed: the analysis, its graphs and what reads its results move.
+          ...(retargeted?.commands ?? []),
+          { type: 'node.set', id: props.analysisId, path: ['analysisId'], value: def.id },
+          {
+            type: 'node.set',
+            id: props.analysisId,
+            path: ['pluginVersion'],
+            value: def.version,
+          },
+          { type: 'analysis.setParams', id: props.analysisId, params: parsed.data },
+          { type: 'analysis.setInput', id: props.analysisId, dataSets },
+          ...factorCommands(),
+          // Roadmap 51d (U23): an automatic name follows the method and the groups.
+          ...(existing?.autoName && autoName(parsed.data) !== existing.name
+            ? [
+                {
+                  type: 'node.set' as const,
+                  id: props.analysisId,
+                  path: ['name'],
+                  value: autoName(parsed.data),
+                },
+              ]
+            : []),
+          // Roadmap 51c (§7.1): the method before, in the history, in the same undo step.
+          ...(changes.length && existing
+            ? [
+                {
+                  type: 'analysis.recordChange' as const,
+                  id: props.analysisId,
+                  change: {
+                    at: new Date().toISOString(),
+                    from: {
+                      analysisId: existing.analysisId,
+                      pluginVersion: existing.pluginVersion,
+                      params: existing.params,
+                      dataSets: existing.input.dataSets,
                     },
-                  ]
-                : []),
-              // Roadmap 51c (§7.1): the method before, in the history, in the same undo step.
-              ...(changes.length && existing
-                ? [
-                    {
-                      type: 'analysis.recordChange' as const,
-                      id: props.analysisId,
-                      change: {
-                        at: new Date().toISOString(),
-                        from: {
-                          analysisId: existing.analysisId,
-                          pluginVersion: existing.pluginVersion,
-                          params: existing.params,
-                          dataSets: existing.input.dataSets,
-                        },
-                        changes,
-                        afterResults: seen,
-                        ...(reason.trim() ? { reason: reason.trim().slice(0, 500) } : {}),
-                      },
-                    },
-                  ]
-                : []),
-              ...(retargeted ? [] : linkOutputs(props.analysisId, parsed.data, dataSets)),
-              ...(chosenResults.length && existing && !retargeted
-                ? showOnGraphsCommands(
-                    store.getState(),
-                    { ...existing, analysisId: def.id, params: parsed.data },
-                    chosenResults,
-                    (id) => engine.latest(id),
-                  )
-                : []),
-            ],
-            retargeted ? 'Change analyzed table' : 'Change analysis',
-          ),
-        )
+                    changes,
+                    afterResults: seen,
+                    ...(reason.trim() ? { reason: reason.trim().slice(0, 500) } : {}),
+                  },
+                },
+              ]
+            : []),
+          ...(retargeted ? [] : linkOutputs(props.analysisId, parsed.data, dataSets)),
+          ...(chosenResults.length && existing && !retargeted
+            ? showOnGraphsCommands(
+                store.getState(),
+                { ...existing, analysisId: def.id, params: parsed.data },
+                chosenResults,
+                (id) => engine.latest(id),
+              )
+            : []),
+        ]
+        // Audit 4 (U8): nothing changed — no undo step, the document left clean.
+        const same = (c: Command) =>
+          existing &&
+          ((c.type === 'analysis.setParams' && sameValue(c.params, existing.params)) ||
+            (c.type === 'analysis.setInput' && sameValue(c.dataSets, existing.input.dataSets)) ||
+            (c.type === 'node.set' &&
+              c.id === existing.id &&
+              c.path.length === 1 &&
+              sameValue(c.value, (existing as Record<string, unknown>)[c.path[0] as string])))
+        // Roadmap 43: announced with its Undo ("Edit parameters · Undo"; audit 4 A17: the
+        // command's name).
+        if (!commands.every(same))
+          trackUndo(() =>
+            store.dispatch(commands, retargeted ? 'Change analyzed table' : 'Edit parameters'),
+          )
       }
       props.onClose()
     } catch (e) {
@@ -969,7 +1100,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     if (!r) return
     setActive(i)
     if (r.kind === 'question') {
-      setGuide({ entry: r.id, answers: {} })
+      setGuide({ entry: r.id, answers: {}, hidden: {} })
       setTab('guide')
     } else if (r.def.id !== defId) {
       pickDef(r.def.id)
@@ -987,9 +1118,11 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     visited.current.delete(d.id)
     setDefId(d.id)
     setParams(p)
-    const picked = d.numbersByDefault
-      ? guide.selection.filter((k) => !table.dataSets.find((x) => x.id === k)?.text)
-      : guide.selection
+    // Only data sets of the table (audit 4 U4), numbers only when the method takes numbers.
+    const picked = guide.selection.filter((k) => {
+      const x = table.dataSets.find((ds) => ds.id === k)
+      return !!x && !(d.numbersByDefault && x.text)
+    })
     const n = Math.min(d.inputs.max, picked.length)
     const sel = n >= d.inputs.min ? picked.slice(0, n) : defaultSelection(d, table)
     setSelected(sel)
@@ -1005,7 +1138,20 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
 
   const onSearchKey = (e: KeyboardEvent<HTMLInputElement>) => {
     const n = Math.max(1, rows.length)
-    if (e.key === 'ArrowDown') setActive((at + 1) % n)
+    // Audit 4 (A11): Escape clears the query, then closes the list opened over the options;
+    // only then the dialog.
+    if (e.key === 'Escape' && (query || railShown)) {
+      e.stopPropagation()
+      if (query) {
+        setQuery('')
+        setActive(
+          Math.max(
+            0,
+            rows.findIndex((r) => r.kind === 'def' && r.def.id === defId),
+          ),
+        )
+      } else closeRail()
+    } else if (e.key === 'ArrowDown') setActive((at + 1) % n)
     else if (e.key === 'ArrowUp') setActive((at - 1 + n) % n)
     else if (e.key === 'Home' && !query) setActive(0)
     else if (e.key === 'End' && !query) setActive(rows.length - 1)
@@ -1091,6 +1237,8 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
           id={listId}
           aria-label="Analyses"
           ref={listRef}
+          // Audit 4 (A21): not a stop of its own (a scroller is one): the search has the keys.
+          tabIndex={-1}
         >
           {groups.map((g) => (
             // biome-ignore lint/a11y/useSemanticElements: a group of a listbox's options (no fieldset there)
@@ -1170,7 +1318,9 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
         <label key={t.id} className="check">
           <input
             type="checkbox"
-            checked={showOn.has(t.id)}
+            checked={showOn.has(t.id) || shownAlready.has(t.id)}
+            disabled={shownAlready.has(t.id)}
+            title={shownAlready.has(t.id) ? 'Already on the graphs' : undefined}
             onChange={(e) => {
               const next = new Set(showOn)
               if (e.target.checked) next.add(t.id)
@@ -1230,6 +1380,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
       )}
       {usesData && asksFactors && (
         <fieldset className="field factor-names">
+          {/* Audit 4 (A19): each field named by its visible label ("Rows are"). */}
           <legend>Factor names</legend>
           <label>
             Rows are{' '}
@@ -1238,7 +1389,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
               value={factorNames.rows}
               maxLength={80}
               placeholder="Row factor (e.g. Genotype)"
-              aria-label="Row factor name"
+              aria-describedby={`${factorsId}-help`}
               onChange={(e) => setFactorNames({ ...factorNames, rows: e.target.value })}
             />
           </label>{' '}
@@ -1249,11 +1400,11 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
               value={factorNames.columns}
               maxLength={80}
               placeholder="Column factor (e.g. Treatment)"
-              aria-label="Column factor name"
+              aria-describedby={`${factorsId}-help`}
               onChange={(e) => setFactorNames({ ...factorNames, columns: e.target.value })}
             />
           </label>
-          <div className="help">
+          <div className="help" id={`${factorsId}-help`}>
             Used in the results instead of “Row factor” and “Column factor”.
           </div>
         </fieldset>
@@ -1273,22 +1424,13 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
         params={effectiveParams}
         onChange={setParams}
         custom={FIELDS}
-        context={{
-          dataSets: table.dataSets
-            .filter((d) => dataSets.includes(d.id))
-            .map((d) => ({ key: d.id, title: d.title, ...variableInfo(d) })),
-          rows: Array.from({ length: table.rowCount }, (_, i) => ({
-            index: i,
-            title: table.rowTitles?.[i] || `Row ${i + 1}`,
-          })),
-          facts,
-        }}
+        context={fieldContext}
         onInfo={(f) => setInfoField(infoField === f ? null : f)}
         infoPanel={sideId}
         infoShown={infoField}
         hidden={hiddenPaths}
         reportingExtra={offered.length > 0 && tableGraphs ? showOnGraph : undefined}
-        reportingExtraSummary={showOn.size ? 'on graph' : undefined}
+        reportingExtraSummary={showOn.size || shownAlready.size ? 'on graph' : undefined}
       />
     </div>
   )
@@ -1303,7 +1445,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     for (const x of f.set ?? [])
       p =
         x.path.length === 1 && x.path[0] === 'equation'
-          ? pickModel(p, String(x.value), 'all')
+          ? pickModel(p, String(x.value), 'all', models.current)
           : setPath(p, x.path, x.value)
     setParams(p)
   }
@@ -1412,10 +1554,19 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   )
 
   const editing = props.mode === 'edit' && !changing
+  // The list folded to a strip (a narrow dialog), and whether it is open over the options.
+  const folded = width !== 'wide'
+  const railShown = railOpen && folded
+  foldedRef.current = folded && !railOpen
+  function closeRail() {
+    setRailOpen(false)
+    setTimeout(() => toggleRef.current?.focus(), 0)
+  }
   const okLabel = props.mode === 'create' ? 'Analyze' : 'Apply'
   const okDisabled = tab === 'guide' || !!block
   const reasonText =
     tab === 'guide' ? 'Choose an analysis (Use this, or All analyses) first.' : block?.message
+  const said = tab === 'all' ? block?.message : nudged ? reasonText : undefined
 
   const dialogStyle: CSSProperties | undefined = size
     ? { width: `min(${size.width}px, 96vw)`, height: `min(${size.height}px, 92vh)` }
@@ -1425,6 +1576,11 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     if (mod && e.key === 'Enter') {
       e.preventDefault()
       if (!okDisabled) submit()
+      else setNudged(nudged + 1)
+    } else if (e.key === 'Escape' && railShown) {
+      // Audit 4 (A11): the list open over the options closes first.
+      e.preventDefault()
+      closeRail()
     } else if (mod && guided && (e.key === '1' || e.key === '2')) {
       e.preventDefault()
       setTab(e.key === '1' ? 'guide' : 'all')
@@ -1446,6 +1602,11 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
           {reasonText}
         </span>
       )}
+      {/* Audit 4 (A2): what keeps Analyze disabled, said as it appears (a check's) or when
+          ⌘Enter is pressed (a new node: said again). */}
+      <span className="visually-hidden" role="status">
+        {said && <span key={nudged}>{said}</span>}
+      </span>
       <button type="button" onClick={props.onClose}>
         Cancel
       </button>
@@ -1467,7 +1628,8 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
       title={
         props.mode === 'create'
           ? `Analyze “${table.name}”`
-          : `Edit “${existing?.name ?? def.title}”`
+          : // Audit 4 (A17): named as the command that opens it.
+            `Edit parameters of “${existing?.name ?? def.title}”`
       }
       onClose={props.onClose}
       wide
@@ -1518,11 +1680,12 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
             choices={table.dataSets.map((d) => ({ key: d.id as string, title: d.title }))}
             entryId={guide.entry}
             answers={guide.answers}
+            hidden={guide.hidden}
             selection={guide.selection}
             onEntry={(entry) =>
-              setGuide({ entry, answers: entry === guide.entry ? guide.answers : {} })
+              entry === guide.entry ? undefined : setGuide({ entry, answers: {}, hidden: {} })
             }
-            onAnswers={(answers) => setGuide({ answers })}
+            onAnswers={(answers, hidden) => setGuide({ answers, ...(hidden ? { hidden } : {}) })}
             onSelection={(selection) => setGuide({ selection })}
             onUse={useChoice}
             onShowAll={() => setTab('all')}
@@ -1545,6 +1708,8 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
                       ref={changeRef}
                       onClick={() => {
                         setChanging(true)
+                        // Audit 4 (A3): a folded list opens, its search shown.
+                        if (folded) setRailOpen(true)
                         setTimeout(() => searchRef.current?.focus(), 0)
                       }}
                     >
@@ -1554,9 +1719,11 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
                 ) : (
                   <button
                     type="button"
+                    ref={toggleRef}
                     className="rail-toggle"
                     aria-expanded={railOpen}
-                    title="All analyses (⌘K)"
+                    // Audit 4 (A18): the key as this platform writes it.
+                    title={`All analyses (${formatShortcut('Mod+K', isMacPlatform())})`}
                     onClick={() => setRailOpen(!railOpen)}
                   >
                     <span className="rail-method">{def.title}</span> ▸

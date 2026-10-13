@@ -14,8 +14,9 @@ permissions:
 
 jobs:
   e2e:
-    # Only in the project's own repository (audit 3, T11): a copy elsewhere has no secrets.
-    if: github.repository == 'shihanli92/plottingTool'
+    # It needs no secret: it runs in the owner's repositories, the public statPlotter included
+    # (where Actions run; audit 4, T2), and never in a fork.
+    if: github.repository_owner == 'shihanli92'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

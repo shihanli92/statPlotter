@@ -147,6 +147,8 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
       labelTable('Data summary', titles, [
         ['Sum of ranks', fr.rankSums.map((v) => num(v))],
         ['Mean rank', fr.meanRanks.map((v) => num(v))],
+        // Audit 4 S1: the medians of the complete rows analyzed, which the summary names.
+        ['Median', titles.map((_, j) => num(median(rows.map((r) => r[j]!))))],
       ]),
     ]
     const sheets = [resultsSheet(blocks)]

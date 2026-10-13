@@ -28,10 +28,14 @@ describe('three-way ANOVA with repeated measures vs R (car::Anova, REML)', () =>
     'rmthreeway',
   )) {
     it(f.name, () => {
-      const p = f.params as { repeated: number | number[]; method: 'anova' | 'mixed' }
+      const p = f.params as {
+        repeated: number | number[]
+        method: 'anova' | 'mixed'
+        ddf?: 'containment' | 'satterthwaite'
+      }
       const r = threeWayRM(
         { ...f.input, y: f.input.y.map((v) => (v === null ? Number.NaN : v)) },
-        { repeated: [p.repeated].flat(), method: p.method },
+        { repeated: [p.repeated].flat(), method: p.method, ...(p.ddf ? { ddf: p.ddf } : {}) },
       )
       expect(r.error).toBeUndefined()
       expect(r.kind).toBe(f.expected.kind)
@@ -40,7 +44,10 @@ describe('three-way ANOVA with repeated measures vs R (car::Anova, REML)', () =>
         const at = `effect ${g.factors.join('×')}`
         if (e.ss !== undefined) expectClose(g.ss, e.ss, f.tol, `${at} ss`)
         expect(g.df, `${at} df`).toBe(e.df)
-        expect(g.dfd, `${at} dfd`).toBe(e.dfd)
+        // Audit 4 S15: Satterthwaite's df is a real number (the analytic value, at the fixture's
+        // tolerance); containment's an integer.
+        if (p.ddf === 'satterthwaite') expectClose(g.dfd, e.dfd, f.tol, `${at} dfd`)
+        else expect(g.dfd, `${at} dfd`).toBe(e.dfd)
         expectClose(g.F, e.F, f.tol, `${at} F`)
         expectClose(g.p, e.p, f.tol, `${at} p`)
         if (e.etaSquared !== undefined) {

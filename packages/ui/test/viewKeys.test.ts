@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  ANALYZE_KEYS,
   CANVAS_KEYS,
   formatShortcut,
   isViewKey,
@@ -25,6 +26,7 @@ describe('view keys', () => {
       'In the navigator',
       'On the canvas',
       'On a page',
+      'In the Analyze dialog',
     ])
     for (const s of VIEW_KEY_SECTIONS)
       for (const k of s.items)
@@ -56,6 +58,31 @@ describe('view keys', () => {
     expect(isViewKey(CANVAS_KEYS.nudgeMore, press('ArrowUp', { shift: true }))).toBe(true)
     expect(isViewKey(CANVAS_KEYS.nudge, press('ArrowUp', { alt: true }))).toBe(false)
     expect(CANVAS_KEYS.next.label).toMatch(/entry/)
+  })
+
+  // Audit 4 (A18): the Analyze dialog's keys, and moving around a zoomed graph or page.
+  it('list the Analyze dialog’s keys and panning, written for the platform', () => {
+    const text = (k: { keys: readonly string[] }, mac: boolean) =>
+      k.keys.map((x) => formatShortcut(x, mac))
+    expect(text(ANALYZE_KEYS.search, true)).toEqual(['⌘K'])
+    expect(text(ANALYZE_KEYS.search, false)).toEqual(['Ctrl+K'])
+    expect(text(ANALYZE_KEYS.tabs, false)).toEqual(['Ctrl+1', 'Ctrl+2'])
+    expect(text(ANALYZE_KEYS.run, true)).toEqual(['⌘↩'])
+    expect(text(ANALYZE_KEYS.reorder, false)).toEqual(['Alt+Left', 'Alt+Right'])
+    expect(text(ANALYZE_KEYS.control, false)).toEqual(['C'])
+    for (const k of [CANVAS_KEYS.pan, PAGE_KEYS.pan]) {
+      expect(k.label).toMatch(/^With nothing selected, move around a zoomed/)
+      expect(text(k, false)).toEqual([
+        'Up',
+        'Down',
+        'Left',
+        'Right',
+        'PageUp',
+        'PageDown',
+        'Home',
+        'End',
+      ])
+    }
   })
 
   it('the navigator’s Select all is ⌘A on macOS, Ctrl+A elsewhere (roadmap 47)', () => {

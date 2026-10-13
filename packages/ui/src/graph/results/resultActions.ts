@@ -118,8 +118,27 @@ export function templateLayer(graph: GraphNode, analysis: AnalysisNode, t: Resul
 }
 
 /**
+ * Audit 4 (U7): whether a graph already draws a template of an analysis (a layer of its geom
+ * reading that analysis with the template's stat).
+ */
+export function templateShown(
+  graph: Pick<GraphNode, 'layers'>,
+  analysisId: NodeId,
+  t: ResultTemplate,
+): boolean {
+  const stat = JSON.stringify({ kind: 'result', ...t.stat })
+  return graph.layers.some(
+    (l) =>
+      l.geom === RESULT_KIND[t.kind] &&
+      l.data?.from === 'analysis' &&
+      l.data.analysis === analysisId &&
+      JSON.stringify(l.stat) === stat,
+  )
+}
+
+/**
  * Roadmap 35's "Show on graph": each chosen template as a layer on every graph of the analyzed
- * table that can draw it (its frame among the template's).
+ * table that can draw it (its frame among the template's), unless it draws it already.
  */
 export function showOnGraphsCommands(
   project: Project,
@@ -134,6 +153,7 @@ export function showOnGraphsCommands(
     let graph = n
     for (const t of templates) {
       if (t.frames && !(t.frames as readonly string[]).includes(graph.frame)) continue
+      if (templateShown(graph, analysis.id, t)) continue
       const layer = templateLayer(graph, analysis, t)
       out.push(addLayerCommand(graph, layer))
       graph = { ...graph, layers: [...graph.layers, layer] }

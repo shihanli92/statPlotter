@@ -23,11 +23,20 @@ import { type CustomField, type FormContext, getPath, setPath } from './ParamsFo
 type Params = Record<string, unknown>
 type Var = FormContext['dataSets'][number]
 
+type VariableInfo = { text?: boolean; levels?: string[] }
+/** Audit 4 (P2): once per column (the document's columns are replaced, never changed). */
+const infoCache = new WeakMap<object, VariableInfo>()
+
 /** Levels to offer for a table variable: a text variable's values, or up to 50 distinct numbers. */
-export function variableInfo(ds: Pick<DataSetColumn, 'text' | 'subcolumns'>): {
-  text?: boolean
-  levels?: string[]
-} {
+export function variableInfo(ds: Pick<DataSetColumn, 'text' | 'subcolumns'>): VariableInfo {
+  const hit = infoCache.get(ds)
+  if (hit) return hit
+  const info = readVariableInfo(ds)
+  infoCache.set(ds, info)
+  return info
+}
+
+function readVariableInfo(ds: Pick<DataSetColumn, 'text' | 'subcolumns'>): VariableInfo {
   const seen = new Set<string>()
   if (ds.text) {
     for (const t of ds.text) {

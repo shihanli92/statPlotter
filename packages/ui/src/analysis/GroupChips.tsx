@@ -29,6 +29,17 @@ export function moved(chosen: readonly string[], key: string, by: number): strin
   return out
 }
 
+/** "1st", "2nd", "3rd", "4th"… (a chip's place, said with its name). */
+export function ordinal(n: number): string {
+  const tens = n % 100
+  const suffix = tens >= 11 && tens <= 13 ? 'th' : (['th', 'st', 'nd', 'rd'][n % 10] ?? 'th')
+  return `${n}${suffix}`
+}
+
+/** Audit 4 (A9): a chip's name — its title, its place among those chosen, the control. */
+export const chipName = (title: string, place: number | null, control: boolean): string =>
+  `${title || '(untitled)'}${place ? `, ${ordinal(place)}` : ''}${control ? ', control' : ''}`
+
 export function GroupChips({
   all,
   chosen,
@@ -69,7 +80,13 @@ export function GroupChips({
   const onKey = (e: KeyboardEvent<HTMLDivElement>, chip: Chip, i: number) => {
     const on = chosen.includes(chip.key)
     if (e.key === ' ' || e.key === 'Enter') toggle(chip.key)
-    else if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight') && on) {
+    // Audit 4 (A9): C makes a chosen group the control (the ☆ of the pointer).
+    else if ((e.key === 'c' || e.key === 'C') && !e.altKey && !e.metaKey && !e.ctrlKey) {
+      if (!on || !onControl || control === chip.key) return
+      onControl(chip.key)
+      requestAnimationFrame?.(() => refs.current[0]?.focus())
+      setFocus(0)
+    } else if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight') && on) {
       const by = e.key === 'ArrowLeft' ? -1 : 1
       const next = moved(chosen, chip.key, by)
       onChange(next)
@@ -131,6 +148,7 @@ export function GroupChips({
               }}
               role="option"
               aria-selected={on}
+              aria-label={chipName(c.title, on ? chosen.indexOf(c.key) + 1 : null, isControl)}
               tabIndex={i === at ? 0 : -1}
               className={`chip${on ? ' on' : ''}${isControl ? ' control' : ''}`}
               draggable={on}
@@ -147,26 +165,28 @@ export function GroupChips({
               <span className="chip-title">{c.title || '(untitled)'}</span>
               {isControl && <span className="chip-badge">control</span>}
               {on && onControl && !isControl && (
-                <button
-                  type="button"
+                // Audit 4 (A9): the pointer's way; by keyboard the chip's C (a button inside an
+                // option was a control in a control).
+                <span
                   className="chip-control link"
-                  tabIndex={-1}
-                  title={`Make “${c.title}” the control`}
-                  aria-label={`Make “${c.title}” the control`}
+                  aria-hidden="true"
+                  title={`Make “${c.title}” the control (C)`}
                   onClick={(e) => {
                     e.stopPropagation()
                     onControl(c.key)
                   }}
                 >
                   ☆
-                </button>
+                </span>
               )}
             </div>
           )
         })}
       </div>
+      {/* Audit 4 (A9): how many to choose, and the keys. */}
       <div id={`${id}-help`} className="help">
-        {hint ?? 'Click or press Space to include a group; Alt + ←/→ or drag to reorder.'}
+        {hint ? `${hint} ` : ''}Click or press Space to include or leave out a group; Alt + ←/→ or
+        drag to reorder{onControl ? '; ☆ or C makes it the control' : ''}.
       </div>
       <div className="comparing" aria-live="polite">
         {sentence}

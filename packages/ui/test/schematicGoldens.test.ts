@@ -1,4 +1,4 @@
-import { guideEntry, guideSchematic, type SchematicNames, tableFacts } from '@ps/analyses'
+import { guideEntry, guideSchematic, type SchematicNames, tableFacts } from '@ps/analyses/dialog'
 import { sceneToSvg, schematicScene } from '@ps/graph'
 import { type ColumnId, type DataTable, normalizeTable } from '@ps/model'
 import { describe, expect, it } from 'vitest'

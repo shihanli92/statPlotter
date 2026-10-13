@@ -1,5 +1,5 @@
 import type { GuideAnswers, GuideEntry, TableFacts } from '@ps/model'
-import { walkAnswers, walkGuide } from './index.ts'
+import { walkGuide } from './index.ts'
 
 // Roadmap 51f: the map of the path through Guide me — the questions answered with the answer
 // chosen (by the user, or by the table: a fact), the question to answer next, then where the
@@ -89,11 +89,29 @@ export function reanswer(
   return out
 }
 
-/** The answers a walk uses, the asked values included (`walkAnswers` with the walk made here). */
-export function pathAnswers(
+/** The answers on the path, and those hidden by changing an answer (off the path for now). */
+export interface GuideAnswerState {
+  answers: Record<string, string>
+  hidden: Record<string, string>
+}
+
+/**
+ * Audit 4 (A4; amends 1339): `reanswer` that hides the answers that no longer apply instead of
+ * deleting them, and gives a hidden answer back when its question is on the path again — so
+ * changing an answer and changing it back (arrowing through a question's radios) loses nothing,
+ * the recommendation included. An answer on the path is newer than a hidden one and stays.
+ * Hidden answers are view state: never stored with the analysis.
+ */
+export function reanswerHiding(
   entry: GuideEntry,
   facts: TableFacts,
-  answers: GuideAnswers,
-): Record<string, string> {
-  return { ...answers, ...walkAnswers(walkGuide(entry, facts, answers), answers, facts) }
+  state: GuideAnswerState,
+  questionId: string,
+  answerId: string,
+): GuideAnswerState {
+  const base = { ...state.hidden, ...state.answers }
+  const answers = reanswer(entry, facts, base, questionId, answerId)
+  const hidden: Record<string, string> = {}
+  for (const [k, v] of Object.entries(base)) if (!(k in answers)) hidden[k] = v
+  return { answers, hidden }
 }

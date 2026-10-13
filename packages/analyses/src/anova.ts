@@ -17,6 +17,7 @@ import {
   kruskalWallisExact,
   linearTrend,
   type McRow,
+  median,
   multipleComparisons,
   oneWayAnova,
   type TwoWayCell,
@@ -616,6 +617,8 @@ export function runKruskalWallis(
       labelTable('Data summary', titles, [
         ['Number of values', kw.n.map(int)],
         ['Mean rank', kw.meanRanks.map((v) => num(v))],
+        // Audit 4 S1: the medians the summary names (a rank difference has no size in units).
+        ['Median', groups.map((g) => num(median(g)))],
       ]),
     ]),
   ]

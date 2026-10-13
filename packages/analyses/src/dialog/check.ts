@@ -6,6 +6,7 @@ import type {
   RunContext,
   TableKind,
 } from '@ps/model'
+import { countOf } from '../sketch/words.ts'
 import { formProblems } from './conditions.ts'
 import { type RoleAssignment, roleProblem, rolesOf } from './roles.ts'
 
@@ -42,21 +43,6 @@ export function countCheck(
         ? `at least ${min} ${setsWord(kind, min)}`
         : `at most ${max} ${setsWord(kind, max)}`
   return { level: 'block', message: `Choose ${want} (${chosen} chosen).`, where: 'params' }
-}
-
-/** Values of a data set (raw values counted; a summary's N). */
-function countOf(d: NormalizedDataSet): number {
-  if (d.data.shape === 'summary') {
-    let n = 0
-    for (let r = 0; r < d.rowCount; r++) {
-      const v = d.data.n[r]!
-      if (Number.isFinite(v) && Number.isFinite(d.data.mean[r]!)) n += v
-    }
-    return n
-  }
-  let n = 0
-  for (const a of d.data.reps) for (const v of a) if (Number.isFinite(v)) n++
-  return n
 }
 
 /** Notes on the groups' sizes (column and nested tables): equal, or which differ. */

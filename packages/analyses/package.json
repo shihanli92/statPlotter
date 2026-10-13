@@ -4,9 +4,12 @@
   "license": "GPL-3.0-or-later",
   "private": true,
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/dialogEntry.ts"
+  ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./dialog": "./src/dialogEntry.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"

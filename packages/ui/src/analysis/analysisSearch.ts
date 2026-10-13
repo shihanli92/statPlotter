@@ -1,6 +1,8 @@
-import { entriesFor, GUIDE_ENTRIES, methodCard, NEEDS_LINE, registry } from '@ps/analyses'
+import { registry } from '@ps/analyses'
+import { entriesFor, GUIDE_ENTRIES, methodCard, NEEDS_LINE } from '@ps/analyses/dialog'
 import type { AnalysisDef, FormField, GuideEntry, TableKind } from '@ps/model'
 import { paletteScore, rankPalette } from '../commands/index.ts'
+import { COMMON_ANALYSES } from './commonAnalyses.ts'
 
 // Roadmap 43 (UX review F20): the Analyze dialog's list opens with the analyses most asked of a
 // table of its kind ("Common"), then every analysis by category; a search box filters it by
@@ -8,17 +10,7 @@ import { paletteScore, rankPalette } from '../commands/index.ts'
 // command palette ranks (`rankPalette`), but each word must be in a name or a keyword (not
 // letters scattered through a title: "anova" isn't "Analyze a stack of P values").
 
-/** The analyses offered first, by the kind of table analyzed, in this order. */
-export const COMMON_ANALYSES: Readonly<Record<TableKind, readonly string[]>> = {
-  column: ['ttest', 'oneWayAnova', 'descriptive', 'normality'],
-  xy: ['linearRegression', 'nonlinearFit', 'correlation'],
-  grouped: ['twoWayAnova', 'multipleT', 'rowStats'],
-  contingency: ['contingency'],
-  survival: ['survival'],
-  partsOfWhole: ['fractionOfTotal', 'goodnessOfFit'],
-  multipleVariables: ['multipleRegression', 'pca', 'logisticRegression', 'nonlinearFitMV'],
-  nested: ['nestedT', 'nestedOneWay'],
-}
+export { COMMON_ANALYSES } from './commonAnalyses.ts'
 
 /**
  * Words the search matches besides an analysis' title: those of the Analyze menu's quick list

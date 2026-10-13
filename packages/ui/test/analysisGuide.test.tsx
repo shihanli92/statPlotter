@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
-import { registry, tableFacts } from '@ps/analyses'
+import { registry } from '@ps/analyses'
+import { tableFacts } from '@ps/analyses/dialog'
 import { createTable, normalizeTable, type TableFacts } from '@ps/model'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'

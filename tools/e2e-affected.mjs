@@ -193,7 +193,28 @@ const RULES = [
   // Graphs and layouts.
   [
     'packages/graph/src/render/',
-    ['export', 'figureExport', 'visual', 'canvas', 'layouts', 'largeTables'],
+    [
+      'export',
+      'figureExport',
+      'visual',
+      'canvas',
+      'layouts',
+      'largeTables',
+      // Audit 4 (T7): the dialog's sketch and Guide me's diagrams are drawn to SVG too.
+      'analyzeDialog',
+      'guideDiagrams',
+    ],
+  ],
+  // Audit 4 (T7): the Analyze dialog's live sketch (and the results' effect plot) and Guide me's
+  // diagrams are drawn here but shown only by the dialog and the results: their specs, and those
+  // opening the dialog, as for packages/ui/src/analysis/.
+  [
+    'packages/graph/src/sketch.ts',
+    [...ANALYSIS, 'accessibility', 'toolbar', 'shell', 'gettingStarted'],
+  ],
+  [
+    'packages/graph/src/schematic.ts',
+    [...ANALYSIS, 'accessibility', 'toolbar', 'shell', 'gettingStarted'],
   ],
   // Audit 3 (T3): every spec that draws a graph or edits one through the canvas, the Format
   // panel, the format bar or a page also runs on a change to how graphs are laid out and drawn.
@@ -212,6 +233,9 @@ const RULES = [
       'toolbar',
       'navigatorSelection',
       'gettingStarted',
+      // Audit 4 (T7): the dialog's sketch and Guide me's diagrams are laid out and measured here.
+      'analyzeDialog',
+      'guideDiagrams',
     ],
   ],
   // Roadmap 46: the Format panel and dialog (graph view and pages), and every spec opening them.

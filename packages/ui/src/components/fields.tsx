@@ -393,6 +393,9 @@ export function OptionalNumber({
       t.trim() !== '' && Number(t) === value ? t : value === undefined ? '' : String(value),
     )
   }, [value])
+  // Audit 4 (A10): text that isn't a number is marked while typed and reverts when the box is
+  // left (as NumberBox): what is shown is always what is used.
+  const invalid = text.trim() !== '' && !Number.isFinite(Number(text.trim()))
   return (
     <input
       type="text"
@@ -400,11 +403,17 @@ export function OptionalNumber({
       aria-label={label}
       placeholder={placeholder}
       value={text}
+      aria-invalid={invalid || undefined}
+      className={invalid ? 'invalid' : undefined}
+      title={invalid ? 'Not a number: leaving the box puts back the last value.' : undefined}
       onChange={(e) => {
         setText(e.target.value)
         const t = e.target.value.trim()
         if (t === '') onChange(undefined)
         else if (Number.isFinite(Number(t))) onChange(Number(t))
+      }}
+      onBlur={() => {
+        if (invalid) setText(value === undefined ? '' : String(value))
       }}
     />
   )

@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 async function editParameters(page: Page) {
-  await page.getByRole('main').getByRole('button', { name: 'Parameters…' }).click()
+  await page.getByRole('main').getByRole('button', { name: 'Edit parameters…' }).click()
   const d = editDialog(page)
   await expect(d).toBeVisible()
   return d

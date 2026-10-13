@@ -49,7 +49,7 @@ async function buildProject(page: Page) {
 async function expectProject(page: Page, t = '6.182') {
   await expect(sheet(page, 'Weights', 'Data Tables')).toHaveClass(/\bon\b/)
   await expect(sheet(page, 'Weights', 'Graphs')).toBeVisible()
-  await expect(columnTitles(page)).toHaveText(['', 'Vehicle', 'Treated'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Vehicle', 'Treated'])
   await expect(rowCells(page, 0)).toHaveText(['34.1', '45.2'])
   await expect(cell(page, 1, 0)).toHaveText('38.5*')
   await sheet(page, 'Student’s t test: Treated vs Vehicle (Weights)', 'Results').click()

@@ -13,6 +13,14 @@ version tag:
 
 Linux isn't built.
 
+**No release has been made yet: the desktop installers come with the first release.** Until then
+the desktop app is built from source (`pnpm desktop`, README). The Release workflow runs only in
+the private repository (its jobs need the `release` environment's secrets; audit 3, T11), whose
+Actions are turned off, so the first release starts by turning them on there (Settings › Actions
+› General) and by setting up the `release` environment below. The version tags start then too
+(CLAUDE.md, Versioning: until the first release, the roadmap's "Versions" table says "(not
+tagged)").
+
 ## Cutting a release
 
 1. Merge the phase into `main` and bump the version as usual (CLAUDE.md, Versioning:
@@ -73,8 +81,9 @@ before the first signing secret is added (and move any that already exist):
    delete a version tag. The workflow checks as well that the tag's commit is on `main`.
 
 The workflows' actions are pinned to commit SHAs (decision 650). Dependabot
-(`.github/dependabot.yml`) opens a weekly pull request when they have updates; check the
-release notes of the actions it moves, then merge it like any change.
+(`.github/dependabot.yml`, in the private repository only) opens a weekly pull request when they
+have updates; check the release notes of the actions it moves, then merge it like any change
+(after the checks pass locally while the private repository's Actions are off).
 
 ## Installing an unsigned build
 

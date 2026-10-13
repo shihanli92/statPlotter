@@ -201,6 +201,7 @@ export * from './regression/polynomial.ts'
 export * from './regression/robust.ts'
 export {
   dataSetLetter,
+  EQUATION_LIMITS,
   EquationError,
   type EquationProgram,
   type ParsedEquation,

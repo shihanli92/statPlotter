@@ -5,6 +5,7 @@ import {
   type FormulaColumn,
   type NormalizedDataSet,
   type Problem,
+  plural,
   type ResultValue,
   type TableKind,
   type YFormat,
@@ -46,8 +47,6 @@ function rowValue(ds: NormalizedDataSet): Float64Array {
   const reps = ds.data.reps
   return reps.length === 1 ? reps[0]! : meanAcross(reps, ds.rowCount)
 }
-
-const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
 // ---------------------------------------------------------------------------------------------
 // Filter rows

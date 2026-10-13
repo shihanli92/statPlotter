@@ -1,3 +1,5 @@
+// Audit 4 (P6): the forms' dialog parts, explanations and sketches (as the dialog has them).
+import '../src/dialogEntry.ts'
 /**
  * Regression tests for degenerate and edge-case inputs: preconditions that must fail with a clear
  * message, results that must be flagged, and display rules for values that can't be computed.

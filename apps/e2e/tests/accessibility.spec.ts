@@ -2,7 +2,17 @@ import { fileURLToPath } from 'node:url'
 import AxeBuilder from '@axe-core/playwright'
 import type { Page } from '@playwright/test'
 import { expect, navigator, openExample, test } from './fixtures.ts'
-import { dialog, expectUpToDate, pressShortcut, runMenu, tool, typeCells } from './helpers-data.ts'
+import {
+  dialog,
+  editDialog,
+  expectUpToDate,
+  okButton,
+  openDetails,
+  pressShortcut,
+  runMenu,
+  tool,
+  typeCells,
+} from './helpers-data.ts'
 import {
   canvas,
   clickOn,
@@ -39,7 +49,14 @@ async function audit(page: Page): Promise<string[]> {
     // Dialogs have names (audit 2, U6): axe's rule for elements with a dialog role, a best
     // practice outside the WCAG tags, run in the same scan (a rule enabled by name runs whatever
     // the tags; set before them, as `options` replaces them).
-    .options({ rules: { 'aria-dialog-name': { enabled: true } } })
+    // Audit 4 (A21): headings in order and no empty table headers, best practices too.
+    .options({
+      rules: {
+        'aria-dialog-name': { enabled: true },
+        'heading-order': { enabled: true },
+        'empty-table-header': { enabled: true },
+      },
+    })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
     // Drawn data inside graph and page pictures (see the waivers above).
     .exclude('svg.scene > *')
@@ -183,6 +200,50 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await tool(page, 'Analyze…').click()
       await expect(dialog(page, /^Analyze “/)).toBeVisible()
       await expectClean(page, 'analysis dialog')
+    })
+
+    // Audit 4 (A1, A7, A8, A9, A21): the Analyze dialog with its pictures — Guide me's
+    // schematic, All analyses with the sketch, the schematic and the group chips — its results
+    // (the summary and its effect plot, the details' tables), and a curve fit's Edit parameters
+    // (the model picker, its goals).
+    test('Analyze dialog with its pictures, the results, a curve fit’s parameters', async ({
+      page,
+      browserName,
+    }) => {
+      test.slow(browserName === 'firefox', 'many screens scanned')
+      await page.setViewportSize({ width: 1440, height: 900 })
+      await openExample(page, 'getting-started')
+      await openSheet(page, 'Dose response (3 groups)', 'Data Tables')
+      await tool(page, 'Analyze…').click()
+      const d = dialog(page, /^Analyze “/)
+      await d.getByRole('tab', { name: 'Guide me' }).click()
+      await d.getByRole('button', { name: 'Are the groups different?' }).click()
+      await d.getByRole('radio', { name: 'No, different subjects in each group' }).check()
+      await d.getByRole('radio', { name: 'Measurements', exact: true }).check()
+      await d.getByRole('radio', { name: 'No, similar scatter is expected' }).check()
+      await d.getByRole('radio', { name: 'Each group with a control' }).check()
+      await expect(d.locator('.schematic-figure')).toBeVisible()
+      await expectClean(page, 'Guide me with its schematic')
+      await d.getByRole('button', { name: 'Use this' }).click()
+      await expect(d.locator('.sketch-panels')).toBeVisible()
+      await expect(d.locator('.schematic-figure')).toBeVisible()
+      await expect(d.getByRole('listbox', { name: 'Groups' })).toBeVisible()
+      await expectClean(page, 'All analyses with the sketch and the schematic')
+      await okButton(d).click()
+      await expect(d).toBeHidden()
+      await expectUpToDate(page)
+      await expect(page.getByRole('main').getByRole('region', { name: 'Summary' })).toBeVisible()
+      await openDetails(page)
+      // Faded while updating: scanned once shown in full (its fade ends).
+      await expect(page.getByRole('main').locator('.sheet')).toHaveCSS('opacity', '1')
+      await expectClean(page, 'results with their details')
+
+      await openExample(page, 'curve-fitting')
+      await openSheet(page, 'Global fit (shared Hill slope)', 'Results')
+      await page.getByRole('main').getByRole('button', { name: 'Edit parameters…' }).click()
+      const edit = editDialog(page)
+      await expect(edit.getByRole('tablist', { name: 'Goals' })).toBeVisible()
+      await expectClean(page, 'curve fit’s Edit parameters')
     })
 
     test('Preferences and the import dialog', async ({ page }) => {

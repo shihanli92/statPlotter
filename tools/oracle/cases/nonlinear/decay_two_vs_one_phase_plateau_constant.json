@@ -1,0 +1,12 @@
+{
+  "input": {
+    "data": [
+      {
+        "x": [0, 1, 2, 3, 4, 6, 8, 10, 15, 20, 30],
+        "y": [100.4, 81.95, 69.32, 59.47, 50.52, 39.1, 32.76, 27.1, 19.91, 14.26, 9.18]
+      }
+    ]
+  },
+  "params": {"equation":"two-phase-decay","start":[[100,0,0.3,0.05,60]],"constraints":[{"kind":"fit"},{"kind":"constant","value":0},{"kind":"fit"},{"kind":"fit"},{"kind":"fit"}],"compare":{"equation":"one-phase-decay","constraints":[{"kind":"fit"},{"kind":"constant","value":0},{"kind":"fit"}],"start":[[100,0,0.1]]}},
+  "note": "Audit 4 S4 (Q6): a constant set on the fitted model (Plateau = 0) applies to the model it is compared with, so the two are nested (DFn 2): two phases against one, both with Plateau = 0."
+}

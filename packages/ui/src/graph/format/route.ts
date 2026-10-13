@@ -53,9 +53,6 @@ export type FormatTarget =
   /** A text box, line, arrow or results table. */
   | { place: 'object'; index: number }
 
-/** A layer's view (roadmap 49b). */
-export type LayerTarget = Extract<FormatTarget, { place: 'layer' }>
-
 export const ALL_SERIES: SeriesPick = { all: true }
 
 export const graphPlace = (section?: string): FormatTarget =>

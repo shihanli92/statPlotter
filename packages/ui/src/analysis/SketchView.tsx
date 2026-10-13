@@ -53,7 +53,13 @@ export function SketchView({
         {heading}
       </h3>
       {images.length > 0 && (
-        <div className="sketch-panels" role="img" aria-describedby={`${id}-desc`}>
+        // Audit 4 (A1): the picture named by the heading, described by the spec's words.
+        <div
+          className="sketch-panels"
+          role="img"
+          aria-labelledby={`${id}-h`}
+          aria-describedby={`${id}-desc`}
+        >
           {images.map(({ panel, image }) => (
             <figure key={panel.id} className="sketch-panel" data-panel={panel.id}>
               {panel.title && <figcaption>{panel.title}</figcaption>}
@@ -66,7 +72,8 @@ export function SketchView({
           ))}
         </div>
       )}
-      <p id={`${id}-desc`} className="sketch-description visually-hidden">
+      {/* The picture's description only (audit 4 A1: not read again after it). */}
+      <p id={`${id}-desc`} className="sketch-description visually-hidden" aria-hidden="true">
         {spec.description}
       </p>
       <p className="sketch-caption">{spec.caption}</p>

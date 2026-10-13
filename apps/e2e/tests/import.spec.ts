@@ -87,7 +87,7 @@ test('CSV: the detected XY layout, another table type, a name', async ({ page })
   await expect(d).toBeHidden()
 
   await expect(grid(page)).toHaveAccessibleName('Growth curve')
-  await expect(columnTitles(page)).toHaveText(['', 'Time (h)', 'Wild type', 'Knockout'])
+  await expect(columnTitles(page)).toHaveText(['Row', 'Time (h)', 'Wild type', 'Knockout'])
   await expectRows(page, [
     ['0', '1.5', '1.4'],
     ['2', '2.9', '2.1'],
@@ -156,7 +156,7 @@ test('CSV in long format: data sets by a column, or every column a variable', as
   await expect(importsAs(page)).toContainText('Multiple variables table · 3 variables (2 text)')
   await d.getByRole('button', { name: 'Import', exact: true }).click()
   await expect(d).toBeHidden()
-  await expect(columnTitles(page)).toHaveText(['', /mouse\s*abc/, /genotype\s*abc/, 'weight'])
+  await expect(columnTitles(page)).toHaveText(['Row', /mouse\s*abc/, /genotype\s*abc/, 'weight'])
   await expect(rowCells(page, 3)).toHaveText(['m4', 'KO', '25.4'])
 })
 
@@ -191,7 +191,7 @@ test('XLSX: a sheet of the workbook, then every table in it', async ({ page }) =
   await sheet(page, 'Counts', 'Data Tables').click()
   await expect(rowCells(page, 0)).toHaveText(['Drug', '42', '8'])
   await expect(rowCells(page, 1)).toHaveText(['Placebo', '30', '20'])
-  await expect(columnTitles(page)).toHaveText(['', '', 'Alive', 'Dead'])
+  await expect(columnTitles(page)).toHaveText(['Row', '', 'Alive', 'Dead'])
 })
 
 test('PZFX: tables in, excluded values kept', async ({ page }) => {
@@ -210,7 +210,7 @@ test('PZFX: tables in, excluded values kept', async ({ page }) => {
   await toast(page).getByRole('button', { name: 'Dismiss' }).click()
   await expect(toast(page)).toBeHidden()
   await expect(grid(page)).toBeVisible()
-  await expect(columnTitles(page)).toHaveText(['', '', 'XX', 'Ya', 'Yb', 'Yc'])
+  await expect(columnTitles(page)).toHaveText(['Row', '', 'XX', 'Ya', 'Yb', 'Yc'])
   await expect(rowCells(page, 0)).toHaveText(['A', '1', '100', '50', '1', '10', '5', '2'])
   await expect(rowCells(page, 1)).toHaveText(['B', '2', '90*', '60*', '2*', '9', '5', '2'])
   await expect(cell(page, 1, 2)).toHaveClass(/\bexcluded\b/)
@@ -260,7 +260,7 @@ test('a data frame of cells: every column a variable, the cell ids left out unti
   await d.getByRole('button', { name: 'Import', exact: true }).click()
   await expect(d).toBeHidden()
   await expect(columnTitles(page)).toHaveText([
-    '',
+    'Row',
     /cluster\s*abc/,
     'UMAP_1',
     'UMAP_2',

@@ -10,6 +10,7 @@ import {
   MAX_REPLICATES,
   newColumnId,
   newNodeId,
+  plural,
   type RichText,
   richPlain,
   richTitleOf,
@@ -112,8 +113,6 @@ interface RawCell {
 /** Own-property lookup (attribute values like "constructor" must not hit Object.prototype). */
 const lookup = <T>(rec: Record<string, T>, key: string): T | undefined =>
   Object.hasOwn(rec, key) ? rec[key] : undefined
-
-const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
 const isTable = (el: XmlElement) => {
   const name = localName(el.name)

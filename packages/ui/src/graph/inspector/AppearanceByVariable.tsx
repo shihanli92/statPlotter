@@ -19,7 +19,6 @@ import {
 import {
   type ColorMapName,
   type ColorScale,
-  type DataTable,
   type GraphPathSegment,
   levelKey,
   type SizeScale,
@@ -29,6 +28,7 @@ import { ColorField } from '../../components/ColorPicker.tsx'
 import { Checkbox, NumberInput, Section, Select, TextInput } from '../../components/fields.tsx'
 import { colorOf, SHAPES } from '../../components/formatFields.tsx'
 import { MAX_LISTED_LEVELS } from '../LevelOrder.tsx'
+import { variableLabel } from '../rows.ts'
 import type { PanelContext } from './context.ts'
 import { NumberFormatFields } from './LayerFields.tsx'
 import { layerPath } from './layers.ts'
@@ -47,10 +47,6 @@ const LABELS: Record<Aesthetic, string> = {
   size: 'Size',
   label: 'Labels',
 }
-
-/** A variable's name and type, as the builder lists them. */
-const variableLabel = (d: DataTable['dataSets'][number]) =>
-  `${d.title || d.id} (${d.text ? 'text' : d.formula !== undefined ? 'number, calculated' : 'number'})`
 
 /**
  * Roadmap 49a: where a graph maps variables to appearance — its mapped points layer (an XY graph

@@ -1,4 +1,4 @@
-import type { FieldState } from '@ps/analyses'
+import type { FieldState } from '@ps/analyses/dialog'
 import type { AnalysisDef, FieldTier, FormField } from '@ps/model'
 import { type ReactNode, useId, useState } from 'react'
 import { type CustomField, type FormContext, getPath, ParamsForm } from './ParamsForm.tsx'

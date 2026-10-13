@@ -41,7 +41,6 @@ import {
   welchMethod,
 } from './anovaCommon.ts'
 import {
-  ALPHA,
   CONFIDENCE_FIELD,
   confidenceLevel,
   decided,
@@ -57,7 +56,6 @@ import {
   RANK_NEEDS_RAW,
   result,
   resultsSheet,
-  significant,
   summaryProblem,
   table,
   testValue,
@@ -373,6 +371,8 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
             { method: rowFamily, q: params.q / 100, alpha: params.alpha },
           )
     const cols = familyColumns(params)
+    // Audit 4 S12: without a correction the rows are still decided at the α asked for.
+    const alphaText = `${+params.alpha.toPrecision(12)}`
     const mainTable = table(
       `${testName}, one per row`,
       [
@@ -382,7 +382,9 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
         'P value',
         'P value summary',
         // With a correction across rows its decision replaces the uncorrected one.
-        ...(fam && cols.adjusted ? [cols.adjusted, cols.flag] : [`Significant (P < ${ALPHA})?`]),
+        ...(fam && cols.adjusted
+          ? [cols.adjusted, cols.flag]
+          : [`Significant (P < ${alphaText})?`]),
         ...(params.equalSD === 'yes' && !nonparametric ? ['R squared'] : []),
       ],
       results.map((x, i): ResultValue[] => [
@@ -391,7 +393,9 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
         dfsText(x),
         pval(x.p),
         psum(x.p),
-        ...(fam ? [pval(fam.adjusted[i]!), decided(fam.flagged[i]!, x.p)] : [significant(x.p)]),
+        ...(fam
+          ? [pval(fam.adjusted[i]!), decided(fam.flagged[i]!, x.p)]
+          : [decided(x.p < params.alpha, x.p)]),
         ...(x.r2 !== undefined ? [num(x.r2)] : []),
       ]),
     )
@@ -431,7 +435,10 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
                 int(fam.flagged.filter(Boolean).length),
               ],
             ] as [string, ResultValue][])
-          : []),
+          : ([
+              ['Significance level (alpha)', text(`${+(params.alpha * 100).toPrecision(12)}%`)],
+              ['Number below threshold', int(results.filter((x) => x.p < params.alpha).length)],
+            ] as [string, ResultValue][])),
       ]),
       mainTable,
       summaryTable,

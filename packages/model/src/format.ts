@@ -73,6 +73,9 @@ export function pSummary(p: number, style: PStyle): string {
   return 'ns'
 }
 
+/** A count and its noun: "1 point", "3 points" (`many` for another plural: "2 analyses"). */
+export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
+
 /**
  * About `sig` significant digits, never dropping integer digits; scientific notation for very
  * large or very small magnitudes. Trailing zeros are kept so columns of results line up.

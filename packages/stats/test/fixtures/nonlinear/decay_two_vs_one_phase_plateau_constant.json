@@ -1,0 +1,49 @@
+{
+  "name": "decay_two_vs_one_phase_plateau_constant",
+  "input": {"data":[{"x":[0,1,2,3,4,6,8,10,15,20,30],"y":[100.40000000000001,81.950000000000003,69.319999999999993,59.469999999999999,50.520000000000003,39.100000000000001,32.759999999999998,27.100000000000001,19.91,14.26,9.1799999999999997]}]},
+  "params": {"equation":"two-phase-decay","start":[[100,0,0.3,0.05,60]],"constraints":[{"kind":"fit"},{"kind":"constant","value":0},{"kind":"fit"},{"kind":"fit"},{"kind":"fit"}],"compare":{"equation":"one-phase-decay","constraints":[{"kind":"fit"},{"kind":"constant","value":0},{"kind":"fit"}],"start":[[100,0,0.1]]}},
+  "expected": {
+    "status": "converged",
+    "value": [
+      [100.17087415702656, 0, 0.30265248325744709, 0.050515984937574074, 59.67453668775029]
+    ],
+    "se": [
+      [0.48637915224985095, "NaN", 0.014539566948184481, 0.0035089425197762534, 2.5184047669747227]
+    ],
+    "lo": [
+      [99.020770218147419, "NaN", 0.26827187064411318, 0.042218654357866051, 53.719455700434985]
+    ],
+    "hi": [
+      [101.3209780959057, "NaN", 0.33703309587078101, 0.058813315517282097, 65.629617675065589]
+    ],
+    "atBound": [
+      [false, false, false, false, false]
+    ],
+    "ss": 1.9976732725720063,
+    "df": 7,
+    "n": 11,
+    "nParams": 4,
+    "aicc": 3.2349665349618775,
+    "perDataSet": {
+      "n": 11,
+      "ss": 1.9976732725720063,
+      "df": 7,
+      "syx": 0.53421147131235891,
+      "r2": 0.99976827897541964
+    },
+    "compare": {
+      "F": 456.73797326051545,
+      "dfn": 2,
+      "dfd": 7,
+      "p": 3.8353021629654312e-08,
+      "aiccSimpler": 44.332325887846771,
+      "aiccComplex": 3.2349665349618775,
+      "probSimpler": 1.1907533324547339e-09
+    }
+  },
+  "source": {
+    "r": "4.4.3",
+    "packages": {}
+  },
+  "note": "Audit 4 S4 (Q6): a constant set on the fitted model (Plateau = 0) applies to the model it is compared with, so the two are nested (DFn 2): two phases against one, both with Plateau = 0."
+}

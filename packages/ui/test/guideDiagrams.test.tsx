@@ -2,7 +2,7 @@
 import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { guideEntry, guideSchematic, tableFacts } from '@ps/analyses'
+import { guideEntry, guideSchematic, tableFacts } from '@ps/analyses/dialog'
 import { FontRegistry } from '@ps/graph'
 import {
   createProject,

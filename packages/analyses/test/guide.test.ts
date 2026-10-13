@@ -11,10 +11,10 @@ import {
   GUIDE_ENTRIES,
   guidePaths,
   notHere,
-  registry,
   tableFacts,
   walkGuide,
-} from '../src/index.ts'
+} from '../src/dialogEntry.ts'
+import { GUIDE_QUESTIONS, registry, topQuestions } from '../src/index.ts'
 import {
   columnTable,
   countsTable,
@@ -251,6 +251,20 @@ describe('the guide’s trees', () => {
   })
 })
 
+describe('the questions without their trees (audit 4 P6)', () => {
+  it('are the guide’s entries, in rail order, with their words and kinds', () => {
+    expect(GUIDE_QUESTIONS).toEqual(
+      GUIDE_ENTRIES.map((e) => ({ id: e.id, question: e.question, kinds: e.kinds })),
+    )
+    for (const kind of ['column', 'xy', 'grouped', 'nested'] as const)
+      expect(topQuestions(kind).map((q) => q.id)).toEqual(
+        entriesFor(kind)
+          .slice(0, 3)
+          .map((e) => e.id),
+      )
+  })
+})
+
 describe('walking a tree', () => {
   const compare = GUIDE_ENTRIES.find((e) => e.id === 'groupsDiffer')!
 
@@ -274,6 +288,32 @@ describe('walking a tree', () => {
     // Summary data can't be paired.
     const summary = { ...two, raw: false }
     expect(walkGuide(compare, summary, { matched: 'yes' }).current?.id).toBe('matched')
+  })
+
+  it('audit 4 S14 (Q5): three or more groups at each row ask about the subjects and the scatter', () => {
+    const rowsMany = GUIDE_ENTRIES.find((e) => e.id === 'rowsMany')!
+    const facts = tableFacts('grouped', normalizeTable(fixture('grouped')))
+    expect(walkGuide(rowsMany, facts, {}).current?.id).toBe('matched')
+    const matched = walkGuide(rowsMany, facts, { matched: 'yes' }).end as GuideLeaf
+    expect(matched.analysisId).toBe('twoWayAnova')
+    expect(matched.params(facts, { matched: 'yes' })).toMatchObject({
+      repeated: 'columns',
+      comparisons: 'withinRows',
+    })
+    expect(walkGuide(rowsMany, facts, { matched: 'no', values: 'measure' }).current?.id).toBe(
+      'scatter',
+    )
+    const at = (scatter: string) =>
+      (
+        walkGuide(rowsMany, facts, { matched: 'no', values: 'measure', scatter }).end as GuideLeaf
+      ).params(facts, {})
+    expect(at('unsure')).toMatchObject({ gaussian: true, equalSD: 'welch' })
+    expect(at('yes')).toMatchObject({ equalSD: 'welch' })
+    expect(at('no')).toMatchObject({ equalSD: 'yes' })
+    // Summary data can't be matched.
+    expect(walkGuide(rowsMany, { ...facts, raw: false }, { matched: 'yes' }).current?.id).toBe(
+      'matched',
+    )
   })
 })
 

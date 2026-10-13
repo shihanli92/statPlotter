@@ -42,11 +42,15 @@ type FontStacks = Readonly<Record<FontId, string>>
 
 const n = finiteNumber
 
-/** Escapes for XML, dropping control characters XML 1.0 forbids (they make the file invalid). */
+/**
+ * Escapes for XML, dropping control characters XML 1.0 forbids (they make the file invalid) and
+ * half characters (a lone UTF-16 surrogate: the file could not be encoded; audit 4 G5).
+ */
 const esc = (s: string) =>
   s
     // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping them is the point
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '')
+    .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

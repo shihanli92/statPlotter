@@ -72,6 +72,7 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.11 | 51d | merge of 51d, results that explain themselves (not tagged) |
 | 0.3.12 | 51e | merge of 51e, curve fitting (not tagged) |
 | 0.3.13 | 51f | merge of 51f, Guide me diagrams (not tagged) |
+| **0.4.0** | **Code audit 4** (six reviews; steps 1–5: what the results say, the Analyze dialog and Guide me, speed, keyboard and screen readers, tests, docs and CI; decisions 1341–1452) | (not tagged: no release yet) |
 
 ## Phases
 
@@ -2353,3 +2354,51 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     strip, the colours); Playwright **`guideDiagrams.spec.ts`** (new) in Chromium, WebKit and
     Firefox. Deferred: clicking a box in the schematic to set the control (the chips and Guide
     me's Control group do it).
+
+Audit 4. ✅ **Code audit 4** — decisions 1341–1356, 1371–1388, 1401–1413, 1421–1438, 1446–1452.
+    Six read-only reviews of everything since audit 3 (48–51f: statistics, UI state, graphs and
+    the model, speed and memory, accessibility, security, tests and docs), 69 verified findings;
+    the user took every recommendation: 67 fixed in five steps, the public repository's security
+    settings turned on (private vulnerability reporting, Dependabot alerts and security updates,
+    approval for all outside contributors), and the old Cloudflare Workers build left for the
+    user to remove. **Step 1, what the results say**: rank comparisons name the higher group and
+    the medians (no rank differences in the data's unit); summaries never take a direction or a
+    verdict from a value that wasn't computed, and one-tailed results against the prediction say
+    so in every template; the correlation summary counts the pairs the correction keeps;
+    comparison captions give each family's size and the control the rows use; model comparisons
+    apply the fitted model's constants to the compared one (an F test only when still nested,
+    else AICc with a note), and give no verdict from a failed fit or an undefined statistic;
+    the hazard ratio of the method shown; profile CIs unbounded where the profile never reaches
+    its target (as R's `confint` gives NA); a constant parameter said as constant; alpha in
+    multiple one-way ANOVAs; the schematic's corrections; Guide me asks "same subjects?" and
+    about scatter for three or more groups at each row. New R cases: three-way repeated
+    measures' Satterthwaite df, weighted and unbounded profile CIs, a constrained comparison.
+    **Step 2, the Analyze dialog, Guide me and the pictures**: editing an analysis with input
+    modifiers reads its data as it runs; a control left out of the groups, deleted data sets in
+    Guide me's memory, factor names on result tables, duplicate results on graphs, an empty
+    Apply; each curve-fit model keeps its own constraints and starting values; Guide me hides
+    answers a change makes stale and gives them back; method history bounded and in words;
+    result tables on graphs and pages without the summary sentence, as before 0.3.11; sketches
+    and schematics bounded with many, long or non-Latin names; limits in the user-equation
+    parser (a 14-character equation no longer hangs the app, deep nesting no longer crashes it).
+    **Step 3, speed**: the Analyze dialog rests while nothing changes (it re-rendered every
+    120 ms); global fits of more than 10 data sets profile their shared parameters only, with a
+    note (40 curves 274 s → 2.9 s); the dialog's facts read once per input (choosing a variable
+    on 250k rows 2.5 s → 0.8 s); sketches draw at most 4,000 values (Mann-Whitney on 2 × 100k:
+    a 35 MB picture → 0.7 MB); a heat map's clustering cached; a zoomed point cloud's sharp
+    image drawn in a worker (1M points: 1.3 s of main thread → 16 ms); the dialog's and the
+    results' parts load with them (start-up bundle −265 KB); result tables show 500 rows, then
+    Show all. **Step 4, keyboard and screen readers**: the sketch and schematic named; what
+    blocks Analyze and new results announced; focus kept at 1024 px and after removing a role
+    variable; Escape clears the search first; group chips by keyboard (C makes the control) and
+    by name; heat-map tiles and dendrograms in the canvas' Tab order; dark-mode contrast; one
+    name, "Edit parameters…"; the Analyze dialog's keys in Help; axe scans of the new screens.
+    **Step 5, tests, docs and CI**: the Rust audit and the nightly three-browser run in the
+    public repository too; Dependabot left out of the public copy, `pnpm audit` clean; CLAUDE.md,
+    ARCHITECTURE.md and PUBLISHING.md describe the deploy as it is now (private CI off, the
+    publish script and Netlify; versions tagged from the first release on); a docs-drift test;
+    the affected-specs map for the sketch and schematic; the curve-fit graph-results test 65 s
+    → 6 s; dead code; the vendor name guarded in the UI, Linux home paths, zip members and PNG
+    text in the publish leak check. `ANALYSES_VERSION` 1.8.0; goldens changed only for three
+    schematics (the row-factor name on its own line) and two new result-table goldens; example
+    fingerprints unchanged.

@@ -42,14 +42,22 @@ export const CORRECTION_WORDS: Readonly<Record<string, string>> = {
 
 const words = (method: string) => CORRECTION_WORDS[method] ?? method
 
-/** A one-way analysis' comparisons and their correction. */
-function oneWayComparisons(p: P, gaussian: boolean, welch: boolean): SchematicDesign {
+/**
+ * A one-way analysis' comparisons and their correction. `dunnKey`: the param holding Dunn's
+ * correction (Friedman's is `correction`; audit 4 S10).
+ */
+function oneWayComparisons(
+  p: P,
+  gaussian: boolean,
+  welch: boolean,
+  dunnKey = 'dunnMethod',
+): SchematicDesign {
   const comparisons = str(p, 'comparisons', 'allPairs') as SchematicComparisons
   const control = str(p, 'control')
   const correction =
     comparisons === 'allPairs' || comparisons === 'vsControl'
       ? !gaussian
-        ? `Dunn’s test, ${words(str(p, 'dunnMethod', 'holm'))}`
+        ? `Dunn’s test, ${str(p, dunnKey, 'holm') === 'none' ? 'uncorrected' : words(str(p, dunnKey, 'holm'))}`
         : welch
           ? words(str(p, 'welchMethod', 'dunnett-t3'))
           : comparisons === 'allPairs'
@@ -138,7 +146,11 @@ const DESIGNS: Readonly<Record<string, (p: P) => SchematicDesign>> = {
     })
   },
   friedman: (p) =>
-    groups({ matched: 'yes', measure: 'ranks', ...oneWayComparisons(p, false, false) }),
+    groups({
+      matched: 'yes',
+      measure: 'ranks',
+      ...oneWayComparisons(p, false, false, 'correction'),
+    }),
   nestedT: (p) =>
     groups({ nested: true, measure: 'mean', comparisons: 'pair', matched: 'no', ...tailsOf(p) }),
   nestedOneWay: (p) =>
@@ -147,10 +159,10 @@ const DESIGNS: Readonly<Record<string, (p: P) => SchematicDesign>> = {
     const comparisons = str(p, 'comparisons', 'withinRows') as SchematicComparisons
     const kind = str(p, 'kind', 'allPairs') === 'vsControl' ? 'vsControl' : 'allPairs'
     const repeated = str(p, 'repeated', 'none')
+    // Audit 4 S10: the run's method — every cell against the control too is Dunnett's (or the
+    // control method chosen), as anova.ts compares them.
     const method =
-      kind === 'vsControl' && comparisons !== 'allCells'
-        ? str(p, 'controlMethod', 'dunnett')
-        : str(p, 'allPairsMethod', 'sidak')
+      kind === 'vsControl' ? str(p, 'controlMethod', 'dunnett') : str(p, 'allPairsMethod', 'sidak')
     return {
       layout: 'grid',
       measure: 'mean',
@@ -181,11 +193,14 @@ const DESIGNS: Readonly<Record<string, (p: P) => SchematicDesign>> = {
   },
   multipleOneWay: (p) => {
     const within = str(p, 'comparisons', 'allPairs')
+    const gaussian = bool(p, 'gaussian', true)
     return {
       layout: 'grid',
       comparisons: 'perRow',
       matched: 'no',
-      measure: bool(p, 'gaussian', true) ? 'mean' : 'ranks',
+      measure: gaussian ? 'mean' : 'ranks',
+      // Audit 4 S14: Welch ANOVA in each row doesn't pool the groups' scatter.
+      ...(gaussian ? { scatter: str(p, 'equalSD', 'yes') === 'yes' ? 'pooled' : 'own' } : {}),
       ...(within === 'allPairs' || within === 'vsControl' ? { kind: within } : {}),
       correction: familyWords(p),
     }

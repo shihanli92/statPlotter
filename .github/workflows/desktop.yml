@@ -1,7 +1,7 @@
 name: Desktop
 
-# macOS and Windows runners use private-repository Actions minutes ten and two times as fast, so
-# this only runs when the desktop shell changes (or by hand). Windows too since roadmap 41: its
+# macOS and Windows runners use a private repository's Actions minutes ten and two times as fast,
+# so this only runs when the desktop shell changes (or by hand). Windows too since roadmap 41: its
 # own code (single instance, files opened by arguments) is compiled only there. The Rust
 # dependencies' security advisories are checked on Linux, on those changes and every week (new
 # advisories appear without any change here).
@@ -45,8 +45,9 @@ jobs:
   # vulnerability; advisories that are only warnings (unmaintained, unsound or yanked crates,
   # many of them Linux-only ones in Tauri's tree) are listed without failing.
   audit:
-    # Only in the project's own repository (audit 3, T11): a copy elsewhere has no secrets.
-    if: github.repository == 'shihanli92/plottingTool'
+    # It needs no secret: it runs in the owner's repositories, the public statPlotter included
+    # (where Actions run; audit 4, T2), and never in a fork.
+    if: github.repository_owner == 'shihanli92'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0

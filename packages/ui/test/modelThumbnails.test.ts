@@ -1,4 +1,5 @@
-import { EQUATIONS, MODEL_GOALS, modelThumbnail, THUMBNAIL_PLOT } from '@ps/analyses'
+import { EQUATIONS, MODEL_GOALS } from '@ps/analyses'
+import { modelThumbnail, THUMBNAIL_PLOT } from '@ps/analyses/dialog'
 import { layoutGraph, sceneToSvg, sketchGraph } from '@ps/graph'
 import { describe, expect, it } from 'vitest'
 import { fonts } from '../../graph/test/helpers.ts'

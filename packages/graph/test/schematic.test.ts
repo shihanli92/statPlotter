@@ -204,6 +204,59 @@ describe('the schematic’s layout', () => {
     expect(dark).not.toContain(SCHEMATIC_THEMES.light.arrow)
   })
 
+  it('long factor names and link labels fit, apart from headings and boxes (audit 4 G4)', () => {
+    const all = (n: SceneNode): SceneNode[] => [n, ...(n.children ?? []).flatMap(all)]
+    const grid = (rows: string, columns: string, link?: string) =>
+      schematicScene(
+        spec({
+          boxes: [box('a', 0, 0), box('b', 0, 1), box('c', 1, 0), box('d', 1, 1)],
+          grid: { rows, columns, rowLevels: ['Male', 'Female'], columnLevels: ['Ctrl', 'Drug'] },
+          ...(link ? { links: [{ boxes: ['a', 'b'], label: link }] } : {}),
+        }),
+        fonts,
+      )
+    for (const scene of [
+      grid('Time', 'Drug'),
+      grid('Hours after injection', 'Treatment group'),
+      grid(
+        'Time point after the injection (hours)',
+        'Treatment condition given to every one of the animals in the study',
+        'the same subjects measured before and after the treatment was given to them all',
+      ),
+    ]) {
+      const nodes = all(scene.root).filter((n) => n.bbox)
+      for (const n of nodes) {
+        const b = n.bbox!
+        expect(b.x, n.id).toBeGreaterThanOrEqual(-0.01)
+        expect(b.y, n.id).toBeGreaterThanOrEqual(-0.01)
+        expect(b.x + b.w, n.id).toBeLessThanOrEqual(scene.width + 0.01)
+        expect(b.y + b.h, n.id).toBeLessThanOrEqual(scene.height + 0.01)
+      }
+      const rowsName = find(scene.root, 'factor/rows')!.bbox!
+      for (const other of nodes.filter((n) => /^(heading\/|box\/[^/]+$)/.test(n.id)))
+        expect(overlap(rowsName, other.bbox!), other.id).toBe(false)
+    }
+  })
+
+  it('names of astral characters are cut whole: the SVG encodes (audit 4 G5)', () => {
+    const lone = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/
+    for (let n = 20; n <= 40; n++)
+      for (const ch of ['😀', '𠮷']) {
+        const svg = sceneToSvg(
+          schematicScene(
+            spec({
+              boxes: [box('a', 0, 0, { label: ch.repeat(n) }), box('b', 0, 1)],
+              links: [{ boxes: ['a', 'b'], label: ch.repeat(n * 3) }],
+            }),
+            fonts,
+          ),
+          { portableFonts: true },
+        )
+        expect(lone.test(svg), `${ch} × ${n}`).toBe(false)
+        expect(() => encodeURIComponent(svg)).not.toThrow()
+      }
+  })
+
   it('cuts long names to two lines, ending “…”', () => {
     const scene = schematicScene(
       spec({

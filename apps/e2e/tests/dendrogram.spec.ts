@@ -13,6 +13,7 @@ import {
   marks,
   menu,
   newGraph,
+  openGraph,
   openSheet,
   panelHeading,
   pointOn,
@@ -357,4 +358,27 @@ test('a dendrogram alone from New graph, its leaves along the bottom or down the
       rowLines(svg).evaluateAll((els) => new Set(els.map((e) => e.getAttribute('stroke'))).size),
     )
     .toBeGreaterThan(1)
+})
+
+// Audit 4 (A6): Tab on the canvas reaches a clustered heat map's trees and tiles (it stepped from
+// the axes' labels out of the graph), each said by name.
+test('Tab reaches a clustered heat map’s trees and its tiles', async ({ page }) => {
+  const svg = await openGraph(page, 'more-graphs', 'Gene expression (heat map)')
+  await expect(svg.locator('[data-id^="dendrogram/"]').first()).toBeVisible()
+  await page.getByRole('main').locator('.canvas').first().focus()
+  const hint = page.locator('.selection-hint .selection-text')
+  const said: string[] = []
+  for (let i = 0; i < 16; i++) {
+    await page.keyboard.press('Tab')
+    const inCanvas = await page.evaluate(() => !!document.activeElement?.closest('.canvas'))
+    if (!inCanvas) break
+    // Each stop is another element: its hint once it has followed the selection.
+    if (said.length) await expect(hint).not.toHaveText(said.at(-1)!)
+    const text = (await hint.textContent()) ?? ''
+    // Past the last element nothing is selected (Firefox keeps the focus in the canvas' frame).
+    if (/^Graph:/.test(text)) break
+    said.push(text)
+  }
+  expect(said.filter((s) => /^Layer “.*dendrogram.*”/i.test(s))).toHaveLength(2)
+  expect(said.some((s) => /^Layer “(?!.*dendrogram)/i.test(s))).toBe(true)
 })

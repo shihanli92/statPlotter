@@ -18,12 +18,13 @@ import {
   guidePaths,
   guideSchematic,
   reanswer,
-  registry,
+  reanswerHiding,
   SCHEMATIC_ANALYSES,
   type SchematicNames,
   tableFacts,
   walkGuide,
-} from '../src/index.ts'
+} from '../src/dialogEntry.ts'
+import { registry } from '../src/index.ts'
 import {
   columnTable,
   countsTable,
@@ -402,6 +403,46 @@ describe('one-tailed tests: the predicted direction is the arrow’s', () => {
     expect(down.question).toBe('Is the mean of Treated lower than that of Control?')
   })
 
+  it('one group chosen of a pair: the question asks for a second, no “A” or “B” (audit 4 A20)', () => {
+    const one = setup(column(['Treated'])).facts
+    // A placeholder "B", or "A" named as a group (not the article).
+    const leak = /\bB\b|(?:of|from|in|with|than|and) A\b/
+    for (const [id, params] of [
+      ['ttest', {}],
+      ['ttest', { tails: 'one', predicted: 'increase' }],
+      ['mannWhitney', {}],
+      ['ttest', { design: 'paired' }],
+      ['wilcoxon', {}],
+      ['roc', {}],
+      ['blandAltman', {}],
+      ['correlation', {}],
+    ] as const) {
+      const s = analysisSchematic(id, params, one)
+      if (!s) continue
+      expect(s.question, `${id} ${JSON.stringify(params)}`).not.toMatch(leak)
+      expect(s.noEffect ?? '', id).not.toMatch(leak)
+      expect(s.description, id).not.toMatch(leak)
+    }
+    expect(analysisSchematic('ttest', {}, one)!.question).toBe('Choose a second group.')
+  })
+
+  it('a long name cut in its label keeps whole characters (audit 4 G5)', () => {
+    // Astral characters (two UTF-16 units each): a cut between the two halves left a lone
+    // surrogate, and the schematic's SVG could not be encoded (the picture disappeared).
+    const lone = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/
+    for (const name of ['😀'.repeat(15), `x${'😀'.repeat(15)}`, '𠮷'.repeat(30)]) {
+      const f = setup(column(['Control', name])).facts
+      const s = analysisSchematic(
+        'ttest',
+        { design: 'unpaired', tails: 'one', predicted: 'increase' },
+        f,
+      )!
+      const label = s.arrows[0]!.label!
+      expect(label.endsWith('…')).toBe(true)
+      expect(lone.test(label), label).toBe(false)
+    }
+  })
+
   it('two-tailed: both ways; one-tailed without a direction is drawn two-tailed', () => {
     expect(analysisSchematic('ttest', {}, facts)!.arrows[0]!.heads).toBe('both')
     expect(ttest('unset').arrows[0]!.heads).toBe('both')
@@ -661,6 +702,40 @@ describe('the map of the path', () => {
       ).control,
     ).toBe(three.groups[0]!.key)
   })
+
+  it('answers that no longer apply are hidden, and back again restore them (audit 4 A4)', () => {
+    // Arrowing through a question's radios answers it at each step: ↓ then ↑ must not lose
+    // the later answers and the recommendation.
+    const three = setup(column(['Vehicle', '1 mg/kg', '10 mg/kg'])).facts
+    const answers = {
+      matched: 'no',
+      values: 'measure',
+      scatter: 'no',
+      comparisons: 'vsControl',
+      control: three.groups[2]!.key,
+    }
+    const down = reanswerHiding(entry, three, { answers, hidden: {} }, 'values', 'scores')
+    expect(down.answers).toEqual(reanswer(entry, three, answers, 'values', 'scores'))
+    const up = reanswerHiding(entry, three, down, 'values', 'measure')
+    expect(up.answers).toEqual(answers)
+    expect(walkGuide(entry, three, up.answers).end).toMatchObject({ kind: 'leaf' })
+    // Through two other answers and back.
+    const a = reanswerHiding(entry, three, { answers, hidden: {} }, 'matched', 'yes')
+    const b = reanswerHiding(entry, three, a, 'values', 'scores')
+    const c = reanswerHiding(entry, three, b, 'matched', 'no')
+    const back = reanswerHiding(entry, three, c, 'values', 'measure')
+    expect(back.answers).toEqual(answers)
+    // An answer changed meanwhile on the new path is the newer one.
+    const changed = reanswerHiding(entry, three, { answers, hidden: {} }, 'matched', 'yes')
+    const again = reanswerHiding(
+      entry,
+      three,
+      { ...changed, answers: { ...changed.answers, values: 'scores' } },
+      'matched',
+      'no',
+    )
+    expect(again.answers.values).toBe('scores')
+  })
 })
 
 describe('the import boundary of schematic/', () => {
@@ -676,5 +751,26 @@ describe('the import boundary of schematic/', () => {
         ).toContain(m[1])
       expect(src, f).not.toMatch(/\.run\(/)
     }
+  })
+})
+
+describe('audit 4 S10: the correction a schematic names is the one the analysis runs', () => {
+  const design = (id: string, raw: Record<string, unknown>) =>
+    designOfParams(id, registry.get(id)!.params.parse(raw) as Record<string, unknown>)
+  it('Friedman reads its own correction param', () => {
+    expect(design('friedman', { correction: 'bonferroni' })?.correction).toBe(
+      'Dunn’s test, Bonferroni',
+    )
+    expect(design('friedman', { correction: 'none' })?.correction).toBe('Dunn’s test, uncorrected')
+    expect(design('friedman', {})?.correction).toBe('Dunn’s test, Holm')
+  })
+  it('two-way: every cell against the control is Dunnett, as run', () => {
+    expect(
+      design('twoWayAnova', { comparisons: 'allCells', kind: 'vsControl', allPairsMethod: 'tukey' })
+        ?.correction,
+    ).toBe('Dunnett')
+    expect(
+      design('twoWayAnova', { comparisons: 'allCells', allPairsMethod: 'tukey' })?.correction,
+    ).toBe('Tukey')
   })
 })

@@ -38,7 +38,7 @@ async function renameDataSets(page: Page, titles: readonly string[]) {
     await grid(page).getByRole('textbox').fill(t)
     await page.keyboard.press('Enter')
   }
-  await expect(columnTitles(page)).toHaveText(['', ...titles])
+  await expect(columnTitles(page)).toHaveText(['Row', ...titles])
 }
 
 /** Opens Format axes on one of the axes (its tab: "X axis", "Y axis"). */

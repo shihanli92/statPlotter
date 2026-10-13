@@ -121,6 +121,7 @@ import {
   PX_PER_PT,
   pixelRatio,
   RasterScale,
+  RasterView,
   SceneHalos,
 } from '../graph/SceneSvg.tsx'
 import { screenScenes } from '../graph/sceneCache.ts'
@@ -419,13 +420,15 @@ export function LayoutView({
   const [menu, setMenu] = useState<CommandMenuState | null>(null)
   const canvasRef = useRef<HTMLDivElement>(null)
   // Roadmap 50: Alt / Ctrl + wheel and pinches zoom about the pointer; the middle button pans.
-  const { rasterZoom } = useMouseZoom({
+  const { rasterZoom, viewKey } = useMouseZoom({
     canvas: canvasRef,
     content: () => svgRef.current,
     zooms: LAYOUT_ZOOMS,
     zoom,
     setZoom,
   })
+  // Audit 4 (P5): what the canvas shows of the page, for large point clouds.
+  const rasterView = useMemo(() => ({ el: () => canvasRef.current, key: viewKey }), [viewKey])
 
   const k = zoom * PX_PER_PT
   const theme = graphTheme(project)
@@ -2386,7 +2389,9 @@ export function LayoutView({
           >
             <rect x={0} y={0} width={scene.width} height={scene.height} fill="#ffffff" />
             <RasterScale.Provider value={rasterZoom * PX_PER_PT * pixelRatio()}>
-              <NodeEl node={scene.root} />
+              <RasterView.Provider value={rasterView}>
+                <NodeEl node={scene.root} />
+              </RasterView.Provider>
             </RasterScale.Provider>
             {scene.items.map((b) => {
               const it = shown.items[b.index]

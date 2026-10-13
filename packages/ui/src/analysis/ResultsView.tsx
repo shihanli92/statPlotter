@@ -1,4 +1,5 @@
-import { effectPlot, guideEntry, methodsParagraph, registry } from '@ps/analyses'
+import { effectPlot, methodsParagraph, registry } from '@ps/analyses'
+import { guideEntry } from '@ps/analyses/dialog'
 import {
   blockRows,
   type ResultsExportOptions,
@@ -26,7 +27,7 @@ import {
   resultSummary,
   summaryText,
 } from '@ps/model'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { type Command, GROUPS, useCommands } from '../commands/index.ts'
 import { CommandMenu, type CommandMenuState } from '../components/CommandMenu.tsx'
 import type { ShowError } from '../components/Toasts.tsx'
@@ -122,49 +123,80 @@ function Block({
         </table>
       )
     case 'table':
-      return (
-        <table className="results grid">
-          {/* Roadmap 51d (S23): what the comparisons' P values and CIs refer to. */}
-          {block.caption && <caption className="family-caption">{block.caption}</caption>}
-          <thead>
-            {block.title && (
-              <tr>
-                <th colSpan={block.columns.length}>{block.title}</th>
-              </tr>
-            )}
-            <tr>
-              {block.columns.map((c, i) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: positional columns
-                <th key={i} scope="col">
-                  {c}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {block.rows.map((row, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: positional rows
-              <tr key={i}>
-                {row.map((v, j) =>
-                  j === 0 ? (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: positional cells
-                    <th key={j} scope="row">
-                      <Value v={v} settings={settings} />
-                    </th>
-                  ) : (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: positional cells
-                    <td key={j} className={cellClass(v)} {...cellLabel(v, settings)}>
-                      <Value v={v} settings={settings} />
-                    </td>
-                  ),
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )
+      return <GridTable block={block} settings={settings} />
   }
 }
+
+/**
+ * Audit 4 (P7): rows a results table shows at first; "Show all" shows the rest (8,000 rows of
+ * multiple t tests were 168,638 elements and 872 ms to open the tab).
+ */
+export const RESULT_ROWS_SHOWN = 500
+
+/** A results table: its first RESULT_ROWS_SHOWN rows, and the rest when asked. */
+const GridTable = memo(function GridTable({
+  block,
+  settings,
+}: {
+  block: Extract<ResultBlock, { type: 'table' }>
+  settings: { pValueStyle: 'GP' | 'APA' | 'NEJM'; pValueDigits: number }
+}) {
+  const [all, setAll] = useState(false)
+  const more = block.rows.length - RESULT_ROWS_SHOWN
+  const rows = all || more <= 0 ? block.rows : block.rows.slice(0, RESULT_ROWS_SHOWN)
+  return (
+    <>
+      <table className="results grid">
+        {/* Roadmap 51d (S23): what the comparisons' P values and CIs refer to. */}
+        {block.caption && <caption className="family-caption">{block.caption}</caption>}
+        <thead>
+          {block.title && (
+            <tr>
+              <th colSpan={block.columns.length}>{block.title}</th>
+            </tr>
+          )}
+          <tr>
+            {block.columns.map((c, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: positional columns
+              <th key={i} scope="col">
+                {c}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: positional rows
+            <tr key={i}>
+              {row.map((v, j) =>
+                j === 0 ? (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: positional cells
+                  <th key={j} scope="row">
+                    <Value v={v} settings={settings} />
+                  </th>
+                ) : (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: positional cells
+                  <td key={j} className={cellClass(v)} {...cellLabel(v, settings)}>
+                    <Value v={v} settings={settings} />
+                  </td>
+                ),
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {more > 0 && !all && (
+        <p className="results-more">
+          The first {RESULT_ROWS_SHOWN.toLocaleString('en-US')} of{' '}
+          {block.rows.length.toLocaleString('en-US')} rows.{' '}
+          <button type="button" className="link" onClick={() => setAll(true)}>
+            Show all {block.rows.length.toLocaleString('en-US')} rows
+          </button>
+        </p>
+      )}
+    </>
+  )
+})
 
 /** Key of the tab showing an analysis' result table (sheet keys are the plugin's). */
 const TABLE_TAB = '\u0000table'
@@ -273,6 +305,24 @@ export function ResultsView({
   const current = tabs.find((t) => t.key === tab) ?? tabs[0]
   const sheet = sheets.find((s) => s.key === current?.key)
   const stale = state?.status === 'pending'
+  const summaryId = useId()
+  // Audit 4 (A7): when this analysis' results come in after Updating…, "Up to date" and the
+  // answer are announced (a polite status); opening a results sheet announces nothing.
+  const [rerun, setRerun] = useState({ text: '', n: 0 })
+  const wasPending = useRef<{ id: NodeId; pending: boolean }>({ id, pending: false })
+  const sentence = summary && result ? summaryText(summary, settings) : ''
+  useEffect(() => {
+    const before = wasPending.current
+    const pending = state?.status === 'pending'
+    if (before.id !== id) setRerun((r) => ({ text: '', n: r.n + 1 }))
+    else if (before.pending && state?.status === 'ready' && result?.status !== 'error')
+      // A new node each time: the same answer again is said again.
+      setRerun((r) => ({
+        text: sentence ? `Results up to date: ${sentence}` : 'Results up to date',
+        n: r.n + 1,
+      }))
+    wasPending.current = { id, pending }
+  }, [id, state?.status, result?.status, sentence])
 
   // Copy (roadmap 26): the sheet shown, or one block (right-click), as a table as on screen: HTML
   // for Word and PowerPoint, tab-separated text for Excel. ⌘C when no text is selected; Edit ›
@@ -366,7 +416,7 @@ export function ResultsView({
 
   // Roadmap 43 (UX review F22): an error says, if it is about too few values, what the analysis
   // needs, and links to the table analyzed. Roadmap 51b (§4.6): the link is the right one —
-  // Change parameters… when the failure is about the options, Go to table when it's about the
+  // Edit parameters… when the failure is about the options, Go to table when it's about the
   // values (what `validate` says of the analysis' input, the same check `run` failed).
   const source = project.nodes[node.input.source]
   const sourceTable = useSourceTable(node.input.source)
@@ -389,7 +439,7 @@ export function ResultsView({
         {hint && <span className="error-hint">{hint}</span>}
         {errorWhere(message) === 'params' ? (
           <button type="button" className="link" onClick={() => onEdit()}>
-            Change parameters…
+            Edit parameters…
           </button>
         ) : (
           source &&
@@ -509,8 +559,9 @@ export function ResultsView({
       {menu && <CommandMenu menu={menu} onClose={() => setMenu(null)} />}
       {exporter.dialog}
       <div className="view-toolbar">
+        {/* Audit 4 (A17): one name for editing an analysis, as Analyze › Edit parameters…. */}
         <button type="button" onClick={() => onEdit()}>
-          Parameters…
+          Edit parameters…
         </button>
         {table && (
           <button
@@ -528,6 +579,10 @@ export function ResultsView({
               Add brackets to “{g.name}”
             </button>
           ))}
+        {/* Audit 4 (A7): new results of a re-run said, with their answer. */}
+        <span className="visually-hidden" role="status">
+          <span key={rerun.n}>{rerun.text}</span>
+        </span>
         <span className="hint">
           {state?.status === 'pending' && 'Updating…'}
           {/* Roadmap 51b (§4.6): a failed result says Error, not Up to date. */}
@@ -607,7 +662,14 @@ export function ResultsView({
       )}
       {/* Roadmap 51d (§8.1, U18, U25, U29): the answer first, in a sentence, with its picture. */}
       {summary && result && (
-        <section className={`result-summary ${stale ? 'stale' : ''}`} aria-label="Summary">
+        <section
+          className={`result-summary ${stale ? 'stale' : ''}`}
+          aria-labelledby={`${summaryId}-h`}
+        >
+          {/* Audit 4 (A7): a heading to find the answer by. */}
+          <h2 id={`${summaryId}-h`} className="visually-hidden">
+            Summary
+          </h2>
           <p className="summary-sentence">{summaryText(summary, settings)}</p>
           {effect && (
             <div className="effect-plot">

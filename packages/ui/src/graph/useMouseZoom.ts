@@ -46,7 +46,8 @@ interface GestureLike extends UIEvent {
  * Zooms the canvas with the wheel and pinches, and pans it with the middle button. `content` is
  * the element the zoom scales (its top left is the scene's origin). Returns the zoom point clouds
  * are rasterised at: the zoom, held while the wheel zooms and caught up once it rests (one image
- * per gesture, not one per notch).
+ * per gesture, not one per notch); and (audit 4, P5) `viewKey`, which changes once a scroll, a
+ * zoom or a resize of the canvas has rested: large clouds then draw the part in view sharp.
  */
 export function useMouseZoom(opts: {
   canvas: RefObject<HTMLElement | null>
@@ -54,7 +55,7 @@ export function useMouseZoom(opts: {
   zooms: readonly number[]
   zoom: number
   setZoom: (zoom: number) => void
-}): { rasterZoom: number } {
+}): { rasterZoom: number; viewKey: number } {
   const { canvas, zoom } = opts
   const live = useRef(opts)
   live.current = opts
@@ -67,6 +68,7 @@ export function useMouseZoom(opts: {
     settle: undefined as ReturnType<typeof setTimeout> | undefined,
   })
   const [held, setHeld] = useState<number | null>(null)
+  const [viewKey, setViewKey] = useState(0)
 
   // After a zoom from the wheel is drawn: the scroll that keeps the anchor under the pointer.
   useLayoutEffect(() => {
@@ -105,7 +107,10 @@ export function useMouseZoom(opts: {
       // Point clouds keep their image till the zoom rests.
       setHeld((h) => h ?? st.rendered)
       clearTimeout(st.settle)
-      st.settle = setTimeout(() => setHeld(null), RASTER_SETTLE_MS)
+      st.settle = setTimeout(() => {
+        setHeld(null)
+        setViewKey((k) => k + 1)
+      }, RASTER_SETTLE_MS)
       setZoom(next)
     }
     const onWheel = (e: WheelEvent) => {
@@ -187,13 +192,25 @@ export function useMouseZoom(opts: {
       ['auxclick', onAuxClick as EventListener, { capture: true }],
     ]
     for (const [type, f, o] of listeners) el.addEventListener(type, f, o)
+    // Audit 4 (P5): the view rests a while after the last scroll (a pan) or resize.
+    let viewRest: ReturnType<typeof setTimeout> | undefined
+    const moved = () => {
+      clearTimeout(viewRest)
+      viewRest = setTimeout(() => setViewKey((k) => k + 1), RASTER_SETTLE_MS)
+    }
+    el.addEventListener('scroll', moved, { passive: true })
+    const resized = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(moved)
+    resized?.observe(el)
     return () => {
       for (const [type, f, o] of listeners) el.removeEventListener(type, f, o)
+      el.removeEventListener('scroll', moved)
+      resized?.disconnect()
+      clearTimeout(viewRest)
       clearTimeout(st.settle)
       st.pan = null
       delete el.dataset.panning
     }
   }, [canvas])
 
-  return { rasterZoom: held ?? zoom }
+  return { rasterZoom: held ?? zoom, viewKey }
 }

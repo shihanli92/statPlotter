@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 // Audit 3 (T8, T11, licence): what the repository holds is fit to publish as it is.
@@ -76,22 +76,36 @@ describe('publication', () => {
     expect(readme).not.toContain('personal / lab use')
   })
 
-  it('runs deploys, releases and scheduled jobs only in the project repository', () => {
-    // A copy published elsewhere (a public mirror) has neither the secrets nor the services:
-    // these jobs would run there and fail, every night for the scheduled ones.
+  it('runs deploys and releases only in the project repository', () => {
+    // A copy published elsewhere (the public repository) has neither the secrets nor the
+    // services: these jobs would run there and fail.
     const guarded = [
       ['ci.yml', 'deploy'],
       ['release.yml', 'create-release'],
       ['release.yml', 'build'],
       ['release.yml', 'publish-release'],
-      ['e2e-nightly.yml', 'e2e'],
-      ['desktop.yml', 'audit'],
     ]
     for (const [workflow, name] of guarded) {
       const condition = job(workflow, name).match(/^ {4}if: (.*)$/m)?.[1] ?? ''
       expect(condition, `${workflow} ${name}`).toContain(
         "github.repository == 'shihanli92/plottingTool'",
       )
+    }
+  })
+
+  // Audit 4 (T2): the Rust advisories and the three browsers' nightly run need no secret, so they
+  // run in the owner's repositories, the public one included (where Actions run), never in forks.
+  it('runs the Rust advisories and the nightly end-to-end tests in the owner’s repositories', () => {
+    for (const [workflow, name] of [
+      ['e2e-nightly.yml', 'e2e'],
+      ['desktop.yml', 'audit'],
+    ]) {
+      const text = job(workflow, name)
+      expect(text.match(/^ {4}if: (.*)$/m)?.[1], `${workflow} ${name}`).toBe(
+        "github.repository_owner == 'shihanli92'",
+      )
+      expect(text, `${workflow} ${name}`).not.toMatch(/\$\{\{[^}]*secrets\./)
+      expect(text, `${workflow} ${name}`).not.toMatch(/has no secrets/)
     }
   })
 
@@ -106,12 +120,12 @@ describe('publication', () => {
     expect(workflowText('codeql.yml')).toMatch(/languages: javascript-typescript/)
   })
 
-  it('runs scheduled jobs in one repository only', () => {
+  it('runs scheduled jobs in the owner’s repositories only', () => {
     for (const file of workflows().filter((f) => /^ {2}schedule:/m.test(workflowText(f)))) {
       for (const name of jobsOf(file)) {
         const condition = job(file, name).match(/^ {4}if: (.*)$/m)?.[1] ?? ''
         expect(condition, `${file} ${name}`).toMatch(
-          /github\.repository == '[\w-]+\/[\w-]+'|github\.event_name != 'schedule'/,
+          /github\.repository(_owner)? == '[\w-]+(\/[\w-]+)?'|github\.event_name != 'schedule'/,
         )
       }
     }
@@ -140,7 +154,9 @@ describe('publication', () => {
     }
   })
 
-  it('has Dependabot propose npm and Actions updates every week', () => {
+  // In the private repository only: the public snapshot leaves the file out (audit 4, T5).
+  const hasDependabot = existsSync(new URL('.github/dependabot.yml', root))
+  it.skipIf(!hasDependabot)('has Dependabot propose npm and Actions updates every week', () => {
     const text = readFileSync(new URL('.github/dependabot.yml', root), 'utf8')
     for (const ecosystem of ['npm', 'github-actions']) {
       expect(text).toMatch(

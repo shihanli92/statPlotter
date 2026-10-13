@@ -34,7 +34,7 @@ DataTable ──► Analysis ──► ResultTable ──► Analysis   (chainin
 | Layer | Choice |
 |---|---|
 | Language | TypeScript, `strict` (TS 7) |
-| Targets | Web (Vite build, deployed to Cloudflare Pages) and desktop (Tauri 2), one codebase |
+| Targets | Web (Vite build; the public demo is built by Netlify from the public repository, which `tools/publish-public.mjs` writes) and desktop (Tauri 2), one codebase |
 | UI | React 19; the document store lives in framework-free `engine`, React subscribes; icons from `lucide-react` |
 | Commands | One command registry (`ui/src/commands/`) behind the menu bar, icon toolbar, ⌘K palette, keyboard shortcuts, context menus and the desktop app's native menus |
 | Data grid | In-house virtualized DOM grid (`ui/src/table`) |
@@ -95,7 +95,8 @@ packages/
     table/      The virtualized grid, formula bar, find, sort, fill and the data dialogs
     theme/      The app's light / dark colour scheme (roadmap 41)
     updates/    The desktop app's update prompt (roadmap 41)
-    worker/     Web Worker runners: analyses, the figure export worker, CSV reading, saving
+    worker/     Web Worker runners: analyses, the figure export worker, CSV reading, saving, point
+                clouds' images at a new zoom (audit 4 P5: `pointRaster.worker.ts`)
 apps/
   web/        Browser entry (Vite), File System Access / download platform, dev-only source_data plugin
   desktop/    Tauri shell: native menus, file dialogs and access, atomic save, macOS pasteboard (PDF/PNG/SVG),
@@ -189,6 +190,15 @@ merged design (with the recommendation's or the dialog's params, `designOfParams
 lays it out (fontkit, points, light or dark colours) without knowing which question or method
 asked. No value of the data and no result (an import-boundary test keeps `schematic/` away from
 `@ps/stats` and `run`).
+
+Audit 4 (P6, decisions 1408–1409): the explanations, the dialog's words, tiers and conditions, the
+sketches, the guide's trees, the schematics and the method history's comparisons are not part of
+the registry the app starts with and the analysis worker loads. They are attached to the
+definitions (`form`, `cards`, `sketch`) by importing `@ps/analyses/dialog` (`dialogEntry.ts`, the
+package's one module with side effects), which the Analyze dialog, Help › Choosing an analysis and
+the results view (lazy components) import; anything reading those fields imports from it. The
+worker keeps `run`, `params`, `validate` and the summaries; the navigator's results card reads
+the questions without their trees (`guideQuestions.ts`).
 
 `AnalysisResult` carries status and diagnostics, result sheets, values, comparisons (for
 brackets), graphable outputs and an optional produced table in one serializable object, since it
@@ -333,14 +343,20 @@ GraphNode (declarative, style-only) → layoutGraph (axes, ticks, legends, brack
 - **Engine:** property-based tests (fast-check) for undo/redo round-trips and recompute consistency.
 - **Performance guards** compare this thread's CPU time at k·n and n (`stats/test/timing.ts`),
   never wall-clock bounds, so they hold on a loaded machine.
-- **CI** (`.github/workflows/ci.yml`): dependency rules, Biome, typecheck, tests and the web build
-  on every push and pull request; pushes to `main` that pass deploy to Cloudflare Pages.
-  `desktop.yml` runs the Rust tests on macOS and Windows when the desktop shell changes;
-  `release.yml` builds the installers for each version tag and attaches them to a GitHub Release
-  ([RELEASING.md](RELEASING.md), roadmap 41).
+- **CI** (`.github/workflows/ci.yml`): dependency rules, Biome, typecheck, tests, the web build
+  and the Chromium end-to-end tests on every push and pull request. Actions are turned off in the
+  private repository, so they run in the public one: it receives one squashed commit per version
+  from `tools/publish-public.mjs`, which first runs the same install, `pnpm check` and builds on
+  the snapshot, and Netlify builds the demo from it ([PUBLISHING.md](PUBLISHING.md)). The
+  private `deploy` job (Cloudflare Pages) is guarded to the private repository and doesn't run.
+  `desktop.yml` runs the Rust tests on macOS and Windows when the desktop shell changes, and the
+  Rust advisories weekly; `release.yml` builds the installers for each version tag and attaches
+  them to a GitHub Release ([RELEASING.md](RELEASING.md), roadmap 41): none yet, the installers
+  come with the first release.
 - **End-to-end:** Playwright tests of the production build in Chromium, WebKit and Firefox
-  (`apps/e2e`, `pnpm e2e`); CI runs Chromium before every deploy and all three nightly; any
-  console error fails a test (roadmap 24).
+  (`apps/e2e`, `pnpm e2e`); the full run in all three, locally, before each push of `main`, and
+  the affected specs on branches (`pnpm e2e:affected`); the public repository's CI runs Chromium
+  on each published version and all three nightly; any console error fails a test (roadmap 24).
 - Licensing: the project is GPL-3.0-or-later (`LICENSE`, `NOTICE`; audit 3, decision 1141), so
   translating GPL-2-or-later / LGPL code (mainly R's C numerics) is acceptable, but **only inside
   `packages/stats/src/gpl/`**, each file with an SPDX line, with the source cited in each file

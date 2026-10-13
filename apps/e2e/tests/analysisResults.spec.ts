@@ -68,7 +68,7 @@ test('a t test: the sentence first, names, the effect plot, details and the meth
   await expect(method.getByRole('button', { name: 'Copy methods text' })).toBeVisible()
 
   // Student's t test: the name follows the method until the user renames the analysis.
-  await page.getByRole('main').getByRole('button', { name: 'Parameters…' }).click()
+  await page.getByRole('main').getByRole('button', { name: 'Edit parameters…' }).click()
   const d = editDialog(page)
   await d.getByRole('radio', { name: /Student’s t test$/ }).check()
   await okButton(d).click()

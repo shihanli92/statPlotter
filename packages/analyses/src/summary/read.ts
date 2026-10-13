@@ -76,11 +76,17 @@ export function cell(t: Table | null, label: string, column: string): ResultValu
 export const numOf = (v: ResultValue | null | undefined): number =>
   v && (v.kind === 'number' || v.kind === 'integer' || v.kind === 'pvalue') ? v.v : Number.NaN
 
-/** An interval value, or null. */
+const limit = (v: unknown) => typeof v === 'number' && !Number.isNaN(v)
+
+/** An interval value, or null (also when a limit wasn't computed: NaN; ±∞ is a limit). */
 export const intervalOf = (
   v: ResultValue | null | undefined,
 ): { lo: number; hi: number; level: number } | null =>
-  v?.kind === 'interval' ? { lo: v.lo, hi: v.hi, level: v.level } : null
+  v?.kind === 'interval' ? computedCi({ lo: v.lo, hi: v.hi, level: v.level }) : null
+
+/** The interval when both its limits were computed (±∞ included), else null (audit 4 S6). */
+export const computedCi = <T extends { lo: number; hi: number }>(ci: T | null): T | null =>
+  ci && limit(ci.lo) && limit(ci.hi) ? ci : null
 
 // --- Pieces of a sentence ---------------------------------------------------------------------
 
@@ -166,6 +172,11 @@ export interface ComparisonRow {
   p: number
   /** P values that are q values (FDR). */
   q: boolean
+  /**
+   * The difference is of ranks (Kruskal-Wallis' and Friedman's Dunn tests: mean ranks, rank
+   * sums), not of the data: it says which group is higher, never by how much (audit 4 S1).
+   */
+  rank: boolean
 }
 
 /**
@@ -194,6 +205,7 @@ export function comparisonRows(t: Table | null): ComparisonRow[] {
   const jCi = col(/CI of diff/)
   const jP = col(/^(Adjusted P Value|q value|P value|Adjusted P value|Step-down P value)$/i)
   const q = jP >= 0 && /^q value$/i.test(t.columns[jP]!)
+  const rank = jDiff >= 0 && /rank/i.test(t.columns[jDiff]!)
   const out: ComparisonRow[] = []
   for (const r of t.rows) {
     const label = r[0]?.kind === 'text' ? r[0].v : ''
@@ -206,9 +218,24 @@ export function comparisonRows(t: Table | null): ComparisonRow[] {
       ci: jCi >= 0 ? intervalOf(r[jCi]) : null,
       p: jP >= 0 ? numOf(r[jP]) : Number.NaN,
       q,
+      rank,
     })
   }
   return out
+}
+
+/**
+ * Audit 4 S3: the group every comparison is made against — the side all the rows share ("KO −
+ * WT", "Het − WT": WT), `named` when it is one of them (one row shares both sides), else the
+ * right one (rows read "group − control"); null when the rows share none.
+ */
+export function sharedSide(rows: readonly ComparisonRow[], named?: string): string | null {
+  const first = rows[0]
+  if (!first) return null
+  const shared = [first.right, first.left].filter((x) =>
+    rows.every((r) => r.left === x || r.right === x),
+  )
+  return (named !== undefined && shared.includes(named) ? named : shared[0]) ?? null
 }
 
 /** The comparisons table of a result (its 'comparisons' sheet's first table). */

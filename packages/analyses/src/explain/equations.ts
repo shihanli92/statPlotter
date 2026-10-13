@@ -1,4 +1,4 @@
-import { EQUATIONS, type EquationDef, equation } from '@ps/stats'
+import { EQUATIONS, type EquationDef } from '@ps/stats'
 
 // Roadmap 51e (design §9.1, U10): what the curve-fit picker and its checks know about each built-in
 // equation — the goals it serves, the X scale it expects, each parameter's meaning and unit, the
@@ -1585,6 +1585,3 @@ export const modelsNested = (a: string, b: string): boolean =>
 export function nestedRelatives(id: string): string[] {
   return EQUATIONS.map((e) => e.id).filter((o) => modelsNested(id, o))
 }
-
-/** The equation behind an id, if built in. */
-export const builtIn = (id: string): EquationDef | undefined => equation(id)

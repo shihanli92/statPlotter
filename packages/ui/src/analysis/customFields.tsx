@@ -9,7 +9,7 @@ import {
   resolveEquation,
   USER_EQUATION,
 } from '@ps/analyses'
-import { useId } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { NumberBox, OptionalNumber } from '../components/fields.tsx'
 import { ModelPicker } from './ModelPicker.tsx'
 import { type CustomField, getPath, setPath } from './ParamsForm.tsx'
@@ -55,11 +55,39 @@ export function EquationSelect({
 
 const USER_EXAMPLE = 'Y = Bottom + (Top - Bottom)/(1 + 10^((LogEC50 - X)*HillSlope))'
 
-/** The text of a user-defined equation, checked as you type. */
+/** The equation parsed, an unexpected failure an error like any other (audit 4 T1). */
+function safeParse(text: string): ReturnType<typeof parseEquation> {
+  try {
+    return parseEquation(text)
+  } catch (e) {
+    return {
+      ok: false,
+      message: `The equation can’t be read: ${e instanceof Error ? e.message : String(e)}`,
+      position: 0,
+      line: 1,
+      column: 1,
+    }
+  }
+}
+
+/** Audit 4 (A14): how long typing pauses before the equation's error is shown (ms). */
+export const EQUATION_ERROR_MS = 800
+
+/**
+ * The text of a user-defined equation, checked as you type: what it reads at once, an error once
+ * typing pauses (or on leaving the field), said politely and linked to the field.
+ */
 const UserEquationField: CustomField = ({ label, params, onChange }) => {
   const id = useId()
   const text = String(params.userEquation ?? '')
-  const parsed = text.trim() ? parseEquation(text) : null
+  const parsed = text.trim() ? safeParse(text) : null
+  // The text as it stood when typing paused: its error is the one shown.
+  const [paused, setPaused] = useState(text)
+  useEffect(() => {
+    const t = setTimeout(() => setPaused(text), EQUATION_ERROR_MS)
+    return () => clearTimeout(t)
+  }, [text])
+  const error = parsed && !parsed.ok && paused === text ? parsed : null
   return (
     <>
       <label htmlFor={id}>{label}</label>
@@ -70,10 +98,20 @@ const UserEquationField: CustomField = ({ label, params, onChange }) => {
         spellCheck={false}
         placeholder={USER_EXAMPLE}
         value={text}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : `${id}-help`}
         onChange={(e) => onChange({ ...params, userEquation: e.target.value })}
+        onBlur={() => setPaused(text)}
       />
-      {parsed === null ? (
-        <div className="help">
+      <div className="equation-error error-text" aria-live="polite">
+        {error && (
+          <span id={`${id}-error`}>
+            Line {error.line}, column {error.column}: {error.message}
+          </span>
+        )}
+      </div>
+      {parsed === null || (!parsed.ok && !error) ? (
+        <div className="help" id={`${id}-help`}>
           One statement per line, e.g. {USER_EXAMPLE}. Unknown names are parameters; a name assigned
           first on the left is an intermediate variable. The usual functions work (gamma, erf,
           zdist, tdist, besselj…); <code>&lt;A&gt;</code>, <code>&lt;~A&gt;</code>,{' '}
@@ -82,7 +120,7 @@ const UserEquationField: CustomField = ({ label, params, onChange }) => {
           ); Y on both sides is an implicit equation.
         </div>
       ) : parsed.ok ? (
-        <div className="help">
+        <div className="help" id={`${id}-help`}>
           {parsed.program.kind === 'differential'
             ? 'Differential equation. '
             : parsed.program.kind === 'implicit'
@@ -91,11 +129,7 @@ const UserEquationField: CustomField = ({ label, params, onChange }) => {
           Parameters: {parsed.parameters.join(', ') || '(none)'}
           {parsed.variables.length ? ` · intermediate: ${parsed.variables.join(', ')}` : ''}
         </div>
-      ) : (
-        <div className="error-text" role="alert">
-          Line {parsed.line}, column {parsed.column}: {parsed.message}
-        </div>
-      )}
+      ) : null}
     </>
   )
 }

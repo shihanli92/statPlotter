@@ -1,3 +1,4 @@
+import { registry } from '@ps/analyses'
 import {
   entriesFor,
   fillReason,
@@ -8,13 +9,12 @@ import {
   KIND_NAMES,
   methodCard,
   notHere,
-  reanswer,
-  registry,
+  reanswerHiding,
   type SchematicNames,
   walkAnswers,
   walkGuide,
   withNames,
-} from '@ps/analyses'
+} from '@ps/analyses/dialog'
 import type { FontRegistry } from '@ps/graph'
 import type {
   GuideAnswer,
@@ -27,6 +27,7 @@ import type {
   TableKind,
 } from '@ps/model'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { scrollBehavior } from '../util.ts'
 import { GuideMap } from './GuideMap.tsx'
 import { SchematicView } from './SchematicView.tsx'
 
@@ -289,6 +290,7 @@ export function GuidePanel({
   choices,
   entryId,
   answers,
+  hidden,
   onEntry,
   onAnswers,
   onSelection,
@@ -309,8 +311,11 @@ export function GuidePanel({
   choices: { key: string; title: string }[]
   entryId: string | null
   answers: GuideAnswers
+  /** Audit 4 (A4): answers hidden by a change (off the path), given back when it returns. */
+  hidden?: Record<string, string>
   onEntry: (id: string) => void
-  onAnswers: (a: Record<string, string>) => void
+  /** New answers (and, when an answer changed, the hidden ones). */
+  onAnswers: (a: Record<string, string>, hidden?: Record<string, string>) => void
   selection: readonly string[]
   onSelection: (keys: string[]) => void
   onUse: (c: GuideChoice) => void
@@ -334,16 +339,19 @@ export function GuidePanel({
     if (ended)
       detail.current
         ?.querySelector('.guide-recommendation')
-        ?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' })
+        // Audit 4 (A16): a jump with reduced motion asked for.
+        ?.scrollIntoView?.({ block: 'nearest', behavior: scrollBehavior() })
   }, [ended])
   /** The answers with the facts' and the asked values' (initial ones too). */
   const all = walk ? { ...answers, ...walkAnswers(walk, answers, facts) } : answers
 
   const answer = (q: GuideQuestion, a: GuideAnswer) => {
     // Roadmap 51f: a new answer keeps the later answers that still apply (the same question
-    // further on the new path) and drops the others.
+    // further on the new path); audit 4 (A4): the others are hidden, not dropped, and come back
+    // when the path returns to them (arrowing through the radios answers at each step).
     if (!entry) return
-    onAnswers(reanswer(entry, facts, answers, q.id, a.id))
+    const next = reanswerHiding(entry, facts, { answers, hidden: hidden ?? {} }, q.id, a.id)
+    onAnswers(next.answers, next.hidden)
   }
 
   // Roadmap 51f: the map of the path and "What will be tested".
@@ -366,7 +374,7 @@ export function GuidePanel({
         ? root.querySelector<HTMLElement>(`[data-question="${step.questionId}"]`)
         : root.querySelector<HTMLElement>('.guide-recommendation')
     if (!target) return
-    target.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' })
+    target.scrollIntoView?.({ block: 'nearest', behavior: scrollBehavior() })
     target.classList.add('revisit')
     setTimeout(() => target.classList.remove('revisit'), 1600)
     const focus =
@@ -388,7 +396,8 @@ export function GuidePanel({
   return (
     <div className={`analyze guide${layout === 'wide' ? '' : ` ${layout}`}`}>
       <div className="analyze-list guide-rail">
-        <h4 id="guide-rail-title">What do you want to know?</h4>
+        {/* Audit 4 (A21): under the dialog's h2. */}
+        <h3 id="guide-rail-title">What do you want to know?</h3>
         <ul className="guide-entries" aria-labelledby="guide-rail-title">
           {entries.map((e) => (
             <li key={e.id}>
@@ -497,7 +506,9 @@ export function GuidePanel({
                   key={t.question.id}
                   question={t.question}
                   facts={facts}
-                  answers={answers}
+                  // The asked values as the path uses them (audit 4 U3: a control no longer
+                  // among the groups shows, and is used, as the first).
+                  answers={all}
                   groups={groups}
                   onAnswer={answer}
                   onAsk={(id, v) => onAnswers({ ...answers, [id]: v })}

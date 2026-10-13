@@ -37,7 +37,9 @@ import { type LsqProblem, levenbergMarquardt } from './lm.ts'
  * Confidence intervals: value ± t(df)·SE, or (profileCI) the profile-likelihood interval
  * {θⱼ : SSprofile(θⱼ) ≤ SSmin·(1 + F(1, df)/df)} with F(1, df) = t(df)², found by bracketing and
  * Illinois false position (Dowell & Jarratt 1971) on the profile SS, each point a constrained
- * refit. An endpoint that never crosses reports the bound (±Infinity if unbounded).
+ * refit. An endpoint that never crosses reports the bound (±Infinity if unbounded). With
+ * profileCI 'shared', only the shared parameters of a global fit are profiled; the others get
+ * the asymptotic interval.
  *
  * AICc (least squares; Burnham & Anderson 2002 §2.4 with K = parameters + 1 for σ):
  * N·ln(SS/N) + 2K + 2K(K + 1)/(N − K − 1).
@@ -109,8 +111,18 @@ export interface FitOptions {
   maxIterations?: number
   /** Default 0.95. */
   confLevel?: number
-  /** Asymmetric profile-likelihood CIs (default false → symmetric asymptotic). */
-  profileCI?: boolean
+  /**
+   * Asymmetric profile-likelihood CIs (default false → symmetric asymptotic). 'shared': profile
+   * the shared parameters of a global fit only; each data set's own parameters get asymptotic
+   * CIs (audit 4 P1: each profile point refits the whole global problem, so profiling every
+   * parameter of K data sets grows as K⁴).
+   */
+  profileCI?: boolean | 'shared'
+  /**
+   * Called once the fit is done (0 of total) and after each parameter's profile interval (done
+   * of total), for progress: profiling is most of the time of a fit with profile CIs.
+   */
+  onProfile?: (done: number, total: number) => void
   /**
    * Fixed weights per point (per data set), multiplying the curve-based weighting; used by the
    * robust (Lorentzian) fit, which reweights iteratively. Default: all 1.
@@ -231,6 +243,8 @@ interface Layout {
   theta0: Float64Array
   /** Per data set initial values (all params). */
   init: number[][]
+  /** Free index → 1 when the parameter is shared between data sets. */
+  shared: Uint8Array
 }
 
 function buildLayout(
@@ -272,6 +286,7 @@ function buildLayout(
   const lower: number[] = []
   const upper: number[] = []
   const theta0: number[] = []
+  const sharedFree: number[] = []
   for (let j = 0; j < P; j++) {
     const c = cons[j] ?? { kind: 'fit' }
     const b = opts.bounds?.[j] ?? null
@@ -305,6 +320,7 @@ function buildLayout(
         continue
       }
       const idx = theta0.length
+      sharedFree.push(idx)
       theta0.push(cnt > 0 ? s / cnt : Number.NaN)
       lower.push(lo)
       upper.push(hi)
@@ -325,6 +341,8 @@ function buildLayout(
   for (let i = 0; i < theta0.length; i++) {
     if (!Number.isFinite(theta0[i]!)) return 'The initial values are not all finite.'
   }
+  const shared = new Uint8Array(theta0.length)
+  for (const i of sharedFree) shared[i] = 1
   return {
     K,
     P,
@@ -335,6 +353,7 @@ function buildLayout(
     upper: Float64Array.from(upper),
     theta0: Float64Array.from(theta0),
     init,
+    shared,
   }
 }
 
@@ -529,10 +548,23 @@ function profileInterval(
     let gOut = Number.NaN
     let bracketed = false
     for (let it = 0; it < 60; it++) {
-      let v = vIn + dir * step
-      if ((dir < 0 && v <= bound) || (dir > 0 && v >= bound)) v = bound
+      const at = (s: number) => {
+        const x = vIn + dir * s
+        return (dir < 0 && x <= bound) || (dir > 0 && x >= bound) ? bound : x
+      }
+      let v = at(step)
       if (!Number.isFinite(v)) return v
-      const e = evalAt(v, zIn)
+      let e = evalAt(v, zIn)
+      // Audit 4 S9: a refit that fails decides nothing — it is not a crossing (taken as one, it
+      // ended the interval at the edge of where the model can be evaluated, a numerical
+      // artifact). Closer in (half the step, up to 10 times); failing still, that side is not
+      // determined: unbounded, as R's profile gives NA there.
+      for (let h = 0; h < 10 && e.g === Number.POSITIVE_INFINITY; h++) {
+        step /= 2
+        v = at(step)
+        e = evalAt(v, zIn)
+      }
+      if (e.g === Number.POSITIVE_INFINITY) return dir * Number.POSITIVE_INFINITY
       if (e.g >= 0) {
         vOut = v
         gOut = e.g
@@ -549,16 +581,23 @@ function profileInterval(
     // Illinois false position on [vIn (g < 0), vOut (g ≥ 0)]; a NaN g at vIn is taken as −∞
     // (bisection until that end is replaced).
     let z = zIn
+    const seen = new Map<number, number>()
     const F = (v: number) => {
       const e = evalAt(v, z)
       if (Number.isFinite(e.g)) z = e.z
+      seen.set(v, e.g)
       return e.g
     }
-    return illinois(F, vIn, Number.isNaN(gIn) ? Number.NEGATIVE_INFINITY : gIn, vOut, gOut, {
+    const root = illinois(F, vIn, Number.isNaN(gIn) ? Number.NEGATIVE_INFINITY : gIn, vOut, gOut, {
       maxIter: 100,
       accept: (fc) => Math.abs(fc) <= 1e-13 * target,
       done: (a, b) => Math.abs(b - a) <= 4 * Number.EPSILON * Math.max(Math.abs(a), Math.abs(b)),
     })
+    // Audit 4 S9: where the profile SS jumps across the target instead of crossing it (a refit
+    // that, far out, no longer finds the minimum — or fails), the bracket closes on the jump:
+    // not a limit of the interval. That side is not determined.
+    const g = seen.get(root) ?? F(root)
+    return Math.abs(g) <= 1e-6 * target ? root : dir * Number.POSITIVE_INFINITY
   }
   return [endpoint(-1), endpoint(1)]
 }
@@ -668,15 +707,18 @@ function fitCore(
   const cov = covU.map((v) => v * s2)
   const t = df > 0 ? tQuantile(1 - (1 - confLevel) / 2, df) : NaN_
 
-  // Profile CIs, per free parameter.
+  // Profile CIs, per free parameter (the shared ones only with profileCI 'shared').
   const prof = new Map<number, [number, number]>()
   if (opts.profileCI && status === 'converged' && df > 0) {
     const target = ss * (1 + (t * t) / df)
-    for (const j of cols) {
+    const profiled = opts.profileCI === 'shared' ? cols.filter((j) => L.shared[j] === 1) : cols
+    if (profiled.length) opts.onProfile?.(0, profiled.length)
+    for (const j of profiled) {
       const se = Math.sqrt(cov[covPos[j]! * q + covPos[j]!]!)
       const step0 =
         Number.isFinite(se) && se > 0 ? t * se : Math.max(Math.abs(theta[j]!) * 0.1, 1e-3)
       prof.set(j, profileInterval(prob, theta, ss, j, target, step0, maxIterations))
+      opts.onProfile?.(prof.size, profiled.length)
     }
   }
 

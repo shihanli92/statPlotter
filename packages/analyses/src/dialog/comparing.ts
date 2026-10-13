@@ -1,4 +1,5 @@
 import type { AnalysisDef } from '@ps/model'
+import { comparisons } from '../sketch/words.ts'
 
 // Roadmap 51b (design §4.3, U6): what is compared, in the sign convention of the analysis — "Comparing:
 // Treated − Control" (two groups, B − A), "each group − Vehicle" (with a control), "every pair
@@ -22,7 +23,6 @@ const TWO_GROUPS = new Set([
 const ONE_FACTOR = new Set(['oneWayAnova', 'friedman', 'nestedOneWay', 'multipleOneWay'])
 
 const pairs = (k: number) => (k * (k - 1)) / 2
-const comparisons = (n: number) => `${n} comparison${n === 1 ? '' : 's'}`
 const quote = (s: string) => `“${s || 'untitled'}”`
 
 /**

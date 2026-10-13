@@ -256,4 +256,182 @@ describe('the curve-fit picker (51e)', () => {
     expect(bottom.value).toBe('constant')
     expect(d.querySelector<HTMLInputElement>('[aria-label="Bottom value"]')?.value).toBe('0')
   })
+
+  // Audit 4 (U5, A5; the user's answer Q4): each model keeps its own constraints, initial values
+  // and limits for the dialog's life (returning to it restores them, by click or arrow keys);
+  // clicking the chosen model does nothing.
+  const fitted = (t: DataTable): AnalysisNode => ({
+    kind: 'analysis',
+    id: 'fit2' as NodeId,
+    name: 'Fit',
+    analysisId: 'nonlinearFit',
+    pluginVersion: 3,
+    input: { source: t.id, dataSets: [t.dataSets[0]!.id] },
+    params: {
+      equation: 'inhibitor-response-variable-slope',
+      constraints: { Bottom: { kind: 'constant', value: 0 } },
+      initialValues: { Top: 100 },
+      limits: { LogIC50: { min: -9 } },
+    },
+  })
+  const applied = async (services: AppServices, d: HTMLDialogElement) => {
+    await settle()
+    act(() => button(d, 'Apply').click())
+    const p = (services.store.getState().nodes['fit2' as NodeId] as AnalysisNode).params as Record<
+      string,
+      unknown
+    >
+    return {
+      equation: p.equation,
+      constraints: p.constraints,
+      initialValues: p.initialValues,
+      limits: p.limits,
+    }
+  }
+  const kept = {
+    equation: 'inhibitor-response-variable-slope',
+    constraints: { Bottom: { kind: 'constant', value: 0 } },
+    initialValues: { Top: 100 },
+    limits: { LogIC50: { min: -9 } },
+  }
+
+  it('clicking the chosen model keeps its choices (audit 4 U5)', async () => {
+    const t = doses(LOG)
+    const services = setup([t, fitted(t)])
+    const d = await open(services, { mode: 'edit', analysisId: 'fit2' as NodeId, ...callbacks() })
+    const chosen = card(d, 'inhibitor-response-variable-slope')
+    expect(chosen.getAttribute('aria-checked')).toBe('true')
+    act(() => chosen.click())
+    act(() => chosen.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true })))
+    expect(await applied(services, d)).toEqual(kept)
+  })
+
+  it('another model and back restores the first one’s choices (audit 4 A5, Q4)', async () => {
+    const t = doses(LOG)
+    const services = setup([t, fitted(t)])
+    const d = await open(services, { mode: 'edit', analysisId: 'fit2' as NodeId, ...callbacks() })
+    const ids = [...d.querySelectorAll('.model-cards [role="radio"]')].map(
+      (c) => c.getAttribute('data-model')!,
+    )
+    const at = ids.indexOf('inhibitor-response-variable-slope')
+    const other = ids[(at + 1) % ids.length]!
+    // Arrow keys move and pick; back again: the choices return.
+    const key = (el: HTMLElement, k: string) =>
+      act(() => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true })))
+    key(card(d, 'inhibitor-response-variable-slope'), 'ArrowRight')
+    expect(card(d, other).getAttribute('aria-checked')).toBe('true')
+    key(card(d, other), 'ArrowLeft')
+    expect(card(d, 'inhibitor-response-variable-slope').getAttribute('aria-checked')).toBe('true')
+    // By clicks: the other model starts over, then keeps what was set for it.
+    act(() => card(d, other).click())
+    await settle()
+    const bottom = d.querySelector<HTMLSelectElement>('select[aria-label="Bottom constraint"]')
+    expect(bottom?.value ?? 'fit').not.toBe('constant')
+    act(() => card(d, 'inhibitor-response-variable-slope').click())
+    expect(await applied(services, d)).toEqual(kept)
+  })
+
+  it('keys repeated fast step from the chosen model, not from a stale card (audit 4 A5)', async () => {
+    const t = doses(LOG)
+    const services = setup([t, fitted(t)])
+    const d = await open(services, { mode: 'edit', analysisId: 'fit2' as NodeId, ...callbacks() })
+    const ids = [...d.querySelectorAll('.model-cards [role="radio"]')].map(
+      (c) => c.getAttribute('data-model')!,
+    )
+    const first = card(d, 'inhibitor-response-variable-slope')
+    const at = ids.indexOf('inhibitor-response-variable-slope')
+    // Three presses on the same card (focus not yet moved): three steps.
+    for (let k = 0; k < 3; k++)
+      act(() =>
+        first.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })),
+      )
+    expect(card(d, ids[(at + 3) % ids.length]!).getAttribute('aria-checked')).toBe('true')
+  })
+
+  it('a starting value or limit that isn’t a number is marked, then reverts (audit 4 A10)', async () => {
+    const t = doses(LOG)
+    const services = setup([t, fitted(t)])
+    const d = await open(services, { mode: 'edit', analysisId: 'fit2' as NodeId, ...callbacks() })
+    const type = (el: HTMLInputElement, v: string) =>
+      act(() => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(el, v)
+        el.dispatchEvent(new Event('input', { bubbles: true }))
+      })
+    for (const toggle of d.querySelectorAll<HTMLButtonElement>(
+      '.tier-toggle[aria-expanded="false"]',
+    ))
+      act(() => toggle.click())
+    for (const [name, was] of [
+      ['Top initial value', '100'],
+      ['LogIC50 lower limit', '-9'],
+    ] as const) {
+      const box = d.querySelector<HTMLInputElement>(`input[aria-label="${name}"]`)!
+      expect(box.value).toBe(was)
+      type(box, '1,5')
+      expect(box.getAttribute('aria-invalid'), name).toBe('true')
+      act(() => box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })))
+      // What is shown is what the fit uses.
+      expect(box.value, name).toBe(was)
+      expect(box.getAttribute('aria-invalid'), name).not.toBe('true')
+    }
+    expect(await applied(services, d)).toEqual(kept)
+  })
+
+  it('a fit set up with Guide me keeps its origin through Transform X to log10 (audit 4 U11)', async () => {
+    const t = doses(CONC)
+    const services = setup([t])
+    const d = await open(services, {
+      mode: 'create',
+      tableId: t.id,
+      tab: 'guide',
+      entry: 'doseResponse',
+      ...callbacks(),
+    })
+    for (let k = 0; k < 12 && !button(d, 'Use this'); k++) {
+      const q = [...d.querySelectorAll('fieldset.guide-question')].find(
+        (f) => !f.querySelector('input[type="radio"]:checked'),
+      )
+      if (!q) break
+      const r = [...q.querySelectorAll<HTMLInputElement>('input[type="radio"]')].find(
+        (x) => x.getAttribute('aria-disabled') !== 'true',
+      )!
+      act(() => r.click())
+      await settle(10)
+    }
+    act(() => button(d, 'Use this').click())
+    await settle()
+    act(() => button(d, 'Transform X to log10').click())
+    await settle()
+    act(() => button(d, 'Analyze').click())
+    const fit = Object.values(services.store.getState().nodes).find(
+      (n): n is AnalysisNode => n.kind === 'analysis' && n.analysisId === 'nonlinearFit',
+    )!
+    expect(fit.origin?.guide?.entry).toBe('doseResponse')
+  })
+
+  it('a saved fit holding a pathological equation opens and shows its error (audit 4 T1)', async () => {
+    const t = doses(LOG)
+    for (const text of ['<A:ZZZZ> Y = X', `Y = ${'('.repeat(3000)}X${')'.repeat(3000)}`]) {
+      const node: AnalysisNode = {
+        kind: 'analysis',
+        id: 'bad' as NodeId,
+        name: 'Fit',
+        analysisId: 'nonlinearFit',
+        pluginVersion: 3,
+        input: { source: t.id, dataSets: [t.dataSets[0]!.id] },
+        params: { equation: 'user', userEquation: text },
+      }
+      const services = setup([t, node])
+      await services.engine.idle()
+      expect(services.engine.latest(node.id)?.status).toBe('error')
+      const d = await open(services, { mode: 'edit', analysisId: node.id, ...callbacks() })
+      expect(d.querySelector('.error-text')?.textContent).toMatch(
+        /letters go up to ZZ|nested too deeply/,
+      )
+      act(() => root?.unmount())
+      root = null
+      host?.remove()
+      host = null
+    }
+  })
 })

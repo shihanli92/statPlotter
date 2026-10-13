@@ -33,9 +33,9 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
 
-/** The toolbar's Parameters… of the open results: the Analyze dialog in edit mode. */
+/** The toolbar's Edit parameters… of the open results: the Analyze dialog in edit mode. */
 async function editParameters(page: Page) {
-  await page.getByRole('main').getByRole('button', { name: 'Parameters…' }).click()
+  await page.getByRole('main').getByRole('button', { name: 'Edit parameters…' }).click()
   const d = editDialog(page)
   await expect(d).toBeVisible()
   return d
@@ -75,7 +75,7 @@ test('t test: results, parameters edited, recomputed after a data edit', async (
   const test = resultTable(page, 'Unpaired t test')
   await expect(resultValue(test, 'df')).toHaveText('14')
   await expect(resultValue(diff, '95% confidence interval')).toHaveText('8.260 to 17.07')
-  await expect(tool(page, 'Undo Change analysis')).toBeEnabled()
+  await expect(tool(page, 'Undo Edit parameters')).toBeEnabled()
   await pressShortcut(page, 'Mod+Z')
   await expect(resultValue(welch, 'df')).toHaveText('13.95')
   await pressShortcut(page, 'Mod+Shift+Z')
@@ -172,7 +172,7 @@ test('two-way ANOVA on a grouped table, then main effects only', async ({ page }
   await expect(resultRow(table, 'Column factor').nth(4)).toHaveText('F (1, 18) = 201.4')
   await expect(page.getByRole('tab', { name: 'Multiple comparisons' })).toBeVisible()
 
-  // Analyze › Edit parameters… (the same dialog as the view's Parameters… button).
+  // Analyze › Edit parameters… (the same dialog as the view's Edit parameters… button).
   await runMenu(page, 'Analyze', 'Edit parameters…')
   const d = editDialog(page)
   await d.getByRole('radio', { name: /^No: main effects only/ }).check()

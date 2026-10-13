@@ -1,5 +1,15 @@
 import type { GuideAnswers, GuideEntry, GuideStep } from '@ps/model'
-import { alt, answer, elsewhere, fixed, leaf, needsRaw, pairingHint, question } from './build.ts'
+import {
+  alt,
+  answer,
+  elsewhere,
+  fixed,
+  leaf,
+  needsRaw,
+  pairingHint,
+  question,
+  sizesHint,
+} from './build.ts'
 
 // Roadmap 51a: the grouped tables' questions (design §3.5, "Grouped tables"): rows are one
 // factor, data sets (columns) the other. Roadmap 51c: the leaves set its defaults explicitly (the
@@ -159,6 +169,83 @@ const rowsValues = (design: string): GuideStep =>
     },
   )
 
+const ROWS_ANOVA =
+  'One ANOVA per row with a false discovery rate across the rows (most discoveries real); each row’s comparisons adjusted within the row.'
+const ROWS_WELCH =
+  'One Welch ANOVA per row (it doesn’t pool the groups’ scatter), with a false discovery rate across the rows; each row’s comparisons (Dunnett’s T3) adjusted within the row.'
+
+const multipleOneWay = (equalSD: 'yes' | 'welch') =>
+  fixed({
+    gaussian: true,
+    equalSD,
+    comparisons: 'allPairs',
+    ...(equalSD === 'welch' ? { welchMethod: 'dunnett-t3' } : {}),
+    approach: 'fdr',
+    fdrMethod: 'bh',
+    q: 5,
+  })
+
+/** Three or more groups at each row, different subjects: what kind of values, the scatter. */
+const rowsManyValues: GuideStep = question(
+  'values',
+  'What kind of values?',
+  'Measurements and scores need different tests.',
+  [
+    answer(
+      'measure',
+      'Measurements',
+      question(
+        'scatter',
+        'Could a treatment change how much values vary, or do group sizes differ a lot?',
+        'Ordinary ANOVA pools the scatter of all groups; Welch ANOVA doesn’t.',
+        [
+          answer('yes', 'Yes', leaf('multipleOneWay', multipleOneWay('welch'), ROWS_WELCH)),
+          answer(
+            'no',
+            'No, similar scatter is expected',
+            leaf('multipleOneWay', multipleOneWay('yes'), ROWS_ANOVA),
+          ),
+          answer(
+            'unsure',
+            'Not sure',
+            leaf('multipleOneWay', multipleOneWay('welch'), ROWS_WELCH),
+            {
+              explain: 'Welch ANOVA protects P if the scatter differs and costs little if not.',
+            },
+          ),
+        ],
+        {
+          hint: sizesHint,
+          draws: {
+            yes: { scatter: 'own' },
+            no: { scatter: 'pooled' },
+            unsure: { scatter: 'own' },
+          },
+        },
+      ),
+    ),
+    answer(
+      'scores',
+      'Scores or ranks',
+      leaf(
+        'multipleOneWay',
+        fixed({
+          gaussian: false,
+          comparisons: 'allPairs',
+          kwPMethod: 'exactWhenPossible',
+          dunnMethod: 'holm',
+          approach: 'fdr',
+          fdrMethod: 'bh',
+          q: 5,
+        }),
+        'One Kruskal-Wallis test per row, with a false discovery rate across the rows and Dunn’s comparisons (Holm) within each row.',
+      ),
+      { unavailable: needsRaw },
+    ),
+  ],
+  { draws: { measure: { measure: 'mean' }, scores: { measure: 'ranks' } } },
+)
+
 export const GROUPED_ENTRIES: readonly GuideEntry[] = [
   {
     id: 'twoFactors',
@@ -235,47 +322,27 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
     kinds: ['grouped'],
     keywords: ['multiple anova', 'each row', 'per row'],
     draws: { layout: 'grid', comparisons: 'perRow' },
+    // Audit 4 S14 (Q5): asked whether the groups are the same subjects (matched: two-way
+    // repeated-measures ANOVA, groups compared within each row) and, for measurements, about
+    // the scatter (Welch ANOVA in each row, as the column tree's three or more groups).
     start: question(
-      'values',
-      'What kind of values?',
-      'Measurements and scores need different tests.',
+      'matched',
+      'Were the same subjects measured in every group?',
+      'Pairing is decided by how the experiment was done, not by the data.',
       [
+        answer('no', 'No, different subjects in each group', rowsManyValues),
         answer(
-          'measure',
-          'Measurements',
+          'yes',
+          'Yes: replicate i of every group is the same subject',
           leaf(
-            'multipleOneWay',
-            fixed({
-              gaussian: true,
-              equalSD: 'yes',
-              comparisons: 'allPairs',
-              approach: 'fdr',
-              fdrMethod: 'bh',
-              q: 5,
-            }),
-            'One ANOVA per row with a false discovery rate across the rows (most discoveries real); each row’s comparisons adjusted within the row.',
-          ),
-        ),
-        answer(
-          'scores',
-          'Scores or ranks',
-          leaf(
-            'multipleOneWay',
-            fixed({
-              gaussian: false,
-              comparisons: 'allPairs',
-              kwPMethod: 'exactWhenPossible',
-              dunnMethod: 'holm',
-              approach: 'fdr',
-              fdrMethod: 'bh',
-              q: 5,
-            }),
-            'One Kruskal-Wallis test per row, with a false discovery rate across the rows and Dunn’s comparisons (Holm) within each row.',
+            'twoWayAnova',
+            (_f, a) => twoWay(a, 'columns'),
+            'The same subjects in every group: two-way repeated-measures ANOVA (subjects across the columns) compares the groups within each row, adjusted for that row’s comparisons.',
           ),
           { unavailable: needsRaw },
         ),
       ],
-      { draws: { measure: { measure: 'mean' }, scores: { measure: 'ranks' } } },
+      { hint: pairingHint, draws: { no: { matched: 'no' }, yes: { matched: 'columns' } } },
     ),
   },
   {

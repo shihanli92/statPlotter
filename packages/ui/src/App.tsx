@@ -23,8 +23,7 @@ import {
 } from '@ps/model'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { AnalyzeTab } from './analysis/AnalyzeDialog.tsx'
-import { COMMON_ANALYSES } from './analysis/analysisSearch.ts'
-import { ResultsView } from './analysis/ResultsView.tsx'
+import { COMMON_ANALYSES } from './analysis/commonAnalyses.ts'
 import {
   type Command,
   CommandsContext,
@@ -133,6 +132,11 @@ import { createSerializer } from './worker/serialize.ts'
 // Audit 2 (P8): the shell's dialogs, loaded when first shown (fetched once the page is idle).
 const AnalyzeDialog = lazyComponent(() =>
   import('./analysis/AnalyzeDialog.tsx').then((m) => m.AnalyzeDialog),
+)
+// Audit 4 (P6): the results (their explanations, guide and methods text) out of the start-up
+// bundle, fetched once the page is idle like the dialogs.
+const ResultsView = lazyComponent(() =>
+  import('./analysis/ResultsView.tsx').then((m) => m.ResultsView),
 )
 // Roadmap 51a: Help › Choosing an analysis.
 const ChoosingHelp = lazyComponent(() =>

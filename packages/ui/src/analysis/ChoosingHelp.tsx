@@ -1,11 +1,11 @@
+import { registry } from '@ps/analyses'
 import {
   CARD_FAMILIES,
   entriesFor,
   type GuideOutline,
   guideOutline,
   KIND_NAMES,
-  registry,
-} from '@ps/analyses'
+} from '@ps/analyses/dialog'
 import type { TableKind } from '@ps/model'
 import { useState } from 'react'
 import { Dialog } from '../components/Dialog.tsx'

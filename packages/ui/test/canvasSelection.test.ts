@@ -1,5 +1,5 @@
 import { DocumentStore } from '@ps/engine'
-import { createGraphFor, layoutGraph, type StylePath } from '@ps/graph'
+import { createGraphFor, layoutGraph, presetGraph, type StylePath } from '@ps/graph'
 import {
   type Annotation,
   createTable,
@@ -333,6 +333,52 @@ describe('keyboard: ⌘A, Tab, Enter and Escape', () => {
     expect(elementName(graph, ['axes', 'x', 'tickLabels'])).toBe('X axis tick labels')
     expect(elementName(graph, ['annotations', 0])).toBe('Text box')
     expect(elementName(graph, ['pointOverrides', A, 'r0s0'], title)).toBe('Data point of “Group A”')
+  })
+
+  // Audit 4 (A6): a layer whose marks target the layer itself (a heat map's tiles, its
+  // dendrograms) is a stop too, as a layer's data sets are — Tab reached only the axes.
+  it('a clustered heat map: its tiles and both trees are stops, the front layer first', () => {
+    const table = createTable({ tableKind: 'grouped', columns: 4, rows: 6 })
+    const rows = [
+      [1, 9, 2, 8],
+      [2, 7, 1, 9],
+      [0, 8, 3, 7],
+      [9, 1, 8, 2],
+      [8, 2, 9, 1],
+      [5, 5, 4, 6],
+    ]
+    table.dataSets.forEach((d, j) => {
+      d.subcolumns[0]!.values = rows.map((r) => r[j]!)
+    })
+    const base = { ...presetGraph(table, 'heatmap'), id: G }
+    const graph: GraphNode = {
+      ...base,
+      layers: [
+        ...base.layers.map((l) =>
+          l.geom === 'tile' ? { ...l, style: { cluster: { rows: true, columns: true } } } : l,
+        ),
+        { id: 'rowTree', geom: 'dendrogram', stat: { kind: 'cluster', of: 'rows' } },
+        { id: 'columnTree', geom: 'dendrogram', stat: { kind: 'cluster', of: 'columns' } },
+      ] as GraphNode['layers'],
+    }
+    const scene = layoutGraph({ project: projectOf(table, graph), graph, fonts })
+    const order = elementOrder(graph, sceneIndex(scene.root).nodes.all)
+    const layers = order.filter((p) => p[0] === 'layers')
+    expect(layers.map((p) => p.slice(0, 2))).toEqual([
+      ['layers', 'columnTree'],
+      ['layers', 'rowTree'],
+      ['layers', 'cells'],
+    ])
+    // Tab reaches them, each named.
+    let s = tabStep(EMPTY_SELECTION, G, order, 1)
+    const seen: string[] = []
+    while (s) {
+      seen.push(elementName(graph, primaryPath(s)!))
+      s = tabStep(s, G, order, 1)
+    }
+    expect(seen.filter((n) => /tree|Dendrogram|Heat|tile/i.test(n)).length).toBeGreaterThanOrEqual(
+      3,
+    )
   })
 })
 

@@ -1,5 +1,5 @@
 import type { GuideAnswers, GuideEntry, GuideStep, TableFacts } from '@ps/model'
-import { alt, answer, elsewhere, fixed, leaf, question } from './build.ts'
+import { alt, answer, fixed, leaf, question } from './build.ts'
 
 // Roadmap 51a: the XY tables' questions (design §3.5, "Relationships and regression" and
 // "Curves"), with today's params.
@@ -572,9 +572,3 @@ export const COLUMN_CORRELATION: GuideEntry = {
   draws: { layout: 'pair', measure: 'association', comparisons: 'together' },
   start: correlationQ('column'),
 }
-
-/** Elsewhere steps used by other trees. */
-export const NEEDS_XY = elsewhere(
-  'xy',
-  'Curve fits and regression need an XY table: X is the dose, concentration or time.',
-)

@@ -1,3 +1,5 @@
+// Audit 4 (P6): the forms' dialog parts, explanations and sketches (as the dialog has them).
+import '../src/dialogEntry.ts'
 import {
   type AnalysisDef,
   createTable,

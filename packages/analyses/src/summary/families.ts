@@ -1,4 +1,4 @@
-import type { SummaryPart } from '@ps/model'
+import type { ResultValue, SummaryPart } from '@ps/model'
 import {
   ALPHA,
   CI,
@@ -6,6 +6,7 @@ import {
   cell,
   comparisonRows,
   comparisonsTable,
+  computedCi,
   count,
   intervalOf,
   joinParts,
@@ -17,6 +18,7 @@ import {
   P,
   row,
   type SummaryInput,
+  sharedSide,
   sizes,
   type Table,
   tableBlock,
@@ -32,8 +34,18 @@ import {
 type Parts = SummaryPart[]
 export type Summarize = (s: SummaryInput) => Parts | null
 
-const sig = (p: number) => p < ALPHA
-const higher = (d: number) => (d >= 0 ? 'higher' : 'lower')
+/**
+ * Audit 4 S6: three-valued — P below the threshold, not below it, or not computed (NaN). A P
+ * that wasn't computed is never "no evidence of a difference".
+ */
+type Verdict = 'yes' | 'no' | 'na'
+const sig = (p: number): Verdict => (!Number.isFinite(p) ? 'na' : p < ALPHA ? 'yes' : 'no')
+/** The direction of an effect in words; null when it has none (0) or wasn't computed (NaN). */
+const higher = (d: number): 'higher' | 'lower' | null => (d > 0 ? 'higher' : d < 0 ? 'lower' : null)
+const isSig = (p: number) => sig(p) === 'yes'
+const NO_P = 'P could not be computed'
+/** "P = 0.003", or "P could not be computed". */
+const pOr = (p: number): Parts => (Number.isFinite(p) ? [P(p)] : [NO_P])
 const testName = (s: SummaryInput, fallback: string): string => {
   const t = s.result.values.test
   return t?.kind === 'text' ? t.v : fallback
@@ -44,11 +56,21 @@ const PROPER =
   /^(Mann|Wilcoxon|Kolmogorov|Kruskal|Friedman|Fisher|Pearson|Spearman|Welch|Student|Dunnett|Tukey|Dunn|Gehan|Bonferroni|Šidák|Holm|Brown|Bartlett|Shapiro|Anderson|D’Agostino|Games|Tamhane|Newman)/
 const inSentence = (t: string) => (PROPER.test(t) ? t : lower1(t))
 
-/** ", one-tailed (predicted: Treated higher than Control)" when one-tailed. */
-function tailWords(s: SummaryInput): string {
+/**
+ * ", one-tailed (predicted: Treated higher than Control)" when one-tailed: the result's
+ * Predicted direction row, else `words` ([increase, decrease]) for the analyses without one.
+ */
+function tailWords(s: SummaryInput, words?: readonly [string, string]): string {
   if (s.params.tails !== 'one') return ''
   const said = row(s.result, { label: 'Predicted direction' })
-  return said?.kind === 'text' ? `, one-tailed (predicted: ${said.v})` : ', one-tailed'
+  if (said?.kind === 'text') return `, one-tailed (predicted: ${said.v})`
+  const w =
+    s.params.predicted === 'increase'
+      ? words?.[0]
+      : s.params.predicted === 'decrease'
+        ? words?.[1]
+        : undefined
+  return w ? `, one-tailed (predicted: ${w})` : ', one-tailed'
 }
 
 /** A one-tailed effect that went the other way to the direction predicted. */
@@ -57,7 +79,49 @@ const againstPrediction = (s: SummaryInput, effect: number) =>
   ((s.params.predicted === 'increase' && effect < 0) ||
     (s.params.predicted === 'decrease' && effect > 0))
 
+/**
+ * Audit 4 S7: the unpaired t test's words for a one-tailed result that went the other way, for
+ * every analysis with a predicted direction: ", the opposite way to the prediction (predicted:
+ * …); one-tailed P = 0.99, {test}".
+ */
+const opposite = (p: number, test: string, tail: string): Parts => [
+  `, the opposite way to the prediction${tail.replace(/^, one-tailed/, '')}; one-tailed `,
+  ...pOr(p),
+  `, ${test}`,
+]
+
+/**
+ * The end of a sentence after its effect, by the verdict: "; P = 0.003, {test}{tail}", "; no
+ * evidence of a difference (P = 0.4, {test}{tail})", "; P could not be computed ({test}{tail})",
+ * or the opposite way to the prediction (S7).
+ */
+function verdictEnd(
+  p: number,
+  test: string,
+  tail: string,
+  against: boolean,
+  noEvidence = 'no evidence of a difference',
+): Parts {
+  if (against) return opposite(p, test, tail)
+  const v = sig(p)
+  if (v === 'na') return [`; ${NO_P} (${test}${tail})`]
+  if (v === 'no') return [`; ${noEvidence} (`, P(p), `, ${test}${tail})`]
+  return ['; ', P(p), `, ${test}${tail}`]
+}
+
+/** The CI's parts in parentheses-less form ("95% CI 1 to 2"), none when it wasn't computed. */
+const ciIn = (ci: { lo: number; hi: number; level: number } | null, unit?: string): Parts => {
+  const c = computedCi(ci)
+  return c ? [CI(c, unit)] : []
+}
+
 // --- Two groups -----------------------------------------------------------------------------------
+
+/** " (…)" around parts, nothing when there are none. */
+const paren = (parts: Parts): Parts => (parts.length ? [' (', ...parts, ')'] : [])
+
+/** An interval oriented for a difference read the other way (−hi to −lo), kept when null. */
+const flipped = (ci: { lo: number; hi: number; level: number } | null) => (ci ? negated(ci) : null)
 
 /** t tests: unpaired (raw or summary data), paired, ratio paired. */
 const tTest: Summarize = (s) => {
@@ -69,89 +133,80 @@ const tTest: Summarize = (s) => {
   const test = inSentence(testName(s, 't test'))
   const p = c.p
   const est = c.estimate
+  const d = est.value
   const level = intervalOf(row(s.result, { key: 'ci' }))?.level ?? 0.95
-  const ci = { lo: est.lo, hi: est.hi, level }
+  const ci = computedCi({ lo: est.lo, hi: est.hi, level })
   const unit = unitOf(s, 'y')
   const tail = tailWords(s)
+  const ratio = s.params.design === 'paired' && row(s.result, { key: 'ratio' }) !== null
+  if (!Number.isFinite(d))
+    return [
+      `The ${ratio ? `ratio ${b} / ${a}` : `difference ${b} − ${a}`} could not be computed (${test}${tail}).`,
+    ]
   if (s.params.design === 'paired') {
     const pairs = numOf(row(s.result, { key: 'pairs' }))
-    if (row(s.result, { key: 'ratio' })) {
+    if (ratio) {
       const ratioCi = intervalOf(row(s.result, { key: 'ratioCi' }))
       return [
         `${b} is `,
-        n3(est.value),
+        n3(d),
         ` times ${a} on average (geometric mean ratio${ratioCi ? ', ' : ''}`,
         ...(ratioCi ? [CI(ratioCi)] : []),
         ') across ',
         count(pairs),
-        ' pairs; ',
-        P(p),
-        `, ${test}${tail}.`,
+        ' pairs',
+        ...verdictEnd(p, test, tail, againstPrediction(s, d - 1)),
+        '.',
       ]
     }
-    if (!sig(p))
+    const dir = higher(d)
+    const against = againstPrediction(s, d)
+    if (sig(p) === 'yes' && dir && !against)
       return [
-        `${b} − ${a} averages `,
-        n3(est.value, unit),
-        ' across ',
+        `${b} is ${dir} than ${a} by `,
+        n3(Math.abs(d), unit),
+        ' on average across ',
         count(pairs),
-        ' pairs (',
-        CI(ci, unit),
-        '); no evidence of a difference (',
-        P(p),
-        `, ${test}${tail}).`,
+        ' pairs',
+        ...paren(ciIn(d >= 0 ? ci : flipped(ci), unit)),
+        ...verdictEnd(p, test, tail, false),
+        '.',
       ]
     return [
-      `${b} is ${higher(est.value)} than ${a} by `,
-      n3(Math.abs(est.value), unit),
-      ' on average across ',
+      `${b} − ${a} averages `,
+      n3(d, unit),
+      ' across ',
       count(pairs),
-      ' pairs (',
-      CI(est.value >= 0 ? ci : negated(ci), unit),
-      '); ',
-      P(p),
-      `, ${test}${tail}.`,
+      ' pairs',
+      ...paren(ciIn(ci, unit)),
+      ...verdictEnd(p, test, tail, against),
+      '.',
     ]
   }
   const n = [numOf(row(s.result, { key: 'nA' })), numOf(row(s.result, { key: 'nB' }))]
-  if (againstPrediction(s, est.value))
-    return [
-      `${b} and ${a} differ by `,
-      n3(est.value, unit),
-      ` (${b} − ${a}, `,
-      CI(ci, unit),
-      `), the opposite way to the prediction${tail.replace(/^, one-tailed/, '')}; one-tailed `,
-      P(p),
-      `, ${test}. `,
-      ...sizes(n),
-      '.',
-    ]
-  if (!sig(p))
-    return [
-      `${b} and ${a} differ by `,
-      n3(est.value, unit),
-      ` (${b} − ${a}, `,
-      CI(ci, unit),
-      '); no evidence of a difference (',
-      P(p),
-      `, ${test}${tail}). `,
-      ...sizes(n),
-      '.',
-    ]
-  return [
-    `${b} is ${higher(est.value)} than ${a} by `,
-    n3(Math.abs(est.value), unit),
-    ' (',
-    CI(est.value >= 0 ? ci : negated(ci), unit),
-    '); ',
-    P(p),
-    `, ${test}${tail}. `,
-    ...sizes(n),
-    '.',
-  ]
+  const against = againstPrediction(s, d)
+  const dir = higher(d)
+  const head: Parts =
+    sig(p) === 'yes' && dir && !against
+      ? [
+          `${b} is ${dir} than ${a} by `,
+          n3(Math.abs(d), unit),
+          ...paren(ciIn(d >= 0 ? ci : flipped(ci), unit)),
+        ]
+      : [
+          `${b} and ${a} differ by `,
+          n3(d, unit),
+          ` (${b} − ${a}`,
+          ...ciIn(ci, unit).flatMap((x) => [', ', x]),
+          ')',
+        ]
+  return [...head, ...verdictEnd(p, test, tail, against), '. ', ...sizes(n), '.']
 }
 
-/** Mann-Whitney: values in B tend to be higher than in A (the Hodges-Lehmann shift). */
+/**
+ * Mann-Whitney: values in B tend to be higher than in A (the Hodges-Lehmann shift). Without a
+ * shift (S6: tied values can leave it uncomputed) the direction is the medians'.
+ */
 const mannWhitney: Summarize = (s) => {
   const [A, B] = s.input
   const c = s.result.comparisons[0]
@@ -159,36 +214,59 @@ const mannWhitney: Summarize = (s) => {
   const [a, b] = [A.title, B.title]
   const est = c.estimate
   const level = intervalOf(row(s.result, { key: 'ci' }))?.level ?? 0.95
-  const ci = { lo: est.lo, hi: est.hi, level }
+  const ci = computedCi({ lo: est.lo, hi: est.hi, level })
+  const mA = numOf(row(s.result, { key: 'medianA' }))
+  const mB = numOf(row(s.result, { key: 'medianB' }))
   const medians: Parts = [
     ' Medians ',
-    n3(numOf(row(s.result, { key: 'medianA' }))),
+    n3(mA),
     ` (${a}) and `,
-    n3(numOf(row(s.result, { key: 'medianB' }))),
+    n3(mB),
     ` (${b}); `,
     ...sizes([numOf(row(s.result, { key: 'nA' })), numOf(row(s.result, { key: 'nB' }))]),
     '.',
   ]
   const tail = tailWords(s)
-  if (!sig(c.p))
+  const test = 'Mann-Whitney test'
+  const shifted = Number.isFinite(est.value)
+  const effect = shifted ? est.value : mB - mA
+  const shift: Parts = shifted
+    ? [`shift ${b} − ${a} `, n3(est.value), ...ciIn(ci).flatMap((x) => [', ', x])]
+    : []
+  const against = againstPrediction(s, effect)
+  const dir = higher(effect)
+  const v = sig(c.p)
+  if (against)
     return [
-      `No evidence that values in ${b} and ${a} tend to differ (shift ${b} − ${a} `,
-      n3(est.value),
-      ', ',
-      CI(ci),
-      '; ',
+      `Values in ${b} and ${a} differ`,
+      ...paren(shift),
+      ...opposite(c.p, test, tail),
+      '.',
+      ...medians,
+    ]
+  if (v === 'na')
+    return [
+      shifted
+        ? `The shift ${b} − ${a} is `
+        : `Values in ${b} against ${a}: ${NO_P} (${test}${tail}).`,
+      ...(shifted ? [n3(est.value), ...paren(ciIn(ci)), `; ${NO_P} (${test}${tail}).`] : []),
+      ...medians,
+    ]
+  if (v === 'no' || !dir)
+    return [
+      `No evidence that values in ${b} and ${a} tend to differ (`,
+      ...shift,
+      ...(shift.length ? ['; '] : []),
       P(c.p),
-      `, Mann-Whitney test${tail}).`,
+      `, ${test}${tail}).`,
       ...medians,
     ]
   return [
-    `Values in ${b} tend to be ${higher(est.value)} than in ${a} (shift ${b} − ${a} `,
-    n3(est.value),
-    ', ',
-    CI(ci),
-    '); ',
+    `Values in ${b} tend to be ${dir} than in ${a}`,
+    ...paren(shift),
+    '; ',
     P(c.p),
-    `, Mann-Whitney test${tail}.`,
+    `, ${test}${tail}.`,
     ...medians,
   ]
 }
@@ -201,23 +279,33 @@ const wilcoxon: Summarize = (s) => {
   const [a, b] = [A.title, B.title]
   const est = c.estimate
   const level = intervalOf(row(s.result, { key: 'ci' }))?.level ?? 0.95
-  const ci = { lo: est.lo, hi: est.hi, level }
+  const ci = computedCi({ lo: est.lo, hi: est.hi, level })
   const pairs = numOf(row(s.result, { key: 'pairs' }))
   const tail = tailWords(s)
-  const head = sig(c.p)
-    ? `Within pairs, ${b} tends to be ${higher(est.value)} than ${a}`
-    : `Within pairs, no evidence that ${b} and ${a} tend to differ`
-  return [
-    `${head} (median difference ${b} − ${a} `,
-    n3(est.value),
-    ', ',
-    CI(ci),
-    '); ',
-    P(c.p),
-    `, Wilcoxon matched-pairs test${tail}, `,
-    count(pairs),
-    ' pairs.',
-  ]
+  const test = 'Wilcoxon matched-pairs test'
+  const median: Parts = Number.isFinite(est.value)
+    ? [`median difference ${b} − ${a} `, n3(est.value), ...ciIn(ci).flatMap((x) => [', ', x])]
+    : []
+  const against = againstPrediction(s, est.value)
+  const dir = higher(est.value)
+  const v = sig(c.p)
+  const n: Parts = [', ', count(pairs), ' pairs.']
+  if (against)
+    return [
+      `Within pairs, ${b} and ${a} differ`,
+      ...paren(median),
+      ...opposite(c.p, test, tail),
+      ...n,
+    ]
+  if (v === 'na')
+    return [`Within pairs, ${b} against ${a}`, ...paren(median), `: ${NO_P} (${test}${tail})`, ...n]
+  const head =
+    v === 'yes'
+      ? dir
+        ? `Within pairs, ${b} tends to be ${dir} than ${a}`
+        : `Within pairs, ${b} and ${a} tend to differ`
+      : `Within pairs, no evidence that ${b} and ${a} tend to differ`
+  return [head, ...paren(median), '; ', P(c.p), `, ${test}${tail}`, ...n]
 }
 
 /** Kolmogorov-Smirnov: the distributions differ, or no evidence. */
@@ -226,7 +314,7 @@ const kolmogorovSmirnov: Summarize = (s) => {
   const p = numOf(s.result.values.p)
   if (!A || !B || Number.isNaN(p)) return null
   return [
-    sig(p)
+    sig(p) === 'yes'
       ? `The distributions of ${A.title} and ${B.title} differ (`
       : `No evidence that the distributions of ${A.title} and ${B.title} differ (`,
     P(p),
@@ -244,6 +332,9 @@ const oneSample: Summarize = (s) => {
   if (!main || !size) return null
   const h = numOf(cell(main, t ? 'Theoretical median' : 'Theoretical mean', main.columns[1]!))
   const unit = unitOf(s, 'y')
+  const hText = Number.isFinite(h) ? `${+h.toPrecision(3)}` : 'the hypothetical value'
+  // S7: the one-tailed prediction in words (this result has no Predicted direction row).
+  const tail = tailWords(s, [`above ${hText}`, `below ${hText}`])
   const items = main.columns.slice(1, 4).map((name): Parts => {
     const center = numOf(cell(main, t ? 'Actual median' : 'Actual mean', name))
     const p = numOf(cell(main, 'P value', name))
@@ -258,17 +349,42 @@ const oneSample: Summarize = (s) => {
     const j = size.columns.indexOf(name)
     const ci = ciRow ? intervalOf(ciRow[j]) : null
     const what = t ? 'median' : 'mean'
+    const dir = d > 0 ? 'above' : d < 0 ? 'below' : null
+    const head: Parts = [`the ${what} of ${name}, `, n3(center, unit)]
+    if (againstPrediction(s, d))
+      return [
+        ...head,
+        ', differs from ',
+        n3(h, unit),
+        ' by ',
+        n3(d, unit),
+        ...paren(ciIn(ci, unit)),
+        ', the opposite way to the prediction; one-tailed ',
+        ...pOr(p),
+      ]
+    const v = sig(p)
+    if (v === 'na') return [...head, ', against ', n3(h, unit), `: ${NO_P}`]
+    if (v === 'yes' && dir)
+      return [
+        ...head,
+        `, is ${dir} `,
+        n3(h, unit),
+        ' by ',
+        n3(Math.abs(d), unit),
+        ...paren(ciIn(d >= 0 ? ci : flipped(ci), unit)),
+        '; ',
+        P(p),
+      ]
     return [
-      `the ${what} of ${name}, `,
-      n3(center, unit),
-      sig(p) ? `, is ${d >= 0 ? 'above' : 'below'} ` : ', shows no evidence of differing from ',
+      ...head,
+      ', shows no evidence of differing from ',
       n3(h, unit),
-      sig(p) ? ' by ' : ' (difference ',
-      ...(sig(p) ? [n3(Math.abs(d), unit)] : [n3(d, unit)]),
-      ...(ci ? [' (', CI(d >= 0 || !sig(p) ? ci : negated(ci), unit), ')'] : []),
-      sig(p) ? '; ' : ', ',
+      ' (difference ',
+      n3(d, unit),
+      ...ciIn(ci, unit).flatMap((x) => [' (', x, ')']),
+      ', ',
       P(p),
-      sig(p) ? '' : ')',
+      ')',
     ]
   })
   const more = main.columns.length - 1 - items.length
@@ -277,7 +393,7 @@ const oneSample: Summarize = (s) => {
   if (typeof first === 'string') parts[0] = first.charAt(0).toUpperCase() + first.slice(1)
   return [
     ...parts,
-    `${more > 0 ? `; ${more} more in the table` : ''} (${t ? 'Wilcoxon signed-rank test' : 'one-sample t test'}).`,
+    `${more > 0 ? `; ${more} more in the table` : ''} (${t ? 'Wilcoxon signed-rank test' : 'one-sample t test'}${tail}).`,
   ]
 }
 
@@ -285,17 +401,71 @@ const oneSample: Summarize = (s) => {
 
 /** The adjusted P of a comparison: "adjusted P = 0.007" or "q = 0.01". */
 const adjusted = (r: ComparisonRow): Parts =>
-  r.q ? [{ value: { kind: 'pvalue', v: r.p }, role: 'q' }] : ['adjusted ', P(r.p)]
+  !Number.isFinite(r.p)
+    ? [`${r.q ? 'q value' : 'adjusted P'} could not be computed`]
+    : r.q
+      ? [{ value: { kind: 'pvalue', v: r.p }, role: 'q' }]
+      : ['adjusted ', P(r.p)]
+
+/** The groups' medians a rank test's comparisons name (its Data summary's Median row). */
+type Medians = ReadonlyMap<string, number>
+
+/** The Median row of a result's Data summary, by group title (empty when it has none). */
+function mediansOf(s: SummaryInput): Medians {
+  const t = tableBlock(s.result, 'Data summary')
+  const out = new Map<string, number>()
+  const r = t?.rows.find((x) => x[0]?.kind === 'text' && x[0].v === 'Median')
+  if (t && r) for (let j = 1; j < t.columns.length; j++) out.set(t.columns[j]!, numOf(r[j]))
+  return out
+}
+
+/**
+ * Audit 4 S1 (Q3): a rank comparison says which group is higher and gives the medians — never
+ * the mean-rank or rank-sum difference, which isn't a difference of the data: "(medians 20.1
+ * and 10.1, adjusted P = 0.0096)", or without medians "(adjusted P = 0.0096)".
+ */
+function rankParts(
+  r: ComparisonRow,
+  names: readonly string[],
+  medians: Medians,
+  unit: string | undefined,
+  word = 'medians',
+  sep = ' and ',
+): Parts {
+  const ms = names.map((n) => medians.get(n) ?? Number.NaN)
+  if (!ms.every(Number.isFinite)) return ['(', ...adjusted(r), ')']
+  return [
+    `(${word} `,
+    ...joinParts(
+      ms.map((m) => [n3(m, unit)]),
+      sep,
+    ),
+    ', ',
+    ...adjusted(r),
+    ')',
+  ]
+}
 
 /** One comparison against the control, oriented group − control. */
-function vsControlItem(r: ComparisonRow, control: string, unit?: string): Parts {
+function vsControlItem(
+  r: ComparisonRow,
+  control: string,
+  unit?: string,
+  medians: Medians = new Map(),
+): Parts {
   const flip = r.left === control
   const group = flip ? r.right : r.left
   const d = flip ? -r.diff : r.diff
   const ci = r.ci ? (flip ? negated(r.ci) : r.ci) : null
   const finite = Number.isFinite(d)
   if (!finite) return [`${group} (`, ...adjusted(r), ')']
-  if (sig(r.p))
+  if (r.rank) {
+    const values = rankParts(r, [group, control], medians, unit, 'median', ' vs. ')
+    return isSig(r.p) && d !== 0
+      ? [`${group} is ${higher(d)} `, ...values]
+      : [`${group} shows no evidence of a difference `, ...values]
+  }
+  if (isSig(r.p))
     return [
       `${group} is ${higher(d)} by `,
       n3(Math.abs(d), unit),
@@ -315,10 +485,12 @@ function vsControlItem(r: ComparisonRow, control: string, unit?: string): Parts 
 }
 
 /** One pair, the larger first: "10 mg/kg is higher than Vehicle by 12.0 (95% CI …, adjusted P …)". */
-function pairItem(r: ComparisonRow, unit?: string): Parts {
+function pairItem(r: ComparisonRow, unit?: string, medians: Medians = new Map()): Parts {
   const within = r.within ? `${r.within}: ` : ''
   if (!Number.isFinite(r.diff)) return [`${within}${r.left} vs. ${r.right} (`, ...adjusted(r), ')']
   const [hi, lo] = r.diff >= 0 ? [r.left, r.right] : [r.right, r.left]
+  if (r.rank)
+    return [`${within}${hi} is higher than ${lo} `, ...rankParts(r, [hi, lo], medians, unit)]
   const ci = r.ci ? (r.diff >= 0 ? r.ci : negated(r.ci)) : null
   return [
     `${within}${hi} is higher than ${lo} by `,
@@ -346,23 +518,29 @@ function comparisonsParts(s: SummaryInput, t: Table | null, unit?: string): Part
   const method = methodWords(t)
   const control = s.params.comparisons === 'vsControl' || s.params.kind === 'vsControl'
   const controlName = control ? controlTitle(s, rows) : null
+  const medians = mediansOf(s)
   if (
     controlName &&
     rows.every((r) => !r.within && (r.left === controlName || r.right === controlName))
   ) {
-    const shown = rows.slice(0, 4).map((r) => vsControlItem(r, controlName, unit))
+    const shown = rows.slice(0, 4).map((r) => vsControlItem(r, controlName, unit, medians))
     return [
       `Compared with ${controlName}, `,
       ...joinParts(shown, '; ', '; and '),
       `${m > shown.length ? `; ${m - shown.length} more in the table` : ''}; ${method} for ${m} comparison${m === 1 ? '' : 's'}. `,
     ]
   }
-  const differ = rows.filter((r) => sig(r.p))
+  const differ = rows.filter((r) => isSig(r.p))
   const largest = [...differ].sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff) || x.p - y.p)
-  const shown = largest.slice(0, 3).map((r) => pairItem(r, unit))
+  const shown = largest.slice(0, 3).map((r) => pairItem(r, unit, medians))
   const pairsWord = m === 1 ? 'comparison' : 'comparisons'
   if (!differ.length) {
-    const smallest = Math.min(...rows.map((r) => r.p))
+    const ps = rows.map((r) => r.p).filter(Number.isFinite)
+    if (!ps.length)
+      return [
+        `${m === 1 ? 'The comparison’s adjusted P' : `The ${m} comparisons’ adjusted P values`} could not be computed (${method}). `,
+      ]
+    const smallest = Math.min(...ps)
     return [
       `No evidence of a difference in the ${m} ${pairsWord} after adjustment (${method}; smallest adjusted `,
       P(smallest),
@@ -376,16 +554,15 @@ function comparisonsParts(s: SummaryInput, t: Table | null, unit?: string): Part
   ]
 }
 
-/** The control's title: the params' control data set (else the first). */
+/**
+ * The control's title: the side every row shares (audit 4 S3: a two-way table's rows are compared
+ * with a row or a cell, not the params' data set), else the params' control data set, else the
+ * first.
+ */
 function controlTitle(s: SummaryInput, rows: readonly ComparisonRow[]): string | null {
   const key = typeof s.params.control === 'string' ? s.params.control : ''
   const named = s.input.find((d) => d.ref.key === key)?.title
-  if (named) return named
-  // Saved analyses' first group; else the side every row shares.
-  const shared = [rows[0]?.left, rows[0]?.right].find(
-    (x) => x !== undefined && rows.every((r) => r.left === x || r.right === x),
-  )
-  return shared ?? s.input[0]?.title ?? null
+  return sharedSide(rows, named) ?? named ?? s.input[0]?.title ?? null
 }
 
 /** One-way ANOVA (ordinary, Welch, Brown-Forsythe, repeated measures), Kruskal-Wallis, Friedman. */
@@ -399,35 +576,39 @@ const oneWay: Summarize = (s) => {
   const matched = /Repeated|Mixed|Friedman/.test(test)
   const exact = row(s.result, { label: 'Exact or approximate P value?' })
   const exactWord = exact?.kind === 'text' ? `${lower1(exact.v)} ` : ''
-  const overall: Parts = nonparametric
-    ? [
-        sig(p)
-          ? matched
-            ? 'Within subjects, values tend to differ between the groups ('
-            : 'Values tend to differ between groups ('
-          : 'No evidence that values tend to differ between groups (',
-        `${test}, ${exactWord}`,
-        P(p),
-        '). ',
-      ]
-    : matched
-      ? [
-          sig(p)
-            ? `Within subjects, the mean changes across the ${k} groups (`
-            : `Within subjects, no evidence that the mean changes across the ${k} groups (`,
-          `${inSentence(test)}, `,
-          P(p),
-          ...subjectsParts(s),
-          '). ',
-        ]
-      : [
-          sig(p)
-            ? `The means differ across the ${k} groups (`
-            : `No evidence that the means differ across the ${k} groups (`,
-          `${inSentence(test)}, `,
-          P(p),
-          '). ',
-        ]
+  const v = sig(p)
+  const overall: Parts =
+    v === 'na'
+      ? [`The ${inSentence(test)}’s ${NO_P}. `]
+      : nonparametric
+        ? [
+            v === 'yes'
+              ? matched
+                ? 'Within subjects, values tend to differ between the groups ('
+                : 'Values tend to differ between groups ('
+              : 'No evidence that values tend to differ between groups (',
+            `${test}, ${exactWord}`,
+            P(p),
+            '). ',
+          ]
+        : matched
+          ? [
+              v === 'yes'
+                ? `Within subjects, the mean changes across the ${k} groups (`
+                : `Within subjects, no evidence that the mean changes across the ${k} groups (`,
+              `${inSentence(test)}, `,
+              P(p),
+              ...subjectsParts(s),
+              '). ',
+            ]
+          : [
+              v === 'yes'
+                ? `The means differ across the ${k} groups (`
+                : `No evidence that the means differ across the ${k} groups (`,
+              `${inSentence(test)}, `,
+              P(p),
+              '). ',
+            ]
   const comparisons = comparisonsParts(s, comparisonsTable(s.result), unit)
   if (!comparisons.length) return trim([...overall, ...trendParts(s)])
   return trim([
@@ -448,8 +629,9 @@ function subjectsParts(s: SummaryInput): Parts {
 function trendParts(s: SummaryInput): Parts {
   const t = row(s.result, { block: 'Test for linear trend', label: 'P value' })
   if (t?.kind !== 'pvalue') return []
+  if (sig(t.v) === 'na') return [`The test for a linear trend’s ${NO_P}. `]
   return [
-    sig(t.v)
+    isSig(t.v)
       ? 'A linear trend across the groups in their order ('
       : 'No evidence of a linear trend across the groups in their order (',
     P(t.v),
@@ -468,26 +650,32 @@ const twoWay: Summarize = (s) => {
   const rowF = f?.rows || 'the row factor'
   const cap = (t: string) => (t.startsWith('the ') ? t.charAt(4).toUpperCase() + t.slice(5) : t)
   const test = inSentence(testName(s, 'two-way ANOVA'))
-  const head: Parts =
-    !Number.isNaN(pi) && sig(pi)
-      ? [
-          `The effect of ${col} depends on ${rowF} (interaction `,
-          P(pi),
-          `, ${test}); the comparisons within each level of ${rowF} describe it. `,
-        ]
-      : [
-          `${cap(col)}: `,
-          P(pc),
-          `; ${cap(rowF).replace(/^Row factor$/, 'row factor')}: `,
-          P(pr),
-          ...(Number.isNaN(pi)
-            ? ['. ']
-            : [
-                '; no evidence that one changes the effect of the other (interaction ',
-                P(pi),
-                '). ',
-              ]),
-        ]
+  // Audit 4 S13: what describes the interaction follows the comparisons chosen.
+  const describedBy =
+    s.params.comparisons === 'withinRows'
+      ? `the comparisons within each level of ${rowF} describe it`
+      : s.params.comparisons === 'withinColumns'
+        ? `the comparisons within each level of ${col} describe it`
+        : s.params.comparisons === 'allCells'
+          ? 'the comparisons between the cells describe it'
+          : s.params.comparisons === 'mainColumns' || s.params.comparisons === 'mainRows'
+            ? `the main-effect comparisons average over it; comparisons within each level of ${rowF} would describe it`
+            : `comparisons within each level of ${rowF} would describe it`
+  const head: Parts = isSig(pi)
+    ? [
+        `The effect of ${col} depends on ${rowF} (interaction `,
+        P(pi),
+        `, ${test}); ${describedBy}. `,
+      ]
+    : [
+        `${cap(col)}: `,
+        ...pOr(pc),
+        `; ${cap(rowF).replace(/^Row factor$/, 'row factor')}: `,
+        ...pOr(pr),
+        ...(Number.isNaN(pi)
+          ? ['. ']
+          : ['; no evidence that one changes the effect of the other (interaction ', P(pi), '). ']),
+      ]
   return trim([...head, ...comparisonsParts(s, comparisonsTable(s.result), unitOf(s, 'y'))])
 }
 
@@ -504,7 +692,7 @@ const effects: Summarize = (s) => {
     .map((r) => ({ name: r[0]?.kind === 'text' ? r[0].v : '', p: numOf(r[jP]) }))
     .filter((r) => r.name && !/^(Residual|Total|Error)/.test(r.name) && Number.isFinite(r.p))
   if (!rows.length) return null
-  const below = rows.filter((r) => sig(r.p))
+  const below = rows.filter((r) => isSig(r.p))
   const test = inSentence(testName(s, 'ANOVA'))
   if (!below.length)
     return [
@@ -537,22 +725,23 @@ const nestedT: Summarize = (s) => {
   if (Number.isNaN(p) || Number.isNaN(d)) return null
   const unit = unitOf(s, 'y')
   const [a, b] = [A.title, B.title]
-  if (!sig(p))
+  const tail = tailWords(s)
+  const against = againstPrediction(s, d)
+  const dir = higher(d)
+  if (isSig(p) && dir && !against)
     return [
-      `${b} and ${a} differ by `,
-      n3(d, unit),
-      ...(ci ? [` (${b} − ${a}, `, CI(ci, unit), ')'] : []),
-      '; no evidence of a difference (',
-      P(p),
-      `, nested t test${tailWords(s)}).`,
+      `${b} is ${dir} than ${a} by `,
+      n3(Math.abs(d), unit),
+      ...paren(ciIn(d >= 0 ? ci : flipped(ci), unit)),
+      ...verdictEnd(p, 'nested t test', tail, false),
+      '.',
     ]
   return [
-    `${b} is ${higher(d)} than ${a} by `,
-    n3(Math.abs(d), unit),
-    ...(ci ? [' (', CI(d >= 0 ? ci : negated(ci), unit), ')'] : []),
-    '; ',
-    P(p),
-    `, nested t test${tailWords(s)}.`,
+    `${b} and ${a} differ by `,
+    n3(d, unit),
+    ...(ci ? [` (${b} − ${a}, `, CI(ci, unit), ')'] : []),
+    ...verdictEnd(p, 'nested t test', tail, against),
+    '.',
   ]
 }
 
@@ -568,14 +757,18 @@ const multipleT: Summarize = (s) => {
   const family = row(s.result, { label: 'Multiple comparisons' })
   const fdr = s.params.approach === 'fdr'
   const q = typeof s.params.q === 'number' ? s.params.q : 5
+  const alpha = typeof s.params.alpha === 'number' ? s.params.alpha : ALPHA
+  // Audit 4 S13: without a correction, the rows below α — not "after correction".
   const what = fdr
-    ? `discoveries at a false discovery rate of ${q}%`
-    : `below the threshold after correction`
+    ? `discoveries at a false discovery rate of ${q}%${family?.kind === 'text' ? ` (${lower1(family.v)})` : ''}`
+    : s.params.approach === 'none'
+      ? `below the threshold (P < ${+alpha.toPrecision(12)}, not corrected for the ${tests} rows)`
+      : `below the threshold after correction${family?.kind === 'text' ? ` (${lower1(family.v)})` : ''}`
   return [
     count(flagged),
     ` of `,
     count(tests),
-    ` rows are ${what}${family?.kind === 'text' ? ` (${lower1(family.v)})` : ''}, comparing ${diff} by ${test?.kind === 'text' ? inSentence(test.v.replace(/ \(.*\)$/, '')) : 'a t test'} in each row.`,
+    ` rows are ${what}, comparing ${diff} by ${test?.kind === 'text' ? inSentence(test.v.replace(/ \(.*\)$/, '')) : 'a t test'} in each row.`,
   ]
 }
 
@@ -611,7 +804,9 @@ const correlation: Summarize = (s) => {
   const pCol = t.columns.find((c) => c.startsWith('P value')) ?? 'P value'
   const ciCol = t.columns.find((c) => c.endsWith('CI'))
   const nCol = t.columns.find((c) => c.startsWith('Number of'))
-  const qCol = t.columns.find((c) => c.startsWith('q value'))
+  // Audit 4 S2: the P values corrected across the pairs, by the correction chosen (q values or
+  // Holm's), decide which pairs correlate — as the table's Significant column does.
+  const adjCol = t.columns.find((c) => c.startsWith('q value') || c.startsWith('Holm-adjusted'))
   const name = spearman ? 'Spearman correlation' : 'Pearson correlation'
   const pairs = t.rows.map((r) => {
     const label = r[0]?.kind === 'text' ? r[0].v : ''
@@ -620,7 +815,7 @@ const correlation: Summarize = (s) => {
       label,
       r: numOf(get(rCol)),
       p: numOf(get(pCol)),
-      q: qCol ? numOf(get(qCol)) : Number.NaN,
+      adj: adjCol ? numOf(get(adjCol)) : Number.NaN,
       ci: intervalOf(get(ciCol)),
       n: numOf(get(nCol)),
     }
@@ -629,22 +824,45 @@ const correlation: Summarize = (s) => {
     const x = pairs[0]!
     const [X, Y] = x.label.split(' vs. ')
     const both = X && Y ? `${X} and ${Y}` : x.label
-    const how = !sig(x.p) ? '' : x.r >= 0 ? ' rise together' : ' move in opposite directions'
-    return [
-      sig(x.p) ? `${both}${how}: r = ` : `${both}: r = `,
+    if (!Number.isFinite(x.r)) return [`r of ${both} could not be computed (${name}).`]
+    // S7: the one-tailed prediction, and a result against it, in the unpaired t test's words.
+    const tail = tailWords(s, ['a positive correlation', 'a negative correlation'])
+    const against = againstPrediction(s, x.r)
+    const v = sig(x.p)
+    const how =
+      v === 'yes' && !against
+        ? x.r > 0
+          ? ' rise together'
+          : x.r < 0
+            ? ' move in opposite directions'
+            : ''
+        : ''
+    const stats: Parts = [
+      `${both}${how}: r = `,
       n3(x.r),
-      ...(x.ci ? [' (', CI(x.ci), ')'] : []),
+      ...paren(ciIn(x.ci)),
       ', ',
       count(x.n),
-      ` pairs; ${sig(x.p) ? '' : 'no evidence of a correlation, '}`,
+      ' pairs',
+    ]
+    if (against || v === 'na') return [...stats, ...verdictEnd(x.p, name, tail, against), '.']
+    return [
+      ...stats,
+      `; ${v === 'yes' ? '' : 'no evidence of a correlation, '}`,
       P(x.p),
-      `, ${name}.`,
+      `, ${name}${tail}.`,
     ]
   }
-  const fam = qCol ? pairs.filter((x) => x.q < ALPHA) : pairs.filter((x) => sig(x.p))
+  const fam = pairs.filter((x) => isSig(adjCol ? x.adj : x.p))
   const strongest = [...fam].sort((a, b) => Math.abs(b.r) - Math.abs(a.r)).slice(0, 3)
+  const n = pairs.length
+  const rule = !adjCol
+    ? `P < ${ALPHA}, not corrected for the ${n} pairs`
+    : adjCol.startsWith('q value')
+      ? `q < ${ALPHA}, corrected for the ${n} pairs`
+      : `Holm-adjusted P < ${ALPHA}, corrected for the ${n} pairs`
   return [
-    `${fam.length} of ${pairs.length} pairs correlate (${qCol ? `q < ${ALPHA}, corrected for the ${pairs.length} pairs` : `P < ${ALPHA}, not corrected for the ${pairs.length} pairs`}; ${name})`,
+    `${fam.length} of ${n} pairs correlate (${rule}; ${name})`,
     ...(strongest.length
       ? [
           ': ',
@@ -655,6 +873,17 @@ const correlation: Summarize = (s) => {
         ]
       : []),
     '.',
+  ]
+}
+
+/** "The slopes differ (P = …)", "… show no evidence of differing (…)" or "… could not be compared". */
+function linesCompared(p: number, what: string, how = ''): Parts {
+  const v = sig(p)
+  if (v === 'na') return [`${what}${how} could not be compared (${NO_P})`]
+  return [
+    v === 'yes' ? `${what}${how} differ (` : `${what}${how} show no evidence of differing (`,
+    P(p),
+    ')',
   ]
 }
 
@@ -669,17 +898,20 @@ const regression: Summarize = (s) => {
   const unit = unitOf(s, 'y')
   const items = best.columns.slice(1, 4).map((name): Parts => {
     const slope = numOf(cell(best, 'Slope', name))
+    // S6: a slope that wasn't computed is neither rising nor falling.
+    if (!Number.isFinite(slope)) return [`The slope of ${name} could not be computed`]
     const ci = intervalOf(cell(cis, 'Slope', name))
     const p = numOf(cell(nonZero, 'P value', name))
     const r2 = numOf(cell(fit, 'R squared', name))
+    const moves = slope > 0 ? 'rises' : slope < 0 ? 'falls' : null
     return [
-      `${name} ${slope >= 0 ? 'rises' : 'falls'} by `,
-      n3(Math.abs(slope), unit),
-      ` per unit of ${xName}`,
-      ...(ci ? [' (', CI(slope >= 0 ? ci : negated(ci), unit), ')'] : []),
+      ...(moves
+        ? [`${name} ${moves} by `, n3(Math.abs(slope), unit), ` per unit of ${xName}`]
+        : [`${name} has a slope of 0 per unit of ${xName}`]),
+      ...paren(ciIn(slope >= 0 ? ci : flipped(ci), unit)),
       ...(Number.isFinite(r2) ? ['; R² = ', n3(r2)] : []),
       ...(Number.isFinite(p)
-        ? sig(p)
+        ? isSig(p)
           ? ['; the slope differs from zero (', P(p), ')']
           : ['; no evidence the slope differs from zero (', P(p), ')']
         : []),
@@ -689,22 +921,31 @@ const regression: Summarize = (s) => {
   const slopes = row(s.result, { block: 'Are the slopes equal?', label: 'P value' })
   const elev = row(s.result, { block: 'Are the elevations or intercepts equal?', label: 'P value' })
   if (slopes?.kind === 'pvalue') {
-    out.push(
-      sig(slopes.v) ? 'The slopes differ (' : 'The slopes show no evidence of differing (',
-      P(slopes.v),
-      ')',
-    )
+    out.push(...linesCompared(slopes.v, 'The slopes'))
     if (elev?.kind === 'pvalue')
       out.push(
-        sig(elev.v)
-          ? '; the intercepts, compared assuming a common slope, differ ('
-          : '; the intercepts, compared assuming a common slope, show no evidence of differing (',
-        P(elev.v),
-        ')',
+        '; ',
+        ...linesCompared(elev.v, 'the intercepts', ', compared assuming a common slope,'),
       )
     out.push('. ')
   }
   return trim(out)
+}
+
+/** The value of a parameter held constant: its best-fit cell reads "= 100". */
+const constantOf = (v: ResultValue | null): number => {
+  const m = v?.kind === 'text' ? /^= (.+)$/.exec(v.v) : null
+  return m ? Number(m[1]) : Number.NaN
+}
+const isConstant = (v: ResultValue | null) => Number.isFinite(constantOf(v))
+
+/**
+ * Audit 4 S11: a best-fit value in a sentence — the number, or a constant's value marked "(constant)"
+ * (its cell is text, which read as a number gave "—").
+ */
+function paramParts(v: ResultValue | null, unit?: string): Parts {
+  const c = constantOf(v)
+  return Number.isFinite(c) ? [n3(c, unit), ' (constant)'] : [n3(numOf(v), unit)]
 }
 
 /** Nonlinear fits: EC50 (IC50…) per data set with its unit, else the first parameters. */
@@ -726,12 +967,20 @@ const nonlinear: Summarize = (s) => {
   if (ec && ok.length) {
     const logLabel = labels.find((l) => l === `Log${ec}`)
     const items = ok.slice(0, 4).map((n): Parts => {
-      const v = numOf(cell(best, ec, n))
       const logCi = logLabel ? intervalOf(cell(ciTable, logLabel, n)) : null
       const ci = !logLabel ? intervalOf(cell(ciTable, ec, n)) : null
+      // Audit 4 S9: a profile CI unbounded on both sides says the data don't determine it.
+      const unbounded = (c: { lo: number; hi: number } | null) =>
+        c !== null && c.lo === Number.NEGATIVE_INFINITY && c.hi === Number.POSITIVE_INFINITY
       return [
-        n3(v, unit),
-        ...(logCi ? [` (log ${ec} `, CI(logCi), ')'] : ci ? [' (', CI(ci, unit), ')'] : []),
+        ...paramParts(cell(best, ec, n), unit),
+        ...(unbounded(logCi ?? ci)
+          ? [` (its CI is unbounded: the data don’t determine ${logCi ? `log ${ec}` : ec})`]
+          : logCi
+            ? [` (log ${ec} `, CI(logCi), ')']
+            : ci
+              ? [' (', CI(ci, unit), ')']
+              : []),
         ` for ${n}`,
       ]
     })
@@ -741,19 +990,21 @@ const nonlinear: Summarize = (s) => {
       out.push(
         '; Hill slope ',
         ...joinParts(
-          ok.slice(0, 4).map((n) => [n3(numOf(cell(best, hill, n)))]),
+          ok.slice(0, 4).map((n) => paramParts(cell(best, hill, n))),
           ', ',
           ok.length > 1 ? ' and ' : '',
         ),
       )
     out.push(`${ok.length > 4 ? `; ${ok.length - 4} more in the table` : ''}. `)
   } else if (ok.length) {
-    const shown = labels.filter(Boolean).slice(0, 3)
+    const used = (l: string) =>
+      ok.some((n) => cell(best, l, n)?.kind !== 'text' || isConstant(cell(best, l, n)))
+    const shown = labels.filter((l) => l && used(l)).slice(0, 3)
     const items = ok.slice(0, 3).map(
       (n): Parts => [
         `${n}: `,
         ...joinParts(
-          shown.map((l) => [`${l} = `, n3(numOf(cell(best, l, n)))]),
+          shown.map((l) => [`${l} = `, ...paramParts(cell(best, l, n))]),
           ', ',
         ),
       ],
@@ -790,7 +1041,12 @@ function fitComparison(s: SummaryInput, labels: readonly string[]): Parts {
   const many = verdicts.length > 1
   for (const x of verdicts.slice(0, 3)) {
     const lead = `Preferred model${many ? ` for ${x.title}` : ''}: ${x.name} (`
-    if (!Number.isNaN(x.p)) out.push(lead, 'extra sum-of-squares F test, ', P(x.p), '). ')
+    // Audit 4 S5: a fit that failed, or a statistic that isn't defined, decides nothing.
+    if (x.name === '—')
+      out.push(
+        `The models could not be compared${many ? ` for ${x.title}` : ''} (see the warnings). `,
+      )
+    else if (!Number.isNaN(x.p)) out.push(lead, 'extra sum-of-squares F test, ', P(x.p), '). ')
     else if (!Number.isNaN(x.prob))
       out.push(lead, `AICc, probability ${Math.round(x.prob * 1000) / 10}%). `)
   }
@@ -805,7 +1061,7 @@ function fitComparison(s: SummaryInput, labels: readonly string[]): Parts {
     const shared = numOf(v.compareProbShared)
     if (!Number.isNaN(p))
       out.push(
-        sig(p)
+        isSig(p)
           ? `${names} ${one ? 'differs' : 'differ'} between data sets (extra sum-of-squares F test, `
           : `No evidence that ${names} ${one ? 'differs' : 'differ'} between data sets (extra sum-of-squares F test, `,
         P(p),
@@ -857,14 +1113,12 @@ const contingency: Summarize = (s) => {
       )
       if (or) out.push('; odds ratio ', n3(numOf(or)), ...(orCi ? [' (', CI(orCi), ')'] : []))
     }
-    out.push(
-      sig(p) ? '; ' : '; no evidence of a difference (',
-      P(p),
-      `, ${inSentence(test)}${tailWords(s)}${sig(p) ? '' : ')'}.`,
-    )
+    // S7: the risk in the exposed row minus the other's, the effect a prediction is about.
+    const [pe, po] = order.map((i) => numOf(pct.rows[i]![oc + 1]))
+    out.push(...verdictEnd(p, inSentence(test), tailWords(s), againstPrediction(s, pe! - po!)), '.')
   } else {
     out.push(
-      sig(p)
+      isSig(p)
         ? `The outcomes differ between the ${rowNames.length || 'rows'} rows (`
         : `No evidence that the outcomes differ between the ${rowNames.length || ''} rows (`.replace(
             '  ',
@@ -875,9 +1129,9 @@ const contingency: Summarize = (s) => {
     )
   }
   const trend = row(s.result, { block: 'Chi-square test for trend', label: 'P value' })
-  if (trend?.kind === 'pvalue')
+  if (trend?.kind === 'pvalue' && Number.isFinite(trend.v))
     out.push(
-      sig(trend.v)
+      isSig(trend.v)
         ? ' The outcome changes with the order of the rows (chi-square for trend, '
         : ' No evidence of a trend with the order of the rows (chi-square for trend, ',
       P(trend.v),
@@ -901,7 +1155,7 @@ const survival: Summarize = (s) => {
   const test = testName(s, 'log-rank test')
   if (!Number.isNaN(p))
     out.push(
-      sig(p) ? '; the curves differ (' : '; the curves show no evidence of differing (',
+      isSig(p) ? '; the curves differ (' : '; the curves show no evidence of differing (',
       `${inSentence(test.replace(/ \(.*\)/, '').replace(/ test$/, ''))} `,
       P(p),
       ')',
@@ -978,6 +1232,7 @@ const descriptive: Summarize = (s) => {
     const mean = numOf(key ? s.result.values[`mean:${key}`] : null)
     const sd = numOf(key ? s.result.values[`sd:${key}`] : null)
     const count0 = numOf(cell(t, 'Number of values', n))
+    if (!Number.isFinite(mean)) return [`${n}: no values`]
     return [
       `${n} `,
       n3(mean, unit),
@@ -1058,13 +1313,13 @@ const models: Summarize = (s) => {
       v: numOf(r[ratioCol >= 0 ? ratioCol : 1]),
     }))
     .filter((r) => r.name && r.name !== 'Intercept' && Number.isFinite(r.p))
-  const below = preds.filter((r) => sig(r.p))
+  const below = preds.filter((r) => isSig(r.p))
   const what = ratioCol >= 0 ? t.columns[ratioCol]!.toLowerCase() : 'estimate'
   return [
     ...(Number.isNaN(p)
       ? []
       : [
-          sig(p)
+          isSig(p)
             ? 'The model explains the outcome better than none ('
             : 'No evidence the model explains the outcome better than none (',
           P(p),
@@ -1147,9 +1402,10 @@ const goodnessOfFit: Summarize = (s) => {
       row(s.result, { block: `Chi-square goodness of fit, ${d.title}`, label: 'P value' }) ??
       row(s.result, { block: 'Chi-square goodness of fit', label: 'P value' })
     if (p?.kind !== 'pvalue') return []
+    if (sig(p.v) === 'na') return [[`${d.title}: ${NO_P}`]]
     return [
       [
-        sig(p.v)
+        isSig(p.v)
           ? `${d.title} differs from the expected (`
           : `${d.title} shows no evidence of differing from the expected (`,
         P(p.v),

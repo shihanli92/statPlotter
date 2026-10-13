@@ -1,3 +1,5 @@
+// Audit 4 (P6): the forms' dialog parts, explanations and sketches (as the dialog has them).
+import '../src/dialogEntry.ts'
 // Registry-wide safety net: every analysis, on every table kind it accepts, must fail gracefully
 // (never throw) on degenerate input, and must not report `ok` for an empty or one-value table.
 
@@ -12,6 +14,7 @@ import {
   type TableKind,
 } from '@ps/model'
 import { describe, expect, it } from 'vitest'
+import { PATHOLOGICAL_EQUATIONS } from '../../stats/test/pathologicalEquations.ts'
 import { registry } from '../src/index.ts'
 
 type Fill = 'empty' | 'one value' | 'constant' | 'too few data sets'
@@ -227,5 +230,33 @@ describe('undefined results read “—” (audit 3, S6)', () => {
       }
     }
     expect([...new Set(problems)]).toEqual([])
+  })
+})
+
+describe('pathological user equations (audit 4 T1)', () => {
+  // The run answers each quickly, and the sketch and graph results never throw.
+  const table = createTable({ tableKind: 'xy', columns: 2, rows: 4 })
+  table.x!.subcolumns[0]!.values = [1, 2, 3, 4]
+  table.dataSets.forEach((d, i) => {
+    d.subcolumns[0]!.values = [1, 3, 2, 5].map((v) => v + i)
+  })
+  const input = normalizeTable(table)
+  const context = { tableKind: 'xy' as const, xTitle: null }
+  it.each(PATHOLOGICAL_EQUATIONS.map((e) => [e.label, e.text] as const))('%s', (_label, text) => {
+    for (const id of ['nonlinearFit', 'simulateXY']) {
+      const def = registry.get(id)!
+      const params = def.params.parse({ equation: 'user', userEquation: text })
+      const t0 = performance.now()
+      const r = def.run(input, params, context)
+      // (A long but valid equation fits or simulates; the others are errors with a message.)
+      if (r.status === 'error')
+        expect(
+          r.diagnostics.some((d) => d.level === 'error' && d.message),
+          id,
+        ).toBe(true)
+      def.sketch?.(input, params, { ...context, maxRows: 50 })
+      def.graphResults?.(params, { tableKind: 'xy', dataSets: [] })
+      expect(performance.now() - t0, id).toBeLessThan(5000)
+    }
   })
 })

@@ -1,5 +1,5 @@
 import type { NormalizedDataSet, SketchContext, SketchPanel, SketchSpec } from '@ps/model'
-import { columnTable, sampledRows, xyTable } from './tables.ts'
+import { columnTable, sketchRows, xyTable } from './tables.ts'
 import { countsLine, nameList, q } from './words.ts'
 
 // Roadmap 51b (design §5.6): analyses of a multiple-variables table — the outcome against each
@@ -109,9 +109,8 @@ export function variablesSketch(
   ctx: SketchContext,
 ): SketchSpec {
   const total = input.reduce((m, d) => Math.max(m, d.rowCount), 0)
-  const rows = sampledRows(total, ctx.maxRows)
-  const sampled = rows.length < total ? { shown: rows.length, total } : undefined
   if (id === 'pca') {
+    const { sampled } = sketchRows(input, ctx.maxRows)
     const numbers = input.filter((d) => !d.text && d.ref.key !== params.groupBy)
     const group = input.find((d) => d.ref.key === params.groupBy)
     return {
@@ -134,7 +133,10 @@ export function variablesSketch(
       description: 'No outcome chosen yet.',
       counts: '',
     }
-  const panels = predictors.slice(0, MAX_PANELS).map((p, i) => panelOf(outcome, p, rows, i))
+  // Audit 4 (P3): SKETCH_MAX_POINTS over the panels drawn (two values a row each).
+  const drawn = predictors.slice(0, MAX_PANELS)
+  const { rows, sampled } = sketchRows(input, ctx.maxRows, 2 * Math.max(1, drawn.length))
+  const panels = drawn.map((p, i) => panelOf(outcome, p, rows, i))
   const notes =
     predictors.length > MAX_PANELS
       ? [`The first ${MAX_PANELS} of ${predictors.length} predictors.`]

@@ -35,10 +35,17 @@ export function functionModel(
   const text = fc.userEquation ?? ''
   const hit = parsed.get(text)
   if (hit) return hit
-  const r = parseEquation(text)
-  const out: FunctionModel | { error: string } = r.ok
-    ? { params: r.parameters, f: (x, p) => r.program.f(x, p), name: 'User-defined equation' }
-    : { error: `Line ${r.line}, column ${r.column}: ${r.message}` }
+  // Audit 4 (T1): an unexpected failure is an error the graph shows, never one that escapes
+  // the layout.
+  let out: FunctionModel | { error: string }
+  try {
+    const r = parseEquation(text)
+    out = r.ok
+      ? { params: r.parameters, f: (x, p) => r.program.f(x, p), name: 'User-defined equation' }
+      : { error: `Line ${r.line}, column ${r.column}: ${r.message}` }
+  } catch (e) {
+    out = { error: `The equation can’t be read: ${e instanceof Error ? e.message : String(e)}` }
+  }
   parsed.set(text, out)
   return out
 }

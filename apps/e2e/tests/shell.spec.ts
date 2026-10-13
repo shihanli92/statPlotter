@@ -435,12 +435,19 @@ test('Help › Keyboard shortcuts lists the shortcuts on offer', async ({ page }
   // The table's shortcuts appear only while a table is open.
   await expect(sheetDialog.getByText('Exclude / include values')).toHaveCount(0)
   const isMac = await appIsMac(page)
-  await expect(sheetDialog.getByText(isMac ? '⌘K' : 'Ctrl+K', { exact: true })).toBeVisible()
-  // Keys the views handle themselves (audit 2, U20).
-  for (const title of ['In the navigator', 'On the canvas', 'On a page'])
+  const palette = sheetDialog.locator('dl > div').filter({ hasText: /^Command palette…/ })
+  await expect(palette.locator('kbd')).toHaveText(isMac ? '⌘K' : 'Ctrl+K')
+  // Keys the views handle themselves (audit 2, U20; audit 4, A18: the Analyze dialog's).
+  for (const title of ['In the navigator', 'On the canvas', 'On a page', 'In the Analyze dialog'])
     await expect(sheetDialog.getByRole('heading', { name: title })).toBeVisible()
   const moveUp = sheetDialog.locator('dl > div').filter({ hasText: /^Move the sheet up/ })
   await expect(moveUp.locator('kbd')).toHaveText(isMac ? '⌥↑' : 'Alt+Up')
+  const search = sheetDialog.locator('dl > div').filter({ hasText: /^Search the analyses/ })
+  await expect(search.locator('kbd')).toHaveText(isMac ? '⌘K' : 'Ctrl+K')
+  // Audit 4 (A18): moving around a zoomed graph by keyboard.
+  await expect(
+    sheetDialog.getByText('With nothing selected, move around a zoomed graph', { exact: true }),
+  ).toBeVisible()
   await sheetDialog.getByRole('button', { name: 'Close' }).click()
   await expect(sheetDialog).toBeHidden()
 

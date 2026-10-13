@@ -1,6 +1,11 @@
 import type { DataTable } from '@ps/model'
 
-// A table's rows as graphs of it choose them (Rows on the graph, New graph › one per row).
+// A table's rows as graphs of it choose them (Rows on the graph, New graph › one per row), and its
+// variables as the graph builder and the Appearance table list them.
+
+/** A variable's name and type, as the graph builder and Appearance list them ("Group (text)"). */
+export const variableLabel = (d: DataTable['dataSets'][number]) =>
+  `${d.title || d.id} (${d.text ? 'text' : d.formula !== undefined ? 'number, calculated' : 'number'})`
 
 /** A row's name: its title, its X value (XY tables), or its number. */
 export function rowLabel(table: DataTable, r: number): string {

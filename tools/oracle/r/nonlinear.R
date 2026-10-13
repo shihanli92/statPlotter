@@ -202,6 +202,14 @@ nls_tight <- function(form, data, start) {
                     error = function(e) NULL)
     if (!is.null(fit)) return(polish(fit))
   }
+  # Audit 4 S9: an ill-conditioned refit (a profile far from the optimum) that Gauss-Newton
+  # can't take: the PORT routines, then polished as above.
+  fit <- tryCatch(if (is.null(data$.w)) nls(form, data = data, start = start, control = CTRL(1e-8),
+                                            algorithm = "port")
+                  else nls(form, data = data, start = start, control = CTRL(1e-8),
+                           algorithm = "port", weights = .w),
+                  error = function(e) NULL)
+  if (!is.null(fit) && isTRUE(fit$convInfo$isConv)) return(polish(fit))
   stop("nls did not converge")
 }
 
@@ -328,16 +336,35 @@ profile_ci <- function(b, eq, cons, bnds, dsets, start, weighting, level) {
       step <- t * se[[nm]]
       inner <- est[[nm]]
       outer <- inner + dir * step
-      while (prof(outer) < 0) { inner <- outer; step <- 2 * step; outer <- inner + dir * step }
+      # Audit 4 S9: a profile that never reaches the target (60 doublings, as nonlinear.ts) or
+      # whose refits fail is not determined on that side: an infinite limit, where R's own
+      # profile (confint) gives NA (checked below).
+      # A refit that fails is retried closer in (half the step, up to 10 times, as nonlinear.ts).
+      g <- function(v) tryCatch(prof(v), error = function(e) NA_real_)
+      go <- g(outer)
+      n <- 0
+      repeat {
+        h <- 0
+        while (is.na(go) && h < 10) {
+          step <- step / 2; outer <- inner + dir * step; go <- g(outer); h <- h + 1
+        }
+        if (is.na(go) || go >= 0 || n >= 60) break
+        inner <- outer; step <- 2 * step; outer <- inner + dir * step; go <- g(outer); n <- n + 1
+      }
+      if (is.na(go) || go < 0) { ends <- c(ends, dir * Inf); next }
       r <- uniroot(prof, sort(c(inner, outer)), tol = 1e-14 * max(1, abs(est[[nm]])),
                    maxiter = 200)
       ends <- c(ends, r$root)
     }
-    # Loose cross-check against R's own profile interval (spline interpolated).
-    ci <- tryCatch(suppressMessages(confint(fit, parm = nm, level = level)),
+    # Loose cross-check against R's own profile interval (spline interpolated, too coarse to
+    # check a limit when the other is missing); an infinite limit only where R's profile finds
+    # none either (NA).
+    ci <- tryCatch(suppressWarnings(suppressMessages(confint(fit, parm = nm, level = level))),
                    error = function(e) NULL)
-    if (!is.null(ci) && all(is.finite(ci))) {
-      stopifnot(isTRUE(all.equal(unname(as.vector(ci)), ends, tolerance = 1e-2)))
+    if (!is.null(ci)) {
+      ci <- unname(as.vector(ci))
+      if (all(is.finite(ci))) stopifnot(isTRUE(all.equal(ci, ends, tolerance = 1e-2)))
+      stopifnot(all(is.na(ci[!is.finite(ends)])))
     }
     out[[nm]] <- ends
   }

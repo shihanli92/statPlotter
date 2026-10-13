@@ -1,5 +1,6 @@
 import type {
   GuideAnswers,
+  GuideAsk,
   GuideElsewhere,
   GuideEntry,
   GuideLeaf,
@@ -20,7 +21,13 @@ import { COLUMN_CORRELATION, XY_ENTRIES } from './xy.ts'
 // or in what another table kind would answer (elsewhere). Walking a tree reads `TableFacts` only.
 
 export { tableFacts } from './facts.ts'
-export { type GuideMapStep, guideMap, pathAnswers, reanswer } from './map.ts'
+export {
+  type GuideAnswerState,
+  type GuideMapStep,
+  guideMap,
+  reanswer,
+  reanswerHiding,
+} from './map.ts'
 export { doseResponseModel } from './xy.ts'
 
 const byId = (entries: readonly GuideEntry[], id: string) => entries.find((e) => e.id === id)!
@@ -89,8 +96,8 @@ export function notHere(kind: TableKind): { entry: GuideEntry; needs: TableKind;
   })
 }
 
-/** The rail's first three questions, for the empty results card. */
-export const topQuestions = (kind: TableKind, n = 3): GuideEntry[] => entriesFor(kind).slice(0, n)
+// Audit 4 (P6): the empty results card's questions, without the trees (`guideQuestions.ts`).
+export { GUIDE_QUESTIONS, topQuestions } from '../guideQuestions.ts'
 
 // ---- Walking a tree --------------------------------------------------------------------------
 
@@ -139,10 +146,18 @@ export function walkAnswers(
   f: TableFacts,
 ): Record<string, string> {
   const out: Record<string, string> = {}
+  // Audit 4 (U3): a group asked for that is no longer among the groups (left out of the data
+  // sets the questions are about) takes the initial value, as the select shows it.
+  const given = (ask: GuideAsk) => {
+    const v = answers[ask.id]
+    return ask.kind === 'group' && v !== undefined && !f.groups.some((g) => g.key === v)
+      ? undefined
+      : v
+  }
   for (const t of walk.taken) {
     out[t.question.id] = t.answer
     const a = t.question.answers.find((x) => x.id === t.answer)
-    for (const ask of a?.asks ?? []) out[ask.id] = answers[ask.id] ?? ask.initial?.(f) ?? ''
+    for (const ask of a?.asks ?? []) out[ask.id] = given(ask) ?? ask.initial?.(f) ?? ''
   }
   return out
 }

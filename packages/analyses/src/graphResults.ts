@@ -463,8 +463,11 @@ const simpleP: Templates<Record<string, unknown>> = () => [pLabel(), pStars()]
 
 // --- Survival ------------------------------------------------------------------------------------
 
-const survival: Templates<{ confidenceLevel: number }> = (p, ctx) => {
+const survival: Templates<{ confidenceLevel: number; hazardRatio?: string }> = (p, ctx) => {
   const level = pct(p.confidenceLevel)
+  // Audit 4 S8: the hazard ratio's CI from the block of the method shown (its value is that
+  // method's too).
+  const hrBlock = `Hazard ratio (${p.hazardRatio === 'logRank' ? 'log-rank' : 'Mantel-Haenszel'})`
   const median = label(
     'median',
     'Median survival per group',
@@ -504,7 +507,7 @@ const survival: Templates<{ confidenceLevel: number }> = (p, ctx) => {
               lo: cell(
                 {
                   sheet,
-                  block: 'Hazard ratio (Mantel-Haenszel)',
+                  block: hrBlock,
                   row: `${level} CI of ratio`,
                   end: 'lo',
                 },
@@ -513,7 +516,7 @@ const survival: Templates<{ confidenceLevel: number }> = (p, ctx) => {
               hi: cell(
                 {
                   sheet,
-                  block: 'Hazard ratio (Mantel-Haenszel)',
+                  block: hrBlock,
                   row: `${level} CI of ratio`,
                   end: 'hi',
                 },

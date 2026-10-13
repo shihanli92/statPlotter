@@ -579,6 +579,8 @@ interface MethodChange {
   replicates as more subcolumns of the same rows: a column table's values, a grouped table's
   cells row by row; entered means can't pool). Both are part of the input key, so only edits of
   the values read rerun the analysis; remapping a pool keeps its members that have a match.
+  `modifiedTableKind` names the kind the modifiers make; editing such an analysis, the Analyze
+  dialog reads its data sets through `modifyInput` and offers that kind's methods (audit 4 U2).
 - If a referenced column is deleted, the analysis is kept and shows an "input missing" error;
   it is never auto-deleted.
 - **Chaining** (Phase 13): an analysis whose plugin `producesTable` exposes `result.table`, and
@@ -751,7 +753,7 @@ analyses, like Mann-Whitney, until repeated-measures ANOVA arrives):
 | `normality` | column | D'Agostino-Pearson, Anderson-Darling, Shapiro-Wilk, Kolmogorov-Smirnov (Lilliefors P); normal, lognormal or both |
 | `oneSample` | column | one-sample t test or Wilcoxon signed-rank test against a hypothetical value |
 | `correlation` | column, xy | Pearson or Spearman r with CI and P, for every pair of columns (matched by row) or X vs each data set |
-| `friedman` | column | Friedman test on complete rows, Dunn's comparisons (corrected or not) |
+| `friedman` | column | Friedman test on complete rows, Dunn's comparisons (corrected or not); data summary: rank sums, mean ranks, medians |
 | `kolmogorovSmirnov` | column | two-sample Kolmogorov-Smirnov test |
 
 Phase 6 plugins and options:
@@ -941,6 +943,12 @@ scaled by `sd`); then `outliers` randomly chosen values get a uniform amount bet
     Y depends on parameter j (a parameter only other data sets use is held at its initial value
     for this one: no SE, not counted in df; shown "(not used)"). `FitData.dataSet` tells the
     fitter which data set's program applies.
+  - Limits (`EQUATION_LIMITS`, audit 4 T1): selector letters up to ZZ (702 data sets; selectors
+    are kept as ranges, data sets with the same lines share one program); expressions nested
+    at most 200 deep (parentheses, functions, signs, NOT, powers); at most 20,000 characters (as
+    a graph's function curve; the analysis' `userEquation` has no schema maximum, so a longer
+    saved one opens and shows the error). Past a limit `parseEquation` returns an error;
+    `resolveEquation` and the graph's `functionModel` never throw.
   - Implicit equations: Y used before any line assigns it; the last `Y = g(X, Y)` is solved.
   - Differential equations: `Y' = f(X, Y)` (also `dY/dX = …`); parameter `Y[0]` (listed first),
     X0 = 0 or a line `X[0] = …`. Y itself can't be assigned.
@@ -1076,9 +1084,30 @@ writes it — P in the project's style after "P =" or "P <", `role: 'q'` as "q =
 significant digits with a unit prefix) kept after the first sheet's blocks and shown first
 (`summaryFirst`); the 'comparisons' sheet moved first; blocks marked `detail` (shown under
 Details) and comparisons tables given a `caption` (the family, the method, what P and the CIs
-refer to). Row and block `key`s, a table's `rowKeys` / `columnKeys`, are stable names for
+refer to). Result tables on graphs (inset tables, `resultSheetCells`) and on pages (page tables,
+`pageTableGrid`) leave out the summary block and the captions, as before 0.3.11 (audit 4 G1:
+saved row ranges keep their rows). Row and block `key`s, a table's `rowKeys` / `columnKeys`, are stable names for
 references (below) and for the summary. `RunContext.factorNames` carries a grouped table's
 `factorNames`. No number changes; `ANALYSES_VERSION` keys the cache.
+
+**What the results say (audit 4 step 1, decisions 1341–1356; `ANALYSES_VERSION` 1.7.0).**
+Kruskal-Wallis' and Friedman's data summaries gain a Median row, which the summary names for a
+rank comparison (`ComparisonRow.rank`: the difference column is of ranks, so it has no size).
+The survival result's `hazardRatio` value is the method shown (log-rank or Mantel-Haenszel). A
+curve fit's comparison of models gains the rows "Fit of the simpler model" and "Fit of the
+alternative model" (each fit's status), "—" as the preferred model when a fit failed or the
+statistic isn't defined (`preferredModel:<key>` then "—"), and a note when the constants set
+apply to both models. A profile-likelihood CI limit the profile never reaches is ±∞. Multiple
+one-way ANOVAs without a correction across rows add "Significance level (alpha)" and "Number
+below threshold" to their Analysis block.
+
+**Speed (audit 4 step 3, decisions 1401–1420; `ANALYSES_VERSION` 1.8.0).** A global curve fit
+(a shared parameter) of more than 10 data sets with profile-likelihood CIs (`ciMethod: 'profile'`)
+profiles its shared parameters only: each data set's own parameters get the asymptotic interval,
+an info diagnostic says so and the CI table is titled "95% CI (profile likelihood when shared,
+else asymptotic)" (`PROFILE_ALL_MAX_DATA_SETS`; `@ps/stats` `FitOptions.profileCI: 'shared'`,
+`onProfile` for progress after the fit and each parameter). Saved fits follow the rule too (no
+params version: no param changed). No other result changes.
 
 **Curve fits (roadmap 51e, design §9, decisions 1324–1333).** A curve fit's warnings may carry a
 `fix` (params set at their paths: `constraints.Bottom = { kind: 'constant', value: 0 }`), offered
@@ -3835,11 +3864,12 @@ and never a default group, colour, shape or split; past 1,000 (`MAX_MAPPED_LEVEL
 mapped to an axis, colour, shape or groups. Legends list 50 levels of a mapped variable and 100
 entries at most, Order of levels and Format's lists 100, then "… and N more".
 
-**Your data (roadmap 34e).** The Examples dialog's "Your data" section builds examples from the
-user's own files in source_data the same way (`examples/private/local.ts`): "Single-cell T cells (local
-data)" reads `sc/tcells.csv` through the large-CSV import (`csvSettings`, `CsvColumnReader`,
-`columnsToTable`), the per-cell id column and text columns of more than 200 distinct values left out and cluster ids as text, and draws the graphs
-the synthetic "Single-cell T cells" example draws (`examples/singleCell.ts`).
+**Your data (roadmap 34e).** In development builds of the private repository, the Examples
+dialog's "Your data" section builds examples from the developer's own local files the same way
+(through the large-CSV import: `csvSettings`, `CsvColumnReader`, `columnsToTable`, per-cell id
+columns and text columns of more than 200 distinct values left out, cluster ids as text) and
+draws the graphs the synthetic "Single-cell T cells" example draws (`examples/singleCell.ts`).
+Those examples are private (docs/PUBLISHING.md): no production build and no public tree has them.
 
 **Paste transposed.** The table view's "Paste transposed" (⇧⌘V) swaps rows and columns of the copied
 cells before the usual paste rules.

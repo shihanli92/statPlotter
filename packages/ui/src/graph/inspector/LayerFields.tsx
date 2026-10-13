@@ -37,7 +37,7 @@ import {
   sourceTable,
   statOf,
 } from '@ps/model'
-import type { ReactNode } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { ARROW_SHAPES } from '../../components/arrowFields.tsx'
 import { ColorField } from '../../components/ColorPicker.tsx'
 import { Checkbox, NumberInput, Section, Select, TextInput } from '../../components/fields.tsx'
@@ -1972,7 +1972,11 @@ function TreeStatRows({ e }: { e: LayerEdit }) {
   const stat = layer.stat
   const tile = heatMapOf(ctx.graph)
   const owner = tile?.style?.cluster?.[stat.of] ? tile : undefined
-  const hc = treeOfLayer(ctx.project, ctx.graph, layer, ctx.lookup)
+  // Audit 4 (P4): not on every render (the clustering itself is shared with the layout).
+  const hc = useMemo(
+    () => treeOfLayer(ctx.project, ctx.graph, layer, ctx.lookup),
+    [ctx.project, ctx.graph, layer, ctx.lookup],
+  )
   const n = hc?.order.length ?? 0
   const top = hc?.height.length ? hc.height[hc.height.length - 1]! : 0
   const cut = stat.cut
@@ -2080,7 +2084,10 @@ function DendrogramFields({ e }: { e: LayerEdit }) {
   const d = theme.dendrogram
   const set = (field: string, v: unknown, label: string) => e.set(field, v, label)
   const down = tree.side === 'left' || tree.side === 'right'
-  const hc = layer.stat.cut ? treeOfLayer(ctx.project, graph, layer, ctx.lookup) : null
+  const hc = useMemo(
+    () => (layer.stat.cut ? treeOfLayer(ctx.project, graph, layer, ctx.lookup) : null),
+    [ctx.project, graph, layer, ctx.lookup],
+  )
   const count = hc ? (treeClusters(hc, layer.stat.cut, [])?.count ?? 0) : 0
   /** A dendrogram alone turned: its side, the axes and the plot's sides swapped, one step. */
   const leaves = (v: 'bottom' | 'left') => {

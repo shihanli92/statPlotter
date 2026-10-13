@@ -1,11 +1,11 @@
+import { registry } from '@ps/analyses'
 import {
   analysisChecks,
   analysisFacts,
   fieldStates,
   INVALID_COMBINATIONS,
   NEEDS_RAW,
-  registry,
-} from '@ps/analyses'
+} from '@ps/analyses/dialog'
 import {
   createTable,
   type DataTable,

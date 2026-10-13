@@ -1,4 +1,4 @@
-import { methodCard, withNames } from '@ps/analyses'
+import { methodCard, withNames } from '@ps/analyses/dialog'
 import type { MethodCard } from '@ps/model'
 
 // Roadmap 51a: the method cards (design §2), drawn from the one source in @ps/analyses: the

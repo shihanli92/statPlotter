@@ -380,9 +380,11 @@ export function survivalResult(
           ]),
         )
       }
+      // Audit 4 S8: the value of the method shown (Mantel-Haenszel's B/A with both), the other
+      // group ÷ the reference group as its block reads.
       const shown = params.hazardRatio === 'logRank' ? lr : mh
       values.hazardRatio = num(
-        params.hazardRatio !== 'both' && params.control === 1 ? 1 / shown.value : mh.value,
+        params.hazardRatio !== 'both' && params.control === 1 ? 1 / shown.value : shown.value,
       )
     }
     sheets.push({ key: 'comparison', title: 'Curve comparison', blocks })

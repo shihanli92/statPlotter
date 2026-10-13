@@ -44,7 +44,7 @@ export function ShortcutsDialog({ onClose }: { onClose: () => void }) {
     >
       <p className="muted">
         Shortcuts of the view that is open are included; others appear when their view is open. Keys
-        of the navigator, the canvas and pages follow the commands.
+        of the navigator, the canvas, pages and the Analyze dialog follow the commands.
       </p>
       <div className="shortcut-sheet">
         {sections.map((s) => (

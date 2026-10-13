@@ -43,6 +43,27 @@ describe('e2e-affected', () => {
     }
   })
 
+  // Audit 4 (T7): the Analyze dialog's live sketch and Guide me's diagrams are drawn by the graph
+  // package, for the dialog's specs only.
+  it('runs the Analyze dialog’s specs for the sketch and the schematic', async () => {
+    const dialog = [
+      'guideDiagrams',
+      'analyzeDialog',
+      'curveFitting',
+      'analysisGuide',
+      'analysisResults',
+    ]
+    for (const path of ['packages/graph/src/schematic.ts', 'packages/graph/src/sketch.ts']) {
+      expect(await specsOf(path), path).toEqual(expect.arrayContaining(dialog))
+    }
+    // And what they are laid out, measured and drawn with.
+    for (const path of ['packages/graph/src/text/measure.ts', 'packages/graph/src/render/svg.ts']) {
+      expect(await specsOf(path), path).toEqual(
+        expect.arrayContaining(['analyzeDialog', 'guideDiagrams']),
+      )
+    }
+  })
+
   it('runs the table specs for number parsing', async () => {
     expect(await specsOf('packages/io/src/numbers.ts')).toEqual(
       expect.arrayContaining(['tableEditing', 'cellsTables', 'import', 'tables']),

@@ -10,7 +10,8 @@
 // 2. Rewrites the Markdown links to removed files, then checks every relative Markdown link.
 // 3. Leak checks (stops on any hit, each printed): files under source_data/, .pzfx files outside
 //    the test fixtures, absolute home paths, private words, secrets, any excluded file, files
-//    over 5 MB, the source files of the papers left out (read from their specs before removal).
+//    over 5 MB, the source files of the papers left out (read from their specs before removal);
+//    the lines of text files, of the members of zip archives (.xlsx) and of PNG text chunks.
 // 4. Verifies the snapshot on its own: pnpm install --frozen-lockfile, pnpm check, the web build;
 //    then, in a fresh copy, the public demo's install and build as Netlify runs them, whose output
 //    must hold the deployment's _headers (the Content-Security-Policy).
@@ -35,6 +36,7 @@ import { tmpdir } from 'node:os'
 import { join, posix, relative, sep } from 'node:path'
 import { createInterface } from 'node:readline/promises'
 import { fileURLToPath } from 'node:url'
+import { inflateRawSync, inflateSync } from 'node:zlib'
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..')
 
@@ -59,6 +61,10 @@ export const EXCLUDED = [
   // and the tests that exist only for them.
   'packages/ui/src/examples/private/',
   'packages/ui/test/private/',
+  // Dependabot's version updates (audit 4, T5): a pull request can never merge into a tree the
+  // next version replaces whole. The public repository keeps Dependabot's alerts and security
+  // updates (its settings), which need no file.
+  '.github/dependabot.yml',
 ]
 
 /** The folder whose paper specs name the source files that must not appear in the snapshot. */
@@ -121,10 +127,14 @@ export const SECRET_PATTERNS = [
 const SECRET_FILES =
   /(^|\/)(\.env(\.(?!example$|sample$)[^/]*)?|id_[a-z0-9]+|[^/]+\.(pem|key|p12|pfx))$/
 
-/** Absolute paths in a home folder (macOS or Windows). */
+/**
+ * Absolute paths in a home folder (macOS, Windows or Linux; audit 4, T10: Linux). The Linux
+ * folders tests name as placeholders (`/home/me/`, CI's `/home/runner/`) are no one's.
+ */
 const HOME_PATHS = [
   ['home path', /\/Users\/[^/\s'"`*<>]+\//],
   ['home path', /\b[A-Za-z]:(?:\\\\?|\/)Users(?:\\\\?|\/)[^\\/\s'"`*<>]+/],
+  ['home path', /\/home\/(?!(?:me|runner)\/)[^/\s'"`*<>]+\//],
 ]
 
 /** Longer runs of letters are never one of the private words. */
@@ -190,29 +200,146 @@ export function privateNames(texts) {
 /** Whether bytes look like text (no NUL in the first 8 kB). */
 export const isText = (bytes) => !bytes.subarray(0, 8192).includes(0)
 
+/** The most an archive member may inflate to and still be checked (more is a hit of its own). */
+const MAX_MEMBER_BYTES = 64 * 1024 * 1024
+
+const bufferOf = (bytes) => Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+
+/**
+ * The members of a zip archive (an .xlsx, a .zip): [name, bytes], the bytes null when they can't
+ * be read (a compression other than stored or deflate, encryption, damage, too large); [] when
+ * the bytes aren't a zip archive. Read from the central directory (sizes are there even when a
+ * member's local header defers them).
+ */
+export function zipMembers(bytes) {
+  const buf = bufferOf(bytes)
+  if (buf.length < 22 || buf.readUInt32LE(0) !== 0x04034b50) return []
+  let end = -1
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 22 - 0xffff); i--) {
+    if (buf.readUInt32LE(i) === 0x06054b50) {
+      end = i
+      break
+    }
+  }
+  if (end < 0) return [['(no central directory)', null]]
+  const count = buf.readUInt16LE(end + 10)
+  let p = buf.readUInt32LE(end + 16)
+  const out = []
+  for (let k = 0; k < count; k++) {
+    if (p + 46 > buf.length || buf.readUInt32LE(p) !== 0x02014b50) {
+      out.push([`(member ${k + 1})`, null])
+      break
+    }
+    const flags = buf.readUInt16LE(p + 8)
+    const method = buf.readUInt16LE(p + 10)
+    const size = buf.readUInt32LE(p + 20)
+    const nameLength = buf.readUInt16LE(p + 28)
+    const local = buf.readUInt32LE(p + 42)
+    const name = buf.toString('utf8', p + 46, p + 46 + nameLength)
+    p += 46 + nameLength + buf.readUInt16LE(p + 30) + buf.readUInt16LE(p + 32)
+    if (name.endsWith('/')) continue
+    let content = null
+    try {
+      if (buf.readUInt32LE(local) === 0x04034b50 && !(flags & 1)) {
+        const start = local + 30 + buf.readUInt16LE(local + 26) + buf.readUInt16LE(local + 28)
+        const data = buf.subarray(start, start + size)
+        if (method === 0) content = data
+        else if (method === 8) content = inflateRawSync(data, { maxOutputLength: MAX_MEMBER_BYTES })
+      }
+    } catch {
+      content = null
+    }
+    out.push([name, content])
+  }
+  return out
+}
+
+/**
+ * The text a PNG image carries: its tEXt, zTXt and iTXt chunks (as "keyword: text", by chunk
+ * type) and its EXIF; [] when the bytes aren't a PNG. A chunk that can't be inflated is "".
+ */
+export function pngTexts(bytes) {
+  const buf = bufferOf(bytes)
+  if (buf.length < 8 || buf.readUInt32BE(0) !== 0x89504e47 || buf.readUInt32BE(4) !== 0x0d0a1a0a)
+    return []
+  const out = []
+  const inflated = (data) => {
+    try {
+      return inflateSync(data, { maxOutputLength: MAX_MEMBER_BYTES })
+    } catch {
+      return Buffer.alloc(0)
+    }
+  }
+  for (let p = 8; p + 12 <= buf.length; ) {
+    const length = buf.readUInt32BE(p)
+    const type = buf.toString('latin1', p + 4, p + 8)
+    const data = buf.subarray(p + 8, Math.min(buf.length, p + 8 + length))
+    p += 12 + length
+    const nul = data.indexOf(0)
+    const keyword = data.toString('latin1', 0, Math.max(0, nul))
+    if (type === 'tEXt') out.push([type, `${keyword}: ${data.toString('latin1', nul + 1)}`])
+    else if (type === 'zTXt')
+      out.push([type, `${keyword}: ${inflated(data.subarray(nul + 2)).toString('latin1')}`])
+    else if (type === 'iTXt') {
+      // keyword \0 compressed method language \0 translated keyword \0 text
+      const compressed = data[nul + 1] === 1
+      const language = data.indexOf(0, nul + 3)
+      const translated = data.indexOf(0, language + 1)
+      const text = data.subarray(translated + 1)
+      out.push([type, `${keyword}: ${(compressed ? inflated(text) : text).toString('utf8')}`])
+    } else if (type === 'eXIf') out.push([type, data.toString('latin1')])
+    else if (type === 'IEND') break
+  }
+  return out
+}
+
 /** A match shown without giving it away: its ends, the middle masked. */
 const masked = (s) => (s.length <= 8 ? `${s[0]}…` : `${s.slice(0, 4)}…${s.slice(-2)}`)
 
 /**
  * The leak-check hits of one file: { path, rule, line?, match? } for its path, its size and
- * (text files) every line.
+ * (text files) every line. Audit 4 (T10): the members of a zip archive (an .xlsx) are checked
+ * as files of their own ("a.xlsx!xl/sharedStrings.xml"), and a PNG's text chunks as text
+ * ("a.png (tEXt)"); a member that can't be read is a hit.
  */
 export function leakHits(path, bytes, { names = [], words = PRIVATE_WORDS } = {}) {
   const hits = []
   const hit = (rule, line, match) =>
     hits.push({ path, rule, ...(line ? { line } : {}), ...(match ? { match } : {}) })
-  if (isExcluded(path)) hit('excluded file')
-  if (path.split('/').some((s) => /source_data/i.test(s))) hit('source_data path')
+  // An archive's member: its path inside the archive, checked like a path of the tree.
+  const inner = path.includes('!') ? path.slice(path.lastIndexOf('!') + 1) : path
+  if (isExcluded(inner)) hit('excluded file')
+  if (path.split(/[/!]/).some((s) => /source_data/i.test(s))) hit('source_data path')
   if (/\.pzfx$/i.test(path) && !PZFX_FIXTURES.some((f) => path.startsWith(f))) {
     hit('.pzfx outside the test fixtures')
   }
-  if (SECRET_FILES.test(path)) hit('secret file name')
+  if (SECRET_FILES.test(inner)) hit('secret file name')
   for (const name of names) {
     if (path.toLowerCase().includes(name.toLowerCase())) hit('private source file name', 0, name)
   }
-  if (bytes.length > MAX_FILE_BYTES) hit(`larger than ${MAX_FILE_BYTES / 1024 / 1024} MB`)
-  if (!isText(bytes)) return hits
-  const text = Buffer.from(bytes).toString('utf8')
+  if (bytes.length > MAX_FILE_BYTES && inner === path) {
+    hit(`larger than ${MAX_FILE_BYTES / 1024 / 1024} MB`)
+  }
+  if (!isText(bytes)) {
+    for (const [name, content] of zipMembers(bytes)) {
+      if (content === null)
+        hits.push({ path: `${path}!${name}`, rule: 'unreadable archive member' })
+      else hits.push(...leakHits(`${path}!${name}`, content, { names, words }))
+    }
+    for (const [type, text] of pngTexts(bytes)) {
+      for (const h of lineHits(`${path} (${type})`, text, names, words)) hits.push(h)
+    }
+    return hits
+  }
+  hits.push(...lineHits(path, Buffer.from(bytes).toString('utf8'), names, words))
+  return hits
+}
+
+/** The hits of a text's lines: home paths, secrets, private source names and words. */
+function lineHits(path, text, names, words) {
+  const hits = []
+  const hit = (rule, line, match) =>
+    hits.push({ path, rule, ...(line ? { line } : {}), ...(match ? { match } : {}) })
   const lowerNames = names.map((n) => n.toLowerCase())
   text.split('\n').forEach((line, i) => {
     // One home path hit per line (a Windows path written with / matches both patterns).

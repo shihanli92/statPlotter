@@ -103,7 +103,10 @@ describe('the results view (51d)', () => {
     const a = analysis(t, 'oneWayAnova', { comparisons: 'vsControl', control: t.dataSets[0]!.id })
     const el = await show(setup([t, a]), a.id)
     const summary = el.querySelector('section.result-summary')!
-    expect(summary.getAttribute('aria-label')).toBe('Summary')
+    // Named by its heading (audit 4 A7).
+    expect(document.getElementById(summary.getAttribute('aria-labelledby')!)?.textContent).toBe(
+      'Summary',
+    )
     expect(summary.querySelector('.summary-sentence')!.textContent).toMatch(
       /^Compared with Vehicle, 1 mg\/kg is higher by .* Dunnett’s test for 2 comparisons\. Overall: the means differ across the 3 groups/,
     )
@@ -127,7 +130,7 @@ describe('the results view (51d)', () => {
     // The method, to copy.
     const method = el.querySelector('details.method-section')!
     expect(method.querySelector('.methods-paragraph')!.textContent).toMatch(
-      /^Vehicle, 1 mg\/kg and 10 mg\/kg were compared by Ordinary one-way ANOVA\. Multiple comparisons: Dunnett \(Dunnett: each of 2 groups − Vehicle.*\)\. Confidence intervals are 95%\. Analyzed with statPlotter 0\.3\.13\.$/,
+      /^Vehicle, 1 mg\/kg and 10 mg\/kg were compared by Ordinary one-way ANOVA\. Multiple comparisons: Dunnett \(Dunnett: each of 2 groups − Vehicle.*\)\. Confidence intervals are 95%\. Analyzed with statPlotter \d+\.\d+\.\d+\.$/,
     )
   })
 

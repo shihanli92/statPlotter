@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { registry, SKETCHES } from '@ps/analyses'
+import { registry } from '@ps/analyses'
+import { SKETCHES } from '@ps/analyses/dialog'
 import { GRAPH_PRESETS, layoutGraph, sketchGraph } from '@ps/graph'
 import {
   createTable,
@@ -197,6 +198,39 @@ describe('the live sketch (design §5)', () => {
     const s = sketch('ttest', column([big, big]))
     // Every third row: at most 2,000.
     expect(s.sampled).toEqual({ shown: 1667, total: 5000 })
+  })
+
+  it('many or long names keep every picture small (audit 4 G3)', () => {
+    // Thirty data sets, or long names: the correlation's Y title of every name was 1,722 pt
+    // tall, a Bland-Altman plot 905 pt, legends of thirty 982 pt, bracket labels 543 pt wide.
+    const names: [string, number, (c: number) => string][] = [
+      ['30 short', 30, (c) => `Group ${c}`],
+      ['2 long', 2, (c) => `A very long data set name that keeps going on and on ${c} and more`],
+      ['30 long', 30, (c) => `A very long data set name that keeps going ${c}`],
+    ]
+    const big: string[] = []
+    for (const id of Object.keys(SKETCHES)) {
+      const def = registry.get(id)!
+      for (const kind of def.accepts)
+        for (const [label, n, name] of names) {
+          const t = fixture(kind, Math.min(Math.max(def.inputs.min, n), def.inputs.max))
+          t.dataSets.forEach((d, c) => {
+            d.title = name(c)
+          })
+          const spec = def.sketch!(normalizeTable(t), def.params.parse({}), {
+            tableKind: kind,
+            xTitle: 'X',
+            maxRows: 50,
+          })
+          for (const panel of spec?.panels ?? []) {
+            const { project, graph } = sketchGraph(panel)
+            const s = layoutGraph({ project, graph, fonts })
+            if (s.width > 460 || s.height > 320)
+              big.push(`${id} ${kind} ${label}: ${Math.round(s.width)} × ${Math.round(s.height)}`)
+          }
+        }
+    }
+    expect(big).toEqual([])
   })
 
   it('builds in time linear in the rows (CPU time at two sizes)', () => {

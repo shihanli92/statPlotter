@@ -460,3 +460,287 @@ describe('comparisons-table headers (design §8.4, S23)', () => {
     expect(familyCaption(b, {}, [])).toMatch(/^Each row is its own family/)
   })
 })
+
+describe('audit 4: what the results say', () => {
+  const groups = () =>
+    titled(
+      columnTable([
+        [10, 11, 9, 10.5, 9.5, 10.2],
+        [200, 210, 190, 205, 195, 202],
+        [10.1, 11.3, 8.8, 10.6, 9.4, 10.0],
+      ]),
+      ['Ctrl (mg)', 'High (mg)', 'Low (mg)'],
+    )
+
+  it('S1: rank comparisons say which group is higher and give the medians, no rank numbers', () => {
+    const kw = sentence('oneWayAnova', groups(), { gaussian: false })
+    expect(kw).toMatch(
+      /^2 of 3 comparisons differ \(Dunn’s test, Holm\): High \(mg\) is higher than (Low|Ctrl) \(mg\) \(medians 2\d\d mg and 10\.\d+ mg, adjusted P = 0\.\d+\)/,
+    )
+    expect(kw).not.toMatch(/ by \d/)
+    const vs = sentence('oneWayAnova', groups(), {
+      gaussian: false,
+      comparisons: 'vsControl',
+      control: 1,
+    })
+    expect(vs).toMatch(
+      /^Compared with High \(mg\), Ctrl \(mg\) is lower \(median 10\.1 mg vs\. 2\d\d mg, adjusted P/,
+    )
+    expect(vs).not.toMatch(/ by \d/)
+    const ctrl = sentence('oneWayAnova', groups(), {
+      gaussian: false,
+      comparisons: 'vsControl',
+      control: 0,
+    })
+    expect(ctrl).toMatch(
+      /Low \(mg\) shows no evidence of a difference \(median 10\.\d+ mg vs\. 10\.1 mg, adjusted P/,
+    )
+    const fr = sentence('friedman', groups())
+    expect(fr).toMatch(
+      /High \(mg\) is higher than (Low|Ctrl) \(mg\) \(medians 2\d\d mg and 10\.\d+ mg, adjusted P/,
+    )
+    expect(fr).not.toMatch(/ by \d/)
+  })
+
+  it('S6: no direction or verdict from a value that was not computed', () => {
+    const fives = [5, 5, 5, 5, 5, 5, 5, 5]
+    const sevens = [7, 7, 7, 7, 7, 7, 7, 7]
+    const mw = sentence('mannWhitney', titled(columnTable([fives, sevens]), ['A', 'B']))
+    // The shift isn't computed with every value tied: the medians give the direction.
+    expect(mw).toMatch(/^Values in B tend to be higher than in A; P = 0\.\d+, Mann-Whitney test\./)
+    const welch = sentence('ttest', titled(columnTable([fives, sevens]), ['A', 'B']))
+    expect(welch).toMatch(/P could not be computed \(Welch’s t test\)/)
+    expect(welch).not.toMatch(/no evidence/)
+    const x = [1, 2, 3, 4, 5, 6, 7, 8]
+    const huge = xyTable(x, [x.map((r) => 1e300 * (1 + r * 0.013))], ['Signal'])
+    const deming = sentence('deming', huge)
+    expect(deming).toMatch(/^The slope of Signal could not be computed/)
+    for (const t of [mw, welch, deming]) expect(t).not.toMatch(/—|NaN/)
+  })
+
+  it('S7: one-tailed results against the prediction say so in every family', () => {
+    const one = { tails: 'one', predicted: 'decrease' }
+    const against = /the opposite way to the prediction.*; one-tailed P [=>] 0\.9\d+/
+    const pair = titled(columnTable([control, treated]), ['Before', 'After'])
+    const out = {
+      paired: sentence('ttest', pair, { design: 'paired', ...one }),
+      mannWhitney: sentence('mannWhitney', twoGroups(treated), one),
+      wilcoxon: sentence('wilcoxon', pair, one),
+      oneSample: sentence('oneSample', twoGroups(treated), { hypothetical: 45, ...one }),
+      correlation: sentence(
+        'correlation',
+        titled(columnTable([[1, 2, 3, 4, 5, 6, 7, 8], treated.slice(0, 8).sort()]), ['X', 'Y']),
+        one,
+      ),
+      contingency: sentence(
+        'contingency',
+        titled(
+          countsTable(
+            'contingency',
+            [
+              [30, 20],
+              [15, 35],
+            ],
+            ['Drug', 'Placebo'],
+          ),
+          ['Died', 'Alive'],
+        ),
+        one,
+      ),
+    }
+    for (const [k, t] of Object.entries(out)) {
+      expect(t, k).toMatch(against)
+      expect(t, k).not.toMatch(/no evidence/)
+    }
+    expect(out.oneSample).toMatch(/one-tailed \(predicted: below 45\)/)
+    expect(out.correlation).toMatch(/predicted: a negative correlation/)
+    // As predicted, the one-sample sentence says it is one-tailed (it never did).
+    expect(
+      sentence('oneSample', twoGroups(treated), {
+        hypothetical: 45,
+        tails: 'one',
+        predicted: 'increase',
+      }),
+    ).toMatch(/is above 45 by .*one-sample t test, one-tailed \(predicted: above 45\)\)\.$/)
+  })
+
+  const genes = () =>
+    titled(
+      groupedTable(
+        [
+          [
+            [1, 2, 3],
+            [5, 6, 7],
+          ],
+          [
+            [1, 2, 3],
+            [3.4, 4.2, 5.0],
+          ],
+          [
+            [4, 5, 6],
+            [9, 10, 11],
+          ],
+        ],
+        ['Gene 1', 'Gene 2', 'Gene 3'],
+      ),
+      ['WT', 'KO'],
+    )
+
+  it('S12: multiple one-way ANOVAs without a correction decide at the alpha asked for', () => {
+    const r = runDef(def('multipleOneWay'), genes(), { approach: 'none', alpha: 0.01 })
+    const main = r.sheets
+      .flatMap((x) => x.blocks)
+      .find((b) => b.type === 'table' && b.title?.endsWith('one per row')) as Extract<
+      ResultBlock,
+      { type: 'table' }
+    >
+    const j = main.columns.indexOf('Significant (P < 0.01)?')
+    expect(j, main.columns.join()).toBeGreaterThan(0)
+    const jP = main.columns.indexOf('P value')
+    const ps = main.rows.map((x) => (x[jP] as { v: number }).v)
+    expect(
+      ps.some((p) => p >= 0.01 && p < 0.05),
+      ps.join(),
+    ).toBe(true)
+    for (const x of main.rows)
+      expect(x[j]).toEqual({ kind: 'bool', v: (x[jP] as { v: number }).v < 0.01 })
+    const below = ps.filter((p) => p < 0.01).length
+    expect(sentence('multipleOneWay', genes(), { approach: 'none', alpha: 0.01 })).toMatch(
+      new RegExp(`^${below} of 3 rows differ between the groups`),
+    )
+  })
+
+  it('S13: the wording follows the correction and the comparisons chosen', () => {
+    expect(sentence('multipleT', genes(), { approach: 'none' })).toMatch(
+      /rows are below the threshold \(P < 0\.05, not corrected for the 3 rows\), comparing/,
+    )
+    expect(sentence('multipleT', genes(), { approach: 'significance' })).toMatch(
+      /below the threshold after correction \(statistical significance: holm-šidák method\)/i,
+    )
+    const t = titled(
+      groupedTable(
+        [
+          [
+            [10, 11, 12],
+            [20, 21, 22],
+          ],
+          [
+            [20, 21, 22],
+            [10, 11, 12.5],
+          ],
+          [
+            [15, 15.5, 16],
+            [15, 16, 15.2],
+          ],
+        ],
+        ['WT', 'KO', 'Het'],
+      ),
+      ['Vehicle', 'Drug'],
+    )
+    const two = (comparisons: string) =>
+      sentence(
+        'twoWayAnova',
+        t,
+        { comparisons },
+        { factorNames: { rows: 'Genotype', columns: 'Treatment' } },
+      )
+    expect(two('withinRows')).toMatch(
+      /; the comparisons within each level of Genotype describe it\./,
+    )
+    expect(two('none')).toMatch(/; comparisons within each level of Genotype would describe it\.$/)
+    expect(two('mainColumns')).toMatch(
+      /; the main-effect comparisons average over it; comparisons within each level of Genotype would describe it\./,
+    )
+    expect(two('withinColumns')).toMatch(
+      /; the comparisons within each level of Treatment describe it\./,
+    )
+  })
+
+  it('S11: a parameter held constant reads as its value, marked constant', () => {
+    const x = [0, 1, 2, 3, 4, 6, 8, 10, 15, 20, 30]
+    const y = x.map((v, i) => 5 + 95 * Math.exp(-0.3 * v) + ((i % 3) - 1) * 0.8)
+    const s = sentence('nonlinearFit', xyTable(x, [y], ['Decay']), {
+      equation: 'one-phase-decay',
+      constraints: { Y0: { kind: 'constant', value: 100 } },
+    })
+    expect(s).toMatch(/^Decay: Y0 = 100 \(constant\), Plateau = \d/)
+    expect(s).not.toMatch(/—|NaN/)
+  })
+
+  it('S3: captions count each family and name the control the rows are compared with', () => {
+    const cells = [
+      [
+        [10, 11, 12],
+        [20, 21, 22],
+        [14, 15, 15.5],
+      ],
+      [
+        [20, 21, 22],
+        [10, 11, 12.5],
+        [13, 14, 16],
+      ],
+      [
+        [15, 15.5, 16],
+        [15, 16, 15.2],
+        [11, 12, 13],
+      ],
+    ]
+    const t = titled(groupedTable(cells, ['WT', 'KO', 'Het']), ['Vehicle', 'Drug', 'Drug2'])
+    const caption = (params: Record<string, unknown>) => {
+      const r = runDef(def('twoWayAnova'), t, params, {
+        tableKind: 'grouped',
+        xTitle: null,
+        factorNames: { rows: 'Genotype', columns: 'Treatment' },
+      })
+      const b = r.sheets
+        .find((s) => s.key === 'comparisons')
+        ?.blocks.find((x) => x.type === 'table') as Extract<ResultBlock, { type: 'table' }>
+      return b.caption ?? ''
+    }
+    expect(caption({})).toBe(
+      'Each level of Genotype is its own family of 3 comparisons (Šidák). Adjusted P values and 95% CIs.',
+    )
+    expect(caption({ family: 'all' })).toBe(
+      'Šidák: the 9 comparisons as one family; adjusted P values and 95% CIs.',
+    )
+    const tukey = caption({ comparisons: 'withinRows', kind: 'allPairs', allPairsMethod: 'tukey' })
+    expect(tukey).toMatch(/^Each level of Genotype is its own family of 3 comparisons \(Tukey\)\./)
+    expect(tukey).not.toMatch(/ 9 |one family/)
+    expect(caption({ comparisons: 'withinRows', kind: 'vsControl' })).toMatch(
+      /family of 2 comparisons \(Dunnett\)\. Each group − Vehicle within it;/,
+    )
+    expect(caption({ comparisons: 'withinColumns', kind: 'vsControl' })).toMatch(
+      /^Each level of Treatment is its own family of 2 comparisons \(Dunnett\)\. Each group − WT within it;/,
+    )
+    expect(caption({ comparisons: 'mainRows', kind: 'vsControl' })).toMatch(
+      /^Dunnett: each of 2 groups − WT, one family;/,
+    )
+    expect(caption({ comparisons: 'allCells', kind: 'vsControl' })).toMatch(
+      /^Dunnett: each of 8 groups − WT:Vehicle, one family;/,
+    )
+    // The summary names the same control.
+    expect(
+      sentence(
+        'twoWayAnova',
+        t,
+        { comparisons: 'mainRows', kind: 'vsControl' },
+        { factorNames: { rows: 'Genotype', columns: 'Treatment' } },
+      ),
+    ).toMatch(/Compared with WT, /)
+  })
+
+  it('S2: several correlation pairs are counted by the corrected P the table decides by', () => {
+    const cols = [
+      [2.58, 11.11, 7.33, -1.51, 5.53, 8.24, 6.07, 1.27, 10.13, 4.98],
+      [5.91, 13.51, -2.39, 2.29, 13.22, 7.97, 5.31, 8.6, 13.32, 11.15],
+      [-1.79, 6.9, 7.61, -0.24, 2.43, 2.49, 2.29, 4.65, 13.67, 6.23],
+    ]
+    const holm = sentence('correlation', columnTable(cols), { correction: 'holm' })
+    expect(holm).toMatch(
+      /^0 of 3 pairs correlate \(Holm-adjusted P < 0\.05, corrected for the 3 pairs; Pearson correlation\)\.$/,
+    )
+    expect(sentence('correlation', columnTable(cols), { correction: 'none' })).toMatch(
+      /^1 of 3 pairs correlate \(P < 0\.05, not corrected/,
+    )
+  })
+})

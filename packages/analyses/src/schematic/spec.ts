@@ -1,11 +1,12 @@
-import type {
-  SchematicArrow,
-  SchematicBox,
-  SchematicDesign,
-  SchematicGlyph,
-  SchematicLink,
-  SchematicSpec,
-  TableFacts,
+import {
+  plural,
+  type SchematicArrow,
+  type SchematicBox,
+  type SchematicDesign,
+  type SchematicGlyph,
+  type SchematicLink,
+  type SchematicSpec,
+  type TableFacts,
 } from '@ps/model'
 import { nameList } from '../sketch/words.ts'
 
@@ -44,10 +45,14 @@ const MAX_GRID_ARCS = 16
 
 const named = (s: string | null | undefined, fallback: string) => (s?.trim() ? s.trim() : fallback)
 
-/** A label of at most `n` characters (an arrow's words with a name in them). */
-const short = (s: string, n = 22) => (s.length > n ? `${s.slice(0, n - 1)}…` : s)
-
-const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
+/**
+ * A label of at most `n` characters (an arrow's words with a name in them), cut at whole
+ * characters (code points: never half of an astral one; audit 4 G5).
+ */
+const short = (s: string, n = 22) => {
+  const chars = [...s]
+  return chars.length > n ? `${chars.slice(0, n - 1).join('')}…` : s
+}
 
 interface Ctx {
   d: SchematicDesign
@@ -771,6 +776,24 @@ function linksOf(c: Ctx, laid: Laid): SchematicLink[] {
 
 // ---- Words ---------------------------------------------------------------------------------
 
+/** Measures whose words name two groups or variables (A and B). */
+const PAIR_MEASURES = new Set(['association', 'agreement', 'separation', 'probability'])
+
+/**
+ * The question while a pair is incomplete ("Choose a second group."), or null: a comparison of
+ * two groups, or of two variables, with fewer than two chosen.
+ */
+function missingOfPair(c: Ctx, laid: Laid): string | null {
+  const { d } = c
+  if (laid.cells || !d.measure) return null
+  const pair = d.comparisons === 'pair' || PAIR_MEASURES.has(d.measure)
+  if (!pair) return null
+  const n = laid.groups.filter((b) => b.role !== 'reference').length
+  if (n >= 2) return null
+  const what = d.comparisons === 'pair' || d.measure === 'separation' ? 'group' : 'data set'
+  return n === 1 ? `Choose a second ${what}.` : `Choose two ${what}s.`
+}
+
 function questionOf(c: Ctx, laid: Laid, fallback: string | undefined): string {
   const { d, facts } = c
   const gs = laid.groups.filter((b) => b.role !== 'reference')
@@ -785,6 +808,10 @@ function questionOf(c: Ctx, laid: Laid, fallback: string | undefined): string {
   const higher = d.direction === 'increase' ? 'higher' : 'lower'
   const fb = fallback ?? 'What will be tested?'
   if (!d.measure) return fb
+  // Audit 4 (A20): a question about a pair with one of it chosen asks for the other (never
+  // "Is the mean of B different from that of Treated?").
+  const pending = missingOfPair(c, laid)
+  if (pending) return pending
   switch (d.measure) {
     case 'summary':
       return laid.cells
@@ -927,7 +954,7 @@ function questionOf(c: Ctx, laid: Laid, fallback: string | undefined): string {
 
 function noEffectOf(c: Ctx, laid: Laid): string | null {
   const { d } = c
-  if (!d.measure || !TESTED.has(d.measure)) return null
+  if (!d.measure || !TESTED.has(d.measure) || missingOfPair(c, laid)) return null
   const gs = laid.groups.filter((b) => b.role !== 'reference')
   const [a, b] = pairOrder(c, gs)
   const [A, B] = [a?.label ?? 'A', b?.label ?? 'B']
