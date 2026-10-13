@@ -8,7 +8,7 @@ exports[`summary sentences (design §8.2) > contingency: a 2 × 2 with its roles
 }
 `;
 
-exports[`summary sentences (design §8.2) > curve fits: EC50 with its unit from the X title 1`] = `"EC50 = 79.5 nM (log EC50 95% CI −7.17 to −7.03) for Agonist A; 678 nM (log EC50 95% CI −6.26 to −6.08) for Agonist B; Hill slope 0.982 and 0.929."`;
+exports[`summary sentences (design §8.2) > curve fits: EC50 with its unit from the X title 1`] = `"EC50 = 79.5 nM (log EC50 95% CI −7.17 to −7.03) for Agonist A; 678 nM (log EC50 95% CI −6.25 to −6.07) for Agonist B; Hill slope 0.982 and 0.929."`;
 
 exports[`summary sentences (design §8.2) > describe and check: normality, descriptive, ROC, Bland-Altman, outliers 1`] = `
 {

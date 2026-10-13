@@ -31,8 +31,8 @@ const INTERPOLATE = {
 
 const NLFIT: FormText = {
   equation: {
-    line: 'The model that describes your experiment (dose-response, binding, decay…).',
-    card: 'Choose the model from the experiment, before looking at the fit. For dose-response, the “log” models expect X as log(concentration); the “[Agonist]” and “X is concentration” models expect concentrations.',
+    line: 'The model that describes your experiment: choose the goal, then the model.',
+    card: 'Choose the model from the experiment, before looking at the fit. For dose-response, the “log” models expect X as log(concentration); the “[Agonist]” and “X is concentration” models expect concentrations. The picker says which each model expects, and the checks say when your X looks like the other.',
   },
   userEquation: { line: 'Your own model, written with X, Y and its parameters.' },
   equationByDataSet: { line: 'Fit some data sets with a different model.' },
@@ -87,9 +87,13 @@ const NLFIT: FormText = {
   replicates: REPLICATES,
   ciMethod: {
     line: 'How the CIs of the parameters are computed.',
+    card: 'The profile-likelihood interval follows the fit’s own sum of squares, so it can be asymmetric, as the uncertainty of an EC50, a Kd or a rate usually is. The asymptotic interval is the estimate ± t × SE: symmetric, and too narrow on one side for skewed parameters. Fits saved before 0.3.12 used the asymptotic interval and keep it.',
     options: {
-      symmetric: 'Symmetric around the best fit: fast, approximate.',
-      profile: 'Asymmetric, from the profile likelihood: more accurate for EC50s.',
+      profile: {
+        line: 'Asymmetric, from the profile likelihood.',
+        recommended: 'it is accurate for skewed parameters such as EC50s, Kd and rates',
+      },
+      symmetric: 'Estimate ± t × SE: symmetric, approximate.',
     },
   },
   band: {
@@ -102,6 +106,7 @@ const NLFIT: FormText = {
   },
   compareWith: {
     line: 'Does another model fit better? Decide which comparison before the fit.',
+    card: 'The models listed first are nested with this one (one is a special case of the other: the standard slope inside the variable slope), so the F test applies; any other model is compared by AICc.',
   },
   compareParams: {
     line: 'Does a parameter (an EC50) differ between data sets?',
@@ -109,7 +114,7 @@ const NLFIT: FormText = {
   },
   compareBy: {
     line: 'One verdict, by the method chosen before the fit.',
-    card: 'The extra sum-of-squares F test compares nested models (one a special case of the other, as a shared parameter against one per data set). AICc compares any two models fitted to the same data. They can disagree; reading both and keeping the one you like is test shopping. Fits saved before 0.3.9 reported both, and keep that.',
+    card: 'The extra sum-of-squares F test compares nested models (one a special case of the other, as a shared parameter against one per data set, or the standard slope inside the variable slope). AICc compares any two models fitted to the same data. They can disagree; reading both and keeping the one you like is test shopping. The F test is greyed for models that aren’t nested. Fits saved before 0.3.9 reported both, and keep that.',
     options: {
       fTest: {
         line: 'Nested models: a P value for the extra parameters.',

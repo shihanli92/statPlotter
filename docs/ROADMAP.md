@@ -70,6 +70,8 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.9 | 51c | merge of 51c, safer defaults and multiple comparisons (not tagged) |
 | 0.3.10 | 51b | merge of 51b, the new Analyze dialog (not tagged) |
 | 0.3.11 | 51d | merge of 51d, results that explain themselves (not tagged) |
+| 0.3.12 | 51e | merge of 51e, curve fitting (not tagged) |
+| 0.3.13 | 51f | merge of 51f, Guide me diagrams (not tagged) |
 
 ## Phases
 
@@ -2269,3 +2271,85 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     (new: a t test's sentence, names, effect plot, details and method; one-way ANOVA with Dunnett's
     comparisons first with their header; survival with a log-rank label on the graph; a curve
     fit's EC50 in nM) and the specs whose results view changed, in Chromium, WebKit and Firefox.
+
+51e. ✅ **Curve fitting** — decisions 1324–1333 (design
+    [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md) §9; the last of 51a → 51c → 51b → 51d →
+    51e). **The model chosen by goal** (U10): the 127-entry Model select becomes a picker in the
+    Analyze dialog — 13 goals (dose-response stimulation and inhibition, receptor pharmacology,
+    binding saturation, competition and kinetics, enzyme kinetics, decay and growth, growth
+    curves, standard curve — which also interpolates unknowns —, lines and polynomials, peaks,
+    distributions and waves, radiation), each model a card with a **thumbnail of its shape**
+    drawn by `@ps/graph` from typical values (plateaus and midpoint dashed and named), the shape
+    in words, the X it expects and its parameters; All equations (searchable) and My own
+    equation beside them. **Equation metadata** for all 126 built-in equations
+    (`analyses/src/explain/equations.ts`): goals, the X scale expected (log, concentration,
+    time, any), each parameter's meaning and unit, the midpoint and plateaus, the models it is a
+    special case of (52 declared, checked by evaluating both models), its form on the other X
+    scale. **X checked against the model** (S8): concentrations under a log model (and log molar
+    under a concentration model, X = 0 under a log model) are a note in the dialog's checks with
+    one-click fixes — **Transform X to log10** (a Transform analysis and the fit of its result)
+    or the model's other form. **Dose-response warnings with their fixes**: the EC50 outside the
+    doses, a plateau not reached, an EC50 the data don't determine, too few doses, an ambiguous
+    fit; "Fix Bottom = 0" (or Top = 100 for percentages) opens Edit with it set.
+    **Profile-likelihood CIs by default** for new fits (saved fits pinned to the asymptotic
+    ones; params version 3). **One model comparison, chosen in advance** (S18): the F test only
+    between nested models (one a special case of the other; a user equation never), greyed with
+    "These models aren’t nested; compare them by AICc." otherwise (§4.4 row 22: 27 of 28 rows now
+    prevented in the dialog); the question asked with the comparison, the nested models listed
+    first; one verdict in the results' values and the summary sentence; the chooser asks how a
+    compared EC50 will be decided. **The curve-fit sketch** follows the picker: the starting
+    shape from the initial values, constants and shared parameters as the fit starts, constants
+    on plateaus as dashed lines ("Bottom = 0"), the compared model's own starting shape.
+    `ANALYSES_VERSION` 1.6.0 → 1.6.1. R oracle: new `nonlinear` cases (`inhibitor_4pl_profile`,
+    `inhibitor_4pl_vs_3param`, `decay_two_vs_one_phase`, `gaussian_vs_lorentzian_aicc`,
+    `global_shared_hill_profile`; the oracle profiles a global fit's per-data-set parameters
+    too). Example fingerprints change in their curve fits' params version only (results
+    unchanged); goldens unchanged. Deferred: weights as point sizes and a shared parameter as one
+    handle in the sketch, the effect plot's fitted-curve family (51d's list), a model picker in
+    "A different equation for some data sets" (still a select). Tests: `curveModels.test.ts`
+    (metadata coverage, the special cases evaluated, X rules and fixes, warning fixtures, profile
+    pins, nesting, row 22, the verdict sentences), `modelThumbnails.test.ts` (every model's
+    thumbnail laid out; each goal's first pinned as an SVG), the picker, the X fixes, Transform
+    first, row 22 and Edit with a fix in happy-dom (`modelPicker.test.tsx`), the oracle cases;
+    Playwright **`curveFitting.spec.ts`** (new: an IC50 from a log-X table through the picker;
+    concentrations noticed and fixed by Transform X to log10; EC50s compared by the F test chosen
+    in advance; models that aren't nested compared by AICc with the F test greyed) and
+    `analyses.spec.ts` (profile CIs) in Chromium, WebKit and Firefox.
+
+51f. ✅ **Guide me diagrams** — decisions 1334–1340 (the user's request after 51e; design
+    [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md) §12). **What will be tested**: a
+    schematic of the question that builds up as Guide me's questions are answered — the groups
+    (or rows, a grid's cells, variables) as boxes with the user's names, what each holds (mean,
+    mean of log values, ranks, distribution, % of the outcome, risk or odds, survival curve,
+    slope, a fitted curve's parameter such as the EC50) with a small picture, the comparisons as
+    arrows (two groups, every pair, each against the control, a trend in order, any difference,
+    each against a set value, within each row or column of a grid, one test per row, one shared
+    parameter or one each, predictors pointing at an outcome), the same subjects as links, a
+    grouped table's factor grid with what counts as an independent unit ("6 subjects, not 24
+    values"), nested subjects inside their groups, a one-tailed prediction as the arrow's
+    direction, the question in words ("Is the mean of Treated different from that of
+    Control?") and what "no effect" means, the family and its correction, and the question to
+    answer next. Data from `@ps/analyses` (each answer's `draws` in the trees, then the
+    recommendation's params: `analyses/src/schematic/`), drawn by `@ps/graph` (`schematicScene`)
+    in the dialog's light or dark colours; a text alternative; never a value of the data or a
+    result. **The map of the path**, under the question chosen in the rail: the questions
+    answered with their answers (the table's counts marked), the next question, the method the
+    path leads to; a step goes back to its question, and changing an answer now keeps the later
+    answers that still apply (amends 51a); one tab stop, ↑ ↓ Home End and Enter. Placement:
+    Guide me's third column from 860 px (340 / 280 px), a strip above the questions below
+    (Hide); on All analyses the method's own schematic heads the side panel above the sketch (a
+    one-tailed direction, the control, the correction follow the options), for 39 analyses.
+    Also: the wide builder's variables guard (CPU time at two sizes) steps 15 → 120 variables
+    with the fastest of 4 runs, bound 3 (a CI ratio of 2.24 was noise). `ANALYSES_VERSION`
+    unchanged (1.6.1); goldens, fixtures and example fingerprints unchanged. Tests:
+    `analyses/test/schematic.test.ts` (every step of every path on a table of each kind:
+    well-formed, the user's names, no data value or statistic; the answers and the params
+    agree; groups, measures, comparisons, links, grids and units, one-tailed arrows, the
+    sentences; the map and `reanswer`; the import boundary), `graph/test/schematic.test.ts`
+    (boxes, arcs in levels, heads, lines, links, headings, roles, themes, cut labels),
+    `ui/test/schematicGoldens.test.ts` (15 SVGs pinned), `ui/test/guideDiagrams.test.tsx` (the
+    dialog with both diagrams in happy-dom: step by step, every pair or each against the
+    control, links, going back, the keyboard, after Use this with a one-tailed arrow, the narrow
+    strip, the colours); Playwright **`guideDiagrams.spec.ts`** (new) in Chromium, WebKit and
+    Firefox. Deferred: clicking a box in the schematic to set the control (the chips and Guide
+    me's Control group do it).

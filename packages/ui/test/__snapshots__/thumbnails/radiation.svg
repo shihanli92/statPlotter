@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="136pt" height="76pt" viewBox="0 0 136 76">
+<g data-id="graph">
+<g data-id="series">
+<g data-id="layer/shape">
+<g data-id="series/shape/subject/0/0">
+<polyline points="12,8 14.383,10.406 16.766,12.847 19.149,15.31 21.532,17.78 23.915,20.244 26.298,22.688 28.681,25.102 31.064,27.475 33.447,29.795 35.83,32.055 38.213,34.247 40.596,36.363 42.979,38.399 45.362,40.349 47.745,42.209 50.128,43.978 52.511,45.653 54.894,47.234 57.277,48.72 59.66,50.112 62.043,51.411 64.426,52.62 66.809,53.741 69.191,54.776 71.574,55.729 73.957,56.604 76.34,57.405 78.723,58.134 81.106,58.797 83.489,59.398 85.872,59.94 88.255,60.429 90.638,60.867 93.021,61.258 95.404,61.607 97.787,61.918 100.17,62.193 102.553,62.436 104.936,62.65 107.319,62.838 109.702,63.002 112.085,63.146 114.468,63.271 116.851,63.379 119.234,63.473 121.617,63.553 124,63.623" fill="none" stroke="#80b9d9" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="12" y1="64" x2="12" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="12" y1="64" x2="8" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="12" y1="52.8" x2="8" y2="52.8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="12" y1="41.6" x2="8" y2="41.6" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="12" y1="30.4" x2="8" y2="30.4" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="12" y1="19.2" x2="8" y2="19.2" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="12" y1="8" x2="8" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="12" y1="64" x2="124" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="12" y1="64" x2="12" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="34.4" y1="64" x2="34.4" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="56.8" y1="64" x2="56.8" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="79.2" y1="64" x2="79.2" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="101.6" y1="64" x2="101.6" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="124" y1="64" x2="124" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+</svg>

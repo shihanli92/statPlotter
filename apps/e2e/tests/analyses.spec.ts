@@ -194,7 +194,8 @@ test('nonlinear regression of dose-response curves; confidence level edited', as
     'Converged',
     'Converged',
   ])
-  await expect(resultTable(page, '95% CI (asymptotic)')).toBeVisible()
+  // Roadmap 51e: profile-likelihood CIs for new fits.
+  await expect(resultTable(page, '95% CI (profile likelihood)')).toBeVisible()
 
   const d = await editParameters(page)
   // Roadmap 51b: the confidence level is under Reporting. The last of the form's two "Confidence
@@ -203,8 +204,8 @@ test('nonlinear regression of dose-response curves; confidence level edited', as
   await d.getByRole('combobox', { name: 'Confidence level' }).last().selectOption({ label: '90%' })
   await okButton(d).click()
   await expectUpToDate(page)
-  await expect(resultTable(page, '90% CI (asymptotic)')).toBeVisible()
-  await expect(resultTable(page, '95% CI (asymptotic)')).toHaveCount(0)
+  await expect(resultTable(page, '90% CI (profile likelihood)')).toBeVisible()
+  await expect(resultTable(page, '95% CI (profile likelihood)')).toHaveCount(0)
   // The fitted curves are drawn on the table's graph.
   await runMenu(page, 'View', 'Go to graph')
   await expect(page.getByRole('main').getByRole('img', { name: 'Graph' })).toBeVisible()

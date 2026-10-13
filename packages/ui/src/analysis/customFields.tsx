@@ -4,12 +4,14 @@ import {
   effectiveConstraint,
   equation,
   type FitModel,
+  nestedRelatives,
   parseEquation,
   resolveEquation,
   USER_EQUATION,
 } from '@ps/analyses'
 import { useId } from 'react'
 import { NumberBox, OptionalNumber } from '../components/fields.tsx'
+import { ModelPicker } from './ModelPicker.tsx'
 import { type CustomField, getPath, setPath } from './ParamsForm.tsx'
 
 type Params = Record<string, unknown>
@@ -48,26 +50,6 @@ export function EquationSelect({
         </optgroup>
       ))}
     </select>
-  )
-}
-
-const EquationField: CustomField = ({ label, params, onChange }) => {
-  const id = useId()
-  const eq = equation(String(params.equation))
-  return (
-    <>
-      <label htmlFor={id}>{label}</label>
-      <EquationSelect
-        id={id}
-        value={String(params.equation)}
-        // Parameter names differ between models, so constraints, starting values and limits
-        // start over.
-        onChange={(v) =>
-          onChange({ ...params, equation: v, constraints: {}, initialValues: {}, limits: {} })
-        }
-      />
-      {eq && <div className="formula">{eq.formula}</div>}
-    </>
   )
 }
 
@@ -124,18 +106,54 @@ function modelOf(params: Params): FitModel | null {
   return r.ok ? r.model : null
 }
 
+/**
+ * Roadmap 51e (§9.4): the model to compare with — the models nested with this one first (one a
+ * special case of the other: the F test applies), then every other model (AICc only).
+ */
 const CompareField: CustomField = ({ label, params, onChange }) => {
   const id = useId()
+  const current = String(params.equation ?? '')
+  const nested = current === USER_EQUATION ? [] : nestedRelatives(current)
+  const others = EQUATIONS.filter((e) => e.id !== current && !nested.includes(e.id))
+  const categories = [...new Set(others.map((e) => e.category))]
+  const value = String(params.compareWith ?? 'none')
   return (
     <>
       <label htmlFor={id}>{label}</label>
-      <EquationSelect
+      <select
         id={id}
-        value={String(params.compareWith ?? 'none')}
-        includeNone
-        onChange={(v) => onChange({ ...params, compareWith: v })}
-      />
-      <div className="help">Extra sum-of-squares F test (nested models) and AICc.</div>
+        value={value}
+        onChange={(e) => onChange({ ...params, compareWith: e.target.value })}
+      >
+        <option value="none">Don’t compare</option>
+        {nested.length > 0 && (
+          <optgroup label="Nested with this model (F test or AICc)">
+            {nested.map((m) => (
+              <option key={m} value={m}>
+                {equation(m)?.name}
+              </option>
+            ))}
+          </optgroup>
+        )}
+        {categories.map((c) => (
+          <optgroup key={c} label={`${c} (AICc only)`}>
+            {others
+              .filter((e) => e.category === c)
+              .map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.name}
+                </option>
+              ))}
+          </optgroup>
+        ))}
+      </select>
+      <div className="help">
+        {value === 'none'
+          ? 'The models listed first are nested with this one: the F test applies to them.'
+          : nested.includes(value)
+            ? 'Nested models: compare them by the F test or AICc, chosen below.'
+            : 'These models aren’t nested: they are compared by AICc.'}
+      </div>
     </>
   )
 }
@@ -347,7 +365,7 @@ export const CUSTOM_FIELDS: Record<string, CustomField> = {
   'dataset.pick:1': dataSetField(1),
   // Roadmap 34c: an optional text variable among those analyzed (PCA's "Group by").
   'dataset.pickText': dataSetField(null, true),
-  'nlfit.equation': EquationField,
+  'nlfit.equation': ModelPicker,
   'nlfit.userEquation': UserEquationField,
   'nlfit.constraints': ConstraintsField,
   'nlfit.initialValues': InitialValuesField,

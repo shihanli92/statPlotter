@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320pt" height="124pt" viewBox="0 0 320 124">
+<g data-id="schematic">
+<g data-id="box/p:d0">
+<g data-id="box/p:d0/frame">
+<rect x="24" y="6" width="116" height="32" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/p:d0/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="72.554" y="19.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Age</tspan></text>
+</g>
+<g data-id="box/p:d0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="65.465" y="30.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">predictor</tspan></text>
+</g>
+</g>
+<g data-id="box/p:d1">
+<g data-id="box/p:d1/frame">
+<rect x="24" y="46" width="116" height="32" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/p:d1/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="69.773" y="59.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Dose</tspan></text>
+</g>
+<g data-id="box/p:d1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="65.465" y="70.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">predictor</tspan></text>
+</g>
+</g>
+<g data-id="box/o:d2">
+<g data-id="box/o:d2/frame">
+<rect x="180" y="46" width="116" height="32" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/o:d2/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="227.719" y="59.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">SBP</tspan></text>
+</g>
+<g data-id="box/o:d2/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="221.699" y="70.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">outcome</tspan></text>
+</g>
+</g>
+<g data-id="box/p:d3">
+<g data-id="box/p:d3/frame">
+<rect x="24" y="86" width="116" height="32" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/p:d3/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="65.428" y="99.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Weight</tspan></text>
+</g>
+<g data-id="box/p:d3/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="65.465" y="110.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">predictor</tspan></text>
+</g>
+</g>
+<g data-id="arrow/0">
+<g data-id="arrow/0/line">
+<line x1="140" y1="36.872" x2="180" y2="47.128" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/0/head/0">
+<polygon points="180,47.128 173.272,48.004 174.523,43.122" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/1">
+<g data-id="arrow/1/line">
+<line x1="140" y1="62" x2="180" y2="62" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/1/head/0">
+<polygon points="180,62 173.7,64.52 173.7,59.48" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/2">
+<g data-id="arrow/2/line">
+<line x1="140" y1="87.128" x2="180" y2="76.872" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/2/head/0">
+<polygon points="180,76.872 174.523,80.878 173.272,75.996" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+</g>
+</svg>

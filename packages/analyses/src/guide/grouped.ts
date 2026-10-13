@@ -33,6 +33,7 @@ function kindQ(repeated: (a: GuideAnswers) => string): GuideStep {
       answer('allPairs', 'Every pair', then),
       answer('vsControl', 'Each with a control (the first column or row)', then),
     ],
+    { draws: { allPairs: { kind: 'allPairs' }, vsControl: { kind: 'vsControl' } } },
   )
 }
 
@@ -60,6 +61,15 @@ function comparisonsQ(repeated: (a: GuideAnswers) => string, rm: boolean): Guide
       ),
       answer('none', 'Only the overall effects', none),
     ],
+    {
+      draws: {
+        withinRows: { comparisons: 'withinRows' },
+        withinColumns: { comparisons: 'withinColumns' },
+        allCells: { comparisons: 'allCells' },
+        mainColumns: { comparisons: 'mainColumns' },
+        none: { comparisons: 'none' },
+      },
+    },
   )
 }
 
@@ -85,7 +95,15 @@ const twoFactors: GuideStep = question(
     ),
     answer('both', 'Both factors', comparisonsQ(repeatedOf, true), { unavailable: needsRaw }),
   ],
-  { hint: pairingHint },
+  {
+    hint: pairingHint,
+    draws: {
+      none: { matched: 'no' },
+      columns: { matched: 'columns' },
+      rows: { matched: 'rows' },
+      both: { matched: 'both' },
+    },
+  },
 )
 
 const multipleT = (design: string, distribution: string) =>
@@ -132,6 +150,13 @@ const rowsValues = (design: string): GuideStep =>
         ),
       ),
     ],
+    {
+      draws: {
+        measure: { measure: 'mean' },
+        factor: { measure: 'logMean' },
+        scores: { measure: 'ranks' },
+      },
+    },
   )
 
 export const GROUPED_ENTRIES: readonly GuideEntry[] = [
@@ -140,6 +165,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
     question: 'How do two factors affect the response (and do they interact)?',
     kinds: ['grouped'],
     keywords: ['two-way anova', 'two factors', 'interaction', 'genotype treatment', 'factorial'],
+    draws: { layout: 'grid', measure: 'mean' },
     start: twoFactors,
   },
   {
@@ -147,6 +173,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
     question: 'A time course in the same subjects',
     kinds: ['grouped'],
     keywords: ['time course', 'repeated measures', 'over time', 'same animals'],
+    draws: { layout: 'grid', measure: 'mean' },
     start: question(
       'second',
       'Are the groups in the columns and the times down the rows?',
@@ -172,6 +199,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
       {
         hint: (f) =>
           f.numericRowTitles >= 2 ? 'The row titles are numbers: the rows look like times.' : null,
+        draws: { yes: { matched: 'rows' } },
       },
     ),
   },
@@ -187,6 +215,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
       'each row',
       'false discovery rate',
     ],
+    draws: { layout: 'grid', comparisons: 'perRow' },
     start: question(
       'matched',
       'Were the same subjects measured in both groups?',
@@ -197,6 +226,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
           unavailable: needsRaw,
         }),
       ],
+      { draws: { no: { matched: 'no' }, yes: { matched: 'columns' } } },
     ),
   },
   {
@@ -204,6 +234,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
     question: 'Compare three or more groups at each row',
     kinds: ['grouped'],
     keywords: ['multiple anova', 'each row', 'per row'],
+    draws: { layout: 'grid', comparisons: 'perRow' },
     start: question(
       'values',
       'What kind of values?',
@@ -244,6 +275,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
           { unavailable: needsRaw },
         ),
       ],
+      { draws: { measure: { measure: 'mean' }, scores: { measure: 'ranks' } } },
     ),
   },
   {
@@ -251,6 +283,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
     question: 'Three factors (2 × 2 × k)',
     kinds: ['grouped'],
     keywords: ['three-way anova', 'three factors'],
+    draws: { layout: 'grid', measure: 'mean', comparisons: 'none' },
     start: question(
       'groups',
       'How many data sets?',
@@ -282,6 +315,7 @@ export const GROUPED_ENTRIES: readonly GuideEntry[] = [
     question: 'Describe each row',
     kinds: ['grouped'],
     keywords: ['row means', 'row statistics', 'mean sd'],
+    draws: { layout: 'grid', measure: 'summary', comparisons: 'none' },
     start: leaf('rowStats', fixed({}), 'The mean, SD, SEM and n of each row, for each data set.'),
   },
 ]

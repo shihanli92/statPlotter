@@ -73,3 +73,4 @@ export function attachSketches(defs: readonly AnalysisDef<unknown>[]): void {
 }
 
 export { SKETCH_MAX_ROWS, sampledRows } from './tables.ts'
+export { modelThumbnail, THUMBNAIL_PLOT } from './thumbnail.ts'

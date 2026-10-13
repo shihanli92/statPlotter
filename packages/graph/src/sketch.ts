@@ -21,8 +21,11 @@ export const SKETCH_PLOT = { width: 220, height: 130 } as const
 
 const title = (text: string): TextSpec => ({ content: [{ text }] })
 
-/** A typed reference line at a value of an axis (as Add line does). */
-const refline = (i: number, at: number, axis: 'x' | 'y'): Layer =>
+/**
+ * A typed reference line at a value of an axis (as Add line does); dashed for a constraint
+ * (roadmap 51e: "Bottom = 0" on a curve fit's sketch).
+ */
+const refline = (i: number, at: number, axis: 'x' | 'y', dashed = false): Layer =>
   ({
     id: `ref${i}`,
     geom: 'refline',
@@ -34,6 +37,7 @@ const refline = (i: number, at: number, axis: 'x' | 'y'): Layer =>
     },
     data: { from: 'values' },
     legend: 'hide',
+    ...(dashed ? { style: { line: { dash: 'dash' } } } : {}),
   }) as Layer
 
 /**
@@ -65,19 +69,40 @@ export function sketchGraph(
       seriesHidden: true,
       series: Object.fromEntries([...lineSets].map((k) => [k, { hide: false }])),
     } as Layer)
-  layers = [...layers, ...(panel.lines ?? []).map((l, i) => refline(i, l.at, l.axis ?? 'y'))]
-  const annotations: Annotation[] = (panel.brackets ?? []).map((b, i) => ({
-    type: 'bracket',
-    id: `b${i}` as AnnotationId,
-    a: b.a,
-    b: b.b,
-    label: { source: 'manual', text: b.label },
-    level: 'auto',
-  }))
+  layers = [
+    ...layers,
+    ...(panel.lines ?? []).map((l, i) => refline(i, l.at, l.axis ?? 'y', l.dashed)),
+  ]
+  const annotations: Annotation[] = [
+    ...(panel.brackets ?? []).map(
+      (b, i): Annotation => ({
+        type: 'bracket',
+        id: `b${i}` as AnnotationId,
+        a: b.a,
+        b: b.b,
+        label: { source: 'manual', text: b.label },
+        level: 'auto',
+      }),
+    ),
+    // Roadmap 51e: names at data coordinates (a thumbnail's Top, Bottom, EC50; a constraint's).
+    ...(panel.labels ?? []).map(
+      (l, i): Annotation => ({
+        type: 'text',
+        id: `t${i}` as AnnotationId,
+        anchor: { space: 'data', x: l.x, y: l.y },
+        content: { ...title(l.text), style: { size: 7 } },
+      }),
+    ),
+  ]
   const axes = { ...base.axes }
   if (panel.axes?.yLog && axes.y.type === 'continuous') axes.y = { ...axes.y, scale: 'log10' }
+  if (panel.axes?.xLog && axes.x.type === 'continuous') axes.x = { ...axes.x, scale: 'log10' }
   if (panel.axes?.xTitle) axes.x = { ...axes.x, title: title(panel.axes.xTitle) }
   if (panel.axes?.yTitle) axes.y = { ...axes.y, title: title(panel.axes.yTitle) }
+  if (panel.axes?.bare) {
+    axes.x = { ...axes.x, title: null, showLabels: false }
+    axes.y = { ...axes.y, title: null, showLabels: false }
+  }
   // One data set needs no legend (its name is the panel's title or axis).
   const legend = panel.table.dataSets.length < 2 ? { ...base.legend, show: false } : base.legend
   const graph: GraphNode = {

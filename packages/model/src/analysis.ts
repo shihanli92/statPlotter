@@ -199,9 +199,21 @@ export const Comparison = z.object({
 })
 export type Comparison = z.infer<typeof Comparison>
 
+/**
+ * Roadmap 51e (design §9.3): a change of the analysis' params that answers a warning ("Fix Bottom =
+ * 0"): each value set at its path, offered as a button opening Edit with it applied.
+ */
+export const DiagnosticFix = z.object({
+  label: z.string(),
+  set: z.array(z.object({ path: z.array(z.string()), value: z.unknown() })),
+})
+export type DiagnosticFix = z.infer<typeof DiagnosticFix>
+
 export const Diagnostic = z.object({
   level: z.enum(['info', 'warning', 'error']),
   message: z.string(),
+  /** Roadmap 51e: what to change, one click away (absent: none). */
+  fix: DiagnosticFix.optional(),
 })
 export type Diagnostic = z.infer<typeof Diagnostic>
 
@@ -282,8 +294,25 @@ export interface AnalysisFacts {
   rows: number
   columns: number
   factors: number
+  /**
+   * Roadmap 51e (§9.4, §4.4 row 22): a curve fit compares models or a parameter between data sets
+   * (from the params: what is asked, not the data).
+   */
+  modelComparison: boolean
+  /**
+   * Roadmap 51e: the comparison asked for is between nested models (a parameter shared or not,
+   * or two built-in models one of which is a special case of the other); false otherwise and for
+   * a user-defined equation against anything.
+   */
+  modelsNested: boolean
 }
-export type BoolFact = 'raw' | 'hasX' | 'twoByTwo' | 'missingInMatched'
+export type BoolFact =
+  | 'raw'
+  | 'hasX'
+  | 'twoByTwo'
+  | 'missingInMatched'
+  | 'modelComparison'
+  | 'modelsNested'
 export type CountFact = 'groups' | 'dataSets' | 'maxPerCell' | 'rows' | 'columns' | 'factors'
 
 /**
@@ -318,6 +347,18 @@ export interface Check {
   level: 'ok' | 'note' | 'block'
   message: string
   where?: 'params' | 'table'
+  /** Roadmap 51e (§4.6, §9.2): one-click fixes offered beside it. */
+  fix?: readonly CheckFix[]
+}
+
+/**
+ * Roadmap 51e: a check's fix — params set at their paths, or an action the dialog performs
+ * ('transformLog10X': a Transform analysis of X first, the analysis fit to its result).
+ */
+export interface CheckFix {
+  label: string
+  set?: readonly { path: readonly string[]; value: unknown }[]
+  action?: 'transformLog10X'
 }
 
 /**
@@ -387,8 +428,16 @@ export interface SketchPanel {
   preset: string
   brackets?: readonly { a: string; b: string; label: string }[]
   /** Reference lines across the plot: at a Y value (default) or an X value. */
-  lines?: readonly { at: number; axis?: 'x' | 'y'; label?: string }[]
-  axes?: { yLog?: boolean; xTitle?: string; yTitle?: string }
+  lines?: readonly { at: number; axis?: 'x' | 'y'; label?: string; dashed?: boolean }[]
+  /**
+   * Roadmap 51e: text at data coordinates (a model thumbnail's parameter names: "Top", "EC50" —
+   * names, never values).
+   */
+  labels?: readonly { x: number; y: number; text: string }[]
+  /**
+   * `xLog`: a log10 X axis; `bare`: no tick labels or titles (a model thumbnail's shape alone).
+   */
+  axes?: { yLog?: boolean; xLog?: boolean; bare?: boolean; xTitle?: string; yTitle?: string }
   /** Data set keys drawn emphasized (the control). */
   highlight?: readonly string[]
   /**

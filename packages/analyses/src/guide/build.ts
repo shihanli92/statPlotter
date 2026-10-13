@@ -6,6 +6,7 @@ import type {
   GuideLeaf,
   GuideQuestion,
   GuideStep,
+  SchematicDesign,
   TableFacts,
   TableKind,
 } from '@ps/model'
@@ -14,13 +15,31 @@ import type {
 
 export type Params = (f: TableFacts, a: GuideAnswers) => Record<string, unknown>
 
+/**
+ * A question. Roadmap 51f: `draws` gives, by answer id, what each answer says about the design
+ * ("What will be tested"), set on the answers (beside any they carry themselves).
+ */
 export const question = (
   id: string,
   text: string,
   why: string,
   answers: readonly GuideAnswer[],
-  extra: Pick<GuideQuestion, 'hint' | 'answeredBy'> = {},
-): GuideQuestion => ({ kind: 'question', id, text, why, answers, ...extra })
+  extra: Pick<GuideQuestion, 'hint' | 'answeredBy'> & {
+    draws?: Readonly<Record<string, SchematicDesign>>
+  } = {},
+): GuideQuestion => {
+  const { draws, ...rest } = extra
+  return {
+    kind: 'question',
+    id,
+    text,
+    why,
+    answers: draws
+      ? answers.map((a) => (draws[a.id] ? { ...a, draws: { ...draws[a.id], ...a.draws } } : a))
+      : answers,
+    ...rest,
+  }
+}
 
 export const answer = (
   id: string,

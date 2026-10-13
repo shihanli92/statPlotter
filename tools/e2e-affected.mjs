@@ -83,6 +83,10 @@ const ANALYSIS = [
   'analyzeDialog',
   // Roadmap 51d: results that explain themselves (summary, names, effect plot, methods text).
   'analysisResults',
+  // Roadmap 51e: curve fitting (the model picker, log-X checks, one comparison chosen first).
+  'curveFitting',
+  // Roadmap 51f: Guide me's diagrams (what will be tested, the map of the path).
+  'guideDiagrams',
   'graphs',
   'groupOverlays',
   'resultsOnGraphs',

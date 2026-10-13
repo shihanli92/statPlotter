@@ -5258,6 +5258,191 @@ dialog.dialog.wide:has(.analyze) {
   font-size: 12px;
 }
 
+/* ---------- Roadmap 51f: Guide me's map of the path and "What will be tested" ---------- */
+
+/* Beside the questions from 860 px (340 px; 280 px below 1100 px), a strip above them below. */
+.guide-side {
+  width: 340px;
+  flex: none;
+  max-height: 64vh;
+  overflow-y: auto;
+  border-left: 1px solid var(--border);
+  padding: 0 4px 12px 12px;
+  font-size: 12px;
+}
+.analyze.guide.medium .guide-side {
+  width: 280px;
+}
+.analyze.guide.medium .guide-rail,
+.analyze.guide.narrow .guide-rail {
+  width: 200px;
+}
+.guide-side-empty {
+  margin-top: 0;
+}
+/* Narrow: it stays in view while the questions below it scroll (Hide folds it). */
+.guide-strip {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 0 10px;
+  padding: 6px 8px;
+  max-height: 190px;
+  background: var(--panel);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+}
+.schematic {
+  margin: 0 0 10px;
+}
+.schematic-question {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.schematic-figure {
+  margin: 0 0 6px;
+}
+.schematic-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.schematic.compact .schematic-figure img {
+  width: auto;
+  max-width: 100%;
+  max-height: 160px;
+}
+.schematic-null {
+  margin: 4px 0;
+}
+.schematic-null-label {
+  font-weight: 600;
+}
+.schematic-notes {
+  margin: 4px 0;
+  padding-left: 16px;
+  color: var(--muted);
+}
+.schematic-pending {
+  margin: 4px 0;
+  font-style: italic;
+  color: var(--muted);
+}
+.schematic-details {
+  margin: 0 0 10px;
+}
+.schematic-details > summary {
+  cursor: pointer;
+}
+.schematic-details[open] > summary {
+  margin-bottom: 6px;
+}
+
+/* The map: a line of steps under the question chosen, a dot per step (filled when answered). */
+.guide-map {
+  list-style: none;
+  margin: 4px 0 8px 12px;
+  padding: 0 0 0 10px;
+  border-left: 2px solid var(--border);
+  font-size: 12px;
+}
+.map-item {
+  position: relative;
+  margin: 0 0 2px;
+}
+.map-item::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  background: var(--panel);
+}
+.map-item.answered::before,
+.map-item.end:not(.later)::before {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.map-item.next::before {
+  border-color: var(--accent);
+}
+.map-item.end:not(.later)::before {
+  border-radius: 2px;
+}
+.map-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 3px 6px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+}
+.map-step:hover {
+  background: var(--accent-soft);
+}
+.map-step:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.map-question {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--muted);
+}
+.map-item.next .map-question {
+  color: var(--text);
+}
+.map-answer,
+.map-item.end .map-step {
+  font-weight: 500;
+}
+.map-item.auto .map-answer {
+  font-weight: 400;
+}
+.map-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+.map-item.later .map-step {
+  color: var(--muted);
+  font-weight: 400;
+  cursor: default;
+}
+.map-item.later .map-step:hover {
+  background: none;
+}
+/* A question gone back to from the map, outlined a moment. */
+.guide-question.revisit,
+.guide-fact.revisit,
+.guide-recommendation.revisit {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .guide-question,
+  .guide-fact {
+    transition: outline-color 0.3s;
+  }
+}
+
 /* The navigator's empty Results: questions to ask of the open table. */
 .results-prompt h4 {
   margin: 10px 14px 4px;
@@ -5787,5 +5972,160 @@ fieldset.plain {
 @media (prefers-reduced-motion: no-preference) {
   .sketch-panels {
     transition: opacity 0.12s;
+  }
+}
+
+/* Roadmap 51e (design §9.1, U10): the curve fit's model picker — goals, model cards with their
+   shape's thumbnail, All equations, My own equation; check and warning fixes. */
+.model-picker {
+  border: 0;
+  margin: 0 0 8px;
+  padding: 0;
+  min-width: 0;
+}
+.model-picker legend {
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 4px;
+}
+.model-current {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.model-current .formula {
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.model-params {
+  margin: 2px 0 8px;
+  padding-left: 16px;
+  font-size: 12px;
+}
+.model-body {
+  display: grid;
+  grid-template-columns: minmax(130px, 168px) minmax(0, 1fr);
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+}
+.model-goals {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.model-goals button {
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 12px;
+  color: inherit;
+  cursor: pointer;
+}
+.model-goals button:hover {
+  background: var(--accent-soft);
+}
+.model-goals button.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+.model-panel {
+  min-width: 0;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.model-panel > .help {
+  margin: 0 0 6px;
+}
+.model-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px;
+}
+.model-cards.list {
+  display: block;
+}
+.model-card {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+}
+.model-card:hover {
+  border-color: var(--border-hover);
+}
+.model-card.checked,
+.model-row.checked {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.model-card:focus-visible,
+.model-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.model-thumb {
+  flex: none;
+  border-radius: 3px;
+  background: #fff;
+}
+.model-thumb.empty {
+  display: inline-block;
+  width: 84px;
+  height: 42px;
+}
+.model-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 12px;
+}
+.model-name {
+  font-weight: 600;
+}
+.model-shape,
+.model-x {
+  color: var(--muted);
+  font-size: 11px;
+}
+.model-row {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 2px 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.model-search {
+  width: 100%;
+  margin-bottom: 6px;
+}
+.check-fix {
+  margin-left: 6px;
+  font-size: 12px;
+  padding: 1px 6px;
+}
+.checks .link.check-fix {
+  padding: 0;
+}
+@media (max-width: 700px) {
+  .model-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .model-goals {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-height: none;
   }
 }

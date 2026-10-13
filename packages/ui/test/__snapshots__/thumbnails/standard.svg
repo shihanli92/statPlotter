@@ -1,0 +1,263 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="136pt" height="76pt" viewBox="0 0 136 76">
+<g data-id="graph">
+<g data-id="series">
+<g data-id="layer/shape">
+<g data-id="series/shape/subject/0/0">
+<polyline points="12,61.199 14.383,61.199 16.766,61.198 19.149,61.197 21.532,61.195 23.915,61.192 26.298,61.188 28.681,61.18 31.064,61.168 33.447,61.149 35.83,61.117 38.213,61.066 40.596,60.984 42.979,60.852 45.362,60.639 47.745,60.3 50.128,59.761 52.511,58.914 54.894,57.606 57.277,55.636 59.66,52.78 62.043,48.862 64.426,43.873 66.809,38.091 69.191,32.078 71.574,26.491 73.957,21.816 76.34,18.235 78.723,15.674 81.106,13.931 83.489,12.784 85.872,12.047 88.255,11.579 90.638,11.285 93.021,11.101 95.404,10.987 97.787,10.916 100.17,10.872 102.553,10.844 104.936,10.827 107.319,10.817 109.702,10.811 112.085,10.806 114.468,10.804 116.851,10.802 119.234,10.802 121.617,10.801 124,10.801" fill="none" stroke="#80b9d9" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+<g data-id="layer/ref0">
+<g data-id="result/ref0/all/line">
+<line x1="12" y1="10.8" x2="124" y2="10.8" stroke="#808080" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="layer/ref1">
+<g data-id="result/ref1/all/line">
+<line x1="12" y1="61.2" x2="124" y2="61.2" stroke="#808080" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="layer/ref2">
+<g data-id="result/ref2/all/line">
+<line x1="67.634" y1="8" x2="67.634" y2="64" stroke="#808080" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="12" y1="64" x2="12" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="12" y1="64" x2="8" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="12" y1="52.8" x2="8" y2="52.8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="12" y1="41.6" x2="8" y2="41.6" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="12" y1="30.4" x2="8" y2="30.4" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="12" y1="19.2" x2="8" y2="19.2" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="12" y1="8" x2="8" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="12" y1="64" x2="124" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="12" y1="64" x2="12" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="28" y1="64" x2="28" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="44" y1="64" x2="44" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="60" y1="64" x2="60" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="76" y1="64" x2="76" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="92" y1="64" x2="92" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/6">
+<line x1="108" y1="64" x2="108" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/7">
+<line x1="124" y1="64" x2="124" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/0">
+<line x1="16.816" y1="64" x2="16.816" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/1">
+<line x1="19.634" y1="64" x2="19.634" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/2">
+<line x1="21.633" y1="64" x2="21.633" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/3">
+<line x1="23.184" y1="64" x2="23.184" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/4">
+<line x1="24.45" y1="64" x2="24.45" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/5">
+<line x1="25.522" y1="64" x2="25.522" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/6">
+<line x1="26.449" y1="64" x2="26.449" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/7">
+<line x1="27.268" y1="64" x2="27.268" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/8">
+<line x1="32.816" y1="64" x2="32.816" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/9">
+<line x1="35.634" y1="64" x2="35.634" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/10">
+<line x1="37.633" y1="64" x2="37.633" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/11">
+<line x1="39.184" y1="64" x2="39.184" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/12">
+<line x1="40.45" y1="64" x2="40.45" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/13">
+<line x1="41.522" y1="64" x2="41.522" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/14">
+<line x1="42.449" y1="64" x2="42.449" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/15">
+<line x1="43.268" y1="64" x2="43.268" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/16">
+<line x1="48.816" y1="64" x2="48.816" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/17">
+<line x1="51.634" y1="64" x2="51.634" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/18">
+<line x1="53.633" y1="64" x2="53.633" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/19">
+<line x1="55.184" y1="64" x2="55.184" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/20">
+<line x1="56.45" y1="64" x2="56.45" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/21">
+<line x1="57.522" y1="64" x2="57.522" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/22">
+<line x1="58.449" y1="64" x2="58.449" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/23">
+<line x1="59.268" y1="64" x2="59.268" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/24">
+<line x1="64.816" y1="64" x2="64.816" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/25">
+<line x1="67.634" y1="64" x2="67.634" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/26">
+<line x1="69.633" y1="64" x2="69.633" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/27">
+<line x1="71.184" y1="64" x2="71.184" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/28">
+<line x1="72.45" y1="64" x2="72.45" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/29">
+<line x1="73.522" y1="64" x2="73.522" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/30">
+<line x1="74.449" y1="64" x2="74.449" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/31">
+<line x1="75.268" y1="64" x2="75.268" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/32">
+<line x1="80.816" y1="64" x2="80.816" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/33">
+<line x1="83.634" y1="64" x2="83.634" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/34">
+<line x1="85.633" y1="64" x2="85.633" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/35">
+<line x1="87.184" y1="64" x2="87.184" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/36">
+<line x1="88.45" y1="64" x2="88.45" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/37">
+<line x1="89.522" y1="64" x2="89.522" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/38">
+<line x1="90.449" y1="64" x2="90.449" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/39">
+<line x1="91.268" y1="64" x2="91.268" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/40">
+<line x1="96.816" y1="64" x2="96.816" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/41">
+<line x1="99.634" y1="64" x2="99.634" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/42">
+<line x1="101.633" y1="64" x2="101.633" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/43">
+<line x1="103.184" y1="64" x2="103.184" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/44">
+<line x1="104.45" y1="64" x2="104.45" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/45">
+<line x1="105.522" y1="64" x2="105.522" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/46">
+<line x1="106.449" y1="64" x2="106.449" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/47">
+<line x1="107.268" y1="64" x2="107.268" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/48">
+<line x1="112.816" y1="64" x2="112.816" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/49">
+<line x1="115.634" y1="64" x2="115.634" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/50">
+<line x1="117.633" y1="64" x2="117.633" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/51">
+<line x1="119.184" y1="64" x2="119.184" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/52">
+<line x1="120.45" y1="64" x2="120.45" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/53">
+<line x1="121.522" y1="64" x2="121.522" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/54">
+<line x1="122.449" y1="64" x2="122.449" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/minorTick/55">
+<line x1="123.268" y1="64" x2="123.268" y2="66" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="annotations">
+<g data-id="annotation/t0">
+<g data-id="annotation/t0/text">
+<text fill="#000000" xml:space="preserve"><tspan x="16.48" y="17.137" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">Top</tspan></text>
+</g>
+</g>
+<g data-id="annotation/t1">
+<g data-id="annotation/t1/text">
+<text fill="#000000" xml:space="preserve"><tspan x="81.44" y="58.465" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">Bottom</tspan></text>
+</g>
+</g>
+<g data-id="annotation/t2">
+<g data-id="annotation/t2/text">
+<text fill="#000000" xml:space="preserve"><tspan x="67.634" y="42.337" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">EC50</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

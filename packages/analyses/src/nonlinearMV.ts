@@ -37,7 +37,7 @@ const GRAPH = { id: 'mvfit', name: 'Curve fit' }
 
 export const nonlinearFitMVDef: AnalysisDef<NonlinearMVParams> = {
   id: 'nonlinearFitMV',
-  version: 2,
+  version: 3,
   title: 'Nonlinear regression (curve fit)',
   category: 'Multiple variable analyses',
   description:

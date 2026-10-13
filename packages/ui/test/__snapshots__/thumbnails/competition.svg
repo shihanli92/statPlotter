@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="136pt" height="76pt" viewBox="0 0 136 76">
+<g data-id="graph">
+<g data-id="series">
+<g data-id="layer/shape">
+<g data-id="series/shape/subject/0/0">
+<polyline points="12,9.631 14.383,10.066 16.766,10.611 19.149,11.291 21.532,12.133 23.915,13.169 26.298,14.431 28.681,15.949 31.064,17.751 33.447,19.854 35.83,22.263 38.213,24.959 40.596,27.905 42.979,31.038 45.362,34.274 47.745,37.52 50.128,40.681 52.511,43.67 54.894,46.42 57.277,48.888 59.66,51.053 62.043,52.914 64.426,54.487 66.809,55.797 69.191,56.876 71.574,57.754 73.957,58.465 76.34,59.035 78.723,59.49 81.106,59.852 83.489,60.139 85.872,60.366 88.255,60.545 90.638,60.686 93.021,60.797 95.404,60.884 97.787,60.952 100.17,61.006 102.553,61.048 104.936,61.081 107.319,61.107 109.702,61.127 112.085,61.143 114.468,61.155 116.851,61.165 119.234,61.173 121.617,61.179 124,61.183" fill="none" stroke="#80b9d9" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+<g data-id="layer/ref0">
+<g data-id="result/ref0/all/line">
+<line x1="12" y1="8" x2="124" y2="8" stroke="#808080" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="layer/ref1">
+<g data-id="result/ref1/all/line">
+<line x1="12" y1="61.2" x2="124" y2="61.2" stroke="#808080" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="layer/ref2">
+<g data-id="result/ref2/all/line">
+<line x1="45.6" y1="8" x2="45.6" y2="64" stroke="#808080" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="12" y1="64" x2="12" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="12" y1="64" x2="8" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="12" y1="50" x2="8" y2="50" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="12" y1="36" x2="8" y2="36" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="12" y1="22" x2="8" y2="22" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="12" y1="8" x2="8" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="12" y1="64" x2="124" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="12" y1="64" x2="12" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="34.4" y1="64" x2="34.4" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="56.8" y1="64" x2="56.8" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="79.2" y1="64" x2="79.2" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="101.6" y1="64" x2="101.6" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="124" y1="64" x2="124" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="annotations">
+<g data-id="annotation/t0">
+<g data-id="annotation/t0/text">
+<text fill="#000000" xml:space="preserve"><tspan x="81.44" y="14.337" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">Top</tspan></text>
+</g>
+</g>
+<g data-id="annotation/t1">
+<g data-id="annotation/t1/text">
+<text fill="#000000" xml:space="preserve"><tspan x="16.48" y="58.257" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">Bottom</tspan></text>
+</g>
+</g>
+<g data-id="annotation/t2">
+<g data-id="annotation/t2/text">
+<text fill="#000000" xml:space="preserve"><tspan x="45.6" y="40.937" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">IC50</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

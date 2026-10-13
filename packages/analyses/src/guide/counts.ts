@@ -18,6 +18,10 @@ const roles = (a: GuideAnswers) => ({
   outcomeColumn: a.outcome === 'second' ? 1 : 0,
 })
 
+// Roadmap 51f: a table of counts' roles, for "What will be tested".
+const EXPOSED_DRAWS = { first: { exposedRow: 0 }, second: { exposedRow: 1 } } as const
+const OUTCOME_DRAWS = { first: { outcomeColumn: 0 }, second: { outcomeColumn: 1 } } as const
+
 /** "Which row is the treated or exposed group?" then "Which column is the outcome?", then `then`. */
 const rolesQ = (then: GuideStep): GuideStep =>
   question(
@@ -33,6 +37,7 @@ const rolesQ = (then: GuideStep): GuideStep =>
           'Which column is the outcome (Died, Responded)?',
           'The risk is the share of each row in this column.',
           [answer('first', 'The first column', then), answer('second', 'The second column', then)],
+          { draws: OUTCOME_DRAWS },
         ),
       ),
       answer(
@@ -43,9 +48,11 @@ const rolesQ = (then: GuideStep): GuideStep =>
           'Which column is the outcome (Died, Responded)?',
           'The risk is the share of each row in this column.',
           [answer('first', 'The first column', then), answer('second', 'The second column', then)],
+          { draws: OUTCOME_DRAWS },
         ),
       ),
     ],
+    { draws: EXPOSED_DRAWS },
   )
 
 const pairwiseParams = (f: TableFacts, a: GuideAnswers) => ({
@@ -102,9 +109,16 @@ const larger: GuideStep = question(
             ),
           ),
         ],
+        {
+          draws: {
+            overall: { comparisons: 'none' },
+            pairs: { comparisons: 'allPairs', correction: 'Bonferroni' },
+          },
+        },
       ),
     ),
   ],
+  { draws: { yes: { comparisons: 'trend' } } },
 )
 
 const diagnosticLeaf = leaf(
@@ -181,14 +195,16 @@ const outcomeGroup: GuideStep = question(
                   ),
                 ),
               ],
+              { draws: { risk: { measure: 'risk' }, odds: { measure: 'odds' } } },
             ),
           ),
           answer('larger', 'Larger', larger),
         ],
-        { answeredBy: twoByTwo },
+        { answeredBy: twoByTwo, draws: { twoByTwo: { comparisons: 'pair' } } },
       ),
     ),
   ],
+  { draws: { yes: { matched: 'yes' } } },
 )
 
 export const COUNT_ENTRIES: readonly GuideEntry[] = [
@@ -205,6 +221,7 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
       'counts',
       'association',
     ],
+    draws: { layout: 'rows', measure: 'proportion' },
     start: outcomeGroup,
   },
   {
@@ -212,6 +229,7 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
     question: 'Is there a trend across ordered groups (counts)?',
     kinds: ['contingency'],
     keywords: ['trend', 'chi-square for trend', 'dose', 'ordered'],
+    draws: { layout: 'rows', measure: 'proportion', comparisons: 'trend' },
     start: leaf(
       'contingency',
       fixed({ test: 'chiSquare', trend: true }),
@@ -223,6 +241,7 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
     question: 'How good is a diagnostic test?',
     kinds: ['contingency'],
     keywords: ['sensitivity', 'specificity', 'predictive value', 'diagnostic', 'roc'],
+    draws: { layout: 'rows', measure: 'diagnostic', comparisons: 'none' },
     start: question(
       'result',
       'Is the test a yes/no result or a measurement?',
@@ -247,6 +266,7 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
                     answer('first', 'The first column', diagnosticLeaf),
                     answer('second', 'The second column', diagnosticLeaf),
                   ],
+                  { draws: OUTCOME_DRAWS },
                 ),
               ),
               answer(
@@ -260,9 +280,11 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
                     answer('first', 'The first column', diagnosticLeaf),
                     answer('second', 'The second column', diagnosticLeaf),
                   ],
+                  { draws: OUTCOME_DRAWS },
                 ),
               ),
             ],
+            { draws: EXPOSED_DRAWS },
           ),
         ),
         answer(
@@ -281,6 +303,7 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
     question: 'Do the counts match expected proportions?',
     kinds: ['partsOfWhole'],
     keywords: ['goodness of fit', 'expected', 'mendelian', '3:1', 'binomial', 'proportions'],
+    draws: { layout: 'rows', measure: 'counts', comparisons: 'shared' },
     start: leaf(
       'goodnessOfFit',
       fixed({}),
@@ -292,6 +315,7 @@ export const COUNT_ENTRIES: readonly GuideEntry[] = [
     question: 'What fraction is each part?',
     kinds: ['partsOfWhole'],
     keywords: ['fraction', 'percentage', 'pie', 'share'],
+    draws: { layout: 'rows', measure: 'fraction', comparisons: 'none' },
     start: leaf(
       'fractionOfTotal',
       fixed({ display: 'percent' }),

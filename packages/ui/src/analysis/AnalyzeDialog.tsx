@@ -1,6 +1,7 @@
 import {
   analysisChecks,
   analysisFacts,
+  analysisSchematic,
   applyRoles,
   assignRoles,
   carryOver,
@@ -18,8 +19,10 @@ import {
   SKETCH_MAX_ROWS,
   setsWord,
   startingRoles,
+  TRANSFORM_LOG10_X,
   tableFacts,
   withInnerVersion,
+  withLog10X,
 } from '@ps/analyses'
 import {
   type Command,
@@ -33,7 +36,9 @@ import {
   type AnalysisDef,
   type AnalysisNode,
   type Check,
+  type CheckFix,
   type DataTable,
+  type DiagnosticFix,
   type FormField,
   type GraphNode,
   type NodeId,
@@ -41,6 +46,7 @@ import {
   newNodeId,
   normalizeColumn,
   paramsOf,
+  type SchematicSpec,
   type SketchSpec,
   type TableKind,
 } from '@ps/model'
@@ -68,10 +74,12 @@ import { GroupChips } from './GroupChips.tsx'
 import { type GuideChoice, GuidePanel, methodLine } from './GuidePanel.tsx'
 import { MethodCards } from './MethodCards.tsx'
 import { MethodChangeNotice } from './MethodHistory.tsx'
+import { pickModel } from './ModelPicker.tsx'
 import { variableInfo } from './mvFields.tsx'
 import { OptionTiers } from './OptionTiers.tsx'
-import { FieldCard } from './ParamsForm.tsx'
+import { FieldCard, setPath } from './ParamsForm.tsx'
 import { RoleBoxes } from './RoleBoxes.tsx'
+import { SchematicView } from './SchematicView.tsx'
 import { SketchView } from './SketchView.tsx'
 import { allFields } from './simulationFields.tsx'
 
@@ -107,6 +115,12 @@ function storeSize(size: { width: number; height: number }) {
     localStorage.setItem(SIZE_KEY, JSON.stringify(size))
   } catch {}
 }
+
+/**
+ * Roadmap 51f: whether "What will be tested" is open in the side panel of All analyses (for the
+ * session; it starts open).
+ */
+let schematicOpen = true
 
 /** Roadmap 51b (§5.8): the sketch and checks follow the options this long after a change (ms). */
 export const SKETCH_DEBOUNCE_MS = 120
@@ -194,7 +208,12 @@ type Props = (
        */
       draftTable?: DataTable
     }
-  | { mode: 'edit'; analysisId: NodeId }
+  | {
+      mode: 'edit'
+      analysisId: NodeId
+      /** Roadmap 51e (§9.3): a result warning's fix ("Fix Bottom = 0"), applied on opening. */
+      fix?: DiagnosticFix
+    }
 ) & {
   onClose: () => void
   onCreated?: (id: NodeId) => void
@@ -316,6 +335,15 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     [table, guide.selection],
   )
   const guideFacts = useMemo(() => tableFacts(table.tableKind, guideInput), [table, guideInput])
+  // Roadmap 51f: the names "What will be tested" uses besides the data sets' titles.
+  const guideNames = useMemo(
+    () => ({
+      rowTitles: guideInput[0]?.rowTitles ?? table.rowTitles ?? null,
+      factors: table.factorNames ?? {},
+      xTitle: table.x?.title ?? null,
+    }),
+    [guideInput, table],
+  )
   // What Use this wrote, to record on OK whether it was kept (`origin.guide.followed`).
   const fromGuide = useRef<GuideChoice | null>(null)
 
@@ -401,7 +429,13 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     // options), never parsed alone.
     if (existing && existing.analysisId === id) {
       const r = paramsOf(d, existing)
-      if (r.ok) return r.params as Params
+      if (r.ok) {
+        // Roadmap 51e: opened by a warning's fix: its values set (shown, applied on Apply).
+        const fix = props.mode === 'edit' ? props.fix : undefined
+        let p = r.params as Params
+        for (const x of fix?.set ?? []) p = setPath(p, x.path, x.value)
+        return p
+      }
     }
     return d.params.parse({}) as Params
   }
@@ -463,7 +497,7 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
   const chosen = roleApplied?.dataSets ?? selected
   const dataSets = usesData ? chosen : []
 
-  const input = useMemo(
+  const tableInput = useMemo(
     () =>
       dataSets.flatMap((k) => {
         const n = normalizeColumn(table, k)
@@ -471,6 +505,17 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
       }),
     [table, dataSets],
   )
+  // Roadmap 51e (§9.2): "Transform X to log10" — a new curve fit of a data table is made of a
+  // Transform analysis (X = log10(X)) and the fit of its result; until Analyze, the checks and the
+  // sketch see the transformed X.
+  const [transformFirst, setTransformFirst] = useState(false)
+  const canTransform =
+    props.mode === 'create' &&
+    !draft &&
+    project.nodes[table.id]?.kind === 'table' &&
+    def?.id === 'nonlinearFit'
+  const logX = transformFirst && canTransform
+  const input = useMemo(() => (logX ? withLog10X(tableInput) : tableInput), [logX, tableInput])
   const facts = useMemo(
     () => analysisFacts(table.tableKind, input, effectiveParams),
     [table, input, effectiveParams],
@@ -573,6 +618,31 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     rows: table.factorNames?.rows ?? '',
     columns: table.factorNames?.columns ?? '',
   }))
+
+  // Roadmap 51f: "What will be tested" for the method chosen — its params and the data sets
+  // chosen, in the names the table and the dialog give (factor names as typed).
+  const schematic: SchematicSpec | null = useMemo(() => {
+    if (!settledDef || !usesData) return null
+    const r = rolesOf(settledDef)
+    if (r && roleState && roleProblem(r, roleState)) return null
+    const parsed = settledDef.params.safeParse(settled.params)
+    if (!parsed.success) return null
+    try {
+      return analysisSchematic(
+        settledDef.id,
+        parsed.data as Record<string, unknown>,
+        tableFacts(table.tableKind, settled.input),
+        {
+          rowTitles: settled.input[0]?.rowTitles ?? table.rowTitles ?? null,
+          factors: factorNames,
+          xTitle: table.x?.title ?? null,
+        },
+      )
+    } catch {
+      return null
+    }
+  }, [settled, settledDef, usesData, roleState, table, factorNames])
+  const [showSchematic, setShowSchematic] = useState(schematicOpen)
 
   if (!def) {
     return (
@@ -770,7 +840,31 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     if (!parsed) return
     const chosenResults = offered.filter((t) => showOn.has(t.id))
     try {
-      if (props.mode === 'create') {
+      if (props.mode === 'create' && logX) {
+        // Roadmap 51e (§9.2): X = log10(X) by a Transform analysis, the fit of its result.
+        const transform = registry.get('transform')!
+        const tnode: AnalysisNode = {
+          kind: 'analysis',
+          id: newNodeId(),
+          name: `log10(X) of ${table.name}`,
+          analysisId: transform.id,
+          pluginVersion: transform.version,
+          input: { source: table.id, dataSets },
+          params: transform.params.parse({ y: 'none', x: 'log10' }),
+        }
+        const node: AnalysisNode = {
+          ...newAnalysis(parsed.data),
+          input: { source: tnode.id, dataSets },
+        }
+        store.dispatch(
+          [
+            { type: 'node.add', node: tnode },
+            { type: 'node.add', node },
+          ],
+          `New ${def.title} of log10(X)`,
+        )
+        props.onCreated?.(node.id)
+      } else if (props.mode === 'create') {
         const node: AnalysisNode = {
           ...newAnalysis(parsed.data, draft ? def.title : autoName(parsed.data)),
           // Roadmap 51a: set up with Guide me (and whether its params were kept).
@@ -1199,9 +1293,44 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
     </div>
   )
 
+  /** Roadmap 51e (§4.6, §9.2): a check's one-click fix — params set, or X transformed first. */
+  const applyFix = (f: CheckFix) => {
+    if (f.action === TRANSFORM_LOG10_X) {
+      setTransformFirst(true)
+      return
+    }
+    let p = params
+    for (const x of f.set ?? [])
+      p =
+        x.path.length === 1 && x.path[0] === 'equation'
+          ? pickModel(p, String(x.value), 'all')
+          : setPath(p, x.path, x.value)
+    setParams(p)
+  }
+  const fixOffered = (f: CheckFix) => f.action !== TRANSFORM_LOG10_X || canTransform
+
   /** The side panel: the sketch, the checks, the cards. */
   const side = (
     <aside className="analyze-side" id={sideId} aria-label="Your data and the method">
+      {schematic && (
+        <details
+          className="schematic-details"
+          open={showSchematic}
+          onToggle={(e) => {
+            const open = e.currentTarget.open
+            schematicOpen = open
+            setShowSchematic(open)
+          }}
+        >
+          <summary className="side-heading">What will be tested</summary>
+          <SchematicView
+            spec={schematic}
+            fonts={fonts}
+            heading={null}
+            compact={width === 'narrow'}
+          />
+        </details>
+      )}
       {sketch && !sketchHidden && <SketchView spec={sketch} fonts={fonts} stale={stale} />}
       {sketch && (
         <button
@@ -1213,20 +1342,50 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
           {sketchHidden ? 'Show sketch' : 'Hide sketch'}
         </button>
       )}
-      {usesData && checks.length > 0 && (
+      {usesData && (checks.length > 0 || logX) && (
         <section className="checks" aria-label="Checks">
           <h3 className="side-heading">Checks</h3>
           <ul>
+            {logX && (
+              <li className="check-ok transform-first">
+                <span className="check-icon" aria-hidden="true">
+                  ✓
+                </span>
+                <span>
+                  X will be transformed to log10 first: Analyze adds a Transform analysis of “
+                  {table.name}” and fits its result.{' '}
+                  <button
+                    type="button"
+                    className="link check-fix"
+                    onClick={() => setTransformFirst(false)}
+                  >
+                    Keep X as it is
+                  </button>
+                </span>
+              </li>
+            )}
             {checks.map((c) => (
               <li key={`${c.level}:${c.message}`} className={`check-${c.level}`}>
                 <span className="check-icon" aria-hidden="true">
                   {c.level === 'block' ? '✗' : c.level === 'note' ? '!' : '✓'}
                 </span>
                 {c.level === 'block' ? <span className="visually-hidden">Error: </span> : null}
-                <span>{c.message}</span>
-                {c.level === 'block' && c.where === 'table' && (
-                  <span className="help"> (change the table’s values)</span>
-                )}
+                <span>
+                  {c.message}
+                  {c.level === 'block' && c.where === 'table' && (
+                    <span className="help"> (change the table’s values)</span>
+                  )}
+                  {c.fix?.filter(fixOffered).map((f) => (
+                    <button
+                      key={f.label}
+                      type="button"
+                      className="check-fix"
+                      onClick={() => applyFix(f)}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </span>
               </li>
             ))}
           </ul>
@@ -1368,6 +1527,9 @@ function AnalyzeForm(props: Props & { existing: AnalysisNode | null; table: Data
             onUse={useChoice}
             onShowAll={() => setTab('all')}
             onNewTable={newTable}
+            fonts={fonts}
+            names={guideNames}
+            layout={width}
           />
         ) : (
           <div

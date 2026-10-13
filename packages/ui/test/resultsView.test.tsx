@@ -127,7 +127,7 @@ describe('the results view (51d)', () => {
     // The method, to copy.
     const method = el.querySelector('details.method-section')!
     expect(method.querySelector('.methods-paragraph')!.textContent).toMatch(
-      /^Vehicle, 1 mg\/kg and 10 mg\/kg were compared by Ordinary one-way ANOVA\. Multiple comparisons: Dunnett \(Dunnett: each of 2 groups − Vehicle.*\)\. Confidence intervals are 95%\. Analyzed with statPlotter 0\.3\.11\.$/,
+      /^Vehicle, 1 mg\/kg and 10 mg\/kg were compared by Ordinary one-way ANOVA\. Multiple comparisons: Dunnett \(Dunnett: each of 2 groups − Vehicle.*\)\. Confidence intervals are 95%\. Analyzed with statPlotter 0\.3\.13\.$/,
     )
   })
 

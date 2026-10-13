@@ -20,6 +20,7 @@ import { COLUMN_CORRELATION, XY_ENTRIES } from './xy.ts'
 // or in what another table kind would answer (elsewhere). Walking a tree reads `TableFacts` only.
 
 export { tableFacts } from './facts.ts'
+export { type GuideMapStep, guideMap, pathAnswers, reanswer } from './map.ts'
 export { doseResponseModel } from './xy.ts'
 
 const byId = (entries: readonly GuideEntry[], id: string) => entries.find((e) => e.id === id)!

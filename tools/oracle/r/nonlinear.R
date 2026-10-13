@@ -6,7 +6,8 @@
 #         bounds = per parameter null | [lo, hi], weighting = none | relative | poisson,
 #         confLevel, profileCI, start = per data set starting values for R (the true
 #         parameters of the simulation; our code starts from its automatic initial values),
-#         compare = {equation, constraints} of a simpler nested model for compareFits.
+#         compare = {equation, constraints, start?} of a simpler nested model for compareFits
+#         (Roadmap 51e: nested = false for two models that aren't nested: AICc only).
 #
 # Conventions (see nonlinear.ts):
 # - Global fits: nls on the stacked data with per-data-set parameters indexed by g
@@ -23,7 +24,9 @@
 # - CIs: estimate +- qt(1 - alpha/2, df) * SE (the asymptotic interval; confint.default
 #   would use the normal quantile). Profile CIs: exact roots of
 #   SSprofile(theta_j) = SS * (1 + qt(1 - alpha/2, df)^2 / df) by uniroot on constrained nls
-#   refits, cross-checked loosely against confint() (profile + spline interpolation).
+#   refits, cross-checked loosely against confint() (profile + spline interpolation). Roadmap 51e: in a
+#   global fit each data set's value of a per-data-set parameter is profiled too (that value
+#   held, every other parameter refitted).
 # - Bands: delta method, gradient from deriv(); prediction adds s^2 / w(yhat).
 # - AICc = N log(SS/N) + 2K + 2K(K+1)/(N-K-1), K = fitted parameters + 1.
 # - Weighted R^2 = 1 - SS_w / sum(w (y - ybar_w)^2), w at the fitted curve.
@@ -50,6 +53,20 @@ EQ <- list(
   "inhibitor-response-variable-slope" = list(
     params = c("Bottom", "Top", "LogIC50", "HillSlope"),
     f = "Bottom + (Top - Bottom)/(1 + 10^((LogIC50 - x)*HillSlope))"),
+  # Roadmap 51e: the models nested in or compared with the ones above.
+  "inhibitor-response" = list(
+    params = c("Bottom", "Top", "LogIC50"),
+    f = "Bottom + (Top - Bottom)/(1 + 10^(x - LogIC50))"),
+  "two-phase-decay" = list(
+    params = c("Y0", "Plateau", "KFast", "KSlow", "PercentFast"),
+    f = paste("Plateau + (Y0 - Plateau)*PercentFast*0.01*exp(-KFast*x) +",
+              "(Y0 - Plateau)*(100 - PercentFast)*0.01*exp(-KSlow*x)")),
+  "gaussian" = list(
+    params = c("Amplitude", "Mean", "SD"),
+    f = "Amplitude*exp(-0.5*((x - Mean)/SD)^2)"),
+  "lorentzian" = list(
+    params = c("Amplitude", "Center", "Width"),
+    f = "Amplitude/(1 + ((x - Center)/Width)^2)"),
   "one-phase-decay" = list(
     params = c("Y0", "Plateau", "K"),
     f = "(Y0 - Plateau)*exp(-K*x) + Plateau"),
@@ -115,13 +132,18 @@ resid_text <- function(f, weighting, K = 2) switch(weighting, none = f,
 # A function of the free parameters returning expr with an exact "gradient" attribute from
 # deriv(). Per-data-set (vector) parameters are indexed by g; their gradient columns are split
 # by data set, in the order nls flattens the start list.
-grad_fn <- function(expr, free, vec, K, ind = NULL, extra = character(0)) {
+grad_fn <- function(expr, free, vec, K, ind = NULL, extra = character(0), el = NULL) {
   D <- deriv(parse(text = expr)[[1]], free)
   function(..., x, y, g) {
     args <- list(...)
     env <- list(x = x, y = y, g = g)
     nf <- length(free)
-    for (i in seq_along(free)) env[[free[i]]] <- if (free[i] %in% vec) args[[i]][g] else args[[i]]
+    for (i in seq_along(free)) {
+      a <- args[[i]]
+      # Roadmap 51e: one data set's value of a per-data-set parameter held (profiling it).
+      if (!is.null(el) && free[i] == el$name) a <- append(a, el$value, after = el$k - 1)
+      env[[free[i]]] <- if (free[i] %in% vec) a[g] else a
+    }
     for (i in seq_along(extra)) env[[extra[i]]] <- args[[nf + i]]
     env <- with_ind(env, ind)
     val <- eval(D, env)
@@ -129,7 +151,10 @@ grad_fn <- function(expr, free, vec, K, ind = NULL, extra = character(0)) {
     cols <- list()
     for (i in seq_along(free)) {
       if (free[i] %in% vec) {
-        for (k in seq_len(K)) cols[[length(cols) + 1]] <- G[, i] * (g == k)
+        for (k in seq_len(K)) {
+          if (!is.null(el) && free[i] == el$name && k == el$k) next
+          cols[[length(cols) + 1]] <- G[, i] * (g == k)
+        }
       } else cols[[length(cols) + 1]] <- G[, i]
     }
     out <- as.vector(val)
@@ -139,11 +164,11 @@ grad_fn <- function(expr, free, vec, K, ind = NULL, extra = character(0)) {
 }
 
 model_formula <- function(f, weighting, free, vec, K, ind = NULL, extra = character(0),
-                          power = 2) {
+                          power = 2, el = NULL) {
   call <- sprintf(".fn(%s, x = x, y = y, g = g)", paste(c(free, extra), collapse = ", "))
   form <- as.formula(if (weighting == "none") paste("y ~", call) else paste("~", call))
   e <- new.env(parent = globalenv())
-  e$.fn <- grad_fn(resid_text(f, weighting, power), free, vec, K, ind, extra)
+  e$.fn <- grad_fn(resid_text(f, weighting, power), free, vec, K, ind, extra, el)
   environment(form) <- e
   form
 }
@@ -182,7 +207,8 @@ nls_tight <- function(form, data, start) {
 
 # Fits one "block": either all data sets together (global, with shared params) or one data
 # set. fixed: named scalar values held constant (bounds hit, profiling).
-fit_block <- function(eq, cons, bnds, dsets, start, weighting, fixed = list(), power = 2) {
+fit_block <- function(eq, cons, bnds, dsets, start, weighting, fixed = list(), power = 2,
+                      el = NULL) {
   K <- length(dsets)
   P <- length(eq$params)
   map <- list(); free <- character(0); vec <- character(0)
@@ -209,8 +235,9 @@ fit_block <- function(eq, cons, bnds, dsets, start, weighting, fixed = list(), p
   for (nm in free) {
     j <- match(nm, eq$params)
     st[[nm]] <- if (nm %in% vec) start[, j] else mean(start[, j])
+    if (!is.null(el) && nm == el$name) st[[nm]] <- st[[nm]][-el$k]
   }
-  form <- model_formula(f, weighting, free, vec, K, ind, extra, power)
+  form <- model_formula(f, weighting, free, vec, K, ind, extra, power, el)
   lo <- bnds$lo[match(free, eq$params)]; hi <- bnds$hi[match(free, eq$params)]
   if (length(free) > 0 && (any(is.finite(lo)) || any(is.finite(hi)))) {
     # Find the optimum under the box, then refit with parameters on a bound held there.
@@ -274,13 +301,26 @@ profile_ci <- function(b, eq, cons, bnds, dsets, start, weighting, level) {
   se <- sqrt(diag(vcov(fit)))
   est <- coef(fit)
   out <- list()
+  K <- length(dsets)
+  # Starting values at the best fit (per data set for per-data-set parameters).
+  st <- start
+  for (q in b$free) {
+    j <- match(q, eq$params)
+    st[, j] <- if (q %in% b$vec) unname(est[paste0(q, seq_len(K))]) else est[[q]]
+  }
   for (nm in names(est)) {
-    j <- match(nm, eq$params)
+    # Roadmap 51e: a coefficient of a per-data-set parameter (LogEC501...) in a global fit is that
+    # data set's value; it is profiled holding it, every other parameter refitted.
+    el <- NULL
+    for (q in b$vec) {
+      k <- suppressWarnings(as.integer(substring(nm, nchar(q) + 1)))
+      if (startsWith(nm, q) && !is.na(k) && k >= 1 && k <= K) el <- list(name = q, k = k)
+    }
     prof <- function(v) {
-      st <- start
-      for (q in names(est)) st[, match(q, eq$params)] <- est[[q]]
-      fx <- b$fixed; fx[[nm]] <- v
-      pb <- fit_block(eq, cons, bnds, dsets, st, weighting, fx)
+      pb <- if (is.null(el)) {
+        fx <- b$fixed; fx[[nm]] <- v
+        fit_block(eq, cons, bnds, dsets, st, weighting, fx)
+      } else fit_block(eq, cons, bnds, dsets, st, weighting, b$fixed, el = c(el, value = v))
       deviance(pb$fit) - target
     }
     ends <- c()
@@ -405,9 +445,18 @@ oracle <- function(input, params) {
   m <- fit_model(input, params$equation, params$constraints, params, isTRUE(params$profileCI))
   out <- m$out
   if (!is.null(input$bandX)) out$band <- band(m, input$bandX)
-  if (!is.null(params$compare)) {
+  if (!is.null(params$compare) && isFALSE(params$compare$nested)) {
+    # Roadmap 51e: models that aren't nested are compared by AICc only (no F test).
     cp <- params
     cp$bounds <- params$compare$bounds
+    if (!is.null(params$compare$start)) cp$start <- params$compare$start
+    s <- fit_model(input, params$compare$equation, params$compare$constraints, cp)$out
+    out$compare <- list(aiccSimpler = s$aicc, aiccComplex = out$aicc,
+                        probSimpler = 1 / (1 + exp((s$aicc - out$aicc) / 2)))
+  } else if (!is.null(params$compare)) {
+    cp <- params
+    cp$bounds <- params$compare$bounds
+    if (!is.null(params$compare$start)) cp$start <- params$compare$start
     s <- fit_model(input, params$compare$equation, params$compare$constraints, cp)$out
     dfn <- s$df - out$df
     F <- ((s$ss - out$ss) / dfn) / (out$ss / out$df)

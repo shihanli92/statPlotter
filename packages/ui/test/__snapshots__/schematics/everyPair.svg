@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320pt" height="83.668pt" viewBox="0 0 320 83.668">
+<g data-id="schematic">
+<g data-id="box/g:d0">
+<g data-id="box/g:d0/frame">
+<rect x="6" y="32" width="93.333" height="45.668" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/g:d0/glyph/0">
+<ellipse cx="46.667" cy="45" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d0/glyph/1">
+<ellipse cx="50.667" cy="39" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d0/glyph/2">
+<ellipse cx="54.667" cy="44" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d0/glyph/3">
+<ellipse cx="58.667" cy="40" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d0/glyph/4">
+<line x1="43.667" y1="42" x2="61.667" y2="42" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/g:d0/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="35.433" y="60.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Vehicle</tspan></text>
+</g>
+<g data-id="box/g:d0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="42.035" y="71.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/g:d1">
+<g data-id="box/g:d1/frame">
+<rect x="113.333" y="32" width="93.333" height="45.668" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/g:d1/glyph/0">
+<ellipse cx="154" cy="45" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d1/glyph/1">
+<ellipse cx="158" cy="39" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d1/glyph/2">
+<ellipse cx="162" cy="44" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d1/glyph/3">
+<ellipse cx="166" cy="40" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d1/glyph/4">
+<line x1="151" y1="42" x2="169" y2="42" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/g:d1/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="141.106" y="60.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">1 mg/kg</tspan></text>
+</g>
+<g data-id="box/g:d1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="149.369" y="71.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/g:d2">
+<g data-id="box/g:d2/frame">
+<rect x="220.667" y="32" width="93.333" height="45.668" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/g:d2/glyph/0">
+<ellipse cx="261.333" cy="45" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d2/glyph/1">
+<ellipse cx="265.333" cy="39" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d2/glyph/2">
+<ellipse cx="269.333" cy="44" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d2/glyph/3">
+<ellipse cx="273.333" cy="40" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/g:d2/glyph/4">
+<line x1="258.333" y1="42" x2="276.333" y2="42" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/g:d2/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="245.659" y="60.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">10 mg/kg</tspan></text>
+</g>
+<g data-id="box/g:d2/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="256.702" y="71.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="arrow/0">
+<g data-id="arrow/0/line">
+<path d="M59.667,32C59.667,16.004,153,16.004,153,32" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/0/head/0">
+<polygon points="153,32 150.48,25.7 155.52,25.7" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/0/head/1">
+<polygon points="59.667,32 57.147,25.7 62.187,25.7" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/1">
+<g data-id="arrow/1/line">
+<path d="M66.667,32C66.667,2.674,253.333,2.674,253.333,32" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/1/head/0">
+<polygon points="253.333,32 250.813,25.7 255.853,25.7" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/1/head/1">
+<polygon points="66.667,32 64.147,25.7 69.187,25.7" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/2">
+<g data-id="arrow/2/line">
+<path d="M167,32C167,16.004,260.333,16.004,260.333,32" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/2/head/0">
+<polygon points="260.333,32 257.813,25.7 262.853,25.7" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/2/head/1">
+<polygon points="167,32 164.48,25.7 169.52,25.7" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+</g>
+</svg>

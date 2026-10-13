@@ -11,9 +11,11 @@ import { useId, useMemo } from 'react'
 export function panelImage(
   panel: SketchSpec['panels'][number],
   fonts: FontRegistry,
+  /** The plot size in points (roadmap 51e: a model's thumbnail is smaller). */
+  size?: { width: number; height: number },
 ): { src: string; width: number; height: number } | null {
   try {
-    const { project, graph } = sketchGraph(panel)
+    const { project, graph } = sketchGraph(panel, size)
     const scene = layoutGraph({ project, graph, fonts })
     const svg = sceneToSvg(scene, { background: '#ffffff', portableFonts: true })
     return {

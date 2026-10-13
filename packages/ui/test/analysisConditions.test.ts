@@ -397,6 +397,26 @@ const CASES: Case[] = [
     expect: 'greyed',
     reason: /best-fit values only/,
   },
+  // Roadmap 51e: the F test between models that aren't nested (and the comparison's question
+  // shown only when a comparison is asked for).
+  {
+    row: 22,
+    analysis: 'nonlinearFit',
+    table: table('xy', [[[1, 2, 4, 8, 4, 2]]], { x: [1, 2, 3, 4, 5, 6] }),
+    params: { equation: 'gaussian', compareWith: 'lorentzian' },
+    path: 'compareBy',
+    option: 'fTest',
+    expect: 'greyed',
+    reason: /These models aren’t nested; compare them by AICc\./,
+  },
+  {
+    row: 22,
+    analysis: 'nonlinearFit',
+    table: table('xy', [[[1, 2, 4, 8]]], { x: [1, 2, 3, 4] }),
+    params: {},
+    path: 'compareBy',
+    expect: 'hidden',
+  },
   {
     row: 23,
     analysis: 'survival',
@@ -473,11 +493,12 @@ const CASES: Case[] = [
 const ctx = (t: DataTable) => ({ tableKind: t.tableKind, xTitle: t.x?.title ?? null })
 
 describe('invalid combinations (design §4.4)', () => {
-  it('every row of the table has a case (rows 9 and 22 are elsewhere)', () => {
+  it('every row of the table has a case (row 9 was fixed in 51c)', () => {
     const rows = new Set(CASES.map((c) => c.row))
     for (const r of INVALID_COMBINATIONS) expect(rows.has(r.row), `row ${r.row}`).toBe(true)
     expect(INVALID_COMBINATIONS.map((r) => r.row)).not.toContain(9)
-    expect(INVALID_COMBINATIONS.map((r) => r.row)).not.toContain(22)
+    // Roadmap 51e: row 22 with the models' nesting (`explain/equations.ts`).
+    expect(INVALID_COMBINATIONS.map((r) => r.row)).toContain(22)
   })
 
   it.each(

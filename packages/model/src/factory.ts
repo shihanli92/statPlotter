@@ -10,7 +10,7 @@ import {
 } from './table.ts'
 
 /** The app's version (roadmap versioning, CLAUDE.md): 0.<code audits>.<phases since the last audit>. */
-export const APP_VERSION = '0.3.11'
+export const APP_VERSION = '0.3.13'
 
 export function createProject(title = 'Untitled', now = new Date()): Project {
   const iso = now.toISOString()

@@ -1,3 +1,4 @@
+import type { SchematicDesign } from './schematic.ts'
 import type { TableKind } from './table.ts'
 
 // Roadmap 51a: the guided chooser's trees as data (docs/design/ANALYSIS_GUIDE.md §3). Code, not
@@ -56,6 +57,11 @@ export interface GuideEntry {
   /** Search words: "compare groups", "anova", "significant difference". */
   keywords: readonly string[]
   start: GuideStep
+  /**
+   * Roadmap 51f: what the question says about the design before any answer ("What will be
+   * tested": a grid of cells, the means compared…).
+   */
+  draws?: SchematicDesign
 }
 
 export type GuideStep = GuideQuestion | GuideLeaf | GuideElsewhere
@@ -72,6 +78,11 @@ export interface GuideAnswer {
    * table, a variable such as the outcome) or a number (the hypothetical value).
    */
   asks?: readonly GuideAsk[]
+  /**
+   * Roadmap 51f: what this answer says about the design ("What will be tested"): the same
+   * subjects, the means or the ranks, every pair… Data, merged in the order answered.
+   */
+  draws?: SchematicDesign
   next: GuideStep
 }
 

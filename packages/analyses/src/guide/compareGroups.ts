@@ -19,6 +19,30 @@ import {
 const WHY_MATCHED = 'Pairing is decided by how the experiment was done, not by the data.'
 const WHY_VALUES = 'Measurements, values that change by a factor, and scores need different tests.'
 
+// Roadmap 51f: what each answer says about the design ("What will be tested").
+const MATCHED_DRAWS = { no: { matched: 'no' }, yes: { matched: 'yes' } } as const
+const UNPAIRED_DRAWS = {
+  measure: { measure: 'mean' },
+  factor: { measure: 'logMean' },
+  scores: { measure: 'ranks' },
+  shape: { measure: 'distribution' },
+} as const
+const PAIRED_DRAWS = {
+  measure: { measure: 'difference' },
+  factor: { measure: 'ratio' },
+  scores: { measure: 'signedRanks' },
+} as const
+const MANY_VALUES_DRAWS = {
+  measure: { measure: 'mean' },
+  factor: { measure: 'logMean' },
+  scores: { measure: 'ranks' },
+} as const
+const SCATTER_DRAWS = {
+  yes: { scatter: 'own' },
+  no: { scatter: 'pooled' },
+  unsure: { scatter: 'own' },
+} as const
+
 const comparisonsOf = (a: GuideAnswers) => ({
   comparisons: a.comparisons ?? 'allPairs',
   control: a.comparisons === 'vsControl' ? (a.control ?? '') : '',
@@ -38,8 +62,9 @@ function comparisonsQ(
     'Which comparisons answer your question?',
     'Decide before the experiment: fewer comparisons, more power.',
     [
-      answer('allPairs', 'Every pair of groups', then),
+      answer('allPairs', 'Every pair of groups', then, { draws: { comparisons: 'allPairs' } }),
       answer('vsControl', 'Each group with a control', then, {
+        draws: { comparisons: 'vsControl' },
         asks: [
           {
             id: 'control',
@@ -54,9 +79,10 @@ function comparisonsQ(
         : [
             answer('trend', 'A steady rise or fall across the groups, in their order', then, {
               unavailable: () => opts.trend,
+              draws: { comparisons: 'trend' },
             }),
           ]),
-      answer('none', 'Only whether any group differs', then),
+      answer('none', 'Only whether any group differs', then, { draws: { comparisons: 'none' } }),
     ],
     opts.fixedTo ? { answeredBy: () => opts.fixedTo! } : {},
   )
@@ -114,6 +140,7 @@ const unpairedValues = question(
             ),
           ),
         ],
+        { draws: SCATTER_DRAWS },
       ),
     ),
     answer(
@@ -154,7 +181,7 @@ const unpairedValues = question(
       { unavailable: needsRaw },
     ),
   ],
-  { hint: valuesHint },
+  { hint: valuesHint, draws: UNPAIRED_DRAWS },
 )
 
 const pairedValues = question(
@@ -197,7 +224,7 @@ const pairedValues = question(
       ),
     ),
   ],
-  { hint: valuesHint },
+  { hint: valuesHint, draws: PAIRED_DRAWS },
 )
 
 const twoGroups = question(
@@ -210,7 +237,7 @@ const twoGroups = question(
       unavailable: (f) => (f.raw ? null : 'Pairing needs the raw values, not mean/SD/N.'),
     }),
   ],
-  { hint: pairingHint },
+  { hint: pairingHint, draws: MATCHED_DRAWS },
 )
 
 // ---- Three or more groups ----------------------------------------------------------------------
@@ -372,7 +399,7 @@ function manyGroups(fixedTo?: string): GuideStep {
                       'Welch ANOVA protects P if the scatter differs and costs little if not.',
                   }),
                 ],
-                { hint: sizesHint },
+                { hint: sizesHint, draws: SCATTER_DRAWS },
               ),
             ),
             answer(
@@ -394,20 +421,26 @@ function manyGroups(fixedTo?: string): GuideStep {
               unavailable: needsRaw,
             }),
           ],
-          { hint: valuesHint },
+          { hint: valuesHint, draws: MANY_VALUES_DRAWS },
         ),
       ),
       answer(
         'yes',
         'Yes, each row is one subject',
-        question('values', 'What kind of values?', WHY_VALUES, [
-          answer('measure', 'Measurements', c(rm, NO_TREND_MATCHED)),
-          answer('scores', 'Scores or ranks', c(friedman, NO_TREND_MATCHED)),
-        ]),
+        question(
+          'values',
+          'What kind of values?',
+          WHY_VALUES,
+          [
+            answer('measure', 'Measurements', c(rm, NO_TREND_MATCHED)),
+            answer('scores', 'Scores or ranks', c(friedman, NO_TREND_MATCHED)),
+          ],
+          { draws: MANY_VALUES_DRAWS },
+        ),
         { unavailable: (f) => (f.raw ? null : 'Matching needs the raw values, not mean/SD/N.') },
       ),
     ],
-    { hint: pairingHint },
+    { hint: pairingHint, draws: MATCHED_DRAWS },
   )
 }
 
@@ -469,6 +502,7 @@ const setValue: GuideStep = question(
   {
     hint: () =>
       'A control normalized to exactly 100 has no variation: compare the other groups with 100 instead.',
+    draws: { measure: { measure: 'mean' }, scores: { measure: 'signedRanks' } },
   },
 )
 
@@ -484,6 +518,11 @@ function groupsQ(one: GuideStep, two: GuideStep, many: GuideStep): GuideStep {
       answer('many', 'Three or more groups', many),
     ],
     {
+      draws: {
+        one: { comparisons: 'vsValue' },
+        two: { comparisons: 'pair' },
+        many: {},
+      },
       answeredBy: (f) =>
         f.groups.length >= 3
           ? 'many'
@@ -515,6 +554,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
       'nonparametric',
       'treated vs control',
     ],
+    draws: { layout: 'groups' },
     start: groupsQ(setValue, twoGroups, manyGroups()),
   },
   {
@@ -522,6 +562,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
     question: 'Is each group different from a control?',
     kinds: ['column'],
     keywords: ['control', 'vehicle', 'dunnett', 'compare with control', 'versus control'],
+    draws: { layout: 'groups' },
     start: groupsQ(setValue, twoGroups, manyGroups('vsControl')),
   },
   {
@@ -529,6 +570,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
     question: 'Is there a trend across ordered groups?',
     kinds: ['column'],
     keywords: ['trend', 'dose', 'ordered groups', 'increase with dose', 'linear trend'],
+    draws: { layout: 'groups', measure: 'mean', comparisons: 'trend' },
     start: question(
       'matched',
       'Were the same subjects measured in every group?',
@@ -561,7 +603,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
           { unavailable: (f) => (f.raw ? null : 'Matching needs the raw values, not mean/SD/N.') },
         ),
       ],
-      { hint: pairingHint },
+      { hint: pairingHint, draws: MATCHED_DRAWS },
     ),
   },
   {
@@ -575,6 +617,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
       'percent of control',
       'set value',
     ],
+    draws: { layout: 'groups', comparisons: 'vsValue' },
     start: setValue,
   },
   {
@@ -582,6 +625,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
     question: 'Do the whole distributions differ?',
     kinds: ['column'],
     keywords: ['distribution', 'shape', 'kolmogorov', 'cumulative'],
+    draws: { layout: 'groups', measure: 'distribution', comparisons: 'pair' },
     start: leaf(
       'kolmogorovSmirnov',
       fixed({}),
@@ -600,6 +644,7 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
       'cells per mouse',
       'hierarchical',
     ],
+    draws: { layout: 'groups', nested: true, measure: 'mean' },
     start: question(
       'groups',
       'How many groups do you compare?',
@@ -627,7 +672,10 @@ export const COMPARE_ENTRIES: readonly GuideEntry[] = [
           ),
         ),
       ],
-      { answeredBy: (f) => (f.groups.length >= 3 ? 'many' : f.groups.length === 2 ? 'two' : null) },
+      {
+        draws: { two: { comparisons: 'pair' } },
+        answeredBy: (f) => (f.groups.length >= 3 ? 'many' : f.groups.length === 2 ? 'two' : null),
+      },
     ),
   },
 ]

@@ -37,6 +37,8 @@ const OPEN_FACTS: AnalysisFacts = {
   rows: 99,
   columns: 2,
   factors: 99,
+  modelComparison: true,
+  modelsNested: true,
 }
 
 /** The facts a form is checked against: those given, open for the rest. */

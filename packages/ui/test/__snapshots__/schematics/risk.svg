@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320pt" height="84.164pt" viewBox="0 0 320 84.164">
+<g data-id="schematic">
+<g data-id="box/r0">
+<g data-id="box/r0/frame">
+<rect x="37" y="22" width="116" height="56.164" rx="4" fill="#e6eefc" stroke="#2864cc" stroke-width="1.6"/>
+</g>
+<g data-id="box/r0/tag">
+<text fill="#2864cc" xml:space="preserve"><tspan x="82.244" y="33.695" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">control</tspan></text>
+</g>
+<g data-id="box/r0/glyph/0">
+<rect x="86" y="39.496" width="11" height="6" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/r0/glyph/1">
+<rect x="86" y="39.496" width="18" height="6" fill="none" stroke="#5c6470" stroke-width="1"/>
+</g>
+<g data-id="box/r0/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="75.825" y="60.549" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Placebo</tspan></text>
+</g>
+<g data-id="box/r0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="73.744" y="72.363" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">risk of Died</tspan></text>
+</g>
+</g>
+<g data-id="box/r1">
+<g data-id="box/r1/frame">
+<rect x="167" y="22" width="116" height="56.164" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/r1/glyph/0">
+<rect x="216" y="29" width="11" height="6" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/r1/glyph/1">
+<rect x="216" y="29" width="18" height="6" fill="none" stroke="#5c6470" stroke-width="1"/>
+</g>
+<g data-id="box/r1/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="213.335" y="50.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Drug</tspan></text>
+</g>
+<g data-id="box/r1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="203.744" y="61.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">risk of Died</tspan></text>
+</g>
+</g>
+<g data-id="arrow/0">
+<g data-id="arrow/0/line">
+<path d="M102,22C102,6.004,218,6.004,218,22" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/0/head/0">
+<polygon points="218,22 215.48,15.7 220.52,15.7" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/0/head/1">
+<polygon points="102,22 99.48,15.7 104.52,15.7" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+</g>
+</svg>

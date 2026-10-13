@@ -67,11 +67,14 @@ Roadmap 29; every edit is one undo step.
 | Different equations per data set | ✅ | 18: separate fits per equation (no parameter shared across equations) |
 | Global fit, shared parameters | ✅ | |
 | Robust regression; ROUT outlier detection/removal | ✅ | 14: robust (Lorentzian) fit, ROUT identify or eliminate |
-| Model comparison: extra sum-of-squares F and AICc | ✅ | |
-| Compare one parameter between data sets | ✅ | 18: extra sum-of-squares F and AICc, the parameter(s) shared in the null model |
+| Model comparison: extra sum-of-squares F and AICc | ✅ | 51e: one method chosen before the results (F test by default); the F test only between nested models (declared special cases), greyed otherwise; one verdict in the results and the summary |
+| Compare one parameter between data sets | ✅ | 18: extra sum-of-squares F and AICc, the parameter(s) shared in the null model; 51e: one method chosen in advance |
+| The model chosen by goal: goals (dose-response, binding, enzyme kinetics, decay and growth, standard curve, peaks…) with each model's thumbnail, its parameters in words and units, the X it expects; All equations; my own equation | ✅ | 51e (13 goals; every built-in equation's metadata) |
+| X checked against the model (concentrations under a log model, log values under a concentration model, X = 0 under a log model), fixed in one click (Transform X to log10, the other form of the model) | ✅ | 51e |
+| Dose-response warnings with their fixes: the EC50 outside the doses, a plateau not reached, an EC50 the data don't determine, too few doses, an ambiguous fit (Fix Bottom = 0 opens Edit with it) | ✅ | 51e |
 | Constraints, initial values | ✅ | Constant, shared, data set constant (column title or mean X), limits; initial values per parameter and rules for initial values (20). No constraints relating two parameters (Kfast > Kslow) |
 | Weighting | ✅ | 1/Y, 1/Y², 1/Y^K, 1/X, 1/X², 1/SD²; test for appropriate weighting (18) |
-| Symmetric and profile-likelihood CIs | ✅ | |
+| Symmetric and profile-likelihood CIs | ✅ | Profile likelihood by default for new fits (51e; global fits' per-data-set parameters too); saved fits keep the asymptotic CIs |
 | Hougaard's skewness | ✅ | 14; weighted fits too (18) |
 | Confidence and prediction bands | ✅ | |
 | Residual normality, runs test, replicates test | ✅ | 14; residual plot and table |
@@ -186,6 +189,8 @@ analyses produce tables that other analyses and graphs can use (Phase 13).
 | A guided chooser: questions about the experiment by table kind lead to an analysis set up with its reasons and alternatives; search by question across table kinds | ✅ (51a) |
 | The Analyze dialog in three panels: the list, the options in the experiment's words (Essentials, Reporting, Advanced), the groups as chips in order with the comparison spelled out, role boxes for analyses of variables; invalid combinations hidden or greyed with the reason; checks before Analyze; switching methods keeps the shared choices | ✅ (51b) |
 | Results that explain themselves: a summary sentence in the user's names (direction, size with CI, P with its test, n), an effect plot, the comparisons first with their family's header, details collapsed, a methods paragraph to copy, names that follow the method, factor names | ✅ (51d) |
+| Curve fitting guided: the model picked by goal with thumbnails, X checked against the model with one-click fixes, dose-response warnings with fixes, profile CIs by default, one model comparison chosen in advance (F test greyed for models that aren't nested), the starting shape following the model, constraints and compared model | ✅ (51e) |
+| Guide me's diagrams: "What will be tested" — a schematic of the question built up as it is answered (the groups in the user's names, what is compared, the comparisons as arrows, matched subjects as links, a grouped table's grid and independent units, nested subjects, a one-tailed direction, the question and what "no effect" means), also the chosen method's above the sketch — and a clickable map of the path (back to any question, later answers kept where they apply; by keyboard) | ✅ (51f) |
 | A live sketch of the data as the analysis will see it (groups, pairs and differences, pooled or own SDs, ranks, comparisons, the factor grid, replicates, a model's shape or starting shape, contingency roles, survival steps), never a result | ✅ (51b) |
 | Zoom and pan with the mouse on graphs and layout pages: Alt (Option) or Ctrl + wheel and a trackpad's pinch zoom about the pointer (graphs 25%–800%, pages 25%–400%), a middle-button or two-finger drag moves a zoomed view | ✅ (50) |
 | Bar labels (mean, median, n) | ✅ (17; also SD, SEM, the bar's value; above or inside) |

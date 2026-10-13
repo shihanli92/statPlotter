@@ -1,6 +1,7 @@
 import type { NormalizedDataSet, SketchContext, SketchPanel, SketchSpec } from '@ps/model'
 import { midranks } from '@ps/stats'
-import { resolveEquation } from '../nonlinear.ts'
+import { equationMeta } from '../explain/equations.ts'
+import { type Constraint, effectiveConstraint, resolveEquation } from '../nonlinear.ts'
 import { type SketchSet, sampledRows, xyTable } from './tables.ts'
 import { dataSketch } from './twoGroups.ts'
 import { countsLine, nameList, plain, q } from './words.ts'
@@ -30,7 +31,7 @@ function pointsOf(d: NormalizedDataSet, rows: readonly number[], means: boolean)
 }
 
 /** The XY points of the data sets as one table (one row per point), with `lines` added. */
-function pointsTable(
+export function pointsTable(
   id: string,
   sets: readonly { key: string; title: string; points: readonly Point[] }[],
   xTitle: string,
@@ -255,9 +256,15 @@ export function logisticSketch(
   }
 }
 
+/** A data set's title as a number (a data set constant's value), NaN if it isn't one. */
+const titleNumber = (t: string) => (t.trim() === '' ? Number.NaN : Number(t))
+
 /**
  * A curve fit (§9.5, the user's answer to §10.4 question 3): the data and the model's starting
- * shape from its automatic initial values — labelled as such, never the fit, no parameter value.
+ * shape — the equation's automatic initial values (or those typed), constants and data set
+ * constants held, a shared parameter one value across the data sets (as the fit starts) —
+ * labelled as such, never the fit, no parameter value. Constants on a plateau or the midpoint
+ * are dashed lines ("Bottom = 0", typed by the user); the model compared with, its own shape.
  */
 export function curveSketch(
   input: readonly NormalizedDataSet[],
@@ -275,24 +282,73 @@ export function curveSketch(
   const resolved = resolveEquation(params as Parameters<typeof resolveEquation>[0])
   const notes: string[] = []
   const shapes: { key: string; title: string; points: Point[] }[] = []
+  const lines: { at: number; axis: 'x' | 'y'; label: string; dashed: true }[] = []
+  const constraints = (params.constraints ?? {}) as Record<string, Constraint>
   if (resolved.ok) {
+    const model = resolved.model
+    const starts = startingValues(model, sets, constraints, true)
     sets.forEach((set, i) => {
-      if (set.points.length < 2) return
-      try {
-        const x = set.points.map((p) => p.x)
-        const y = set.points.map((p) => p.y)
-        const p0 = resolved.model.initial(x, y)
-        const { lo, hi } = extentOf(set.points)
-        const pts = grid(lo, hi)
-          .map((gx) => ({ x: gx, y: resolved.model.f(gx, p0) }))
-          .filter((p) => Number.isFinite(p.y))
-        if (pts.length > 1)
-          shapes.push({ key: `start${i}`, title: `${set.title}: starting shape`, points: pts })
-      } catch {
-        // No starting shape for this data set (the model can't start from its values).
-      }
+      const p0 = starts[i]
+      if (!p0) return
+      const pts = shapeOver(model, p0, set.points)
+      if (pts.length > 1)
+        shapes.push({ key: `start${i}`, title: `${set.title}: starting shape`, points: pts })
     })
+    // The model compared with: its own starting shape (no verdict).
+    const other = typeof params.compareWith === 'string' ? params.compareWith : 'none'
+    if (other !== 'none' && other !== params.equation) {
+      const alt = resolveEquation({ equation: other, userEquation: '', initialValues: {} })
+      if (alt.ok) {
+        const altStarts = startingValues(alt.model, sets, {}, false)
+        sets.forEach((set, i) => {
+          const p0 = altStarts[i]
+          if (!p0) return
+          const pts = shapeOver(alt.model, p0, set.points)
+          if (pts.length > 1)
+            shapes.push({ key: `alt${i}`, title: `${set.title}: ${alt.model.name}`, points: pts })
+        })
+        notes.push(`Also drawn: the starting shape of ${alt.model.name}, the model compared with.`)
+      }
+    }
+    // Constants on a plateau or the midpoint, as dashed lines (the values typed).
+    const meta = equationMeta(String(params.equation))
+    for (const name of model.params) {
+      const c = effectiveConstraint(model, name, { constraints })
+      if (c.kind !== 'constant' || !meta) continue
+      if (name === meta.top || name === meta.bottom)
+        lines.push({ at: c.value, axis: 'y', label: `${name} = ${plain(c.value)}`, dashed: true })
+      else if (name === meta.midpoint)
+        lines.push({ at: c.value, axis: 'x', label: `${name} = ${plain(c.value)}`, dashed: true })
+    }
+    const sharedNames = model.params.filter(
+      (n) => effectiveConstraint(model, n, { constraints }).kind === 'shared',
+    )
+    if (sharedNames.length && sets.length > 1)
+      notes.push(
+        `${nameList(sharedNames)} ${sharedNames.length === 1 ? 'is' : 'are'} shared: one value for all ${sets.length} data sets, fit together.`,
+      )
+    const weighting = params.weighting
+    if (weighting && weighting !== 'none')
+      notes.push(
+        weighting === 'sd'
+          ? 'Weighted by 1/SD²: points where replicates scatter more count less.'
+          : weighting === 'x' || weighting === 'x2'
+            ? 'Weighted by X: points at large X count less.'
+            : 'Weighted by Y: points with large Y count less.',
+      )
   } else notes.push(resolved.message)
+  // Each dashed line's label beside it, inside the data's extent.
+  const all = sets.flatMap((x) => x.points)
+  const labels: { x: number; y: number; text: string }[] = []
+  if (all.length) {
+    const { lo } = extentOf(all)
+    let yHi = Number.NEGATIVE_INFINITY
+    for (const p of all) if (p.y > yHi) yHi = p.y
+    for (const l of lines)
+      labels.push(
+        l.axis === 'y' ? { x: lo, y: l.at, text: l.label } : { x: l.at, y: yHi, text: l.label },
+      )
+  }
   const name = resolved.ok ? resolved.model.name : 'the model'
   const n = sets.reduce((t, x) => t + x.points.length, 0)
   return {
@@ -303,9 +359,10 @@ export function curveSketch(
         table: pointsTable('curve', [...sets, ...shapes], ctx.xTitle ?? 'X'),
         preset: 'each',
         lineSets: shapes.map((x) => x.key),
+        ...(lines.length ? { lines, labels } : {}),
       },
     ],
-    caption: `${name}: the line is its starting shape from the automatic initial values, not the fitted curve.`,
+    caption: `${name}: the line is its starting shape from the initial values, not the fitted curve.`,
     description: `${input.length} data set${input.length === 1 ? '' : 's'}, ${n} points, with the starting shape of ${name} (before fitting; no parameter is estimated here).`,
     counts: countsLine([
       `${input.length} data set${input.length === 1 ? '' : 's'}`,
@@ -315,4 +372,68 @@ export function curveSketch(
     notes,
     ...(s.sampled ? { sampled: s.sampled } : {}),
   }
+}
+
+/**
+ * The values a fit starts from in each data set: the model's initial values (typed or automatic),
+ * constants and data set constants held, shared parameters the mean over the data sets (as
+ * `nonlinearFit` lays them out). Null for a data set whose values can't be computed.
+ */
+function startingValues(
+  model: FitModelLike,
+  sets: readonly { title: string; points: readonly Point[] }[],
+  constraints: Record<string, Constraint>,
+  own: boolean,
+): (number[] | null)[] {
+  const cons = model.params.map((n) =>
+    own
+      ? effectiveConstraint(model, n, { constraints })
+      : effectiveConstraint(model, n, { constraints: {} }),
+  )
+  const fixedOf = (set: { title: string; points: readonly Point[] }) =>
+    cons.map((c) =>
+      c.kind === 'constant'
+        ? c.value
+        : c.kind === 'dataSetConstant'
+          ? titleNumber(set.title)
+          : c.kind === 'meanX'
+            ? set.points.reduce((t, p) => t + p.x, 0) / Math.max(1, set.points.length)
+            : undefined,
+    )
+  const raw = sets.map((set) => {
+    if (set.points.length < 2) return null
+    try {
+      const fixed = fixedOf(set)
+      const v = model.initial(
+        set.points.map((p) => p.x),
+        set.points.map((p) => p.y),
+        fixed,
+      )
+      return v.map((x, j) => fixed[j] ?? x)
+    } catch {
+      return null
+    }
+  })
+  cons.forEach((c, j) => {
+    if (c.kind !== 'shared') return
+    const vals = raw.flatMap((v) => (v && Number.isFinite(v[j]!) ? [v[j]!] : []))
+    if (!vals.length) return
+    const m = vals.reduce((t, x) => t + x, 0) / vals.length
+    for (const v of raw) if (v) v[j] = m
+  })
+  return raw
+}
+
+type FitModelLike = Parameters<typeof effectiveConstraint>[0] & {
+  params: readonly string[]
+  initial: (x: number[], y: number[], fixed?: readonly (number | undefined)[]) => number[]
+  f: (x: number, p: ArrayLike<number>) => number
+}
+
+/** A model's curve at values `p` over the X extent of some points. */
+function shapeOver(model: FitModelLike, p: readonly number[], points: readonly Point[]): Point[] {
+  const { lo, hi } = extentOf(points)
+  return grid(lo, hi)
+    .map((gx) => ({ x: gx, y: model.f(gx, p) }))
+    .filter((q) => Number.isFinite(q.y))
 }

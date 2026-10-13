@@ -13,6 +13,7 @@ import {
   APP_VERSION,
   countLimitFlags,
   DEFAULT_LIMIT_RULE,
+  type DiagnosticFix,
   describeLimitRule,
   formatResultValue,
   type GraphNode,
@@ -177,7 +178,8 @@ export function ResultsView({
   onOpen,
 }: {
   id: NodeId
-  onEdit: () => void
+  /** Opens Edit; with a warning's fix (roadmap 51e), with its values set. */
+  onEdit: (fix?: DiagnosticFix) => void
   onError: ShowError
   /** Opens a node (the data table Freeze makes, the table analyzed). */
   onOpen?: (id: NodeId) => void
@@ -320,7 +322,7 @@ export function ResultsView({
       menu: analyze(20),
       icon: 'settings-2',
       hint: 'Change this analysis’ parameters or the data sets it analyzes',
-      run: onEdit,
+      run: () => onEdit(),
     },
     {
       id: 'analyze.analyzeResultTable',
@@ -386,7 +388,7 @@ export function ResultsView({
       <>
         {hint && <span className="error-hint">{hint}</span>}
         {errorWhere(message) === 'params' ? (
-          <button type="button" className="link" onClick={onEdit}>
+          <button type="button" className="link" onClick={() => onEdit()}>
             Change parameters…
           </button>
         ) : (
@@ -507,7 +509,7 @@ export function ResultsView({
       {menu && <CommandMenu menu={menu} onClose={() => setMenu(null)} />}
       {exporter.dialog}
       <div className="view-toolbar">
-        <button type="button" onClick={onEdit}>
+        <button type="button" onClick={() => onEdit()}>
           Parameters…
         </button>
         {table && (
@@ -586,7 +588,15 @@ export function ResultsView({
                   {errorHelp(d.message)}
                 </span>
               ) : (
-                d.message
+                <>
+                  {d.message}
+                  {/* Roadmap 51e (§9.3): what to change, opening Edit with it set. */}
+                  {d.fix && (
+                    <button type="button" className="check-fix" onClick={() => onEdit(d.fix)}>
+                      {d.fix.label}…
+                    </button>
+                  )}
+                </>
               )}
             </li>
           ))}

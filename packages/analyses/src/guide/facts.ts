@@ -1,4 +1,5 @@
 import type { NormalizedDataSet, TableFacts, TableKind } from '@ps/model'
+import { xLooks } from '../curveAdvice.ts'
 
 // Roadmap 51a: what the guided chooser may know about the table (design §3.1): its shape, counted
 // from the data sets chosen, nothing inferential (no test, no P, no fit).
@@ -79,22 +80,16 @@ export function tableFacts(kind: TableKind, input: readonly NormalizedDataSet[])
 
   const xs = input[0]?.x
   if (xs && (kind === 'xy' || kind === 'survival')) {
-    const x = [...xs].filter(finite)
-    if (x.length) {
-      const [min, max] = extent(x)
-      const pos = x.filter((v) => v > 0)
-      const [posMin, posMax] = extent(pos)
+    // Roadmap 51e (§9.2): the same reading of X as the curve fit's checks (`xLooks`).
+    const look = xLooks(xs)
+    if (look)
       facts.x = {
-        min,
-        max,
-        looksLog: min >= -15 && max <= 0.5 && max - min >= 1,
-        looksConcentration:
-          pos.length === x.filter((v) => v !== 0).length &&
-          pos.length >= 2 &&
-          posMax / posMin >= 100,
-        hasZero: x.includes(0),
+        min: look.min,
+        max: look.max,
+        looksLog: look.looksLog,
+        looksConcentration: look.looksConcentration,
+        hasZero: look.zeros > 0,
       }
-    }
   }
 
   if (kind === 'contingency' && numeric.length) {

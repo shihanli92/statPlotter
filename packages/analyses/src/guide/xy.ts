@@ -13,7 +13,10 @@ const replicatesQ = (then: GuideStep): GuideStep =>
       answer('each', 'Independent (separate animals, separate experiments)', then),
       answer('mean', 'Repeats of one sample (technical replicates)', then),
     ],
-    { answeredBy: (f) => (f.replicates <= 1 ? 'each' : null) },
+    {
+      answeredBy: (f) => (f.replicates <= 1 ? 'each' : null),
+      draws: { mean: { notes: ['Replicates averaged first (technical repeats).'] } },
+    },
   )
 
 const replicates = (a: GuideAnswers) => a.replicates ?? 'each'
@@ -36,6 +39,8 @@ const midpoint = (a: GuideAnswers) =>
 const doseParams = (_f: TableFacts, a: GuideAnswers) => ({
   equation: doseResponseModel(a),
   compareParams: a.compare === 'yes' ? [midpoint(a)] : [],
+  // Roadmap 51e (§9.4, S18): how the comparison is decided, chosen before the fit.
+  ...(a.compare === 'yes' ? { compareBy: a.compareBy === 'aicc' ? 'aicc' : 'fTest' } : {}),
   replicates: replicates(a),
   ciMethod: 'profile',
 })
@@ -60,16 +65,42 @@ const doseLeaf = leaf(
 )
 
 // Asked in this order, each answer leading to the next question (built from the fit back).
+/** Roadmap 51e (§9.4, S18): the comparison's method, chosen before the results. */
+const compareByQ = (then: GuideStep) =>
+  question(
+    'compareBy',
+    'How will you decide whether the EC50 (IC50) differs?',
+    'One method, chosen now: reading both and keeping the one you like is test shopping.',
+    [
+      answer('fTest', 'Extra sum-of-squares F test (a P value)', then, {
+        explain:
+          'A shared EC50 against one per data set are nested models: the classical test applies.',
+      }),
+      answer('aicc', 'AICc (the probability that each model is right)', then),
+    ],
+    {
+      draws: {
+        fTest: { decideBy: 'the extra sum-of-squares F test' },
+        aicc: { decideBy: 'AICc' },
+      },
+    },
+  )
 const compareQ = (then: GuideStep) =>
   question(
     'compare',
     'Compare the EC50 (IC50) between data sets?',
     'Decide before looking at the curves which parameter matters.',
     [
-      answer('yes', 'Yes: does it differ between data sets?', then),
+      answer('yes', 'Yes: does it differ between data sets?', compareByQ(then)),
       answer('no', 'No, fit each data set', then),
     ],
-    { answeredBy: (f) => (f.groups.length < 2 ? 'no' : null) },
+    {
+      answeredBy: (f) => (f.groups.length < 2 ? 'no' : null),
+      draws: {
+        yes: { comparisons: 'shared', measure: 'parameter' },
+        no: { comparisons: 'none', measure: 'curve' },
+      },
+    },
   )
 const slopeQ = (then: GuideStep) =>
   question(
@@ -82,6 +113,12 @@ const slopeQ = (then: GuideStep) =>
       }),
       answer('standard', 'Yes, there is a reason to fix it at 1', then),
     ],
+    {
+      draws: {
+        variable: { notes: ['Steepness fitted (four parameters).'] },
+        standard: { notes: ['Hill slope fixed at 1 (three parameters).'] },
+      },
+    },
   )
 const normalizedQ = (then: GuideStep) =>
   question(
@@ -92,6 +129,12 @@ const normalizedQ = (then: GuideStep) =>
       answer('yes', 'Yes, 0% and 100% are defined by controls', then),
       answer('no', 'No, the responses are in their own units', then),
     ],
+    {
+      draws: {
+        yes: { notes: ['Plateaus fixed at 0 and 100%.'] },
+        no: { notes: ['Top and bottom fitted.'] },
+      },
+    },
   )
 const xScaleQ = (then: GuideStep) =>
   question(
@@ -103,6 +146,10 @@ const xScaleQ = (then: GuideStep) =>
       answer('dose', 'The dose itself, e.g. 1e-9, 1e-8 (or 0.1, 1, 10 µM)', then),
     ],
     {
+      draws: {
+        log: { notes: ['X is log(dose).'] },
+        dose: { notes: ['X is the dose itself.'] },
+      },
       hint: (f) =>
         !f.x
           ? null
@@ -123,6 +170,12 @@ const doseResponse: GuideStep = question(
     answer('rises', 'It rises (agonist: EC50)', afterDirection),
     answer('falls', 'It falls (inhibitor: IC50)', afterDirection),
   ],
+  {
+    draws: {
+      rises: { curve: 'up', parameter: 'EC50' },
+      falls: { curve: 'down', parameter: 'IC50' },
+    },
+  },
 )
 
 // ---- Other curves --------------------------------------------------------------------------
@@ -207,10 +260,23 @@ const otherCurve: GuideStep = question(
       leaf(
         'nonlinearFit',
         fixed({}),
-        'Choose the model in the options’ Model list (127 built-in equations), or write your own.',
+        'Choose the model in the options’ picker: by goal (binding, kinetics, peaks…), All equations (126 built in), or your own equation.',
       ),
     ),
   ],
+  {
+    draws: {
+      saturation: { curve: 'up', parameter: 'Bmax and Kd' },
+      competition: { curve: 'down', parameter: 'IC50' },
+      association: { curve: 'up', parameter: 'kon and koff' },
+      dissociation: { curve: 'down', parameter: 'koff (the half-life)' },
+      enzyme: { curve: 'up', parameter: 'Vmax and Km' },
+      decay: { curve: 'down', parameter: 'the rate constant (half-life)' },
+      growth: { curve: 'up', parameter: 'the rate constant (doubling time)' },
+      logistic: { curve: 'up', parameter: 'the maximum and the rate' },
+      peak: { curve: 'peak', parameter: 'the centre and width' },
+    },
+  },
 )
 
 // ---- Relationships ---------------------------------------------------------------------------
@@ -250,6 +316,12 @@ const correlationQ = (kind: 'xy' | 'column'): GuideStep =>
         ),
       ),
     ],
+    {
+      draws: {
+        straight: { notes: ['A straight-line association (Pearson).'] },
+        monotone: { notes: ['A steady rise or fall, by ranks (Spearman).'] },
+      },
+    },
   )
 
 const straightLine: GuideStep = question(
@@ -292,9 +364,27 @@ const straightLine: GuideStep = question(
             ),
           ),
         ],
+        {
+          draws: {
+            strength: { measure: 'association', comparisons: 'together' },
+            agree: { measure: 'agreement', comparisons: 'together' },
+          },
+        },
       ),
     ),
   ],
+  {
+    draws: {
+      set: {
+        measure: 'slope',
+        curve: 'line',
+        parameter: 'slope',
+        comparisons: 'vsValue',
+        hypothetical: 0,
+      },
+      both: { layout: 'xy' },
+    },
+  },
 )
 
 export const XY_ENTRIES: readonly GuideEntry[] = [
@@ -313,6 +403,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
       'agonist',
       'inhibitor',
     ],
+    draws: { layout: 'groups', measure: 'curve' },
     start: doseResponse,
   },
   {
@@ -320,6 +411,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
     question: 'Read unknowns off a standard curve',
     kinds: ['xy'],
     keywords: ['standard curve', 'interpolate', 'unknowns', 'elisa', 'bca', 'calibration'],
+    draws: { layout: 'standard', measure: 'interpolate', comparisons: 'none' },
     start: question(
       'straight',
       'Is the standard curve straight?',
@@ -356,6 +448,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
           ),
         ),
       ],
+      { draws: { yes: { curve: 'line' }, no: { curve: 'up' } } },
     ),
   },
   {
@@ -376,6 +469,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
       'exponential',
       'curve fit',
     ],
+    draws: { layout: 'groups', measure: 'curve', comparisons: 'none' },
     start: otherCurve,
   },
   {
@@ -383,6 +477,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
     question: 'Is there a straight-line relation?',
     kinds: ['xy'],
     keywords: ['linear regression', 'slope', 'line', 'least squares'],
+    draws: { layout: 'groups' },
     start: straightLine,
   },
   {
@@ -390,6 +485,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
     question: 'Compare slopes or curves',
     kinds: ['xy'],
     keywords: ['compare slopes', 'compare curves', 'compare ec50', 'parallel lines'],
+    draws: { layout: 'groups', comparisons: 'shared' },
     start: question(
       'shape',
       'Straight lines or curves?',
@@ -406,6 +502,12 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
         ),
         answer('curves', 'Dose-response curves (compare the EC50 or IC50)', doseResponse),
       ],
+      {
+        draws: {
+          lines: { measure: 'slope', curve: 'line', parameter: 'slope' },
+          curves: { measure: 'parameter' },
+        },
+      },
     ),
   },
   {
@@ -413,6 +515,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
     question: 'Do X and Y go up together?',
     kinds: ['xy'],
     keywords: ['correlation', 'pearson', 'spearman', 'association'],
+    draws: { layout: 'xy', measure: 'association', comparisons: 'together' },
     start: correlationQ('xy'),
   },
   {
@@ -420,6 +523,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
     question: 'A yes/no outcome against X',
     kinds: ['xy'],
     keywords: ['logistic', 'binary', 'probability', 'yes no'],
+    draws: { layout: 'xy', measure: 'probability', comparisons: 'predict' },
     start: leaf(
       'simpleLogistic',
       fixed({ ciMethod: 'profile' }),
@@ -431,6 +535,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
     question: 'Area under the curve',
     kinds: ['xy'],
     keywords: ['area under curve', 'auc', 'integral', 'peaks', 'exposure'],
+    draws: { layout: 'groups', measure: 'area', comparisons: 'none' },
     start: leaf(
       'areaUnderCurve',
       fixed({}),
@@ -442,6 +547,7 @@ export const XY_ENTRIES: readonly GuideEntry[] = [
     question: 'Smooth the points',
     kinds: ['xy'],
     keywords: ['smooth', 'lowess', 'spline', 'trend line'],
+    draws: { layout: 'groups', measure: 'smooth', comparisons: 'none' },
     start: leaf(
       'fitSpline',
       fixed({ method: 'lowess' }),
@@ -463,6 +569,7 @@ export const COLUMN_CORRELATION: GuideEntry = {
   question: 'Do two columns go up and down together?',
   kinds: ['column'],
   keywords: ['correlation', 'pearson', 'spearman', 'association', 'related'],
+  draws: { layout: 'pair', measure: 'association', comparisons: 'together' },
   start: correlationQ('column'),
 }
 

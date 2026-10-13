@@ -60,6 +60,27 @@ percent), factor names edited in the grid's header and used in two-way RM's and 
 tables, units in the results tables, the RM one-way template's "conditions" naming. Still to
 build: §9 (51e).
 
+**Built so far — 51e (0.3.12, decisions 1324–1333; ROADMAP 51e):** §9 whole but what is listed
+below — the picker by goal with thumbnails (§9.1; 13 goals: the table's 11 with receptor
+pharmacology and lines and polynomials; `xScale` takes four values, log, concentration, time and
+linear, 1324), the equations' metadata (all 126; 52 declared special cases checked by
+evaluation), log-X detection with its fixes (§9.2; Transform X to log10 makes a Transform analysis
+and fits its result; log molar spans 1–8 units, as the chooser read it, 1325), the dose-response
+warnings with their fixes opening Edit (§9.3, 1327), profile CIs by default with saved fits
+pinned (1326), one model comparison chosen in advance with the F test greyed for models that
+aren't nested (§9.4, §4.4 row 22; 1328–1330), and the curve-fit sketch following the model,
+initial values, constraints and the compared model (§9.5, 1331); `ANALYSES_VERSION` 1.6.1 (1333).
+Left: weights as point sizes and a shared parameter as one handle in the sketch; the picker for
+"A different equation for some data sets".
+
+**Built so far — 51f (0.3.13, decisions 1334–1340; ROADMAP 51f):** not in the original design —
+the user asked after 51e for a diagram of what is being tested in Guide me, and chose both a
+schematic of the question and a clickable map of the path. §12 describes what was built: "What
+will be tested" as data from the answers and the params (§12.1), drawn by `@ps/graph` (§12.2),
+never a result (§12.3), placed beside the questions, above them when narrow, and above the
+sketch on All analyses (§12.4), the map of the path (§12.5) and later answers kept (§12.6). Left:
+clicking a box to set the control.
+
 Contents
 
 1. [Goals, non-goals and principles](#1-goals-non-goals-and-principles)
@@ -73,6 +94,7 @@ Contents
 9. [Curve fitting (51e)](#9-curve-fitting-51e)
 10. [Data model changes, phase plan, risks and open questions](#10-data-model-changes-phase-plan-risks-and-open-questions)
 11. [Appendix: every finding and where it is handled](#11-appendix-every-finding-and-where-it-is-handled)
+12. [Guide me diagrams (51f)](#12-guide-me-diagrams-51f)
 
 ---
 
@@ -1995,3 +2017,97 @@ test and one-way ANOVA).
 | U27 no explanations | 51a | §2 |
 | U28 editing re-opens the chooser | 51c (history), 51b (Change method…) | §7.2, §4.1 |
 | U29 accessibility | 51b (dialog, sketch), 51d (results) | §4.8, §5.7, §8.6 |
+
+---
+
+## 12. Guide me diagrams (51f)
+
+Added after 51e at the user's request (2026-10-13): a diagram of what is being tested, built as
+Guide me's questions are answered, and a map of the path through them. Both follow §1.3: no
+statistic before Analyze, the design decided by the user's answers, one source of words.
+
+### 12.1 "What will be tested", as data
+
+The questions already say what the experiment is; 51f writes what each answer means for the
+question as data on the trees (`GuideAnswer.draws`, set by question with `question(…, { draws:
+{ answerId: … } })`, and `GuideEntry.draws` for the question itself):
+
+```ts
+interface SchematicDesign {            // model/src/schematic.ts
+  layout?: 'groups' | 'grid' | 'rows' | 'xy' | 'pair' | 'predict' | 'standard' | 'none'
+  measure?: 'mean' | 'logMean' | 'difference' | 'ratio' | 'ranks' | 'signedRanks' | 'distribution'
+          | 'proportion' | 'risk' | 'odds' | 'survival' | 'slope' | 'parameter' | 'curve' | …
+  comparisons?: 'pair' | 'allPairs' | 'vsControl' | 'trend' | 'none' | 'vsValue' | 'withinRows'
+              | 'withinColumns' | 'allCells' | 'mainColumns' | 'perRow' | 'together' | 'predict' | 'shared'
+  matched?: 'no' | 'yes' | 'columns' | 'rows' | 'both'
+  kind?; control?; hypothetical?; direction?; scatter?; correction?; nested?; parameter?; curve?
+  decideBy?; exposedRow?; outcomeColumn?; outcome?; notes?
+}
+```
+
+`guideDesign(entry, facts, answers)` merges the question's draws, each answer's in the order
+answered, the values the answers asked for (the control, a set value, the outcome variable), and,
+once a recommendation is reached, `designOfParams(analysisId, params)` — the same function that
+draws the method's schematic on All analyses (39 analyses). The params win where they differ (a
+matched "trend" leads to every pair, and the schematic says so), except that a question which is
+a recommendation by itself keeps its own measure. `schematicSpec(design, facts, names)` turns it
+into:
+
+| Part | What it says |
+| --- | --- |
+| Boxes | the groups (data sets), a contingency or parts-of-whole table's rows, a grouped table's cells under its factor names and levels, X and Y, the predictors and the outcome, standards and unknowns; each with what it holds ("mean", "ranks", "% Died", "survival curve", "log EC50") and a small picture; the control emphasized and tagged; a set value dashed; at most 6 in a row (then "+ 4 more"), 4 grid rows |
+| Arrows | two groups; every pair (up to 10, else counted); each against the control (re-rooted when the control changes); a trend along the order; any difference (a line under all); each against the value set; within each row or column of a grid; the column factor's levels averaged over the rows; one test per row; one shared parameter or one each; predictors to the outcome; together (an association) |
+| Heads | both ends when two-tailed; one end pointing at the group predicted higher when one-tailed with a stated direction ("Treated higher?"), at the group from the value for "above 100?" |
+| Links | the same subjects: under the row of groups ("same subjects, row by row"), under each grid row (repeated across the columns), beside each grid column (down the rows), both |
+| Question | in the user's names: "Is the mean of Treated different from that of Control?", "Is the mean change from Before to After different from zero?", "At each level of Time, which Genotype means differ?", "Is the risk of Died in Drug different from that in Placebo?", "Does the log EC50 differ between Drug A and Drug B?" |
+| No effect | "If the treatment had no effect, the means of Control and Treated would differ only by chance." (null when nothing is tested: a description, a fit, a plan) |
+| Notes | the family and its correction ("Every pair: 3 comparisons, one family (Tukey)", "Each level of Time is its own family of 2 comparisons (Šidák)", "Corrected across the rows by the false discovery rate (Q = 5%)"), the independent units ("Independent units: 6 subjects, not 24 values"; nested: "8 subjects (not 48 values)"), Welch's own scatter or the pooled one, a one-tailed prediction, how a shared EC50 is decided, the answers' own words ("X is log(dose)", "Steepness fitted") |
+| Pending | the next question ("Next: What kind of values?") or what another table kind needs |
+
+### 12.2 Drawn by `@ps/graph`
+
+`schematicScene(spec, fonts, { width, theme })` lays out boxes on their rows and columns and
+draws what the spec lists, knowing nothing of analyses: arcs over a row in levels (narrow spans
+low, none crossing another on one level), beside a column when the boxes share it, lines under a
+row, straight arrows, links with a legend, a grid's headings. Text is measured with fontkit
+(labels two lines at most, cut with "…"); geometry in points; 320 pt wide, wider when the boxes
+need it (the image then scales to the panel). Its colours are the dialog's (`SCHEMATIC_THEMES`,
+light and dark, chosen by the app's `data-theme`) on a transparent background — unlike the
+sketch's white paper, as it is a diagram of the question rather than a figure of data. The
+question, "no effect", notes and next step are HTML text around the image (the question is a
+polite live region); the image is `role="img"` described by the spec's text alternative.
+
+### 12.3 Never a result
+
+The spec holds names, what is compared, counts of the design (subjects, values, comparisons,
+rows) and the value the user typed. `analyses/src/schematic/` imports nothing from `@ps/stats`
+and no `run`; a test walks every step of every path of every question on a table of each kind
+and finds neither the data's values nor a statistic's words.
+
+### 12.4 Placement
+
+| Dialog width | Guide me | All analyses |
+| --- | --- | --- |
+| ≥ 1100 px | rail (the map under the question chosen) · questions · "What will be tested" (340 px) | the side panel opens with "What will be tested" (a disclosure, open, remembered for the session), then the sketch, checks, cards |
+| 860–1099 px | rail 200 px · questions · "What will be tested" (280 px) | the same, in the 300 px side panel |
+| < 860 px | rail 200 px · questions, with "What will be tested" as a strip above them that stays in view (Hide / Show what will be tested) | the same, in the strip above the options |
+
+### 12.5 The map of the path
+
+`guideMap(entry, facts, answers)`: the questions answered, each with its answer (a count the table
+answers marked "from your table"), the next question (`aria-current="step"`), then the method it
+leads to, another table kind, or "Then: a recommendation" (greyed, still focusable). The map is
+an ordered list of buttons with one tab stop (↑ ↓ ← → Home End move; Enter or Space go). A step
+scrolls its question into view, outlines it a moment and focuses its chosen answer; the end step
+goes to the recommendation. Labels say the step, the question, the answer and the number of
+answers ("Step 2: Were the same subjects measured in both groups? Answer: No, different subjects
+in each group, one of 2 answers. Go back to change it.").
+
+### 12.6 Changing an earlier answer
+
+`reanswer(entry, facts, answers, question, answer)` keeps the later answers that still apply — the
+questions still on the new path (the same question asked further on) and the values their
+answers asked for — and drops the others (51a dropped every later answer). Changing "Were the
+same subjects measured?" from No to Yes keeps "What kind of values? Measurements" and drops the
+scatter question, which the paired branch doesn't ask: the paired t test is recommended at once.
+

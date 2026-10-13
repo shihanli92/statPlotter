@@ -4,9 +4,9 @@ exports[`example documents > chen 1`] = `"6a9a452f9b9a87dcc0e12bea4ab57f9ae600e7
 
 exports[`example documents > clinical 1`] = `"c85b593ab782f085afb4d09824c9f47971f506a3167e3847c1fb8cf413d62748"`;
 
-exports[`example documents > curve-fitting 1`] = `"ee6d989c11bd38ca3eae34fb6ea5d80666db19fff296e0f76b601022667fb728"`;
+exports[`example documents > curve-fitting 1`] = `"48dd2a12b92d7b29f6d9667d76beeb08987cc85bc75fc4e31c648b7e9b43a4f5"`;
 
-exports[`example documents > data-processing 1`] = `"9171fb235a83b500895926a9a727d1ceb59d1cd421d6f5bb3e2043d217c7d91d"`;
+exports[`example documents > data-processing 1`] = `"a777c9e5a76415460e76789844ab6c0d60184a1611c2356a9942004d0d493698"`;
 
 exports[`example documents > formatting 1`] = `"5595a12e13525eb3990dc877c79aedd76146ce0d08880098277803a55faee4d9"`;
 
@@ -14,7 +14,7 @@ exports[`example documents > getting-started 1`] = `"a8a425fbae680b82ac519db6884
 
 exports[`example documents > grouped 1`] = `"a3da99a98fd9d04bc3d857bd3ef2fa451f6245cab0db2ca5add68fcf82f2fc08"`;
 
-exports[`example documents > hoffmann 1`] = `"2d7dda9147f7f088ef8d8a2729e30cf7a4e74498e2beabe79c326afbbec04a97"`;
+exports[`example documents > hoffmann 1`] = `"c7f90927fac84f80a1f231652e5170bbe001378b5a40ec4424e443d4acf76647"`;
 
 exports[`example documents > johnston 1`] = `"8e91aeee010eb6f9d85f02f6f7219b5bc9824e6f6e3c35b3dc94a334b2cf5701"`;
 

@@ -42,6 +42,10 @@ const THREE_WAY_RM = 'Not yet available with repeated measures.'
 const TWO_FACTORS = 'Needs two factors.'
 const THROUGH_ORIGIN = 'Not with the line forced through the origin.'
 const ROBUST = 'Robust fits give best-fit values only.'
+/** §4.4 row 22 (51e). */
+export const NOT_NESTED = 'These models aren’t nested; compare them by AICc.'
+const notNested: Unavailable = { when: [{ fact: 'modelsNested', is: false }], reason: NOT_NESTED }
+const comparing: Condition = { fact: 'modelComparison', is: true }
 
 const anyRepeated3: Condition = {
   anyOf: [p('repeatedRows', true), p('repeatedCol1', true), p('repeatedCol2', true)],
@@ -56,9 +60,9 @@ const hasX: Condition = { fact: 'hasX', is: true }
 const USES_X = ['xDivY', 'yDivX', 'yMinusX', 'yPlusX', 'yTimesX', 'xMinusY']
 
 /**
- * §4.4's table: each invalid combination and the patch preventing it (rows 5, 9 and 22 are
- * elsewhere: 5's sphericity reason came with 51c, `unavailableIf`; 9 was fixed in 51c; 22 needs
- * 51e's nested-model metadata). `refused`: `run` still returns a failure for the combination (the
+ * §4.4's table: each invalid combination and the patch preventing it (rows 5 and 9 are
+ * elsewhere: 5's sphericity reason came with 51c, `unavailableIf`; 9 was fixed in 51c; 22 came
+ * with 51e's nested-model metadata, `explain/equations.ts`). `refused`: `run` still returns a failure for the combination (the
  * guard stays for files and scripts).
  */
 export const INVALID_COMBINATIONS: readonly {
@@ -137,6 +141,12 @@ export const INVALID_COMBINATIONS: readonly {
     what: 'model comparison with robust regression',
     refused: false,
   },
+  {
+    row: 22,
+    analysis: 'nonlinearFit',
+    what: 'F test between models that aren’t nested',
+    refused: false,
+  },
   { row: 23, analysis: 'survival', what: 'trend with two groups', refused: false },
   { row: 24, analysis: 'survival', what: 'pairwise comparisons with two groups', refused: false },
   {
@@ -198,6 +208,18 @@ const SHARED_TIERS: Readonly<Record<string, FieldTier>> = {
   intercept: 'advanced',
   ciMethod: 'advanced',
   seed: 'advanced',
+}
+
+/**
+ * Roadmap 51e (§9.4, S18): how a curve fit's comparison is decided, asked with the comparison
+ * (Essentials) and only when one is asked for; the F test greyed for models that aren't nested
+ * (§4.4 row 22).
+ */
+const COMPARE_BY: FieldPatch = {
+  tier: 'essentials',
+  label: 'How will you decide between the two fits?',
+  appliesTo: [comparing],
+  options: { fTest: { unavailable: [notNested] } },
 }
 
 /** Each analysis' own words, tiers and conditions, by path. */
@@ -460,7 +482,7 @@ export const DIALOG_PATCHES: Readonly<Record<string, Readonly<Record<string, Fie
     compareParams: {
       unavailable: [{ when: [p('fitMethod', 'robust')], reason: ROBUST }],
     },
-    compareBy: { tier: 'advanced' },
+    compareBy: COMPARE_BY,
   },
   nonlinearFitMV: {
     initialValues: { tier: 'advanced' },
@@ -478,7 +500,7 @@ export const DIALOG_PATCHES: Readonly<Record<string, Readonly<Record<string, Fie
     compareParams: {
       unavailable: [{ when: [p('fitMethod', 'robust')], reason: ROBUST }],
     },
-    compareBy: { tier: 'advanced' },
+    compareBy: COMPARE_BY,
   },
   fitSpline: { table: { tier: 'reporting' } },
   roc: {},

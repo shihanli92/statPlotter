@@ -41,8 +41,21 @@ const weightQ = (variables: boolean): GuideStep => {
       answer('whole', 'The whole follow-up (the usual choice)', then),
       answer('early', 'Early differences, decided in advance', then),
     ],
+    {
+      draws: {
+        whole: { notes: ['Log-rank test: the whole follow-up counts alike.'] },
+        early: { notes: ['Gehan-Breslow-Wilcoxon test: early differences weigh more.'] },
+      },
+    },
   )
 }
+
+// Roadmap 51f: what the survival answers say about the design ("What will be tested").
+const WHICH_DRAWS = {
+  overall: { comparisons: 'none' },
+  pairs: { comparisons: 'allPairs', correction: 'Holm' },
+} as const
+const ORDERED_DRAWS = { yes: { comparisons: 'trend' } } as const
 
 /** The reference group of the hazard ratio (survival tables). */
 const ASK_REFERENCE: GuideAsk = {
@@ -63,6 +76,7 @@ const curvesDiffer = (variables: boolean): GuideStep => {
       answer('overall', 'Only whether any curves differ', weight),
       answer('pairs', 'Also which pairs of groups differ', weight),
     ],
+    { draws: WHICH_DRAWS },
   )
   const ordered = question(
     'ordered',
@@ -72,6 +86,7 @@ const curvesDiffer = (variables: boolean): GuideStep => {
       answer('yes', 'Yes: also test for a steady change with the order', weight),
       answer('no', 'No', which),
     ],
+    { draws: ORDERED_DRAWS },
   )
   return question(
     'groups',
@@ -84,6 +99,7 @@ const curvesDiffer = (variables: boolean): GuideStep => {
     {
       answeredBy: (f) =>
         variables ? null : f.groups.length === 2 ? 'two' : f.groups.length > 2 ? 'more' : null,
+      draws: { two: { comparisons: 'pair' } },
     },
   )
 }
@@ -162,6 +178,14 @@ const predict: GuideStep = question(
       },
     ),
   ],
+  {
+    draws: {
+      measurement: { notes: ['The outcome’s mean, by multiple regression.'] },
+      yesNo: { notes: ['The odds of “yes”, by logistic regression.'] },
+      count: { notes: ['The rate of the counted event, by Poisson regression.'] },
+      time: { notes: ['The hazard of the event, by Cox regression.'] },
+    },
+  },
 )
 
 export const SURVIVAL_ENTRIES: readonly GuideEntry[] = [
@@ -177,6 +201,7 @@ export const SURVIVAL_ENTRIES: readonly GuideEntry[] = [
       'time to event',
       'mortality',
     ],
+    draws: { layout: 'groups', measure: 'survival' },
     start: curvesDiffer(false),
   },
   {
@@ -184,6 +209,7 @@ export const SURVIVAL_ENTRIES: readonly GuideEntry[] = [
     question: 'Median survival in each group',
     kinds: ['survival'],
     keywords: ['median survival', 'kaplan meier'],
+    draws: { layout: 'groups', measure: 'medianSurvival', comparisons: 'none' },
     start: leaf(
       'survival',
       fixed({}),
@@ -205,6 +231,7 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
       'covariates',
       'adjust for',
     ],
+    draws: { layout: 'predict', measure: 'predict', comparisons: 'predict' },
     start: predict,
   },
   {
@@ -212,6 +239,7 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
     question: 'Which factors affect the response?',
     kinds: ['multipleVariables'],
     keywords: ['multifactor anova', 'factors', 'anova', 'n-way'],
+    draws: { layout: 'predict', measure: 'predict', comparisons: 'predict' },
     start: leaf(
       'multifactorAnova',
       (f) => ({
@@ -233,6 +261,7 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
       'scores',
       'loadings',
     ],
+    draws: { layout: 'predict', measure: 'components', comparisons: 'predict' },
     start: leaf(
       'pca',
       fixed({ standardize: true, select: 'parallel' }),
@@ -244,6 +273,7 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
     question: 'Time to event with covariates',
     kinds: ['multipleVariables'],
     keywords: ['cox', 'hazard', 'survival', 'covariates', 'time to event'],
+    draws: { layout: 'predict', measure: 'predict', comparisons: 'predict' },
     start: leaf(
       'coxRegression',
       (f) => ({
@@ -258,6 +288,7 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
     question: 'Kaplan-Meier from one row per subject',
     kinds: ['multipleVariables'],
     keywords: ['kaplan meier', 'survival', 'log-rank', 'one row per subject'],
+    draws: { layout: 'predict', measure: 'survival' },
     start: question(
       'groups',
       'Are there three or more groups (from a grouping variable)?',
@@ -284,12 +315,15 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
                     answer('overall', 'Only whether any curves differ', weightQ(true)),
                     answer('pairs', 'Also which pairs of groups differ', weightQ(true)),
                   ],
+                  { draws: WHICH_DRAWS },
                 ),
               ),
             ],
+            { draws: ORDERED_DRAWS },
           ),
         ),
       ],
+      { draws: { two: { comparisons: 'pair' } } },
     ),
   },
   {
@@ -297,6 +331,7 @@ export const VARIABLE_ENTRIES: readonly GuideEntry[] = [
     question: 'Fit a curve per group',
     kinds: ['multipleVariables'],
     keywords: ['curve fit', 'nonlinear', 'per group', 'dose response'],
+    draws: { layout: 'predict', measure: 'curve', comparisons: 'predict' },
     start: leaf(
       'nonlinearFitMV',
       (f) => ({

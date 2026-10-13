@@ -539,7 +539,10 @@ interface MethodChange {
   `survivalFromVariables`, `roc`, `monteCarlo`, `nonlinearFit`, `nonlinearFitMV` (what each
   pins: their `migrateParams`; the params 0.3.8 wrote: `analyses/test/fixtures/params-v1/`).
   At 0.3.11 (roadmap 51d, decision 1318) `multipleT` is at version 3 and `blandAltman` at 2:
-  later − earlier for new analyses, `aMinusB` pinned for saved ones.
+  later − earlier for new analyses, `aMinusB` pinned for saved ones. At 0.3.12 (roadmap 51e,
+  decision 1326) `nonlinearFit` and `nonlinearFitMV` are at version 3: profile-likelihood CIs
+  (`ciMethod: 'profile'`) for new fits, `'symmetric'` pinned for saved ones (and, from version 1,
+  `compareBy: 'both'` as before).
   Monte Carlo's inner analysis keeps the version its params were written for
   (`params.analysis.pluginVersion`; absent in version 1: the inner analysis' version 1).
 - **`history`** (roadmap 51c, design §7.1, decision 1296): the analysis' method changes, written
@@ -633,6 +636,26 @@ place (`forms/shared.ts`). The guided chooser's trees are data too (`model/src/g
 `TableFacts`, `GuideEntry`, `GuideQuestion`, `GuideLeaf`, `GuideElsewhere`; the trees in
 `analyses/src/guide/`, decision 1279): a tree reads only the table's shape (`tableFacts`), never a
 result, and each leaf's params are parsed by its analysis' schema.
+
+**What will be tested (roadmap 51f, decisions 1334–1340).** Code, not document data. A question
+and each of its answers may say what they mean for the question tested
+(`GuideEntry.draws`, `GuideAnswer.draws`: a `SchematicDesign`, `model/src/schematic.ts`); merged
+in the order answered, with the recommendation's params (`designOfParams`), they give a
+`SchematicSpec` that `@ps/graph` draws (`schematicScene`):
+
+```ts
+interface SchematicSpec {
+  question: string; noEffect: string | null          // in the user's names
+  boxes: { id; label; measure?; glyph?; role?: 'group' | 'control' | 'reference' | 'outcome'
+           | 'predictor' | 'more'; row; column; members?: { count; label } }[]
+  arrows: { from; to; heads: 'both' | 'end' | 'none'; route: 'arc' | 'below' | 'straight'; label? }[]
+  links: { boxes: string[]; label? }[]               // the same subjects
+  grid?: { columns?; rows?; columnLevels; rowLevels } // a grouped table's factors
+  notes: string[]; pending?: string; description: string
+}
+```
+
+Names, what is compared and counts of the design only: never a value of the data or a result.
 
 **The Analyze dialog's contract (roadmap 51b, design §4–§5, decisions 1302–1312).** Code, not
 document data: tiers, conditions, checks, roles and the sketch never enter a project file and
@@ -1000,7 +1023,10 @@ interface AnalysisResult {
   table?: DataTable                               // plugins with `producesTable` (§5.1 "Chaining", §5.2)
 }
 
-interface Diagnostic { level: 'info' | 'warning' | 'error'; message: string }
+interface Diagnostic {
+  level: 'info' | 'warning' | 'error'; message: string
+  fix?: { label: string; set: { path: string[]; value: unknown }[] }   // roadmap 51e: "Fix Bottom = 0"
+}
 
 interface Comparison {
   key: string                                     // stable, e.g. `${colA}|${colB}`
@@ -1053,6 +1079,17 @@ Details) and comparisons tables given a `caption` (the family, the method, what 
 refer to). Row and block `key`s, a table's `rowKeys` / `columnKeys`, are stable names for
 references (below) and for the summary. `RunContext.factorNames` carries a grouped table's
 `factorNames`. No number changes; `ANALYSES_VERSION` keys the cache.
+
+**Curve fits (roadmap 51e, design §9, decisions 1324–1333).** A curve fit's warnings may carry a
+`fix` (params set at their paths: `constraints.Bottom = { kind: 'constant', value: 0 }`), offered
+as a button opening Edit with it applied (§9.3: the EC50 outside the doses, a plateau not
+reached, an EC50 the data don't determine, too few doses, an ambiguous fit). Its values hold the
+comparison's one verdict per data set: `preferredModel:{key}` (text; '' when the F test was asked
+for models that aren't nested), `modelP:{key}` (F test) or `modelProbability:{key}` (AICc), and,
+comparing parameters between data sets, `compareP` (F test) or `compareProbShared` (AICc). Fits
+whose params ask for `compareBy: 'fTest'` compare models by the F test only when one is a special
+case of the other (`explain/equations.ts`' declared relatives); `'both'` (saved before 0.3.9)
+keeps its rule (different numbers of free parameters).
 
 ---
 

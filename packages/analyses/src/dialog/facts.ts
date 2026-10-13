@@ -1,4 +1,5 @@
 import type { AnalysisFacts, NormalizedDataSet, TableKind } from '@ps/model'
+import { comparisonFacts } from '../nonlinear.ts'
 
 // Roadmap 51b (design §4.4): the facts the Analyze dialog's conditions read — counts and shapes of
 // the chosen data sets, never a test of the data.
@@ -78,5 +79,9 @@ export function analysisFacts(
     rows,
     columns: numeric.length,
     factors,
+    // Roadmap 51e (§9.4): a curve fit's comparison, from its params (absent params: none).
+    ...('compareBy' in params
+      ? comparisonFacts(params)
+      : { modelComparison: false, modelsNested: false }),
   }
 }

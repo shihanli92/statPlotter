@@ -61,7 +61,9 @@ packages/
               view and Format dialogs, canvas editing, layouts, examples, worker runner
     analysis/   Analyze dialog (Guide me and All analyses; roadmap 51b: three panels — the
                 list, the options in tiers with the groups as chips or role boxes, the live
-                sketch and checks), parameter forms with their explanation lines, results view
+                sketch and checks; roadmap 51e: the curve fit's model picker by goal with
+                thumbnails, checks' one-click fixes; roadmap 51f: Guide me's map of the path and
+                "What will be tested"), parameter forms with their explanation lines, results view
                 (How to read this), job status, the method cards, Help › Choosing an analysis
     commands/   The one command registry: menus, toolbar, ⌘K palette, shortcuts, native menus,
                 the keys each view handles itself (`viewKeys.ts`)
@@ -179,6 +181,14 @@ the reason when another choice excludes it), `validate` (the same function `run`
 preset, brackets and lines, `analyses/src/sketch/`) that `@ps/graph` draws (`sketchGraph`) like
 any graph, so drawing never branches on the method. The sketch holds data and structure only (no
 P, CI, r or fitted value; an import-boundary test keeps `sketch/` away from `run` and the tests).
+
+Roadmap 51f: "What will be tested" works the same way. Guide me's answers carry what they say about
+the design (`GuideAnswer.draws`, data on the trees) and `analyses/src/schematic/` turns the
+merged design (with the recommendation's or the dialog's params, `designOfParams`) into a
+`SchematicSpec` of boxes, arrows and links in the user's names; `@ps/graph`'s `schematicScene`
+lays it out (fontkit, points, light or dark colours) without knowing which question or method
+asked. No value of the data and no result (an import-boundary test keeps `schematic/` away from
+`@ps/stats` and `run`).
 
 `AnalysisResult` carries status and diagnostics, result sheets, values, comparisons (for
 brackets), graphable outputs and an optional produced table in one serializable object, since it

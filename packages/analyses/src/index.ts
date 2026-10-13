@@ -70,7 +70,12 @@ import { demingDef, simpleLogisticDef } from './xyModels.ts'
 // names in labels (rows keyed for references), factor names, later − earlier for new multiple t
 // tests and Bland-Altman, "Not reached" medians, NNT as a positive number for one fewer or more.
 // Every number is unchanged.
-export const ANALYSES_VERSION = '1.6.0'
+// 1.6.1 (roadmap 51e): curve fits — dose-response warnings (a midpoint outside the doses,
+// plateaus not reached, a midpoint the data don't determine, too few doses, what to do about an
+// ambiguous fit) with their fixes; one model-comparison verdict in the values and the summary;
+// nesting decided by the models' declared relatives (not the count of parameters) for fits saved
+// from 0.3.9 on; profile-likelihood CIs for new fits (saved ones pinned to the asymptotic CIs).
+export const ANALYSES_VERSION = '1.6.1'
 
 export const ANALYSES: readonly AnalysisDef<unknown>[] = [
   descriptive,
@@ -161,6 +166,16 @@ export const registry = {
 /** The user-defined equation parser (for an equation editor): parameters, or message + position. */
 export { INITIAL_RULES, parseEquation } from '@ps/stats'
 export {
+  curveWarnings,
+  TRANSFORM_LOG10_X,
+  withLog10X,
+  type XLooks,
+  xLooks,
+  xScaleChecks,
+  xText,
+  xValuesOf,
+} from './curveAdvice.ts'
+export {
   AGGREGATE_STATS,
   type AggregateStat,
   filterColumns,
@@ -168,6 +183,21 @@ export {
   TIME_UNITS,
 } from './dataManipulation.ts'
 export * from './dialog/index.ts'
+export {
+  EQUATION_META,
+  type EquationMeta,
+  equationMeta,
+  goalOf,
+  isSpecialCase,
+  MODEL_GOALS,
+  type ModelGoal,
+  type ModelGoalId,
+  modelsNested,
+  nestedRelatives,
+  type ParamUnit,
+  unitWords,
+  type XScale,
+} from './explain/equations.ts'
 export {
   CARD_FAMILIES,
   CARDS_OF,
@@ -190,6 +220,7 @@ export {
 export { methodNameOf } from './naming.ts'
 export {
   type Constraint,
+  comparisonFacts,
   EQUATIONS,
   effectiveConstraint,
   equation,
@@ -197,8 +228,10 @@ export {
   resolveEquation,
   USER_EQUATION,
 } from './nonlinear.ts'
+export * from './schematic/index.ts'
 export { defaultParamValue, SIMULATIONS } from './simulate.ts'
 export { SKETCH_MAX_ROWS, SKETCHES, sampledRows } from './sketch/index.ts'
+export { modelThumbnail, THUMBNAIL_PLOT } from './sketch/thumbnail.ts'
 export { effectPlot } from './summary/effectPlot.ts'
 export {
   type ComparisonRow,

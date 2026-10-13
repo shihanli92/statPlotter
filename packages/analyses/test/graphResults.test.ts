@@ -503,37 +503,43 @@ describe('ready results on graphs: every design, every field, the sheet’s valu
     }
   })
 
-  it.each(WITH_TEMPLATES.map((d) => [d.id, d] as const))('%s', (id, def) => {
-    const problems: string[] = []
-    /** Template sets (as JSON) seen, and whether one of their runs succeeded. */
-    const ran = new Map<string, boolean>()
-    for (const design of designs(def)) {
-      const params = def.params.parse(withPaths(design)) as Record<string, unknown>
-      for (const input of INPUTS[id]!(params)) {
-        const all = { ...withPaths(design), ...input.params }
-        const shown = `${JSON.stringify(all)} on ${input.table.tableKind} (${input.table.dataSets.length} data sets)`
-        const key = JSON.stringify(def.graphResults!(params as never, contextOf(input.table)))
-        const result = runWithContext(def, input.table, all)
-        if (result.status === 'error') {
-          if (!MAY_FAIL.has(id)) problems.push(`${shown}: ${JSON.stringify(result.diagnostics)}`)
-          if (!ran.has(key)) ran.set(key, false)
-          continue
+  it.each(WITH_TEMPLATES.map((d) => [d.id, d] as const))(
+    '%s',
+    (id, def) => {
+      const problems: string[] = []
+      /** Template sets (as JSON) seen, and whether one of their runs succeeded. */
+      const ran = new Map<string, boolean>()
+      for (const design of designs(def)) {
+        const params = def.params.parse(withPaths(design)) as Record<string, unknown>
+        for (const input of INPUTS[id]!(params)) {
+          const all = { ...withPaths(design), ...input.params }
+          const shown = `${JSON.stringify(all)} on ${input.table.tableKind} (${input.table.dataSets.length} data sets)`
+          const key = JSON.stringify(def.graphResults!(params as never, contextOf(input.table)))
+          const result = runWithContext(def, input.table, all)
+          if (result.status === 'error') {
+            if (!MAY_FAIL.has(id)) problems.push(`${shown}: ${JSON.stringify(result.diagnostics)}`)
+            if (!ran.has(key)) ran.set(key, false)
+            continue
+          }
+          ran.set(key, true)
+          problems.push(...check(def, all, input, result).map((p) => `${shown}: ${p}`))
         }
-        ran.set(key, true)
-        problems.push(...check(def, all, input, result).map((p) => `${shown}: ${p}`))
       }
-    }
-    // Curve fits of generated data: every set of labels ran at least once (three of the 126
-    // built-in equations, which need data set constants, don't fit these data).
-    for (const [key, ok] of ran)
-      if (!ok) problems.push(`no run of ${id} gave results for the labels ${key.slice(0, 300)}`)
-    expect(problems).toEqual([])
-    // Some design offers one in the analysis dialog (descriptive statistics' are lines).
-    const offered = [...ran.keys()].some((k) =>
-      (JSON.parse(k) as ResultTemplate[]).some((t) => t.offer),
-    )
-    expect(offered || id === 'descriptive').toBe(true)
-  })
+      // Curve fits of generated data: every set of labels ran at least once (three of the 126
+      // built-in equations, which need data set constants, don't fit these data).
+      for (const [key, ok] of ran)
+        if (!ok) problems.push(`no run of ${id} gave results for the labels ${key.slice(0, 300)}`)
+      expect(problems).toEqual([])
+      // Some design offers one in the analysis dialog (descriptive statistics' are lines).
+      const offered = [...ran.keys()].some((k) =>
+        (JSON.parse(k) as ResultTemplate[]).some((t) => t.offer),
+      )
+      expect(offered || id === 'descriptive').toBe(true)
+      // Roadmap 51e: curve fits compute profile-likelihood CIs by default (a refit per bound), so
+      // every design of the fits takes longer than the 20 s budget on a busy machine.
+    },
+    120_000,
+  )
 })
 
 describe('ready results on graphs: particular cases', () => {

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="136pt" height="76pt" viewBox="0 0 136 76">
+<g data-id="graph">
+<g data-id="series">
+<g data-id="layer/shape">
+<g data-id="series/shape/subject/0/0">
+<polyline points="12,8 14.383,14.04 16.766,19.357 19.149,24.036 21.532,28.154 23.915,31.779 26.298,34.97 28.681,37.778 31.064,40.249 33.447,42.425 35.83,44.339 38.213,46.024 40.596,47.507 42.979,48.813 45.362,49.962 47.745,50.973 50.128,51.863 52.511,52.647 54.894,53.336 57.277,53.943 59.66,54.477 62.043,54.947 64.426,55.361 66.809,55.725 69.191,56.046 71.574,56.328 73.957,56.576 76.34,56.795 78.723,56.987 81.106,57.157 83.489,57.306 85.872,57.437 88.255,57.552 90.638,57.654 93.021,57.743 95.404,57.822 97.787,57.891 100.17,57.952 102.553,58.006 104.936,58.053 107.319,58.095 109.702,58.131 112.085,58.163 114.468,58.192 116.851,58.217 119.234,58.239 121.617,58.258 124,58.275" fill="none" stroke="#80b9d9" stroke-width="0.75" stroke-linejoin="miter"/>
+</g>
+</g>
+<g data-id="layer/ref1">
+<g data-id="result/ref1/all/line">
+<line x1="12" y1="58.4" x2="124" y2="58.4" stroke="#808080" stroke-width="1" stroke-dasharray="4 3" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+<g data-id="axis/y">
+<g data-id="axis/y/line">
+<line x1="12" y1="64" x2="12" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/0">
+<line x1="12" y1="64" x2="8" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/1">
+<line x1="12" y1="52.8" x2="8" y2="52.8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/2">
+<line x1="12" y1="41.6" x2="8" y2="41.6" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/3">
+<line x1="12" y1="30.4" x2="8" y2="30.4" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/4">
+<line x1="12" y1="19.2" x2="8" y2="19.2" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/y/tick/5">
+<line x1="12" y1="8" x2="8" y2="8" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="axis/x">
+<g data-id="axis/x/line">
+<line x1="12" y1="64" x2="124" y2="64" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/0">
+<line x1="12" y1="64" x2="12" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/1">
+<line x1="30.667" y1="64" x2="30.667" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/2">
+<line x1="49.333" y1="64" x2="49.333" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/3">
+<line x1="68" y1="64" x2="68" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/4">
+<line x1="86.667" y1="64" x2="86.667" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/5">
+<line x1="105.333" y1="64" x2="105.333" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+<g data-id="axis/x/tick/6">
+<line x1="124" y1="64" x2="124" y2="68" stroke="#000000" stroke-width="1" stroke-linecap="square"/>
+</g>
+</g>
+<g data-id="annotations">
+<g data-id="annotation/t0">
+<g data-id="annotation/t0/text">
+<text fill="#000000" xml:space="preserve"><tspan x="81.44" y="14.337" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">Y0</tspan></text>
+</g>
+</g>
+<g data-id="annotation/t1">
+<g data-id="annotation/t1/text">
+<text fill="#000000" xml:space="preserve"><tspan x="16.48" y="55.687" font-family="'PS Liberation Sans', 'Liberation Sans', Arial, Helvetica, sans-serif" font-size="7">Plateau</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</svg>

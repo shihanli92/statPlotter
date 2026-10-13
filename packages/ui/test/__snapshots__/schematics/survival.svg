@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320pt" height="89.102pt" viewBox="0 0 320 89.102">
+<g data-id="schematic">
+<g data-id="box/g:d0">
+<g data-id="box/g:d0/frame">
+<rect x="6" y="6" width="93.333" height="56.164" rx="4" fill="#e6eefc" stroke="#2864cc" stroke-width="1.6"/>
+</g>
+<g data-id="box/g:d0/tag">
+<text fill="#2864cc" xml:space="preserve"><tspan x="39.91" y="17.695" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">control</tspan></text>
+</g>
+<g data-id="box/g:d0/glyph/0">
+<polyline points="43.667,20.496 48.667,20.496 48.667,24.496 53.667,24.496 53.667,28.496 57.667,28.496 57.667,31.496 61.667,31.496" fill="none" stroke="#5c6470" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+<g data-id="box/g:d0/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="30.489" y="44.549" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Wild type</tspan></text>
+</g>
+<g data-id="box/g:d0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="26.687" y="56.363" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">survival curve</tspan></text>
+</g>
+</g>
+<g data-id="box/g:d1">
+<g data-id="box/g:d1/frame">
+<rect x="113.333" y="6" width="93.333" height="56.164" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/g:d1/glyph/0">
+<polyline points="151,10 156,10 156,14 161,14 161,18 165,18 165,21 169,21" fill="none" stroke="#5c6470" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+<g data-id="box/g:d1/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="151.943" y="34.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Het</tspan></text>
+</g>
+<g data-id="box/g:d1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="134.021" y="45.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">survival curve</tspan></text>
+</g>
+</g>
+<g data-id="box/g:d2">
+<g data-id="box/g:d2/frame">
+<rect x="220.667" y="6" width="93.333" height="56.164" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/g:d2/glyph/0">
+<polyline points="258.333,10 263.333,10 263.333,14 268.333,14 268.333,18 272.333,18 272.333,21 276.333,21" fill="none" stroke="#5c6470" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+<g data-id="box/g:d2/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="250.949" y="34.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Mutant</tspan></text>
+</g>
+<g data-id="box/g:d2/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="241.354" y="45.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">survival curve</tspan></text>
+</g>
+</g>
+<g data-id="arrow/0">
+<g data-id="arrow/0/line">
+<line x1="52.667" y1="68.164" x2="267.333" y2="68.164" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/0/tick/0">
+<line x1="52.667" y1="64.164" x2="52.667" y2="68.164" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/0/tick/1">
+<line x1="267.333" y1="64.164" x2="267.333" y2="68.164" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/0/head/0">
+<polygon points="267.333,68.164 261.033,70.684 261.033,65.644" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/0/label">
+<text fill="#2864cc" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" paint-order="stroke" xml:space="preserve"><tspan x="104.42" y="77.406" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8" font-style="italic">steady rise or fall, in this order?</tspan></text>
+</g>
+</g>
+</g>
+</svg>

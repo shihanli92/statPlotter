@@ -21,8 +21,8 @@ const ALLOWED: Record<string, { count: number; why: string }> = {
   'ui/src/analysis/ChoosingHelp.tsx': { count: 1, why: 'defaults, for the cards' },
   'ui/src/analysis/analysisSearch.ts': { count: 1, why: 'defaults, for the cards' },
   'ui/src/analysis/AnalyzeDialog.tsx': {
-    count: 8,
-    why: 'defaults; the params being edited (already read through paramsOf); a guide’s choice',
+    count: 10,
+    why: 'defaults; the params being edited (already read through paramsOf); a guide’s choice; the new Transform of X before a curve fit (roadmap 51e); the params “What will be tested” draws (roadmap 51f)',
   },
   'ui/src/analysis/GuidePanel.tsx': { count: 2, why: 'the guide’s own new params' },
   'ui/src/analysis/OptionTiers.tsx': {

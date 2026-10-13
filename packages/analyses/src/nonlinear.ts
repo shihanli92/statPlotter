@@ -61,6 +61,7 @@ import {
   table,
   text,
 } from './common.ts'
+import { curveWarnings, type FittedCurve, xScaleChecks, xValuesOf } from './curveAdvice.ts'
 import {
   covarianceBlocks,
   DIAGNOSTIC_FIELDS,
@@ -75,6 +76,7 @@ import {
   type XYPoint,
   xyPointRows,
 } from './curveTools.ts'
+import { isSpecialCase } from './explain/equations.ts'
 import { rowName } from './grouped.ts'
 
 const Constraint = z.discriminatedUnion('kind', [
@@ -157,7 +159,11 @@ export const NonlinearParamsSchema = z.object({
   equationByDataSet: z
     .record(z.string(), z.object({ equation: z.string(), userEquation: z.string().default('') }))
     .default({}),
-  ciMethod: z.enum(['symmetric', 'profile']).default('symmetric'),
+  /**
+   * Roadmap 51e (§9.3): profile-likelihood CIs for new fits (asymmetric, honest for EC50 and other
+   * skewed parameters); the asymptotic (symmetric) ones as an option, pinned for saved analyses.
+   */
+  ciMethod: z.enum(['symmetric', 'profile']).default('profile'),
   band: z.enum(['none', 'confidence', 'prediction']).default('none'),
   compareWith: z.string().default('none'),
   /**
@@ -276,6 +282,33 @@ export function effectiveConstraint(
   return d && typeof d === 'object' && 'constant' in d
     ? { kind: 'constant', value: d.constant }
     : { kind: 'fit' }
+}
+
+/**
+ * Roadmap 51e (§9.4, §4.4 row 22): what a curve fit's params ask to compare — another model, or
+ * parameters between data sets — and whether that comparison is between nested models (a
+ * parameter shared or not always is; two built-in models when one is a special case of the
+ * other with fewer free parameters; a user-defined equation never), for the dialog's F test.
+ */
+export function comparisonFacts(params: Record<string, unknown>): {
+  modelComparison: boolean
+  modelsNested: boolean
+} {
+  const id = typeof params.equation === 'string' ? params.equation : ''
+  const other = typeof params.compareWith === 'string' ? params.compareWith : 'none'
+  const names = Array.isArray(params.compareParams) ? params.compareParams : []
+  const main = id === USER_EQUATION ? undefined : equation(id)
+  const alt = other === 'none' || other === id ? undefined : equation(other)
+  const comparesParams = names.length > 0 && (!main || names.some((n) => main.params.includes(n)))
+  if (!alt) return { modelComparison: comparesParams, modelsNested: true }
+  const constraints = (params.constraints ?? {}) as NonlinearParams['constraints']
+  const free = (e: EquationDef, c: NonlinearParams['constraints']) =>
+    e.params.filter((n) => effectiveConstraint(e, n, { constraints: c }).kind === 'fit').length
+  const nested =
+    !!main &&
+    (isSpecialCase(main.id, alt.id) || isSpecialCase(alt.id, main.id)) &&
+    free(main, constraints) !== free(alt, {})
+  return { modelComparison: true, modelsNested: nested }
 }
 
 /** The equation's bounds intersected with the user's limits. */
@@ -428,13 +461,21 @@ function fitAll(
   })
 }
 
-/** Version 1 (before 0.3.9, S18): both the F test and AICc verdicts were reported; kept. */
+/**
+ * Version 1 (before 0.3.9, S18): both the F test and AICc verdicts were reported; kept. Version 2
+ * (before 0.3.12, §9.3): asymptotic (symmetric) CIs of the parameters; kept.
+ */
 export const migrateNonlinear = (raw: unknown, from: number): unknown =>
-  from >= 2 ? raw : pinDefaults(raw, [[['compareBy'], 'both']])
+  from >= 3
+    ? raw
+    : pinDefaults(raw, [
+        ...(from < 2 ? ([[['compareBy'], 'both']] as const) : []),
+        [['ciMethod'], 'symmetric'],
+      ])
 
 export const nonlinearFitDef: AnalysisDef<NonlinearParams> = {
   id: 'nonlinearFit',
-  version: 2,
+  version: 3,
   title: 'Nonlinear regression (curve fit)',
   category: 'XY analyses',
   description:
@@ -544,8 +585,8 @@ export const nonlinearFitDef: AnalysisDef<NonlinearParams> = {
       label: 'Confidence intervals of parameters',
       kind: 'radio',
       options: [
-        { value: 'symmetric', label: 'Symmetrical (asymptotic)' },
-        { value: 'profile', label: 'Asymmetrical (profile likelihood)' },
+        { value: 'profile', label: 'Profile likelihood (asymmetric; recommended)' },
+        { value: 'symmetric', label: 'Asymptotic (symmetric)' },
       ],
     },
     {
@@ -600,6 +641,9 @@ export const nonlinearFitDef: AnalysisDef<NonlinearParams> = {
     ...keys.map((k) => ({ key: `curve:${k}`, forDataSet: k })),
     ...(params.diagnostics?.residuals ? residualOutputs(keys) : []),
   ],
+  // Roadmap 51e (§9.2, S8): the X the model expects against the table's, before the fit.
+  check: (input, params) =>
+    params.equation === USER_EQUATION ? [] : xScaleChecks(params.equation, xValuesOf(input)),
   run: (input, params, context, progress) => runNonlinear(input, params, context, progress),
 }
 
@@ -710,6 +754,21 @@ interface FitRun {
   diagnostics: Diagnostic[]
   /** The run's progress (roadmap 42), when reported. */
   steps: FitSteps | undefined
+  /** Roadmap 51e: the model comparison's verdict per data set (for the summary), when made. */
+  verdicts?: Verdict[]
+}
+
+/** One data set's model comparison: the preferred model, by the method chosen. */
+interface Verdict {
+  key: string
+  title: string
+  by: 'fTest' | 'aicc'
+  /** '' when the F test doesn't apply (not nested). */
+  preferred: string
+  simpler: string
+  p: number
+  /** AICc: the probability that the preferred model is correct. */
+  probability: number
 }
 
 /** The ROUT outliers of each data set (by `data` index) and their t and P values. */
@@ -891,6 +950,17 @@ function runFit(
     }
     if (shared) break // one global status
   }
+  // Roadmap 51e (§9.3, S8): what the fitted numbers of a dose-response (saturation, enzyme,
+  // Boltzmann…) curve say: a midpoint outside the doses, plateaus the data don't reach, a midpoint
+  // the data don't determine, too few doses — each with what to do.
+  if (!resolved.user)
+    diagnostics.push(
+      ...curveWarnings(
+        params.equation,
+        fits.map((f) => curveOf(eq, f, constraints, nFree)),
+        params.confidenceLevel,
+      ),
+    )
 
   const run: FitRun = {
     eq,
@@ -957,10 +1027,41 @@ function runFit(
           ])
         : []),
       ...(compared ? [['compareP', pval(compared.p)]] : []),
+      ...(compared && Number.isFinite(compared.probShared)
+        ? [['compareProbShared', num(compared.probShared)]]
+        : []),
+      // Roadmap 51e (§9.4): the model comparison's one verdict per data set (summary).
+      ...(run.verdicts ?? []).flatMap((v) => [
+        [`preferredModel:${v.key}`, text(v.preferred)],
+        ...(Number.isFinite(v.p) ? [[`modelP:${v.key}`, pval(v.p)]] : []),
+        ...(Number.isFinite(v.probability)
+          ? [[`modelProbability:${v.key}`, num(v.probability)]]
+          : []),
+      ]),
     ]),
     outputs,
     table: resultTable,
   })
+}
+
+/** A fitted data set as the curve warnings read it (§9.3). */
+function curveOf(eq: FitModel, f: Fitted, constraints: Constraint[], nFree: number): FittedCurve {
+  const model = modelFor(eq, f)
+  const values = f.fit.params[f.i]!.map((p) => p.value)
+  return {
+    title: f.ds.title,
+    x: f.x,
+    y: f.y,
+    at: (x) => model.f(x, values),
+    param: (name) => {
+      const k = eq.params.indexOf(name)
+      if (k < 0 || unused(eq, f, k)) return null
+      const e = estimate(f, k)
+      return { value: e.value, lo: e.lo, hi: e.hi, fitted: !isFixed(constraints[k]!) }
+    },
+    status: f.fit.status,
+    free: nFree,
+  }
 }
 
 /** The weights of a data set's points (1/X, 1/X², 1/SD² weighting), if any. */
@@ -1164,27 +1265,36 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
     params.weighting,
     steps,
   )
+  // Roadmap 51e (§9.4): nested structurally — one built-in model a special case of the other
+  // (their declared relatives), with fewer free parameters; a user-defined equation never.
+  // Analyses saved before 0.3.9 (both verdicts) keep their rule: different numbers of free
+  // parameters.
+  const legacy = params.compareBy === 'both'
+  const user = params.equation === USER_EQUATION
+  const mainSimpler = !user && isSpecialCase(params.equation, alt.id)
+  const altSimpler = !user && isSpecialCase(alt.id, params.equation)
+  const nested = legacy ? nFree !== aFree : (mainSimpler || altSimpler) && nFree !== aFree
+  const simplerIsMain = legacy || !nested ? nFree <= aFree : mainSimpler
   const comps = fits.map((f, j) => {
     const a = altFits[j]!
-    const simplerIsMain = nFree <= aFree
     const simpler = simplerIsMain ? f.fit : a.fit
     const complex = simplerIsMain ? a.fit : f.fit
     return {
       c: compareFits(simpler, complex),
       simplerName: simplerIsMain ? eq.name : alt.name,
       complexName: simplerIsMain ? alt.name : eq.name,
-      nested: nFree !== aFree,
+      nested,
     }
   })
   // S18: one verdict, by the method chosen in advance (both for analyses saved before 0.3.9).
-  // Models with the same number of free parameters aren't nested: no F test.
+  // Models that aren't nested have no F test: AICc (the dialog greys the F test for them).
   const byF = params.compareBy !== 'aicc'
-  const byAICc = params.compareBy !== 'fTest' || comps.every((c) => !c.nested)
-  if (params.compareBy === 'fTest' && comps.every((c) => !c.nested))
+  const byAICc = params.compareBy !== 'fTest' || !nested
+  if (params.compareBy === 'fTest' && !nested)
     diagnostics.push({
       level: 'warning',
       message:
-        'These models aren’t nested (the same number of free parameters), so the F test doesn’t apply; they are compared by AICc.',
+        'These models aren’t nested (neither is a special case of the other), so the F test doesn’t apply; they are compared by AICc.',
     })
   const fRows: [string, ResultValue[]][] = [
     ['F', comps.map((c) => (c.nested ? num(c.c.F) : text('—')))],
@@ -1222,6 +1332,26 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
       : byAICc
         ? 'AICc'
         : 'Extra sum-of-squares F test'
+  // The verdict, for the summary sentence: the preferred model and the P (F test) or the
+  // probability (AICc) of each data set.
+  const viaF = byF && !(params.compareBy === 'fTest' && byAICc)
+  run.verdicts = comps.map((c, j) => ({
+    key: fits[j]!.ds.ref.key,
+    title: fits[j]!.ds.title,
+    by: viaF ? 'fTest' : 'aicc',
+    preferred: viaF
+      ? !c.nested
+        ? ''
+        : c.c.p < ALPHA
+          ? c.complexName
+          : c.simplerName
+      : c.c.probSimpler >= 0.5
+        ? c.simplerName
+        : c.complexName,
+    simpler: c.simplerName,
+    p: viaF ? c.c.p : Number.NaN,
+    probability: viaF ? Number.NaN : Math.max(c.c.probSimpler, 1 - c.c.probSimpler),
+  }))
   return {
     key: 'compare',
     title: 'Comparison of fits',
@@ -1243,7 +1373,9 @@ function comparisonSheet(run: FitRun): ResultSheet | null {
  * "Do the best-fit values of the chosen parameters differ between data sets?" (the Compare
  * tab): the null model shares them across the data sets. Its sheet and P value, if compared.
  */
-function compareParamsSheet(run: FitRun): { sheet: ResultSheet; p: number } | null {
+function compareParamsSheet(
+  run: FitRun,
+): { sheet: ResultSheet; p: number; probShared: number } | null {
   const { eq, params, constraints, fits, fitData, opts, robust, shared, diagnostics, steps } = run
   const toCompare = params.compareParams.filter((n) => eq.params.includes(n))
   if (!toCompare.length) return null
@@ -1357,7 +1489,11 @@ function compareParamsSheet(run: FitRun): { sheet: ResultSheet; p: number } | nu
       },
     ],
   }
-  return { sheet, p: byF ? c.p : Number.NaN }
+  return {
+    sheet,
+    p: byF ? c.p : Number.NaN,
+    probShared: params.compareBy === 'aicc' ? c.probSimpler : Number.NaN,
+  }
 }
 
 /** The outliers ROUT found. */

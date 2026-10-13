@@ -1,15 +1,21 @@
 import {
   entriesFor,
   fillReason,
+  type GuideMapStep,
   guideEntry,
+  guideMap,
+  guideSchematic,
   KIND_NAMES,
   methodCard,
   notHere,
+  reanswer,
   registry,
+  type SchematicNames,
   walkAnswers,
   walkGuide,
   withNames,
 } from '@ps/analyses'
+import type { FontRegistry } from '@ps/graph'
 import type {
   GuideAnswer,
   GuideAnswers,
@@ -20,12 +26,17 @@ import type {
   TableFacts,
   TableKind,
 } from '@ps/model'
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { GuideMap } from './GuideMap.tsx'
+import { SchematicView } from './SchematicView.tsx'
 
 // Roadmap 51a: the Guide me tab of the Analyze dialog (design §3): the table kind's questions,
 // follow-up questions about the experiment (counting ones answered from the table's shape), then
 // a recommendation with its reason, what you will get and up to two alternatives. It writes
-// params ("Use this"); it never runs anything and never shows a statistic.
+// params ("Use this"); it never runs anything and never shows a statistic. Roadmap 51f: the map
+// of the path under the question chosen (each step goes back to its question), and "What will
+// be tested", a schematic of the question built up as it is answered — beside the questions,
+// or above them when the dialog is narrow.
 
 /** What "Use this" hands the dialog. */
 export interface GuideChoice {
@@ -122,7 +133,11 @@ function QuestionView({
   const name = useId()
   const hint = question.hint?.(facts) ?? null
   return (
-    <fieldset className="guide-question" aria-describedby={`${name}-why`}>
+    <fieldset
+      className="guide-question"
+      aria-describedby={`${name}-why`}
+      data-question={question.id}
+    >
       <legend>{question.text}</legend>
       <div id={`${name}-why`} className="help explain">
         {question.why}
@@ -281,6 +296,9 @@ export function GuidePanel({
   onUse,
   onShowAll,
   onNewTable,
+  fonts,
+  names,
+  layout = 'wide',
 }: {
   kind: TableKind
   tableName: string
@@ -298,6 +316,12 @@ export function GuidePanel({
   onUse: (c: GuideChoice) => void
   onShowAll: () => void
   onNewTable: (kind: TableKind) => void
+  /** Roadmap 51f: the fonts the schematic is measured with (none: no schematic). */
+  fonts?: FontRegistry
+  /** Names the schematic uses besides the data sets' (row titles, factor names, X's title). */
+  names?: SchematicNames
+  /** The dialog's layout: the schematic beside the questions, or a strip above them (narrow). */
+  layout?: 'wide' | 'medium' | 'narrow'
 }) {
   const entries = entriesFor(kind)
   const others = notHere(kind)
@@ -316,18 +340,53 @@ export function GuidePanel({
   const all = walk ? { ...answers, ...walkAnswers(walk, answers, facts) } : answers
 
   const answer = (q: GuideQuestion, a: GuideAnswer) => {
-    // A new answer drops the answers of the questions after it.
-    const at = walk?.taken.findIndex((t) => t.question === q) ?? -1
-    const later = at < 0 ? [] : walk!.taken.slice(at + 1).map((t) => t.question.id)
-    const next: Record<string, string> = {}
-    for (const [k, v] of Object.entries(answers)) if (!later.includes(k)) next[k] = v
-    next[q.id] = a.id
-    for (const ask of a.asks ?? []) next[ask.id] ??= ask.initial?.(facts) ?? ''
-    onAnswers(next)
+    // Roadmap 51f: a new answer keeps the later answers that still apply (the same question
+    // further on the new path) and drops the others.
+    if (!entry) return
+    onAnswers(reanswer(entry, facts, answers, q.id, a.id))
   }
 
+  // Roadmap 51f: the map of the path and "What will be tested".
+  const offered = !!walk
+  const steps = useMemo(
+    () => (offered && entry ? guideMap(entry, facts, answers) : []),
+    [offered, entry, facts, answers],
+  )
+  const schematic = useMemo(
+    () => (offered && entry && fonts ? guideSchematic(entry, facts, answers, names) : null),
+    [offered, entry, facts, answers, names, fonts],
+  )
+  const [stripHidden, setStripHidden] = useState(false)
+  /** Back to a step's question (or to the recommendation): scrolled to and focused. */
+  const go = (step: GuideMapStep) => {
+    const root = detail.current
+    if (!root) return
+    const target =
+      step.kind === 'answered' || step.kind === 'next'
+        ? root.querySelector<HTMLElement>(`[data-question="${step.questionId}"]`)
+        : root.querySelector<HTMLElement>('.guide-recommendation')
+    if (!target) return
+    target.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' })
+    target.classList.add('revisit')
+    setTimeout(() => target.classList.remove('revisit'), 1600)
+    const focus =
+      target.querySelector<HTMLElement>('input[type="radio"]:checked') ??
+      target.querySelector<HTMLElement>('input[type="radio"]:not([aria-disabled="true"])') ??
+      target.querySelector<HTMLElement>('button') ??
+      target
+    focus.focus({ preventScroll: true })
+  }
+  const methodTitle = (id: string) => {
+    const def = registry.get(id)
+    if (!def || !walk?.end || walk.end.kind !== 'leaf') return def?.title ?? id
+    return methodLine(id, walk.end.params(facts, all)).split(' · ')[0] ?? def.title
+  }
+  const schematicView = schematic && fonts && (
+    <SchematicView spec={schematic} fonts={fonts} compact={layout === 'narrow'} />
+  )
+
   return (
-    <div className="analyze guide">
+    <div className={`analyze guide${layout === 'wide' ? '' : ` ${layout}`}`}>
       <div className="analyze-list guide-rail">
         <h4 id="guide-rail-title">What do you want to know?</h4>
         <ul className="guide-entries" aria-labelledby="guide-rail-title">
@@ -341,6 +400,9 @@ export function GuidePanel({
               >
                 {e.question}
               </button>
+              {e.id === entryId && steps.length > 0 && (
+                <GuideMap steps={steps} methodTitle={methodTitle} onGo={go} />
+              )}
             </li>
           ))}
         </ul>
@@ -363,6 +425,19 @@ export function GuidePanel({
         <p className="guide-facts">
           <strong>Your table, “{tableName}”:</strong> {factsLine(facts)}
         </p>
+        {layout === 'narrow' && schematicView && (
+          <div className="guide-strip">
+            {!stripHidden && schematicView}
+            <button
+              type="button"
+              className="link schematic-toggle"
+              aria-expanded={!stripHidden}
+              onClick={() => setStripHidden(!stripHidden)}
+            >
+              {stripHidden ? 'Show what will be tested' : 'Hide what will be tested'}
+            </button>
+          </div>
+        )}
         {choices.length > 1 && kind !== 'multipleVariables' && (
           <fieldset className="guide-groups">
             <legend>Data sets the questions are about</legend>
@@ -395,7 +470,13 @@ export function GuidePanel({
             <h3 className="guide-title">{entry!.question}</h3>
             {walk.taken.map((t) =>
               t.auto ? (
-                <div key={t.question.id} className="guide-fact" role="note">
+                <div
+                  key={t.question.id}
+                  className="guide-fact"
+                  role="note"
+                  data-question={t.question.id}
+                  tabIndex={-1}
+                >
                   {t.question.text}{' '}
                   <strong>{t.question.answers.find((a) => a.id === t.answer)?.text}</strong>{' '}
                   <span className="help">(from your table or your question)</span>
@@ -447,6 +528,15 @@ export function GuidePanel({
           </>
         )}
       </div>
+      {layout !== 'narrow' && fonts && (
+        <aside className="guide-side" aria-label="What will be tested">
+          {schematicView ?? (
+            <p className="muted guide-side-empty">
+              Choose a question: what will be tested is drawn here as you answer.
+            </p>
+          )}
+        </aside>
+      )}
     </div>
   )
 }

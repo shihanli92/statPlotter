@@ -15,6 +15,7 @@ import {
   createProjectWith,
   createTable,
   type DataTable,
+  type DiagnosticFix,
   type MigrationNote,
   type NodeId,
   type Project,
@@ -184,7 +185,7 @@ type DialogState =
       dataSets?: string[]
     }
   | { kind: 'choosing' }
-  | { kind: 'editAnalysis'; analysisId: NodeId }
+  | { kind: 'editAnalysis'; analysisId: NodeId; fix?: DiagnosticFix }
   | {
       kind: 'import'
       fileName: string
@@ -1587,7 +1588,13 @@ function Shell() {
                 {node?.kind === 'analysis' && (
                   <ResultsView
                     id={node.id}
-                    onEdit={() => setDialog({ kind: 'editAnalysis', analysisId: node.id })}
+                    onEdit={(fix) =>
+                      setDialog({
+                        kind: 'editAnalysis',
+                        analysisId: node.id,
+                        ...(fix ? { fix } : {}),
+                      })
+                    }
                     onError={showError}
                     onAnalyze={(tableId) => setDialog({ kind: 'analyze', tableId })}
                     onNewGraph={(tableId) => setDialog({ kind: 'newGraph', tableId })}
@@ -1741,6 +1748,8 @@ function Shell() {
               <AnalyzeDialog
                 mode="edit"
                 analysisId={dialog.analysisId}
+                // Roadmap 51e (§9.3): a warning's fix, applied to the params shown.
+                {...(dialog.fix ? { fix: dialog.fix } : {})}
                 onClose={() => setDialog(null)}
                 // Roadmap 51c (§7.2): Add as a new analysis opens it.
                 onCreated={setSelected}

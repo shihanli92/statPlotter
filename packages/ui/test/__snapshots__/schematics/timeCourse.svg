@@ -1,0 +1,387 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320pt" height="165.977pt" viewBox="0 0 320 165.977">
+<g data-id="schematic">
+<g data-id="factor/columns">
+<text fill="#5c6470" xml:space="preserve"><tspan x="148.977" y="13.695" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-style="italic">Genotype</tspan></text>
+</g>
+<g data-id="heading/column/0">
+<text fill="#1d2126" xml:space="preserve"><tspan x="69.071" y="25.191" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold">WT</tspan></text>
+</g>
+<g data-id="heading/column/1">
+<text fill="#1d2126" xml:space="preserve"><tspan x="161.032" y="25.191" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold">KO</tspan></text>
+</g>
+<g data-id="heading/column/2">
+<text fill="#1d2126" xml:space="preserve"><tspan x="252.287" y="25.191" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold">Het</tspan></text>
+</g>
+<g data-id="factor/rows">
+<text fill="#5c6470" xml:space="preserve"><tspan x="6" y="38.687" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-style="italic">Time</tspan></text>
+</g>
+<g data-id="heading/row/0">
+<text fill="#1d2126" xml:space="preserve"><tspan x="6" y="50.187" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold">0 h</tspan></text>
+</g>
+<g data-id="heading/row/1">
+<text fill="#1d2126" xml:space="preserve"><tspan x="6" y="90.683" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold">2 h</tspan></text>
+</g>
+<g data-id="heading/row/2">
+<text fill="#1d2126" xml:space="preserve"><tspan x="6" y="131.179" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold">4 h</tspan></text>
+</g>
+<g data-id="box/c0:d0">
+<g data-id="box/c0:d0/frame">
+<rect x="40.814" y="30.992" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c0:d0/glyph/0">
+<ellipse cx="69.678" cy="43.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d0/glyph/1">
+<ellipse cx="73.678" cy="37.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d0/glyph/2">
+<ellipse cx="77.678" cy="42.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d0/glyph/3">
+<ellipse cx="81.678" cy="38.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d0/glyph/4">
+<line x1="66.678" y1="40.992" x2="84.678" y2="40.992" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c0:d0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="65.047" y="57.687" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c0:d1">
+<g data-id="box/c0:d1/frame">
+<rect x="132.542" y="30.992" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c0:d1/glyph/0">
+<ellipse cx="161.407" cy="43.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d1/glyph/1">
+<ellipse cx="165.407" cy="37.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d1/glyph/2">
+<ellipse cx="169.407" cy="42.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d1/glyph/3">
+<ellipse cx="173.407" cy="38.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d1/glyph/4">
+<line x1="158.407" y1="40.992" x2="176.407" y2="40.992" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c0:d1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="156.776" y="57.687" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c0:d2">
+<g data-id="box/c0:d2/frame">
+<rect x="224.271" y="30.992" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c0:d2/glyph/0">
+<ellipse cx="253.136" cy="43.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d2/glyph/1">
+<ellipse cx="257.136" cy="37.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d2/glyph/2">
+<ellipse cx="261.136" cy="42.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d2/glyph/3">
+<ellipse cx="265.136" cy="38.992" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c0:d2/glyph/4">
+<line x1="250.136" y1="40.992" x2="268.136" y2="40.992" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c0:d2/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="248.504" y="57.687" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c1:d0">
+<g data-id="box/c1:d0/frame">
+<rect x="40.814" y="71.488" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c1:d0/glyph/0">
+<ellipse cx="69.678" cy="84.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d0/glyph/1">
+<ellipse cx="73.678" cy="78.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d0/glyph/2">
+<ellipse cx="77.678" cy="83.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d0/glyph/3">
+<ellipse cx="81.678" cy="79.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d0/glyph/4">
+<line x1="66.678" y1="81.488" x2="84.678" y2="81.488" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c1:d0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="65.047" y="98.183" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c1:d1">
+<g data-id="box/c1:d1/frame">
+<rect x="132.542" y="71.488" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c1:d1/glyph/0">
+<ellipse cx="161.407" cy="84.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d1/glyph/1">
+<ellipse cx="165.407" cy="78.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d1/glyph/2">
+<ellipse cx="169.407" cy="83.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d1/glyph/3">
+<ellipse cx="173.407" cy="79.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d1/glyph/4">
+<line x1="158.407" y1="81.488" x2="176.407" y2="81.488" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c1:d1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="156.776" y="98.183" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c1:d2">
+<g data-id="box/c1:d2/frame">
+<rect x="224.271" y="71.488" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c1:d2/glyph/0">
+<ellipse cx="253.136" cy="84.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d2/glyph/1">
+<ellipse cx="257.136" cy="78.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d2/glyph/2">
+<ellipse cx="261.136" cy="83.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d2/glyph/3">
+<ellipse cx="265.136" cy="79.488" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c1:d2/glyph/4">
+<line x1="250.136" y1="81.488" x2="268.136" y2="81.488" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c1:d2/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="248.504" y="98.183" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c2:d0">
+<g data-id="box/c2:d0/frame">
+<rect x="40.814" y="111.984" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c2:d0/glyph/0">
+<ellipse cx="69.678" cy="124.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d0/glyph/1">
+<ellipse cx="73.678" cy="118.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d0/glyph/2">
+<ellipse cx="77.678" cy="123.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d0/glyph/3">
+<ellipse cx="81.678" cy="119.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d0/glyph/4">
+<line x1="66.678" y1="121.984" x2="84.678" y2="121.984" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c2:d0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="65.047" y="138.679" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c2:d1">
+<g data-id="box/c2:d1/frame">
+<rect x="132.542" y="111.984" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c2:d1/glyph/0">
+<ellipse cx="161.407" cy="124.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d1/glyph/1">
+<ellipse cx="165.407" cy="118.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d1/glyph/2">
+<ellipse cx="169.407" cy="123.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d1/glyph/3">
+<ellipse cx="173.407" cy="119.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d1/glyph/4">
+<line x1="158.407" y1="121.984" x2="176.407" y2="121.984" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c2:d1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="156.776" y="138.679" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="box/c2:d2">
+<g data-id="box/c2:d2/frame">
+<rect x="224.271" y="111.984" width="69.729" height="32.496" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/c2:d2/glyph/0">
+<ellipse cx="253.136" cy="124.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d2/glyph/1">
+<ellipse cx="257.136" cy="118.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d2/glyph/2">
+<ellipse cx="261.136" cy="123.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d2/glyph/3">
+<ellipse cx="265.136" cy="119.984" rx="1.3" ry="1.3" fill="#5c6470" stroke="none"/>
+</g>
+<g data-id="box/c2:d2/glyph/4">
+<line x1="250.136" y1="121.984" x2="268.136" y2="121.984" stroke="#5c6470" stroke-width="1.4" stroke-linecap="square"/>
+</g>
+<g data-id="box/c2:d2/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="248.504" y="138.679" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">mean</tspan></text>
+</g>
+</g>
+<g data-id="link/0">
+<g data-id="link/0/line">
+<line x1="36.814" y1="47.24" x2="36.814" y2="128.232" stroke="#a85600" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="link/0/dot/0">
+<ellipse cx="36.814" cy="47.24" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+<g data-id="link/0/dot/1">
+<ellipse cx="36.814" cy="87.736" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+<g data-id="link/0/dot/2">
+<ellipse cx="36.814" cy="128.232" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+</g>
+<g data-id="link/1">
+<g data-id="link/1/line">
+<line x1="128.542" y1="47.24" x2="128.542" y2="128.232" stroke="#a85600" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="link/1/dot/0">
+<ellipse cx="128.542" cy="47.24" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+<g data-id="link/1/dot/1">
+<ellipse cx="128.542" cy="87.736" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+<g data-id="link/1/dot/2">
+<ellipse cx="128.542" cy="128.232" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+</g>
+<g data-id="link/2">
+<g data-id="link/2/line">
+<line x1="220.271" y1="47.24" x2="220.271" y2="128.232" stroke="#a85600" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="link/2/dot/0">
+<ellipse cx="220.271" cy="47.24" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+<g data-id="link/2/dot/1">
+<ellipse cx="220.271" cy="87.736" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+<g data-id="link/2/dot/2">
+<ellipse cx="220.271" cy="128.232" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/0">
+<g data-id="arrow/0/line">
+<path d="M110.542,50.24C118.54,50.24,118.54,84.736,110.542,84.736" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/0/head/0">
+<polygon points="110.542,84.736 116.842,82.216 116.842,87.256" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/0/head/1">
+<polygon points="110.542,50.24 116.842,47.72 116.842,52.76" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/1">
+<g data-id="arrow/1/line">
+<path d="M110.542,50.24C125.205,50.24,125.205,125.232,110.542,125.232" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/1/head/0">
+<polygon points="110.542,125.232 116.842,122.712 116.842,127.752" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/1/head/1">
+<polygon points="110.542,50.24 116.842,47.72 116.842,52.76" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/2">
+<g data-id="arrow/2/line">
+<path d="M110.542,90.736C118.54,90.736,118.54,125.232,110.542,125.232" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/2/head/0">
+<polygon points="110.542,125.232 116.842,122.712 116.842,127.752" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/2/head/1">
+<polygon points="110.542,90.736 116.842,88.216 116.842,93.256" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/3">
+<g data-id="arrow/3/line">
+<path d="M202.271,50.24C210.269,50.24,210.269,84.736,202.271,84.736" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/3/head/0">
+<polygon points="202.271,84.736 208.571,82.216 208.571,87.256" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/3/head/1">
+<polygon points="202.271,50.24 208.571,47.72 208.571,52.76" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/4">
+<g data-id="arrow/4/line">
+<path d="M202.271,50.24C216.934,50.24,216.934,125.232,202.271,125.232" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/4/head/0">
+<polygon points="202.271,125.232 208.571,122.712 208.571,127.752" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/4/head/1">
+<polygon points="202.271,50.24 208.571,47.72 208.571,52.76" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/5">
+<g data-id="arrow/5/line">
+<path d="M202.271,90.736C210.269,90.736,210.269,125.232,202.271,125.232" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/5/head/0">
+<polygon points="202.271,125.232 208.571,122.712 208.571,127.752" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/5/head/1">
+<polygon points="202.271,90.736 208.571,88.216 208.571,93.256" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/6">
+<g data-id="arrow/6/line">
+<path d="M294,50.24C301.998,50.24,301.998,84.736,294,84.736" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/6/head/0">
+<polygon points="294,84.736 300.3,82.216 300.3,87.256" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/6/head/1">
+<polygon points="294,50.24 300.3,47.72 300.3,52.76" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/7">
+<g data-id="arrow/7/line">
+<path d="M294,50.24C308.663,50.24,308.663,125.232,294,125.232" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/7/head/0">
+<polygon points="294,125.232 300.3,122.712 300.3,127.752" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/7/head/1">
+<polygon points="294,50.24 300.3,47.72 300.3,52.76" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="arrow/8">
+<g data-id="arrow/8/line">
+<path d="M294,90.736C301.998,90.736,301.998,125.232,294,125.232" fill="none" stroke="#2864cc" stroke-width="1.2" stroke-linejoin="miter"/>
+</g>
+<g data-id="arrow/8/head/0">
+<polygon points="294,125.232 300.3,122.712 300.3,127.752" fill="#2864cc" stroke="none"/>
+</g>
+<g data-id="arrow/8/head/1">
+<polygon points="294,90.736 300.3,88.216 300.3,93.256" fill="#2864cc" stroke="none"/>
+</g>
+</g>
+<g data-id="legend/link">
+<g data-id="legend/link/line">
+<line x1="8" y1="155.48" x2="24" y2="155.48" stroke="#a85600" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="legend/link/dot">
+<ellipse cx="16" cy="155.48" rx="2" ry="2" fill="#a85600" stroke="none"/>
+</g>
+<g data-id="legend/link/label">
+<text fill="#5c6470" xml:space="preserve"><tspan x="30" y="158.175" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">same subjects</tspan></text>
+</g>
+</g>
+</g>
+</svg>

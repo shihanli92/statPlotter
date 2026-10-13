@@ -10,6 +10,7 @@ export const DESCRIBE_ENTRIES: readonly GuideEntry[] = [
     question: 'Describe each group',
     kinds: ['column'],
     keywords: ['mean', 'sd', 'sem', 'median', 'summary', 'describe', 'quartiles'],
+    draws: { layout: 'groups', measure: 'summary', comparisons: 'none' },
     start: leaf(
       'descriptive',
       fixed({ quartiles: true, ci: true }),
@@ -30,6 +31,7 @@ export const DESCRIBE_ENTRIES: readonly GuideEntry[] = [
       'grubbs',
       'rout',
     ],
+    draws: { layout: 'groups', comparisons: 'none' },
     start: question(
       'look',
       'What do you want to look at?',
@@ -62,6 +64,7 @@ export const DESCRIBE_ENTRIES: readonly GuideEntry[] = [
           { unavailable: needsRaw },
         ),
       ],
+      { draws: { shape: { measure: 'shape' }, outliers: { measure: 'outliers' } } },
     ),
   },
   {
@@ -69,6 +72,7 @@ export const DESCRIBE_ENTRIES: readonly GuideEntry[] = [
     question: 'Do two methods agree?',
     kinds: ['column'],
     keywords: ['bland altman', 'agreement', 'method comparison', 'bias', 'limits of agreement'],
+    draws: { layout: 'pair', measure: 'agreement', comparisons: 'together' },
     start: leaf(
       'blandAltman',
       fixed({ measure: 'difference', order: 'bMinusA' }),
@@ -80,6 +84,7 @@ export const DESCRIBE_ENTRIES: readonly GuideEntry[] = [
     question: 'Can this measurement tell patients from controls?',
     kinds: ['column'],
     keywords: ['roc', 'auc', 'sensitivity', 'specificity', 'cutoff', 'biomarker', 'diagnostic'],
+    draws: { layout: 'pair', measure: 'separation', comparisons: 'pair' },
     start: question(
       'direction',
       'Do patients have higher or lower values than controls?',
@@ -104,6 +109,7 @@ export const DESCRIBE_ENTRIES: readonly GuideEntry[] = [
           ),
         ),
       ],
+      { draws: { higher: { direction: 'increase' }, lower: { direction: 'decrease' } } },
     ),
   },
   {
@@ -111,6 +117,7 @@ export const DESCRIBE_ENTRIES: readonly GuideEntry[] = [
     question: 'Plan an experiment: how many subjects?',
     kinds: ['column'],
     keywords: ['sample size', 'power', 'how many animals', 'plan'],
+    draws: { layout: 'none', measure: 'plan' },
     start: leaf(
       'powerAnalysis',
       fixed({}),

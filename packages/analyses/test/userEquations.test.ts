@@ -129,7 +129,8 @@ nonspecific=NS*X + Background
   it('reports SE and CI limits of fitted parameters as values', () => {
     const y = X.map((x, i) => (50 * x) / (4 + x) + noise[i]!)
     const t = xyTable(X, [y])
-    const r = run(t, { equation: 'michaelis-menten' })
+    // The asymptotic CI (estimate ± t × SE) is symmetric; the profile CI, the default, isn't.
+    const r = run(t, { equation: 'michaelis-menten', ciMethod: 'symmetric' })
     const key = normalizeTable(t)[0]!.ref.key
     const vm = v(r.values[`Vmax:${key}`])
     const se = v(r.values[`Vmax:${key}:se`])

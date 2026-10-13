@@ -112,7 +112,7 @@ describe('the builder’s Columns on a wide table', () => {
     expect(growthRatio(clicking, 20_000, 10, 2)).toBeLessThan(3)
   }, 600_000)
 
-  it('costs about the same for 60 variables as for 15 (the preview’s 20, 5,000 points)', () => {
+  it('costs about the same for 120 variables as for 15 (the preview’s 20, 5,000 points)', () => {
     const tables = new Map<number, DataTable>()
     const tableOf = (cols: number) => {
       let t = tables.get(cols)
@@ -127,9 +127,13 @@ describe('the builder’s Columns on a wide table', () => {
       preview(t, builderReducer(t, initialBuilder(t), columns))
     }
     tableOf(15)
-    tableOf(60)
-    // Every variable a column of 5,000 points (before decision 452) is 4 times as costly.
-    expect(growthRatio(clicking, 15, 4, 2)).toBeLessThan(2)
+    tableOf(120)
+    // Every variable a column of 5,000 points (before decision 452) is 8 times as costly; the
+    // bounded preview measures about 1 (0.8–1.2 here). Roadmap 51f: a step of 8 (was 4, bound 2)
+    // and the fastest of 4 runs (was 2): a ratio of 2.24 on the shared CI runner was noise (a
+    // slow run on each side of a 2-run minimum), and the step keeps a regression far above the
+    // bound.
+    expect(growthRatio(clicking, 15, 8, 4)).toBeLessThan(3)
   }, 600_000)
 })
 

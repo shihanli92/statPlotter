@@ -33,6 +33,9 @@ const CHANGED: Record<string, Record<string, [unknown, unknown]>> = {
   },
   contingency: { trend: [true, false] },
   roc: { direction: ['auto', 'unset'] },
+  // Roadmap 51e (§9.3): profile-likelihood CIs for new curve fits.
+  nonlinearFit: { ciMethod: ['symmetric', 'profile'] },
+  nonlinearFitMV: { ciMethod: ['symmetric', 'profile'] },
 }
 
 /** Values renamed since 0.3.8 (the same choice): path → [0.3.8's name, its name now]. */

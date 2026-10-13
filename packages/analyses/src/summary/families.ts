@@ -761,7 +761,64 @@ const nonlinear: Summarize = (s) => {
     out.push(...joinParts(items, '; '), '. ')
   }
   if (failed.length) out.push(`The fit of ${listed(failed)} did not converge (see the Fit rows). `)
+  out.push(...fitComparison(s, labels))
   return out.length ? trim(out) : null
+}
+
+/**
+ * Roadmap 51e (§9.4, S18): the one verdict of a curve fit's comparison, by the method chosen in
+ * advance — the preferred model (F test with its P, or AICc with its probability), and whether
+ * the compared parameters differ between data sets.
+ */
+function fitComparison(s: SummaryInput, labels: readonly string[]): Parts {
+  const out: Parts = []
+  const v = s.result.values
+  const byKey = new Map(s.input.map((d) => [d.ref.key, d.title]))
+  const verdicts = Object.keys(v)
+    .filter((k) => k.startsWith('preferredModel:'))
+    .map((k) => {
+      const key = k.slice('preferredModel:'.length)
+      const name = v[k]
+      return {
+        title: byKey.get(key) ?? key,
+        name: name?.kind === 'text' ? name.v : '',
+        p: numOf(v[`modelP:${key}`]),
+        prob: numOf(v[`modelProbability:${key}`]),
+      }
+    })
+    .filter((x) => x.name)
+  const many = verdicts.length > 1
+  for (const x of verdicts.slice(0, 3)) {
+    const lead = `Preferred model${many ? ` for ${x.title}` : ''}: ${x.name} (`
+    if (!Number.isNaN(x.p)) out.push(lead, 'extra sum-of-squares F test, ', P(x.p), '). ')
+    else if (!Number.isNaN(x.prob))
+      out.push(lead, `AICc, probability ${Math.round(x.prob * 1000) / 10}%). `)
+  }
+  if (verdicts.length > 3) out.push(`${verdicts.length - 3} more in the table. `)
+  const compared = (Array.isArray(s.params.compareParams) ? s.params.compareParams : []).filter(
+    (n): n is string => typeof n === 'string' && labels.includes(n),
+  )
+  if (compared.length) {
+    const names = listed(compared)
+    const one = compared.length === 1
+    const p = numOf(v.compareP)
+    const shared = numOf(v.compareProbShared)
+    if (!Number.isNaN(p))
+      out.push(
+        sig(p)
+          ? `${names} ${one ? 'differs' : 'differ'} between data sets (extra sum-of-squares F test, `
+          : `No evidence that ${names} ${one ? 'differs' : 'differ'} between data sets (extra sum-of-squares F test, `,
+        P(p),
+        '). ',
+      )
+    else if (!Number.isNaN(shared))
+      out.push(
+        shared >= 0.5
+          ? `AICc prefers one ${names} for all data sets (probability ${Math.round(shared * 1000) / 10}%). `
+          : `AICc prefers ${one ? 'a different' : 'different'} ${names} for each data set (probability ${Math.round((1 - shared) * 1000) / 10}%). `,
+      )
+  }
+  return out
 }
 
 // --- Counts and survival -------------------------------------------------------------------------

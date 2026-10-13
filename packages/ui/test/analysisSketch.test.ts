@@ -221,10 +221,15 @@ describe('the live sketch (design §5)', () => {
           .map((x) => x.trim())
           .filter(Boolean))
           expect(allowedStats.has(name), `${f}: ${name}`).toBe(true)
+      // Roadmap 51e: the equations' metadata (words and typical values, no statistic) too.
       for (const m of src.matchAll(/from '(\.\.\/[^']+)'/g))
-        expect(['../nonlinear.ts'], `${f}: ${m[1]}`).toContain(m[1])
+        expect(['../nonlinear.ts', '../explain/equations.ts'], `${f}: ${m[1]}`).toContain(m[1])
       for (const m of src.matchAll(/import \{([^}]*)\} from '\.\.\/nonlinear\.ts'/g))
-        expect(m[1]!.trim(), f).toBe('resolveEquation')
+        for (const name of m[1]!
+          .split(',')
+          .map((x) => x.trim())
+          .filter(Boolean))
+          expect(['resolveEquation', 'effectiveConstraint', 'type Constraint'], f).toContain(name)
       expect(src, f).not.toMatch(/\.run\(/)
     }
   })

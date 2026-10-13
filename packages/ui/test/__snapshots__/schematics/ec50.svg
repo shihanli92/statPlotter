@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320pt" height="78.605pt" viewBox="0 0 320 78.605">
+<g data-id="schematic">
+<g data-id="box/g:d0">
+<g data-id="box/g:d0/frame">
+<rect x="37" y="6" width="116" height="45.668" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/g:d0/glyph/0">
+<path d="M86,22C96,22,94,10,104,10" fill="none" stroke="#5c6470" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+<g data-id="box/g:d0/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="78.521" y="34.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Drug A</tspan></text>
+</g>
+<g data-id="box/g:d0/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="77.516" y="45.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">log EC50</tspan></text>
+</g>
+</g>
+<g data-id="box/g:d1">
+<g data-id="box/g:d1/frame">
+<rect x="167" y="6" width="116" height="45.668" rx="4" fill="#f4f5f7" stroke="#a9b0b9" stroke-width="1"/>
+</g>
+<g data-id="box/g:d1/glyph/0">
+<path d="M216,22C226,22,224,10,234,10" fill="none" stroke="#5c6470" stroke-width="1" stroke-linejoin="miter"/>
+</g>
+<g data-id="box/g:d1/label">
+<text fill="#1d2126" xml:space="preserve"><tspan x="208.335" y="34.053" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="10" font-weight="bold">Drug B</tspan></text>
+</g>
+<g data-id="box/g:d1/measure">
+<text fill="#5c6470" xml:space="preserve"><tspan x="207.516" y="45.867" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8.5">log EC50</tspan></text>
+</g>
+</g>
+<g data-id="arrow/0">
+<g data-id="arrow/0/line">
+<line x1="95" y1="57.668" x2="225" y2="57.668" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/0/tick/0">
+<line x1="95" y1="53.668" x2="95" y2="57.668" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/0/tick/1">
+<line x1="225" y1="53.668" x2="225" y2="57.668" stroke="#2864cc" stroke-width="1.2" stroke-linecap="square"/>
+</g>
+<g data-id="arrow/0/label">
+<text fill="#2864cc" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" paint-order="stroke" xml:space="preserve"><tspan x="99.293" y="66.91" font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="8" font-style="italic">one log EC50 for all, or one each?</tspan></text>
+</g>
+</g>
+</g>
+</svg>
