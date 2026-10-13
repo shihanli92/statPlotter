@@ -1,4 +1,4 @@
-import type { AnalysisDef, ResultValue } from '@ps/model'
+import type { AnalysisDef, NormalizedDataSet, Problem, ResultValue } from '@ps/model'
 import { correctFamily } from '@ps/stats'
 import { z } from 'zod'
 import {
@@ -8,6 +8,7 @@ import {
   int,
   kv,
   num,
+  problem,
   pval,
   result,
   table,
@@ -51,6 +52,7 @@ export const pStackDef: AnalysisDef<Params> = {
       mark: 'points',
     },
   ],
+  validate: validatePStack,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     const ds = input[0]!
@@ -132,4 +134,25 @@ export const pStackDef: AnalysisDef<Params> = {
       },
     })
   },
+}
+
+/** Roadmap 51b (§4.6): a stack of P values' problems before computing. */
+function validatePStack(input: readonly NormalizedDataSet[]): Problem | null {
+  const diagnostics = exclusionNotes(input)
+  const ds = input[0]
+  if (!ds) return null
+  if (ds.data.shape !== 'replicates')
+    return problem('Enter the P values as plain values, one per row.', 'table', diagnostics)
+  const col = ds.data.reps[0]!
+  const rows: number[] = []
+  for (let r = 0; r < ds.rowCount; r++) if (Number.isFinite(col[r]!)) rows.push(r)
+  if (!rows.length) return problem('There are no P values.', 'table', diagnostics)
+  const bad = rows.find((r) => col[r]! < 0 || col[r]! > 1)
+  if (bad !== undefined)
+    return problem(
+      `Every value must be a P value between 0 and 1 (${rowTitleOf(input, bad)} is ${col[bad]}).`,
+      'table',
+      diagnostics,
+    )
+  return null
 }

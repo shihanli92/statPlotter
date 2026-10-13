@@ -120,10 +120,11 @@ describe('every analysis', () => {
         }
       }
     // The counts the roadmap reports (every field and option of the 54 analyses; 51c added
-    // 42 fields, 91 options and the Holm card).
+    // 42 fields, 91 options and the Holm card; 51b listed Welch's methods under each with the
+    // control on their own, in one-way and multiple one-way ANOVA: 2 fields, 6 options).
     expect(defs.length).toBe(54)
-    expect(fields).toBe(447)
-    expect(options).toBe(690)
+    expect(fields).toBe(449)
+    expect(options).toBe(696)
     expect(METHOD_CARDS.size).toBe(89)
   })
 

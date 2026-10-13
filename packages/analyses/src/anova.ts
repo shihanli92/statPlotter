@@ -59,6 +59,7 @@ import {
   WELCH_METHODS,
   welchMethod,
 } from './anovaCommon.ts'
+import { validateOneWay, validateTwoWay } from './anovaValidate.ts'
 import {
   ALPHA,
   CONFIDENCE_FIELD,
@@ -302,6 +303,7 @@ export const oneWayAnovaDef: AnalysisDef<OneWayParams> = {
     CONFIDENCE_FIELD,
   ],
   migrateParams: migrateOneWay,
+  validate: validateOneWay,
   run(input, params) {
     if (input.length < 2)
       return failure('One-way ANOVA compares two or more data sets.', exclusionNotes(input))
@@ -815,7 +817,8 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
     CONFIDENCE_FIELD,
   ],
   migrateParams: migrateTwoWay,
-  run(input, params) {
+  validate: validateTwoWay,
+  run(input, params, context) {
     const diagnostics = exclusionNotes(input)
     if (params.repeated !== 'none') {
       if (
@@ -886,17 +889,38 @@ export const twoWayAnovaDef: AnalysisDef<TwoWayParams> = {
     diagnostics.push(...magnitudeWarning(res.cells))
     diagnostics.push(...noResidualWarning(residual.ss, res.ssTotal, 'cells'))
     const N = cells.reduce((t, c) => t + ('values' in c ? c.values.length : c.n), 0)
+    // Roadmap 51d (U19): the factors by their names when the table names them; the rows keep
+    // their keys ('interaction', 'row', 'column') for references.
+    const f = context?.factorNames
+    const named = (source: string) =>
+      source === 'Row factor'
+        ? f?.rows || source
+        : source === 'Column factor'
+          ? f?.columns || source
+          : source
+    const keys = effects.map((s) => VALUE_KEY[s.source] ?? '')
+    const withKeys = (b: ResultBlock, extra: string[] = []): ResultBlock =>
+      b.type === 'table' ? { ...b, rowKeys: [...keys, ...extra] } : b
     const blocks: ResultBlock[] = [
-      anovaSummaryTable(
-        'Two-way ANOVA',
-        effects.map((s) => ({ ...s, name: s.source })),
+      withKeys(
+        anovaSummaryTable(
+          'Two-way ANOVA',
+          effects.map((s) => ({ ...s, name: named(s.source) })),
+        ),
       ),
-      anovaTable(
-        effects.map((s) => ({ ...s, name: s.source })),
-        residual,
-        res.dfResidual,
+      withKeys(
+        anovaTable(
+          effects.map((s) => ({ ...s, name: named(s.source) })),
+          residual,
+          res.dfResidual,
+        ),
+        ['residual'],
       ),
-      effectSizeTable(effects.map((s) => [s.source, effectSizes(s, residual, res.ssTotal, N)])),
+      withKeys(
+        effectSizeTable(
+          effects.map((s) => [named(s.source), effectSizes(s, residual, res.ssTotal, N)]),
+        ),
+      ),
       kv('Data summary', [
         ['Number of columns (column factor)', int(input.length)],
         ['Number of rows (row factor)', int(rows.length)],

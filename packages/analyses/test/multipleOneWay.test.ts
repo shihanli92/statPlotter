@@ -108,7 +108,7 @@ describe('multiple one-way ANOVAs plugin', () => {
     expect(r.status).toBe('ok')
     expect(tableBlock(r, 'results', 1).rows).toHaveLength(1)
     expect(r.comparisons.map((c) => c.key.startsWith('row0:'))).toEqual([true, true, true])
-    const notes = r.sheets[0]!.blocks.filter((b) => b.type === 'note')
+    const notes = r.sheets.find((s) => s.key === 'results')!.blocks.filter((b) => b.type === 'note')
     expect(notes).toContainEqual({
       type: 'note',
       text: 'Not analyzed: b (a data set has no values).',

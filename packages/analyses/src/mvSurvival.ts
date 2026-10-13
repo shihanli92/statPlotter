@@ -1,4 +1,4 @@
-import type { AnalysisDef, Diagnostic } from '@ps/model'
+import type { AnalysisDef, Diagnostic, NormalizedDataSet, Problem } from '@ps/model'
 import type { SurvivalSubject } from '@ps/stats'
 import { z } from 'zod'
 import {
@@ -8,6 +8,7 @@ import {
   failure,
   indicesOf,
   pick,
+  problem,
   rowCountOf,
 } from './common.ts'
 import { cellsOf, labelOf, levelsOf } from './mvVariables.ts'
@@ -99,6 +100,7 @@ export const survivalFromVariablesDef: AnalysisDef<Params> = {
     ...survivalFields(null),
     CONFIDENCE_FIELD,
   ],
+  validate: validateSurvivalMV,
   run(input, params) {
     const diagnostics: Diagnostic[] = exclusionNotes(input)
     const ti = pick(input, params.time)
@@ -228,4 +230,33 @@ export const survivalFromVariablesDef: AnalysisDef<Params> = {
     })
     return result
   },
+}
+
+/** Roadmap 51b (§4.6): survival from variables' roles and codes, before computing. */
+function validateSurvivalMV(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  const diagnostics: Diagnostic[] = exclusionNotes(input)
+  const ti = pick(input, params.time)
+  const si = pick(input, params.status, 1)
+  if (ti === si)
+    return problem('Choose different variables for time and status.', 'params', diagnostics)
+  const cells = input.map(cellsOf)
+  if (cells[ti]!.kind === 'text')
+    return problem(
+      `The time variable “${input[ti]!.title}” must hold numbers.`,
+      'params',
+      diagnostics,
+    )
+  const eventLevel = params.eventLevel.trim()
+  if (cells[si]!.kind === 'text') {
+    if (!eventLevel)
+      return problem(
+        `“${input[si]!.title}” holds text: choose the value that means an event.`,
+        'params',
+        diagnostics,
+      )
+    if (eventLevel === params.censoredLevel.trim())
+      return problem('The event and censored values must differ.', 'params', diagnostics)
+  } else if (params.eventCode === params.censoredCode)
+    return problem('The event and censored codes must differ.', 'params', diagnostics)
+  return null
 }

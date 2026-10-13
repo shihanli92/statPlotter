@@ -1,4 +1,12 @@
-import type { AnalysisDef, Diagnostic, ResultBlock, ResultSheet, ResultValue } from '@ps/model'
+import type {
+  AnalysisDef,
+  Diagnostic,
+  NormalizedDataSet,
+  Problem,
+  ResultBlock,
+  ResultSheet,
+  ResultValue,
+} from '@ps/model'
 import {
   compareMarginalMeans,
   type EmmComparison,
@@ -31,6 +39,7 @@ import {
   num,
   pct,
   pick,
+  problem,
   pval,
   result,
   resultsSheet,
@@ -150,6 +159,7 @@ export const multifactorAnovaDef: AnalysisDef<Params> = {
     },
     CONFIDENCE_FIELD,
   ],
+  validate: validateMultifactor,
   run(input, params) {
     const diagnostics: Diagnostic[] = exclusionNotes(input)
     const yi = pick(input, params.y)
@@ -415,4 +425,46 @@ export const multifactorAnovaDef: AnalysisDef<Params> = {
     })
     return result({ sheets, diagnostics, values })
   },
+}
+
+/**
+ * Roadmap 51b (§4.6): multifactor ANOVA's problems before computing — a factor, a numeric
+ * response, two levels of each factor in the complete rows, two factors for simple effects and
+ * cells.
+ */
+function validateMultifactor(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  const diagnostics: Diagnostic[] = exclusionNotes(input)
+  const yi = pick(input, params.y)
+  const chosen = indicesOf(input, params.factors, [yi])
+  const factorIdx = chosen.length ? chosen : input.map((_, i) => i).filter((i) => i !== yi)
+  if (!factorIdx.length) return problem('Choose at least one factor.', 'params', diagnostics)
+  const cells = input.map(cellsOf)
+  if (cells[yi]!.kind === 'text')
+    return problem(`The response “${input[yi]!.title}” must hold numbers.`, 'params', diagnostics)
+  const used = [yi, ...factorIdx]
+  const n = rowCountOf(input)
+  const has = (i: number, r: number) =>
+    cells[i]!.kind === 'text'
+      ? labelOf(cells[i]!, r) !== null
+      : !Number.isNaN(cells[i]!.values[r] as number)
+  const rows: number[] = []
+  let dropped = 0
+  for (let r = 0; r < n; r++) {
+    const k = used.filter((i) => has(i, r)).length
+    if (k === used.length) rows.push(r)
+    else if (k > 0) dropped++
+  }
+  diagnostics.push(...droppedNote(dropped))
+  const levels = factorIdx.map((i) => {
+    const inRows = new Set(levelsOf(cells[i]!, rows))
+    return levelsOf(cells[i]!).filter((l) => inRows.has(l))
+  })
+  const single = levels.findIndex((l) => l.length < 2)
+  if (single >= 0)
+    return problem(
+      `The factor “${input[factorIdx[single]!]!.title}” has ${levels[single]!.length ? `a single level (${levels[single]![0]})` : 'no values'} in the analyzed rows.`,
+      'table',
+      diagnostics,
+    )
+  return null
 }

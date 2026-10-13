@@ -4,6 +4,7 @@ import type {
   Diagnostic,
   FormField,
   NormalizedDataSet,
+  Problem,
   ResultBlock,
   ResultValue,
   RunContext,
@@ -17,6 +18,7 @@ import {
   kv,
   labelTable,
   num,
+  problem,
   result,
   resultsSheet,
   rowMeans,
@@ -349,6 +351,7 @@ export const simulateXYDef: AnalysisDef<SimulateXYParams> = {
     ...ERROR_FIELDS,
     SEED_FIELD,
   ],
+  validate: validateSimulateXY,
   run: (input, params) => simulateXY(input, params),
 }
 
@@ -792,4 +795,16 @@ export const SIMULATIONS: Record<
     context: { tableKind: 'contingency', xTitle: null },
     title: 'Simulated contingency table',
   },
+}
+
+/** Roadmap 51b (§4.6): the simulation's X series and Y source, before computing. */
+function validateSimulateXY(
+  input: readonly NormalizedDataSet[],
+  p: SimulateXYParams,
+): Problem | null {
+  const xs = xValues(p, input)
+  if (typeof xs === 'string') return problem(xs, 'params')
+  if (p.yFrom === 'table' && !input.some((d) => d.x))
+    return problem('Y values from the table need an XY table with data sets.', 'params')
+  return null
 }

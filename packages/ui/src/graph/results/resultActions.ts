@@ -163,8 +163,10 @@ export function sheetValues(
     sheet: sh.key,
     title: sh.title,
     blocks: sh.blocks.flatMap((b) => {
-      if (b.type === 'note') return []
+      if (b.type === 'note' || b.type === 'summary') return []
       const block = b.title
+      // Roadmap 51d (§8.2): new references carry the keys too (labels name the user's groups).
+      const blockKey = b.key ? { blockKey: b.key } : {}
       const at = (row: string, column?: string): string =>
         [sh.title, block, row || '(row)', column]
           .filter((x) => x !== undefined && x !== '')
@@ -175,7 +177,13 @@ export function sheetValues(
             title: block ?? '',
             rows: b.rows.map((r) => [
               {
-                ref: { from: 'cell', sheet: sh.key, ...(block ? { block } : {}), row: r.label },
+                ref: {
+                  from: 'cell',
+                  sheet: sh.key,
+                  ...(block ? { block } : {}),
+                  row: r.label,
+                  ...(r.key ? { ...blockKey, rowKey: r.key } : {}),
+                },
                 where: at(r.label),
                 shown: shown(r.value),
               },
@@ -185,10 +193,12 @@ export function sheetValues(
       return [
         {
           title: block ?? '',
-          rows: b.rows.map((cells) => {
+          rows: b.rows.map((cells, i) => {
             const row = rowLabel(cells, settings)
+            const rowKey = b.rowKeys?.[i]
             return cells.slice(1).map((v, j) => {
               const column = b.columns[j + 1] ?? ''
+              const columnKey = b.columnKeys?.[j + 1]
               return {
                 ref: {
                   from: 'cell' as const,
@@ -196,6 +206,7 @@ export function sheetValues(
                   ...(block ? { block } : {}),
                   row,
                   column,
+                  ...(rowKey ? { ...blockKey, rowKey, ...(columnKey ? { columnKey } : {}) } : {}),
                 },
                 where: at(row, column),
                 shown: shown(v),

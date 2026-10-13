@@ -1,4 +1,9 @@
 {
+  "blandAltman": {
+    "measure": "difference",
+    "order": "aMinusB",
+    "confidenceLevel": 0.95
+  },
   "contingency": {
     "test": "fisher",
     "yates": false,

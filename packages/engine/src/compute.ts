@@ -224,6 +224,10 @@ export function prepareJob(
     tableKind,
     xTitle: node.input.atX === undefined && !node.input.byX ? (source.x?.title ?? null) : null,
     ...(src.from ? { source: src.from } : {}),
+    // Roadmap 51d (U19): a grouped table's factor names, for the results' words.
+    ...(tableKind === 'grouped' && (source.factorNames?.rows || source.factorNames?.columns)
+      ? { factorNames: source.factorNames }
+      : {}),
   }
   const inputKey = hashStrings([
     node.analysisId,

@@ -29,6 +29,7 @@ import {
   resultCells,
   resultSheetFileRows,
   resultSheetHtml,
+  resultSheetRows,
   sheetNames,
   stackSections,
   tableRows,
@@ -537,6 +538,39 @@ describe('results as rows', () => {
       '1',
       '3',
     ])
+  })
+
+  // Roadmap 51d: the summary sentence first (it is stored last), a comparisons table's header
+  // under its title.
+  it('the summary first, as a sentence; a table’s header under its title', () => {
+    const sheet = {
+      key: 'r',
+      title: 'R',
+      blocks: [
+        { ...blocks[1]!, caption: 'Tukey: all 2 pairs as one family.' } as ResultBlock,
+        {
+          type: 'summary',
+          parts: [
+            'B is higher than A by ',
+            { value: { kind: 'number', v: 2, digits: 3 }, role: 'estimate' },
+            ' (',
+            { value: { kind: 'interval', lo: 1, hi: 3, level: 0.95 }, role: 'ci' },
+            '); ',
+            { value: { kind: 'pvalue', v: 0.00001 }, role: 'p' },
+            '.',
+          ],
+        } as ResultBlock,
+      ],
+    }
+    expect(texts(resultSheetRows(sheet, { settings })).slice(0, 4)).toEqual([
+      ['B is higher than A by 2 (95% CI 1 to 3); P < 0.0001.'],
+      [],
+      ['Comparisons'],
+      ['Tukey: all 2 pairs as one family.'],
+    ])
+    expect(resultSheetHtml(sheet.blocks, { settings })).toMatch(
+      /^<p>B is higher than A by 2 \(95% CI 1 to 3\); P &lt; 0\.0001\.<\/p>/,
+    )
   })
 
   it('a sheet for a file: heading, messages, blocks', () => {

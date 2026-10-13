@@ -206,7 +206,11 @@ test('the Family view nests analyses and graphs under their table, graphs under 
     .locator('.nav-branch')
     .filter({ has: page.locator('.nav-item[data-kind="table"]') })
     .first()
-  await expect(family.locator('.nav-item .name')).toHaveText(['Day 1', 't test of Day 1', 'Day 1'])
+  await expect(family.locator('.nav-item .name')).toHaveText([
+    'Day 1',
+    'Welch’s t test: Treated vs Control (Day 1)',
+    'Day 1',
+  ])
   const page1 = navigator(page)
     .locator('.nav-branch')
     .filter({ has: page.locator('.nav-item[data-kind="layout"]') })
@@ -217,10 +221,9 @@ test('the Family view nests analyses and graphs under their table, graphs under 
     'aria-level',
     '1',
   )
-  await expect(tree.getByRole('treeitem', { name: /^t test of Day 1/ }).first()).toHaveAttribute(
-    'aria-level',
-    '2',
-  )
+  await expect(
+    tree.getByRole('treeitem', { name: /^Welch’s t test: Treated vs Control \(Day 1\)/ }).first(),
+  ).toHaveAttribute('aria-level', '2')
   await expect(navigator(page).locator('[aria-current="page"]')).toHaveAttribute(
     'data-kind',
     'layout',
@@ -384,10 +387,10 @@ test('Import from project with a family, names made unique, one undo step; a pro
   await expect(d).toBeHidden()
   await expect(toast(page)).toContainText('3 sheets imported from day1.psproj')
   await expect(names(page, 'Data Tables')).toHaveText(['Day 1', 'Day 1 (2)'])
-  await expect(names(page, 'Results')).toHaveText(['t test of Day 1'])
+  await expect(names(page, 'Results')).toHaveText(['Welch’s t test: Treated vs Control (Day 1)'])
   await expect(names(page, 'Graphs')).toHaveText(['Day 1', 'Day 1 (2)'])
   // The imported t test reads the imported table.
-  await openSheet(page, 't test of Day 1', 'Results')
+  await openSheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results')
   await expect(page.getByRole('main').getByText('Up to date', { exact: true })).toBeVisible()
   await expectUndo(page, 'Import from day1.psproj')
   await undo(page)

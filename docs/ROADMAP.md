@@ -68,6 +68,8 @@ the merge commit. Phases count in the order they reached main.
 | 0.3.7 | 50 | merge of 50, zoom and pan with the mouse (not tagged) |
 | 0.3.8 | 51a | merge of 51a, explanations and a guided chooser (not tagged) |
 | 0.3.9 | 51c | merge of 51c, safer defaults and multiple comparisons (not tagged) |
+| 0.3.10 | 51b | merge of 51b, the new Analyze dialog (not tagged) |
+| 0.3.11 | 51d | merge of 51d, results that explain themselves (not tagged) |
 
 ## Phases
 
@@ -2165,3 +2167,105 @@ Audit 3. ✅ **Code audit 3** — decisions 1000–1164. Six read-only reviews (
     engine's history command, source notes and `byX`; brackets from one analysis, uncorrected
     marking and duplicates; Playwright `methodHistory.spec.ts` (new) and the specs whose defaults
     changed (`analyses`, `resultsOnGraphs`, `reuse`, `files`) in Chromium, WebKit and Firefox.
+
+51b. ✅ **The new Analyze dialog** — decisions 1302–1312 (design
+    [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md) §4–§5; the third of 51a → 51c → 51b →
+    51d → 51e). **Three panels** (U11): the list (search, Common, categories; Guide me beside it),
+    the options (the only column that scrolls) and a side panel with the live sketch, the checks
+    and the method's cards (or the card of a question's ⓘ); min(1200 px, 94vw) × min(820 px,
+    90vh), resizable and remembered; at 860–1099 px the list folds to a strip opening over the
+    options and the side panel narrows to 300 px, below 860 px the sketch is a strip above the
+    options (Hide sketch). **Analyze** (or **Apply**); editing opens on the current method,
+    "Edit “name”", with **Change method…** (U28); ⌘Enter, ⌘1 / ⌘2, ⌘K. **Options in the
+    experiment's words, in tiers** (U7, U9, U14): Essentials (the design questions: "Same subjects
+    in both groups?", "What kind of values?", "Could a treatment change how much values vary?",
+    "Which comparisons?", "Were the same subjects measured across a factor?"), Reporting (the
+    confidence level, extra output, Show on graph — also while editing — with a summary line) and
+    Advanced (corrections, df and P methods, one-tailed P; its first choice and a count of changed
+    values); a tier on every field of the 54 analyses. **Groups as chips** (U6, U17) in the
+    analysis' order (`input.dataSets`), included or left out, reordered by drag or Alt + ←/→,
+    swapped with ⇄, the control set on its chip, with the comparison spelled out in 51c's sign
+    convention ("Comparing: “Treated” − “Control”, row by row"). **Invalid combinations
+    prevented** (S10, U8): fields hidden where they never apply to the table and options greyed
+    with the reason (`appliesTo`, `unavailable`, facts about the chosen data: raw values, X values,
+    2 × 2, gaps in matched values, groups, values per cell, rows, factors), 26 of §4.4's 28 rows
+    (row 9 fixed in 51c, row 22 needs 51e); a greyed choice still chosen holds Analyze until
+    changed, never switched silently; no reason suggests changing an assumption. **Checks before
+    Analyze** (U16) through one `validate` that `run` calls first: the groups chosen, the roles,
+    the problems `run` would have refused (with the same message), and notes (unequal sizes, the
+    values a ratio can't take); Analyze disabled with the first block as its reason. Results that
+    fail say **Error** with the right link (Change parameters… or Go to table). **Switching
+    methods keeps the shared choices** (U13: confidence level, tails and direction, control,
+    comparisons, matching; returning restores a method). **Role boxes** (U12) for analyses of
+    variables (Outcome, Predictors, Factors, Time, Event, Group by, X, Y): the outcome starts empty,
+    PCA leaves coded and text variables out and names them. **The live sketch** (§5): a graph of a
+    transient table in a native preset drawn by `@ps/graph` (`sketchGraph`), produced as data by
+    each analysis (`analyses/src/sketch/`, no branching on the method in drawing code): the groups
+    with their own or the pooled SD, a line per pair and the differences, ranks (Mann-Whitney,
+    Kruskal-Wallis, Friedman within rows, Wilcoxon's signed ranks), the grand mean, the comparisons
+    as brackets, the factor grid and the independent units, the first rows of many, the regression
+    line's shape and a curve fit's starting shape ("not the fit"), contingency shares and a 2 × 2's
+    roles, Kaplan-Meier steps, the outcome against each predictor; a caption, a counts line, notes
+    (the SD ratio described, rows without a pair, missing values) and a text alternative; sampled by
+    rows above 2,000; never a P, CI, r, R² or fitted value. No statistic, default or result
+    changes: `ANALYSES_VERSION` unchanged, the results fingerprint, every golden, fixture and
+    example fingerprint unchanged. Deferred: §4.4 row 22 (51e), checks' fix buttons, Q-Q panels,
+    the control drawn emphasized and set by clicking the sketch, the one-tailed side shaded, the
+    two-way axis toggle and additive lines, PCA's correlation strip, the volcano preview's axes; the
+    stars' key label and the power curve stay 51c-2. Tests: `check.test.ts` (check ⇔ run for every
+    analysis on degenerate tables and every option, with the computed failures listed),
+    `dialog.test.ts` (tiers on every field, the words, the comparison sentence, carrying choices,
+    roles), `analysisConditions.test.ts` (§4.4's table walked: hidden, greyed with the reason, a
+    block, and `run` still refusing), `analysisSketch.test.ts` (every analysis' sketch on every
+    option: presets exist, graphs lay out, no result words; pairs, pooled SD, ranks, comparisons,
+    sampling, the CPU-time guard, the import boundary), the dialog in happy-dom
+    (`analyzeDialog.test.tsx`); Playwright `analyzeDialog.spec.ts` (new: panels and sizes, chips
+    and order, the sketch following Welch / Student / paired / ranks / comparisons, a greyed
+    option, a check before Analyze, switching keeping choices, roles, no P before Analyze) and the
+    specs the dialog changed (`analyses`, `analysisGuide`, `methodHistory`, `dataManipulation`,
+    `groupOverlays`, `reuse`, `resultsOnGraphs`, `gettingStarted`, `toolbar`, `shell`,
+    `accessibility`) in Chromium, WebKit and Firefox.
+
+51d. ✅ **Results that explain themselves** — decisions 1313–1323 (design
+    [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md) §8; the fourth of 51a → 51c → 51b →
+    51d → 51e). **The answer first, in a sentence** (U18): every statistical result begins with a
+    summary written from its own values in the user's names — "Treated is higher than Control by
+    12.7 (95% CI 8.26 to 17.1); P < 0.0001, Welch’s t test. n = 8 each." — by family: t tests
+    (unpaired, paired, ratio), rank tests, one sample, one-way (each group against the control, or
+    the pairs that differ, largest first), Kruskal-Wallis and Friedman, repeated measures, two-way
+    (the interaction first), factorial ANOVAs, multiple t tests and one-way ANOVAs (the rows that
+    are discoveries), correlation, regression (the slope per unit of X, the comparison of lines),
+    curve fits (EC50 with the X title's unit: "62.6 nM"), contingency (the outcome's percentage
+    per row, relative risk, with 51c's roles), survival (medians, "not reached", the test, the
+    hazard ratio), normality, descriptive, ROC, Bland-Altman, models of variables, Monte Carlo,
+    power, PCA, outliers; "no evidence of a difference" for P ≥ 0.05, a one-tailed P with its
+    prediction (and said when the effect went the other way). **The first tab is the answer**
+    (U21): the summary and a small **effect plot** (U25: each difference with its CI, drawn by
+    `@ps/graph` from a transient table and a native preset) above the tabs, the comparisons sheet
+    first, derived tables last, the details collapsed (U22), and **Method** with a generated
+    **methods paragraph** (the method, options, corrections, how it was set up, the method history
+    when it changed after results were seen, the software's version) to copy. **Comparisons-table
+    headers** (S23): which comparisons form the family, the method, simultaneous or not, what P
+    and the CIs refer to. **The user's names** (U19): "Mean of Control", "Difference between means
+    (Treated − Control)" in place of "column A / B" and "B − A"; grouped tables' **factor names**
+    asked for in the Analyze dialog and used by results ("The effect of Treatment depends on
+    Genotype"); rows and blocks keyed so result labels on graphs keep resolving (keys, labels, then
+    the labels of before 0.3.11). **One sign convention** (U20, S25): new multiple t tests and
+    Bland-Altman later − earlier, saved ones pinned. **Names follow the method** (U23): "Welch’s t
+    test: Treated vs Control (Day 1)", "One-way ANOVA + Dunnett: Doses", renamed with the method until the
+    user renames the analysis. **Readable, accessible numbers** (U26, U29): "Not reached" medians,
+    NNT as a positive number for one fewer or one more of the outcome, row and column headers,
+    star summaries in words, "Error:" with an icon. `ANALYSES_VERSION` 1.5.0 → 1.6.0 (no number
+    changes); example fingerprints change in the params version of their multiple t tests and
+    Bland-Altman analyses (results unchanged); goldens unchanged. Deferred: opening the effect
+    plot as a graph and its plots for regressions, fits and survival; editing factor names in the
+    grid's header and using them in two-way RM's and three-way's tables; units in results
+    tables; the U26 EC50 rows in the unit's prefix. Tests: `summaries.test.ts` (every family's
+    sentence on fixtures: both P branches and directions, one-tailed with and against the
+    prediction, missing values, long lists, saved signs; the headers), `resultNames.test.ts`
+    (names that follow the method, keys and old labels resolving, factor names, the methods
+    paragraph), `migrateParams.test.ts` (the sign pins), `effectPlot.test.ts`, the results view
+    and auto-naming in happy-dom (`resultsView.test.tsx`); Playwright `analysisResults.spec.ts`
+    (new: a t test's sentence, names, effect plot, details and method; one-way ANOVA with Dunnett's
+    comparisons first with their header; survival with a log-rank label on the graph; a curve
+    fit's EC50 in nM) and the specs whose results view changed, in Chromium, WebKit and Firefox.

@@ -88,7 +88,7 @@ test('a results sheet exports as CSV; all results as one workbook', async ({ pag
     .getByRole('row', { name: /^P value / })
     .first()
     .getByRole('cell')
-    .nth(1)
+    .first()
     .textContent()
   expect(rows).toContainEqual(['P value', p])
 
@@ -170,7 +170,11 @@ test('Edit › Copy with titles and results Copy put text and an HTML table on t
   expect(table['text/html']).toMatch(/^<html>.*<table.*>Control<\/th>/)
 
   await openSheet(page, RESULTS, 'Results')
-  await page.getByRole('main').getByRole('cell', { name: 'P value', exact: true }).first().click()
+  await page
+    .getByRole('main')
+    .getByRole('rowheader', { name: 'P value', exact: true })
+    .first()
+    .click()
   await runMenu(page, 'Edit', 'Copy')
   await expect.poll(async () => (await copied(page))['text/plain']).toMatch(/\nP value\t/)
   expect((await copied(page))['text/html']).toContain('>P value</td>')
@@ -224,7 +228,7 @@ test.describe('the system clipboard (Chromium)', () => {
     await openExample(page, EXAMPLE)
     await openSheet(page, RESULTS, 'Results')
     const main = page.getByRole('main')
-    await main.getByRole('cell', { name: 'P value', exact: true }).first().click()
+    await main.getByRole('rowheader', { name: 'P value', exact: true }).first().click()
     await page.keyboard.press('ControlOrMeta+C')
     await expect.poll(async () => (await clipboard(page)).text).toMatch(/\nP value\t/)
     const sheet = await clipboard(page)

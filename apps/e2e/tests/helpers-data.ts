@@ -314,10 +314,40 @@ export async function analyze(
   await allAnalyses(d)
   await d.getByRole('option', { name: title, exact: true }).click()
   await configure?.(d)
-  await d.getByRole('button', { name: 'OK', exact: true }).click()
+  await okButton(d).click()
   await expect(d).toBeHidden()
   await expectUpToDate(page)
 }
+
+/**
+ * Roadmap 51b: the Analyze dialog's OK — Analyze when creating, Apply when editing (disabled with
+ * its reason while a check blocks it).
+ */
+export const okButton = (d: Locator): Locator =>
+  d.getByRole('button', { name: /^(Analyze|Apply)$/ })
+
+/**
+ * Roadmap 51b (design §4.2): opens a collapsed tier of the Analyze dialog's options (Reporting,
+ * Advanced) if it isn't open.
+ */
+export async function openTier(d: Locator, tier: 'Reporting' | 'Advanced'): Promise<void> {
+  const toggle = d.getByRole('button', { name: new RegExp(`^${tier}\\b`) })
+  if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+}
+
+/**
+ * Roadmap 51b (§4.3): a group's chip in the Analyze dialog (an option of its listbox: selected
+ * when the group is analyzed; a click includes or leaves it out).
+ */
+export const chip = (d: Locator, title: string): Locator =>
+  d
+    .getByRole('listbox', { name: /^(Groups|Data sets|Variables)$/ })
+    .getByRole('option')
+    .filter({ has: d.page().locator('.chip-title').getByText(title, { exact: true }) })
+
+/** Roadmap 51b: the Analyze dialog editing an analysis ("Edit “…”"). */
+export const editDialog = (page: Page): Locator => dialog(page, /^Edit “/)
 
 /**
  * Roadmap 51a: the Analyze dialog's All analyses tab (Analyze… opens on Guide me the first time
@@ -344,12 +374,28 @@ export const resultTable = (page: Page, title: string) =>
     .getByRole('table')
     .filter({ has: page.getByRole('columnheader', { name: title, exact: true }) })
 
-/** The cells of the row labelled `label` in a results table (label first). */
-export const resultRow = (table: Locator, label: string) =>
-  table
+/**
+ * The cells of the row labelled `label` in a results table (label first). Roadmap 51d (U29): a
+ * row's label is its row header.
+ */
+export const resultRow = (table: Locator, label: string) => {
+  const page = table.page()
+  return table
     .getByRole('row')
-    .filter({ has: table.page().getByRole('cell', { name: label, exact: true }) })
-    .getByRole('cell')
+    .filter({
+      has: page
+        .getByRole('rowheader', { name: label, exact: true })
+        .or(page.getByRole('cell', { name: label, exact: true })),
+    })
+    .locator('th, td')
+}
+
+/** Roadmap 51d (§8.1): opens the results' Details (the blocks shown collapsed). */
+export async function openDetails(page: Page) {
+  const details = page.getByRole('main').locator('details.result-details')
+  if ((await details.count()) && !(await details.first().getAttribute('open')))
+    await details.first().locator('summary').click()
+}
 
 /** The value next to a label in a key-value results table. */
 export const resultValue = (table: Locator, label: string) => resultRow(table, label).nth(1)

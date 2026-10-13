@@ -1,4 +1,11 @@
-import { type ReactNode, useEffect, useId, useRef } from 'react'
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  type ReactNode,
+  useEffect,
+  useId,
+  useRef,
+} from 'react'
 
 /** A dialog that only explains why it can't do its job (e.g. results still computing). */
 export function NoticeDialog({
@@ -54,6 +61,9 @@ export function Dialog({
   wide,
   role,
   describedBy,
+  className,
+  style,
+  onKeyDown,
 }: {
   title: string
   children: ReactNode
@@ -67,6 +77,10 @@ export function Dialog({
   role?: 'alertdialog'
   /** The id of the text that describes it (an alert dialog's message). */
   describedBy?: string
+  /** Roadmap 51b: more classes, an inline size (a remembered one), keys of its own. */
+  className?: string
+  style?: CSSProperties
+  onKeyDown?: (e: KeyboardEvent<HTMLDialogElement>) => void
 }) {
   const ref = useRef<HTMLDialogElement>(null)
   // Named by its heading (audit 2, U6).
@@ -79,7 +93,9 @@ export function Dialog({
   return (
     <dialog
       ref={ref}
-      className={`dialog ${wide ? 'wide' : ''}`}
+      className={`dialog ${wide ? 'wide' : ''}${className ? ` ${className}` : ''}`}
+      style={style}
+      onKeyDown={onKeyDown}
       role={role}
       aria-labelledby={titleId}
       aria-describedby={describedBy}

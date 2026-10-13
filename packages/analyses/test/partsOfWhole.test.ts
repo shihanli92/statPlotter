@@ -50,7 +50,7 @@ describe('compare observed distribution with expected', () => {
     const t = countsTable('column', [[30], [50]])
     const r = run(t, { test: 'chiSquare' })
     expect(v(kvOf(r, 'Chi-square'))).toBe(chiSquareGoodnessOfFit([30, 50], [1, 1]).chiSq)
-    expect(r.sheets[0]!.blocks.at(-1)).toEqual({
+    expect(r.sheets[0]!.blocks.filter((b) => b.type === 'note').at(-1)).toMatchObject({
       type: 'note',
       text: 'Every category was expected to be equally likely.',
     })

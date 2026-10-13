@@ -28,7 +28,37 @@ for 51c-2: the stars' key label (§7.4), the power curve over a range of effects
 build: §4, §5, §8, §9 (51b, 51d, 51e). Written from `main` at
 e363961 (0.3.7) and two private reviews of the analysis section (a statistics review, findings
 S1–S44, and a usability review, findings U1–U29, with wireframes). Finding numbers below are
-those reviews'. Decisions are numbered when each phase is built (the next free number is 1302).
+those reviews'. Decisions are numbered when each phase is built (the next free number is 1313).
+
+**Built so far — 51b (0.3.10, decisions 1302–1312; ROADMAP 51b):** §4 whole but what is listed
+below — the three panels with the layouts by the dialog's width (measured, not a container query,
+1302), tiers and the experiment's words (§4.2's table; Brown-Forsythe stays the scatter
+question's third answer, 1303), chips with the comparison (§4.3), the conditions of §4.4 (26 rows;
+`INVALID_COMBINATIONS`, 1304), checks through one `validate` that `run` calls (§4.6; `where` is
+asked of `validate` by the results view rather than stored in results, 1305), carried choices
+(§4.5; an untouched default selection becomes the new method's, 1308), roles (§4.7, 1309),
+keyboard and screen readers (§4.8) — and §5 for every family including §9.5's starting shape
+(the user's answer to question 3): the sketch as data drawn by `@ps/graph`'s `sketchGraph`
+(brackets and lines as plain data in the spec, 1310), the families of §5.2–§5.7 (1311), sampling
+and the CPU guard (1312). Left: §4.4 row 22 (51e), the checks' fix buttons, Q-Q panels, the
+control drawn emphasized and set by clicking the sketch, the one-tailed side shaded, the two-way
+axis toggle and additive lines, PCA's correlation strip, the volcano preview's axes. Still to
+build: §8, §9 (51d, 51e).
+
+**Built so far — 51d (0.3.11, decisions 1313–1323; ROADMAP 51d):** §8 but what is listed
+below — summary blocks and sentences for every statistical family (§8.2's table; stored after
+the first sheet's blocks and shown first, 1313), the results' order with details collapsed and the
+Method section's generated paragraph with the method history (§8.1, §7.2; 1314, 1321), the
+comparisons tables' headers (§8.4; 1315), the user's names in labels with keys and the labels of
+before 0.3.11 for references (§8.2; the legacy table in `@ps/model`, 1316), grouped tables'
+factor names asked for in the Analyze dialog (1317), one sign convention — multiple t tests and
+Bland-Altman later − earlier for new analyses, saved ones pinned (§8.3; 1318), names that follow
+the method (§8.6; 1319), the effect plot of differences (§8.5; 1320), readable numbers and
+accessible results (§8.6; 1322); `ANALYSES_VERSION` 1.6.0 (1323). Left: the effect plot opened as
+a graph and its other families' plots (scatter with line, fitted curves, KM with medians, stacked
+percent), factor names edited in the grid's header and used in two-way RM's and three-way's
+tables, units in the results tables, the RM one-way template's "conditions" naming. Still to
+build: §9 (51e).
 
 Contents
 

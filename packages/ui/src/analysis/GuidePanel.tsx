@@ -387,7 +387,7 @@ export function GuidePanel({
         {!walk && (
           <p className="muted guide-start">
             Choose a question on the left. The guide asks about your experiment, then recommends an
-            analysis with its reasons; nothing is computed until you press OK.
+            analysis with its reasons; nothing is computed until you press Analyze.
           </p>
         )}
         {walk && (

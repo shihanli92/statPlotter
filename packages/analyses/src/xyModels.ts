@@ -4,6 +4,7 @@ import type {
   GraphableDataSet,
   NormalizedDataSet,
   OutputDecl,
+  Problem,
   ResultBlock,
   ResultSheet,
   ResultValue,
@@ -30,6 +31,7 @@ import {
   missingXNote,
   num,
   pct,
+  problem,
   psum,
   pval,
   result,
@@ -285,6 +287,7 @@ export const simpleLogisticDef: AnalysisDef<LogisticXYParams> = {
         )
       : []),
   ],
+  validate: validateSimpleLogistic,
   run(input, params): AnalysisResult {
     const diagnostics = [...exclusionNotes(input), ...missingXNote(input)]
     const level = params.confidenceLevel
@@ -459,4 +462,15 @@ export const simpleLogisticDef: AnalysisDef<LogisticXYParams> = {
       outputs,
     })
   },
+}
+
+/** Roadmap 51b (§4.6): simple logistic regression's problems before computing (Y coded 0/1). */
+function validateSimpleLogistic(input: readonly NormalizedDataSet[]): Problem | null {
+  const diagnostics = [...exclusionNotes(input), ...missingXNote(input)]
+  for (const ds of input) {
+    const y = xyPointRows(ds).map((p) => p.y)
+    if (y.some((v) => v !== 0 && v !== 1))
+      return problem(`The Y values of “${ds.title}” must be coded 0 or 1.`, 'table', diagnostics)
+  }
+  return null
 }

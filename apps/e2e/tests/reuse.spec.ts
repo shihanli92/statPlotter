@@ -4,11 +4,14 @@ import {
   analyze,
   answer,
   cell,
+  chip,
   columnTitles,
   dialog,
+  editDialog,
   expectUpToDate,
   grid,
   newTable,
+  okButton,
   resultTable,
   resultValue,
   rowCells,
@@ -68,7 +71,7 @@ test('duplicate a family with a name substitution, in one undo step', async ({ p
   await d.getByRole('textbox', { name: 'with' }).fill('Day 2 (repeat)')
   await expect(d.getByRole('list', { name: 'The copies' }).getByRole('listitem')).toHaveText([
     'Day 2 (repeat)',
-    't test of Day 2 (repeat)',
+    'Welch’s t test: Treated vs Control (Day 2 (repeat))',
     'Day 2 (repeat)',
   ])
   await d.getByRole('button', { name: 'Duplicate' }).click()
@@ -80,16 +83,18 @@ test('duplicate a family with a name substitution, in one undo step', async ({ p
 
   // Its t test analyses the copy: an edit there changes it, not the original's.
   await typeCells(page, 0, 0, [['80']])
-  await sheet(page, 't test of Day 2 (repeat)', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Day 2 (repeat))', 'Results').click()
   await expectUpToDate(page)
   await expect(tValue(page)).not.toHaveText(t1!)
-  await sheet(page, 't test of Day 1', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results').click()
   await expect(tValue(page)).toHaveText(t1!)
 
   // Undo the edit, then the whole duplicate at once.
   await tool(page, 'Undo Edit cells').click()
   await tool(page, 'Undo Duplicate family').click()
-  await expect(sheet(page, 't test of Day 2 (repeat)', 'Results')).toHaveCount(0)
+  await expect(
+    sheet(page, 'Welch’s t test: Treated vs Control (Day 2 (repeat))', 'Results'),
+  ).toHaveCount(0)
   await expect(sheet(page, 'Day 2 (repeat)', 'Data Tables')).toHaveCount(0)
 })
 
@@ -109,26 +114,26 @@ test('apply analyses and graphs to two tables, with what has no match reported',
   await d.getByRole('checkbox', { name: 'Day 2' }).check()
   await d.getByRole('checkbox', { name: 'Day 3' }).check()
   await expect(d.getByRole('status', { name: 'Not carried over' })).toContainText(
-    '“t test of Day 3”: no match for “Treated”, left out.',
+    '“Welch’s t test: Treated vs Control (Day 3)”: no match for “Treated”, left out.',
   )
   await d.getByRole('button', { name: 'Apply' }).click()
   await expect(d).toBeHidden()
 
   // Day 2 has the same values as Day 1: the same t.
-  await sheet(page, 't test of Day 2', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Day 2)', 'Results').click()
   await expectUpToDate(page)
   await expect(tValue(page)).toHaveText(t1!)
   // It has an error (one data set), badged in the navigator.
   await expect(
     page
       .getByRole('navigation', { name: 'Project' })
-      .getByRole('treeitem', { name: /^t test of Day 3 !/ }),
+      .getByRole('treeitem', { name: /^Welch’s t test: Treated vs Control \(Day 3\) !/ }),
   ).toBeVisible()
   // A graph each (besides the one every new table gets).
   await expect(sheet(page, 'Day 3', 'Graphs')).toHaveCount(2)
 
   await tool(page, 'Undo Apply analyses and graphs').click()
-  await expect(sheet(page, 't test of Day 2', 'Results')).toHaveCount(0)
+  await expect(sheet(page, 'Welch’s t test: Treated vs Control (Day 2)', 'Results')).toHaveCount(0)
   await expect(sheet(page, 'Day 3', 'Graphs')).toHaveCount(1)
 })
 
@@ -138,22 +143,22 @@ test('change the analyzed table in the analysis parameters', async ({ page }) =>
   await newTable(page, { kind: 'Column', name: 'Day 2', sample: true })
   await typeCells(page, 0, 0, [['60']])
 
-  await sheet(page, 't test of Day 1', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results').click()
   await page.getByRole('main').getByRole('button', { name: 'Parameters…' }).click()
-  const d = dialog(page, 'Analysis parameters')
+  const d = editDialog(page)
   await d.getByRole('combobox', { name: 'Analyze' }).selectOption({ label: 'Day 2' })
   await d.getByRole('combobox', { name: 'matching data sets' }).selectOption('title')
-  await expect(d.getByRole('checkbox', { name: 'Control' })).toBeChecked()
-  await d.getByRole('button', { name: 'OK', exact: true }).click()
+  await expect(chip(d, 'Control')).toHaveAttribute('aria-selected', 'true')
+  await okButton(d).click()
   await expect(d).toBeHidden()
 
   // Renamed after the table it analyzes, and computed from it.
-  await expect(sheet(page, 't test of Day 2', 'Results')).toBeVisible()
-  await sheet(page, 't test of Day 2', 'Results').click()
+  await expect(sheet(page, 'Welch’s t test: Treated vs Control (Day 2)', 'Results')).toBeVisible()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Day 2)', 'Results').click()
   await expectUpToDate(page)
   await expect(tValue(page)).not.toHaveText(t1!)
   await tool(page, 'Undo Change analyzed table').click()
-  await sheet(page, 't test of Day 1', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results').click()
   await expect(tValue(page)).toHaveText(t1!)
 })
 
@@ -200,7 +205,7 @@ test('save a template (a download) and start a project from it', async ({ page }
   await expect(grid(page)).toHaveAccessibleName('Day 1')
   await expect(columnTitles(page)).toHaveText(['', 'Control', 'Treated'])
   await expect(rowCells(page, 0)).toHaveText(['', ''])
-  await expect(sheet(page, 't test of Day 1', 'Results')).toBeVisible()
+  await expect(sheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results')).toBeVisible()
 
   // From the start screen, a template file picked with Browse….
   await page.goto('/')
@@ -218,7 +223,7 @@ test('save a template (a download) and start a project from it', async ({ page }
     ['31', '41'],
     ['29', '45'],
   ])
-  await sheet(page, 't test of Day 1', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Day 1)', 'Results').click()
   await expectUpToDate(page)
   const save = page.waitForEvent('download')
   await runMenu(page, 'File', 'Save')
@@ -266,7 +271,7 @@ test('save a method, apply it to another table, export and import it', async ({
 
   await d.getByRole('button', { name: 'Apply', exact: true }).click()
   await expect(d).toBeHidden()
-  await sheet(page, 't test of Plate 7', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Plate 7)', 'Results').click()
   await expectUpToDate(page)
   await expect(tValue(page)).toHaveText(t1!)
 })
@@ -317,7 +322,7 @@ test('edit the notes of a table, its results, a graph and a layout page', async 
   const notes = page.getByRole('main').getByRole('textbox', { name: 'Notes' })
   for (const [name, section] of [
     ['Day 1', 'Data Tables'],
-    ['t test of Day 1', 'Results'],
+    ['Welch’s t test: Treated vs Control (Day 1)', 'Results'],
     ['Day 1', 'Graphs'],
     ['Layout 1', 'Layouts'],
   ] as const) {

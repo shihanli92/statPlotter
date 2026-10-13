@@ -2,7 +2,9 @@ import {
   type AnalysisDef,
   type Diagnostic,
   type NormalizedDataSet,
+  type Problem,
   type ResultValue,
+  type RunContext,
   roundDecimal,
   type YFormat,
 } from '@ps/model'
@@ -15,6 +17,7 @@ import {
   kv,
   num,
   pick,
+  problem,
   rowCountOf,
   rowMeans,
   table,
@@ -274,6 +277,7 @@ export const transformDef: AnalysisDef<TransformParams> = {
       showIf: { path: ['x'], in: X_IDS.filter((id) => X_FUNCTIONS[id]!.usesK) },
     },
   ],
+  validate: validateTransform,
   run(input, params, context) {
     const diagnostics = exclusionNotes(input)
     const kind = sourceKind(input, context)
@@ -883,6 +887,7 @@ export const pruneDef: AnalysisDef<PruneParams> = {
       showIf: { path: ['mode'], in: ['xRange'] },
     },
   ],
+  validate: validatePrune,
   run(input, params, context) {
     const diagnostics = exclusionNotes(input)
     const xs = sourceX(input, context)
@@ -942,4 +947,33 @@ export const pruneDef: AnalysisDef<PruneParams> = {
       },
     )
   },
+}
+
+// ---- Roadmap 51b (§4.6): problems before computing ---------------------------------------------
+
+/** Transform: X values for the functions of X, and for transforming X. */
+function validateTransform(
+  input: readonly NormalizedDataSet[],
+  params: TransformParams,
+  context?: RunContext,
+): Problem | null {
+  const diagnostics = exclusionNotes(input)
+  const yf = Y_FUNCTIONS[params.y]!
+  const xs = sourceX(input, context)
+  if (yf.usesX && !xs)
+    return problem(`${yf.label} needs X values (an XY table).`, 'params', diagnostics)
+  if (params.x !== 'none' && !xs)
+    return problem('Only XY tables have X values to transform.', 'params', diagnostics)
+  return null
+}
+
+/** Prune: X values for a range of X. */
+function validatePrune(
+  input: readonly NormalizedDataSet[],
+  params: PruneParams,
+  context?: RunContext,
+): Problem | null {
+  if (params.mode === 'xRange' && !sourceX(input, context))
+    return problem('Only XY tables have X values.', 'params', exclusionNotes(input))
+  return null
 }

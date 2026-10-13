@@ -4,6 +4,7 @@ import {
   dialog,
   expectUpToDate,
   newTable,
+  okButton,
   resultTable,
   runMenu,
   tool,
@@ -45,7 +46,7 @@ test('Guide me: the questions, the recommendation and its reasons, then Analyze 
   await expect(rec.getByText(/You will get:/)).toBeVisible()
   // The control, Vehicle first.
   await expect(d.getByLabel('Control group')).toHaveValue(/.+/)
-  await expect(d.getByRole('button', { name: 'OK' })).toBeDisabled()
+  await expect(okButton(d)).toBeDisabled()
   await rec.getByRole('button', { name: 'Use this' }).click()
 
   // The form, set up: on All analyses, with each option's line and the method's card.
@@ -56,15 +57,14 @@ test('Guide me: the questions, the recommendation and its reasons, then Analyze 
   await expect(
     d.getByRole('listbox', { name: 'Analyses' }).getByRole('option', { selected: true }),
   ).toHaveText('One-way ANOVA (and nonparametric)')
-  await expect(
-    d.getByRole('radio', { name: 'Compare each column with a control column' }),
-  ).toBeChecked()
+  await expect(d.getByRole('radio', { name: 'Each group with a control' })).toBeChecked()
   await expect(
     d.getByText('Which comparisons answer your question, decided before the experiment.'),
   ).toBeVisible()
-  await d.getByText('About this method').click()
+  // Roadmap 51b: the cards in the side panel, open.
+  await expect(d.getByRole('heading', { name: 'About this method' })).toBeVisible()
   await expect(d.getByRole('region', { name: 'Dunnett’s multiple comparisons test' })).toBeVisible()
-  await d.getByRole('button', { name: 'OK', exact: true }).click()
+  await okButton(d).click()
   await expect(d).toBeHidden()
   await expectUpToDate(page)
   await page.getByRole('tab', { name: 'Multiple comparisons' }).click()

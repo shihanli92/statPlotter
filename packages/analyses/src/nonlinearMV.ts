@@ -1,6 +1,12 @@
-import type { AnalysisDef, GraphableDataSet, NormalizedDataSet, OutputDecl } from '@ps/model'
+import type {
+  AnalysisDef,
+  GraphableDataSet,
+  NormalizedDataSet,
+  OutputDecl,
+  Problem,
+} from '@ps/model'
 import { z } from 'zod'
-import { failure, firstCol } from './common.ts'
+import { failure, firstCol, problem } from './common.ts'
 import {
   migrateNonlinear,
   NonlinearParamsSchema,
@@ -67,6 +73,7 @@ export const nonlinearFitMVDef: AnalysisDef<NonlinearMVParams> = {
     }
     return out
   },
+  validate: validateNonlinearMV,
   run(input, params, _context, progress) {
     const pick = (key: string, fallback: number) =>
       input.find((d) => d.ref.key === key) ?? input[fallback]
@@ -179,4 +186,24 @@ export const nonlinearFitMVDef: AnalysisDef<NonlinearMVParams> = {
       ],
     }
   },
+}
+
+/** Roadmap 51b (§4.6): the roles of a curve fit of variables (X, Y, group), before computing. */
+function validateNonlinearMV(
+  input: readonly NormalizedDataSet[],
+  params: NonlinearMVParams,
+): Problem | null {
+  const pick = (key: string, fallback: number) =>
+    input.find((d) => d.ref.key === key) ?? input[fallback]
+  const xv = pick(params.x, 0)
+  const yv = pick(params.y, 1)
+  if (!xv || !yv) return problem('Choose an X and a Y variable.', 'params')
+  if (xv === yv) return problem('X and Y must be different variables.', 'params')
+  for (const v of [xv, yv])
+    if (v.text)
+      return problem(`“${v.title}” is a text variable; X and Y must be numbers.`, 'params')
+  const gv = params.group ? input.find((d) => d.ref.key === params.group) : undefined
+  if (gv && (gv === xv || gv === yv))
+    return problem('The grouping variable must differ from X and Y.', 'params')
+  return null
 }

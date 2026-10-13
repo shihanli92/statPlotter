@@ -1,8 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`example documents > chen 1`] = `"0c0fabad205c2c0439d27aafed3e10121ba13a924de7c42c31fcb0e1f24ddfe7"`;
+exports[`example documents > chen 1`] = `"6a9a452f9b9a87dcc0e12bea4ab57f9ae600e775562cce8f7f3e03852a1ded70"`;
 
-exports[`example documents > clinical 1`] = `"fcf550e3ed8b6e0e98a1ddad7fdc76372d10b6c63e30efd6623de096b56cc3c6"`;
+exports[`example documents > clinical 1`] = `"c85b593ab782f085afb4d09824c9f47971f506a3167e3847c1fb8cf413d62748"`;
 
 exports[`example documents > curve-fitting 1`] = `"ee6d989c11bd38ca3eae34fb6ea5d80666db19fff296e0f76b601022667fb728"`;
 
@@ -12,11 +12,11 @@ exports[`example documents > formatting 1`] = `"5595a12e13525eb3990dc877c79aedd7
 
 exports[`example documents > getting-started 1`] = `"a8a425fbae680b82ac519db68841bf21fdc29b69b16dd933b65e16bd239531d4"`;
 
-exports[`example documents > grouped 1`] = `"5af540ec7cee8b38a6df5f6ebce35c51c41d17a26f17e5beb5f0608a4c962534"`;
+exports[`example documents > grouped 1`] = `"a3da99a98fd9d04bc3d857bd3ef2fa451f6245cab0db2ca5add68fcf82f2fc08"`;
 
 exports[`example documents > hoffmann 1`] = `"2d7dda9147f7f088ef8d8a2729e30cf7a4e74498e2beabe79c326afbbec04a97"`;
 
-exports[`example documents > johnston 1`] = `"52e8a27fc32b12a5fd36d958583e273582325b72a654c15c82cc760f73d9275e"`;
+exports[`example documents > johnston 1`] = `"8e91aeee010eb6f9d85f02f6f7219b5bc9824e6f6e3c35b3dc94a334b2cf5701"`;
 
 exports[`example documents > more-graphs 1`] = `"f56e1bf1cca3a4f2f33156d060109302425b2778de7aef124ba2aedd4c7e8139"`;
 
@@ -28,9 +28,9 @@ exports[`example documents > single-cell 1`] = `"cb2fbfc387b33f1df5a8b1090de885d
 
 exports[`example documents > stucchi 1`] = `"335a11f1744648fcddfed9477cff9a48075c1f3101fc3f820cdee37d213ef7fd"`;
 
-exports[`example documents > swaminathan 1`] = `"eb72de2afd6cf767497bfddf9becf080a360c709441ff9fb6a1c34b9038ce99d"`;
+exports[`example documents > swaminathan 1`] = `"47e1f00ca15a0b0dc55d9e66c79ea79580015c258607933180e2ff76c401261f"`;
 
-exports[`example documents > tawk 1`] = `"fe2da02df43393c74d006cacd874719eaa626c35bf16279825ea734c1a28f1ac"`;
+exports[`example documents > tawk 1`] = `"a17b7dba886547dbad450330807c91f694dc401c42ef7f8c6c95ffcca70723da"`;
 
 exports[`sample tables > column 1`] = `"{"dataSets":[{"id":"id1","subcolumns":[{"type":"number","values":[34.1,38.5,29.8,41.2,35.6,32.3,36.9,30.4]}],"title":"Control"},{"id":"id2","subcolumns":[{"type":"number","values":[45.2,52.8,48.1,39.7,50.3,47.6,44.9,51.5]}],"title":"Treated"}],"id":"id3","kind":"table","name":"Data 1","notes":"","rowCount":8,"rowTitles":null,"tableKind":"column","x":null,"yFormat":{"count":1,"type":"replicates"}}"`;
 

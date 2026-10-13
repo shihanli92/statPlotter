@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect, openExample, test } from './fixtures.ts'
-import { analyze } from './helpers-data.ts'
+import { analyze, openTier } from './helpers-data.ts'
 import {
   addLayer,
   canvas,
@@ -113,9 +113,12 @@ test('PCA grouped by a text variable: the score plot coloured by group with elli
   await openExample(page, 'multiple-variables')
   await openSheet(page, TRIAL, 'Data Tables')
   await analyze(page, 'Principal component analysis', async (d) => {
-    // The number variables come ticked (phase 42); the grouping variable is ticked to be offered.
-    await d.getByRole('checkbox', { name: 'Group', exact: true }).check()
-    await d.getByLabel('Group by', { exact: true }).selectOption({ label: 'Group' })
+    // The number variables start in the Variables box (phase 42); roadmap 51b: the grouping
+    // variable goes into the Group by box; the ellipses are under Reporting.
+    await d
+      .getByRole('combobox', { name: 'Add to Group by (colours the scores)' })
+      .selectOption({ label: 'Group (text)' })
+    await openTier(d, 'Reporting')
     await d.getByLabel(/^Ellipses per group/).check()
   })
   await openSheet(page, 'PC scores', 'Graphs')

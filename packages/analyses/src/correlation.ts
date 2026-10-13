@@ -1,6 +1,7 @@
 import {
   type AnalysisDef,
   type NormalizedDataSet,
+  type Problem,
   pairedRows,
   pinDefaults,
   type ResultBlock,
@@ -14,6 +15,7 @@ import {
   CONFIDENCE_FIELD,
   confidenceLevel,
   decided,
+  directionIssue,
   directionProblem,
   exclusionNotes,
   failure,
@@ -27,6 +29,7 @@ import {
   pinObservedDirection,
   predicted,
   predictedField,
+  problem,
   psum,
   pval,
   result,
@@ -112,6 +115,7 @@ export const correlationDef: AnalysisDef<Params> = {
     predictedField('A positive correlation (rising together)', 'A negative correlation'),
     CONFIDENCE_FIELD,
   ],
+  validate: validateCorrelation,
   run(input, params) {
     const isXY = input.every((d) => d.x !== null)
     const diagnostics = [...exclusionNotes(input), ...(isXY ? missingXNote(input) : [])]
@@ -226,4 +230,13 @@ export const correlationDef: AnalysisDef<Params> = {
       },
     })
   },
+}
+
+/** Roadmap 51b (§4.6): correlation's problems before computing — columns, a stated direction. */
+function validateCorrelation(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  const isXY = input.every((d) => d.x !== null)
+  const diagnostics = [...exclusionNotes(input), ...(isXY ? missingXNote(input) : [])]
+  if (!isXY && input.length < 2)
+    return problem('Choose at least two columns to correlate.', 'table', diagnostics)
+  return directionIssue(params, diagnostics)
 }

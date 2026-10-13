@@ -11,7 +11,9 @@ import {
   failure,
   int,
   interval,
+  keyed,
   kv,
+  minus,
   num,
   oneTailedNotes,
   PAIRED_NEEDS_RAW,
@@ -32,6 +34,7 @@ import {
   tooFewDataSets,
   unpairedRowsNote,
 } from './common.ts'
+import { validateMannWhitney, validateWilcoxon } from './validators.ts'
 
 export const P_METHOD_FIELD = {
   path: ['pMethod'],
@@ -73,6 +76,7 @@ export const mannWhitney: AnalysisDef<MWParams> = {
   params: MWParams,
   migrateParams: migrateTails,
   form: [TAILS_FIELD, PREDICTED_FIELD, P_METHOD_FIELD, CONFIDENCE_FIELD],
+  validate: validateMannWhitney,
   run(input, params) {
     const few = tooFewDataSets(input, 2, 'The Mann-Whitney test compares two data sets.')
     if (few) return few
@@ -112,32 +116,42 @@ export const mannWhitney: AnalysisDef<MWParams> = {
       })
     }
     const level = pct(params.confidenceLevel)
+    // Roadmap 51d (U19): the groups' names, the sign spelled out.
+    const [nameA, nameB] = [A.title, B.title]
     const blocks: ResultBlock[] = [
-      kv('Data sets', [
-        ['Column A', text(A.title)],
-        ['Column B', text(B.title)],
-      ]),
+      kv('Data sets', [['Shift', text(minus(nameB, nameA)), 'compared']]),
       kv('Mann-Whitney test', [
         ...pRows(r.p, params.tails, r.method === 'exact'),
         ...predictedRows(params, words),
       ]),
       kv('Ranks', [
-        ['Sum of ranks in column A', rankValue(r.sumRanksA)],
-        ['Sum of ranks in column B', rankValue(r.sumRanksB)],
+        [`Sum of ranks in ${nameA}`, rankValue(r.sumRanksA), 'rankSumA'],
+        [`Sum of ranks in ${nameB}`, rankValue(r.sumRanksB), 'rankSumB'],
         ['Mann-Whitney U', rankValue(r.U)],
       ]),
       // S12: a rank test asks whether values in one group tend to be larger; the shift
       // (Hodges-Lehmann) is the median of all differences, not the difference of the medians.
-      kv('Shift between groups', [
-        ['Shift (Hodges-Lehmann: median of all differences B − A)', num(r.hlEstimate)],
-        [`${level} CI of the shift`, interval(r.hlLo, r.hlHi, params.confidenceLevel)],
-        ['Median of column A', num(r.medianA)],
-        ['Median of column B', num(r.medianB)],
-        ['Difference between medians (B − A)', num(r.medianB - r.medianA)],
-      ]),
+      keyed(
+        kv('Shift between groups', [
+          [
+            `Shift (Hodges-Lehmann: median of all differences ${minus(nameB, nameA)})`,
+            num(r.hlEstimate),
+            'shift',
+          ],
+          [`${level} CI of the shift`, interval(r.hlLo, r.hlHi, params.confidenceLevel), 'ci'],
+          [`Median of ${nameA}`, num(r.medianA), 'medianA'],
+          [`Median of ${nameB}`, num(r.medianB), 'medianB'],
+          [
+            `Difference between medians (${minus(nameB, nameA)})`,
+            num(r.medianB - r.medianA),
+            'medianDiff',
+          ],
+        ]),
+        'effect',
+      ),
       kv('Data analyzed', [
-        ['Sample size, column A', int(a.length)],
-        ['Sample size, column B', int(b.length)],
+        [`Sample size, ${nameA}`, int(a.length), 'nA'],
+        [`Sample size, ${nameB}`, int(b.length), 'nB'],
       ]),
     ]
     return result({
@@ -204,6 +218,7 @@ export const wilcoxon: AnalysisDef<WParams> = {
     },
     CONFIDENCE_FIELD,
   ],
+  validate: validateWilcoxon,
   run(input, params) {
     const few = tooFewDataSets(input, 2, 'The Wilcoxon test compares two paired data sets.')
     if (few) return few
@@ -240,10 +255,7 @@ export const wilcoxon: AnalysisDef<WParams> = {
     const zeros = pairs.a.length - r.nNonZero
     const level = pct(params.confidenceLevel)
     const blocks: ResultBlock[] = [
-      kv('Data sets', [
-        ['Column A', text(A.title)],
-        ['Column B', text(B.title)],
-      ]),
+      kv('Data sets', [['Difference', text(minus(B.title, A.title)), 'compared']]),
       kv('Wilcoxon matched-pairs signed rank test', [
         ...pRows(r.p, params.tails, r.method === 'exact'),
         ...predictedRows(params, words),
@@ -253,16 +265,20 @@ export const wilcoxon: AnalysisDef<WParams> = {
         ['Sum of negative ranks', rankValue(-r.wMinus)],
         ['Sum of signed ranks (W)', rankValue(r.W)],
       ]),
-      kv('Median of differences', [
-        ['Median of differences (B − A)', num(r.medianDiff)],
-        ['Hodges-Lehmann estimate', num(r.hlEstimate)],
-        [
-          `${level} CI of Hodges-Lehmann estimate`,
-          interval(r.hlLo, r.hlHi, params.confidenceLevel),
-        ],
-      ]),
+      keyed(
+        kv('Median of differences', [
+          [`Median of differences (${minus(B.title, A.title)})`, num(r.medianDiff), 'medianDiff'],
+          ['Hodges-Lehmann estimate', num(r.hlEstimate), 'shift'],
+          [
+            `${level} CI of Hodges-Lehmann estimate`,
+            interval(r.hlLo, r.hlHi, params.confidenceLevel),
+            'ci',
+          ],
+        ]),
+        'effect',
+      ),
       kv('Data analyzed', [
-        ['Number of pairs', int(pairs.a.length)],
+        ['Number of pairs', int(pairs.a.length), 'pairs'],
         ['Number of pairs with difference 0', int(zeros)],
       ]),
     ]

@@ -4,6 +4,7 @@ import {
   type Diagnostic,
   type FormField,
   type NormalizedDataSet,
+  type Problem,
   pinDefaults,
   type ResultBlock,
   type ResultSheet,
@@ -34,10 +35,12 @@ import {
   num,
   pct,
   pick,
+  problem,
   pSig,
   psum,
   pval,
   result,
+  statText,
   table,
   testValue,
   text,
@@ -158,9 +161,19 @@ const Params = z.object({
 })
 type Params = z.infer<typeof Params>
 
-/** Undefined medians (the curve never drops to 50%) are shown as text. */
+/** Undefined values (a ratio that can't be computed) are shown as text. */
 const maybe = (v: number, digits?: number): ResultValue =>
   Number.isFinite(v) ? num(v, digits) : text('Undefined')
+
+/**
+ * Roadmap 51d (U26): a median the curve never reaches (it never drops to 50%) is "Not reached",
+ * and so is the open upper limit of its CI.
+ */
+const median = (v: number): ResultValue => (Number.isFinite(v) ? num(v) : text('Not reached'))
+const medianCi = (lo: number, hi: number, level: number): ResultValue =>
+  Number.isFinite(lo) && hi === Number.POSITIVE_INFINITY
+    ? text(`${statText(lo)} to not reached`)
+    : interval(lo, hi, level)
 
 function testRows(t: SurvivalTest): [string, ResultValue][] {
   return [
@@ -250,6 +263,7 @@ export const survivalDef: AnalysisDef<Params> = {
     ...survivalFields('dataset.control'),
     CONFIDENCE_FIELD,
   ],
+  validate: validateSurvival,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     if (params.eventCode === params.censoredCode)
@@ -321,8 +335,8 @@ export function survivalResult(
         ['Group', 'Median survival', `${pct(level)} CI`],
         curves.map((c, i) => [
           text(titles[i]!),
-          maybe(c.median.value),
-          interval(c.median.lower, c.median.upper, level),
+          median(c.median.value),
+          medianCi(c.median.lower, c.median.upper, level),
         ]),
       ),
     )
@@ -401,7 +415,7 @@ export function survivalResult(
         ['Number of subjects', curves.map((c) => int(c.n))],
         ['Number of events', curves.map((c) => int(c.events))],
         ['Number censored', curves.map((c) => int(c.censored))],
-        ['Median survival', curves.map((c) => maybe(c.median.value))],
+        ['Median survival', curves.map((c) => median(c.median.value))],
       ]),
     ],
   })
@@ -461,4 +475,15 @@ function pairwiseSurvival(
       },
     ],
   }
+}
+
+/** Roadmap 51b (§4.6): survival curves' problems before computing — codes, subjects per group. */
+function validateSurvival(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  const diagnostics = exclusionNotes(input)
+  if (params.eventCode === params.censoredCode)
+    return problem('The event and censored codes must differ.', 'params', diagnostics)
+  const groups = input.map((ds) => subjectsOf(ds, params, diagnostics))
+  const empty = groups.findIndex((g) => g.length === 0)
+  if (empty >= 0) return problem(`“${input[empty]!.title}” has no subjects.`, 'table', diagnostics)
+  return null
 }

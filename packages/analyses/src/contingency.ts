@@ -3,6 +3,8 @@ import {
   type AnalysisResult,
   contingencyCounts,
   type Diagnostic,
+  type NormalizedDataSet,
+  type Problem,
   pinDefaults,
   type ResultBlock,
   type ResultSheet,
@@ -23,6 +25,7 @@ import {
   ALPHA,
   CONFIDENCE_FIELD,
   confidenceLevel,
+  directionIssue,
   directionProblem,
   exclusionNotes,
   failure,
@@ -37,6 +40,7 @@ import {
   predicted,
   predictedField,
   predictedRows,
+  problem,
   psum,
   pval,
   result,
@@ -105,14 +109,28 @@ const estimateRows = (label: string, e: Estimate, level: number): [string, Resul
  * NNT = 1 / difference. When the CI of the difference includes zero, the NNT's CI runs through
  * infinity (lower > upper): it is NNT ≥ lower or NNT ≤ upper, shown as text.
  */
-function nntRows(e: Estimate, level: number): [string, ResultValue][] {
+function nntRows(
+  e: Estimate,
+  level: number,
+  outcome: string,
+  exposed: string,
+): [string, ResultValue, string][] {
+  // Roadmap 51d (U26): a positive number, said as what treating (being in the exposed row) does:
+  // one fewer or one more of the outcome. A negative NNT is the same number for one fewer.
+  const fewer = e.value < 0
+  const flip = (v: number) => (fewer ? -v : v)
   const ci: ResultValue =
     e.lower > e.upper
-      ? text(`${fmt(e.lower)} to ∞ and −∞ to ${fmt(e.upper)}`)
-      : interval(e.lower, e.upper, level)
+      ? fewer
+        ? text(`${fmt(flip(e.upper))} to ∞ and −∞ to ${fmt(flip(e.lower))}`)
+        : text(`${fmt(e.lower)} to ∞ and −∞ to ${fmt(e.upper)}`)
+      : fewer
+        ? interval(-e.upper, -e.lower, level)
+        : interval(e.lower, e.upper, level)
+  const label = `Number needed to treat (${exposed}) for one ${fewer ? 'fewer' : 'more'} “${outcome}”`
   return [
-    ['Number needed to treat (NNT)', num(e.value)],
-    [`${pct(level)} CI of NNT`, ci],
+    [label, num(Math.abs(e.value)), 'nnt'],
+    [`${pct(level)} CI of NNT`, ci, 'nntCi'],
   ]
 }
 const fmt = (v: number) => shortText(v)
@@ -224,6 +242,7 @@ export const contingencyDef: AnalysisDef<Params> = {
     },
     CONFIDENCE_FIELD,
   ],
+  validate: validateContingency,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     const { counts, rows, incompleteRows } = contingencyCounts(input)
@@ -377,7 +396,7 @@ export const contingencyDef: AnalysisDef<Params> = {
           ]),
           kv('Difference between proportions', [
             ...estimateRows('Difference', e.riskDifference, level),
-            ...(e.nnt ? nntRows(e.nnt, level) : []),
+            ...(e.nnt ? nntRows(e.nnt, level, outcome, g1) : []),
           ]),
         )
         values.relativeRisk = num(e.relativeRisk.value)
@@ -539,4 +558,42 @@ function pairwiseComparisons(
         }
       : {}),
   }
+}
+
+/**
+ * Roadmap 51b (§4.6): a contingency table's problems before computing — complete rows of whole
+ * counts, two rows and two columns with nonzero totals, a stated direction (one-tailed 2 × 2).
+ */
+function validateContingency(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  const diagnostics = exclusionNotes(input)
+  const { counts, rows, incompleteRows } = contingencyCounts(input)
+  const rowTitle = (r: number) => rowTitleOf(input, r)
+  if (incompleteRows.length)
+    return problem(
+      `Every cell of a row needs a count; ${incompleteRows.map(rowTitle).join(', ')} ${incompleteRows.length > 1 ? 'are' : 'is'} incomplete.`,
+      'table',
+      diagnostics,
+    )
+  if (counts.flat().some((v) => v < 0 || !Number.isInteger(v)))
+    return problem(
+      'A contingency table holds counts: whole numbers, zero or more.',
+      'table',
+      diagnostics,
+    )
+  if (counts.length < 2)
+    return problem('A contingency table needs at least two rows.', 'table', diagnostics)
+  if (input.length < 2)
+    return problem('A contingency table needs at least two columns.', 'table', diagnostics)
+  const emptyRows = rows.filter((_, i) => counts[i]!.every((v) => v === 0)).map(rowTitle)
+  const emptyCols = input.map((d) => d.title).filter((_, j) => counts.every((row) => row[j] === 0))
+  if (emptyRows.length || emptyCols.length) {
+    const names = [...emptyRows, ...emptyCols]
+    return problem(
+      `Every row and column needs a nonzero total; ${names.join(', ')} ${names.length > 1 ? 'are' : 'is'} all zeros.`,
+      'table',
+      diagnostics,
+    )
+  }
+  const is2x2 = counts.length === 2 && counts[0]!.length === 2
+  return is2x2 ? directionIssue(params, diagnostics) : null
 }

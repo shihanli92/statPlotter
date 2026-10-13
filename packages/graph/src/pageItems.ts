@@ -7,6 +7,8 @@ import {
   type ResultSheet,
   type ResultValue,
   type StrokeStyle,
+  summaryFirst,
+  summaryText,
   type TextStyle,
 } from '@ps/model'
 import type { FontRegistry } from './fonts/registry.ts'
@@ -233,10 +235,14 @@ export function resultSheetCells(
     return { text, ...(numeric ? { numeric: true } : {}) }
   }
   const out: PageTableCell[][] = []
-  for (const b of sheet.blocks) {
+  for (const b of summaryFirst(sheet.blocks)) {
     if (out.length) out.push([])
     if (b.type === 'note') {
       out.push([{ text: b.text }])
+      continue
+    }
+    if (b.type === 'summary') {
+      out.push([{ text: summaryText(b, settings) }])
       continue
     }
     if (b.title) out.push([{ text: b.title, style: 'title' }])

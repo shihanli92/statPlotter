@@ -37,12 +37,19 @@ describe('multiple t tests plugin', () => {
     expect(p.variance).toBe('welch')
     expect(p.fdrMethod).toBe('bky')
     expect(p.q).toBe(5)
+    // Roadmap 51d (S25): B − A for new analyses; saved ones keep A − B.
+    expect(p.difference).toBe('bMinusA')
     const saved = paramsOf(multipleTDef, { params: {}, pluginVersion: 1 })
     expect(saved.ok && saved.params.q).toBe(1)
   })
 
   it('tests every row, reports A − B, skips untestable rows and leaves out empty ones', () => {
-    const r = run(groupedTable(cells, titles), { approach: 'fdr', fdrMethod: 'bh', q: 5 })
+    const r = run(groupedTable(cells, titles), {
+      approach: 'fdr',
+      fdrMethod: 'bh',
+      q: 5,
+      difference: 'aMinusB',
+    })
     expect(r.status).toBe('ok')
     const b = tableBlock(r, 'tests')
     expect(b.rows.map((x) => (x[0] as { v: string }).v)).toEqual(['Gapdh', 'Actb', 'Il6'])
@@ -133,7 +140,7 @@ describe('multiple t tests plugin', () => {
 
   it('B − A flips the sign; the consistent-SD test pools the SD over rows', () => {
     const t = groupedTable(cells, titles)
-    const ab = tableBlock(run(t), 'tests')
+    const ab = tableBlock(run(t, { difference: 'aMinusB' }), 'tests')
     const ba = tableBlock(run(t, { difference: 'bMinusA' }), 'tests')
     expect(v(ba.rows[0]![5])).toBeCloseTo(-v(ab.rows[0]![5]), 14)
     const pooled = run(t, { variance: 'consistent', approach: 'significance' })
@@ -153,7 +160,7 @@ describe('multiple t tests plugin', () => {
     expect(tableBlock(mw, 'tests').columns).toContain('Mann-Whitney U')
     const ks = run(t, { distribution: 'nonparametric', rankTest: 'kolmogorovSmirnov' })
     expect(tableBlock(ks, 'tests').columns).toContain('Kolmogorov-Smirnov D')
-    const ln = run(t, { distribution: 'lognormal' })
+    const ln = run(t, { distribution: 'lognormal', difference: 'aMinusB' })
     const lb = tableBlock(ln, 'tests')
     expect(lb.columns).toContain('Ratio of geometric means (Group A / Group B)')
     const w = tTestUnpaired([3.2, 3.6, 3.1].map(Math.log10), [1.1, 1.3, 0.9].map(Math.log10), {

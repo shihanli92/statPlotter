@@ -28,6 +28,7 @@ import {
   text,
 } from './common.ts'
 import { migrateTails, P_METHOD_FIELD, pMethod } from './rank.ts'
+import { validateOneSample } from './validators.ts'
 
 const Params = z.object({
   test: z.enum(['t', 'wilcoxon']).default('t'),
@@ -66,6 +67,7 @@ export const oneSampleDef: AnalysisDef<Params> = {
     { ...P_METHOD_FIELD, showIf: { path: ['test'], in: ['wilcoxon'] } },
     CONFIDENCE_FIELD,
   ],
+  validate: validateOneSample,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     const unset = directionProblem(params, diagnostics)

@@ -3,8 +3,11 @@ import { expect, test } from './fixtures.ts'
 import {
   analyze,
   dialog,
+  editDialog,
   expectUpToDate,
   newTable,
+  okButton,
+  openTier,
   pressShortcut,
   resultTable,
   runMenu,
@@ -24,7 +27,7 @@ test.beforeEach(async ({ page }) => {
 
 async function editParameters(page: Page) {
   await page.getByRole('main').getByRole('button', { name: 'Parameters…' }).click()
-  const d = dialog(page, 'Analysis parameters')
+  const d = editDialog(page)
   await expect(d).toBeVisible()
   return d
 }
@@ -49,7 +52,7 @@ test('a method changed after its results were seen: the notice, the reason, the 
   await expect(notice).toBeVisible()
   await expect(notice.getByRole('listitem')).toHaveText([/→ .*Student/])
   await notice.getByLabel('Reason (optional)').fill('the protocol specified equal SDs')
-  await d.getByRole('button', { name: 'OK' }).click()
+  await okButton(d).click()
   await expect(d).toBeHidden()
   await expectUpToDate(page)
   await expect(resultTable(page, 'Unpaired t test')).toBeVisible()
@@ -73,6 +76,8 @@ test('Add as a new analysis keeps the first; one-tailed asks the direction by th
   await newTable(page, { kind: 'Column', sample: true })
   await analyze(page, 't test')
   const d = await editParameters(page)
+  // Roadmap 51b: one-tailed P is under Advanced.
+  await openTier(d, 'Advanced')
   await d.getByRole('radio', { name: /^One-tailed/ }).check()
   // The prediction, in the data sets' names (S1).
   await expect(d.getByRole('radio', { name: '“Treated” higher than “Control”' })).toBeVisible()
@@ -91,7 +96,7 @@ test('Add as a new analysis keeps the first; one-tailed asks the direction by th
   ).toBeVisible()
   await expect(history(page)).toHaveCount(0)
   // The first, unchanged, with no history.
-  await sheet(page, 't test of Data 1', 'Results').first().click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Data 1)', 'Results').first().click()
   await expectUpToDate(page)
   await expect(history(page)).toHaveCount(0)
 })

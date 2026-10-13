@@ -161,8 +161,9 @@ export const GROUPED_TEXT = {
     difference: {
       line: 'Which data set is subtracted from which (the sign of each difference).',
       options: {
-        aMinusB: 'The first data set minus the second.',
-        bMinusA: 'The second data set minus the first.',
+        bMinusA:
+          'The second data set minus the first: later − earlier, as every analysis reports it.',
+        aMinusB: 'The first data set minus the second (as before 0.3.11).',
       },
     },
     reportLogP: { line: 'Add −log10(P) to the results, as the volcano plot uses.' },

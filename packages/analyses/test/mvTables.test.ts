@@ -301,7 +301,7 @@ describe('survival from a multiple-variables table vs R (mvsurvival)', () => {
       expect(summary.rows[1]!.slice(1).map(v)).toEqual(e.events)
       e.median.forEach((m, k) => {
         const cell = summary.rows[3]![k + 1]!
-        if (Number.isNaN(m)) expect(cell).toEqual({ kind: 'text', v: 'Undefined' })
+        if (Number.isNaN(m)) expect(cell).toEqual({ kind: 'text', v: 'Not reached' })
         else expectClose(v(cell), m, f.tol, `median ${k}`)
       })
       expectClose(v(r.values.chiSq), e.logRankChiSq, f.tol, 'log-rank chi-square')

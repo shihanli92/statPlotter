@@ -2,6 +2,7 @@ import {
   type AnalysisDef,
   type Comparison,
   type NormalizedDataSet,
+  type Problem,
   pinDefaults,
   type ResultBlock,
   type ResultSheet,
@@ -41,6 +42,7 @@ import {
   int,
   kv,
   num,
+  problem,
   pSig,
   psum,
   pval,
@@ -191,6 +193,7 @@ export const threeWayAnovaDef: AnalysisDef<Params> = {
     },
     { ...DDF_FIELD, showIf: [{ path: ['rmMethod'], in: ['auto', 'mixed'] }] },
   ],
+  validate: validateThreeWay,
   run(input, params) {
     const few = tooFewDataSets(
       input,
@@ -526,4 +529,48 @@ function runRepeated(
     res.effects.map((e, i) => [`p.${EFFECT_KEYS[i]}`, pval(pOf(e))]),
   )
   return result({ blocks, diagnostics, values })
+}
+
+/**
+ * Roadmap 51b (§4.6): three-way ANOVA's problems before computing — four data sets, entered
+ * summaries, two rows with data and (without repeated measures) a value in every cell and more
+ * values than cells.
+ */
+function validateThreeWay(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  if (input.length < 4)
+    return problem(
+      'Three-way ANOVA needs four data sets (two levels of each of the two column factors).',
+    )
+  const diagnostics = exclusionNotes(input)
+  const rowCount = input[0]?.rowCount ?? 0
+  for (const ds of input)
+    for (let r = 0; r < rowCount; r++) {
+      const issue = summaryProblem(ds, r, 1, rowTitleOf(input, r))
+      if (issue) return problem(issue, 'table', diagnostics)
+    }
+  const rows = Array.from({ length: rowCount }, (_, r) => r).filter((r) =>
+    input.some((ds) => cellHasData(ds, r)),
+  )
+  if (rows.length < 2)
+    return problem('Three-way ANOVA needs at least two rows with data.', 'table', diagnostics)
+  if (params.repeatedRows || params.repeatedCol1 || params.repeatedCol2) return null
+  let n = 0
+  for (const r of rows)
+    for (let d = 0; d < 4; d++) {
+      const g = cellGroup(input[d]!, r)
+      if (!g)
+        return problem(
+          `Every cell needs values: “${input[d]!.title}” has none in ${rowTitleOf(input, r)}.`,
+          'table',
+          diagnostics,
+        )
+      n += 'values' in g ? g.values.length : g.n
+    }
+  if (!(n - rows.length * 4 > 0))
+    return problem(
+      'Three-way ANOVA needs more than one value in some cells (there is no residual variation to test against).',
+      'table',
+      diagnostics,
+    )
+  return null
 }

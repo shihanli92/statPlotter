@@ -6,6 +6,7 @@ import {
   finiteValues,
   formatNumber,
   type NormalizedDataSet,
+  type Problem,
   pinDefaults,
   type ResultBlock,
   type ResultSheet,
@@ -65,11 +66,25 @@ export const interval = (lo: number, hi: number, level: number): ResultValue => 
   level,
 })
 
-export const kv = (title: string, rows: [string, ResultValue][]): ResultBlock => ({
+/**
+ * A key-value block. Roadmap 51d (§8.2): a row may carry a stable key (third element: 'meanA',
+ * 'diff'), which references on graphs and the summary read instead of its label.
+ */
+export const kv = (
+  title: string,
+  rows: ([string, ResultValue] | [string, ResultValue, string])[],
+): ResultBlock => ({
   type: 'keyValue',
   title,
-  rows: rows.map(([label, value]) => ({ label, value })),
+  rows: rows.map(([label, value, key]) => ({ label, value, ...(key ? { key } : {}) })),
 })
+
+/** Roadmap 51d: a block with a stable key (`blockKey` in references). */
+export const keyed = (block: ResultBlock, key: string): ResultBlock =>
+  block.type === 'keyValue' || block.type === 'table' ? { ...block, key } : block
+
+/** Roadmap 51d (U19): "Treated − Control", the difference of two groups in their names. */
+export const minus = (later: string, earlier: string) => `${later} − ${earlier}`
 
 export const table = (title: string, columns: string[], rows: ResultValue[][]): ResultBlock => ({
   type: 'table',
@@ -358,6 +373,23 @@ export function result(r: {
     ...(r.table ? { table: r.table } : {}),
   }
 }
+
+/**
+ * Roadmap 51b (§4.6): a problem `validate` finds before computing: about the values (`table`) or
+ * the options (`params`), with the notes `run`'s failure carries before it.
+ */
+export const problem = (
+  message: string,
+  where: Problem['where'] = 'table',
+  diagnostics: Diagnostic[] = [],
+): Problem => ({ message, where, ...(diagnostics.length ? { diagnostics } : {}) })
+
+/** Roadmap 51b: a one-tailed test with no stated direction, as a problem. */
+export const directionIssue = (
+  p: { tails: 'two' | 'one'; predicted: Predicted },
+  diagnostics: Diagnostic[] = [],
+): Problem | null =>
+  p.tails === 'one' && p.predicted === 'unset' ? problem(NO_DIRECTION, 'params', diagnostics) : null
 
 export function failure(message: string, diagnostics: Diagnostic[] = []): AnalysisResult {
   return result({ diagnostics: [...diagnostics, { level: 'error', message }] })

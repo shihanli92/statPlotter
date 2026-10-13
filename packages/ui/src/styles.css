@@ -1427,6 +1427,69 @@ table.results td.txt {
 table.results.kv td:first-child {
   color: var(--text-2);
 }
+/* Roadmap 51d (U29): row labels are row headers, read as such, shown as the cells were. */
+table.results tbody th {
+  font-weight: 400;
+  background: none;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--row-line);
+}
+table.results.kv tbody th {
+  color: var(--text-2);
+}
+table.results caption.family-caption {
+  caption-side: top;
+  text-align: left;
+  padding: 0 0 6px;
+  color: var(--text-2);
+  font-size: 12px;
+  max-width: 640px;
+}
+/* Roadmap 51d (§8.1): the answer first — the summary sentence and the effect plot. */
+.results-view .result-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: flex-start;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+.results-view .result-summary.stale {
+  opacity: 0.55;
+}
+.results-view .summary-sentence {
+  flex: 1 1 320px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 70ch;
+}
+.results-view .effect-plot {
+  flex: 0 1 300px;
+}
+.results-view .effect-plot .sketch-panel img {
+  max-width: 100%;
+  height: auto;
+}
+.results-view .result-details > summary,
+.results-view .method-section > summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin: 4px 0 10px;
+}
+.results-view .method-section {
+  padding: 8px 20px 12px;
+  border-top: 1px solid var(--border);
+}
+.results-view .methods-paragraph {
+  max-width: 80ch;
+  line-height: 1.5;
+  user-select: text;
+}
+.results-error .error-icon {
+  font-weight: 700;
+}
 /* A result table shown as a read-only grid inside the results view. */
 .results-view .result-table {
   flex: 1;
@@ -4943,7 +5006,7 @@ dialog.palette::backdrop {
 
 /* ---------- Roadmap 51a: explanations and the guided chooser ---------- */
 
-/* The Analyze dialog, wider (design §10.2: min(1200px, 94vw); three panels arrive with 51b). */
+/* The Analyze dialog, wider (design §10.2: min(1200px, 94vw); three panels: 51b, below). */
 dialog.dialog.wide:has(.analyze) {
   width: min(1200px, 94vw);
 }
@@ -5316,4 +5379,413 @@ dialog.dialog:has(.choosing-help) .dialog-body {
 }
 fieldset.unavailable .radio-option {
   opacity: 0.6;
+}
+
+/* ---------- Roadmap 51b: the three-panel Analyze dialog (design §4.1) ---------- */
+
+/* min(1200 px, 94vw) × min(820 px, 90vh), resizable (the size is remembered). Only the options
+   column scrolls; the rail, the side panel (own scroll) and the footer stay. */
+dialog.dialog.wide.analyze-dialog {
+  width: min(1200px, 94vw);
+  height: min(820px, 90vh);
+  max-width: 96vw;
+  max-height: 92vh;
+  min-width: min(560px, 96vw);
+  min-height: 420px;
+  resize: both;
+  overflow: hidden;
+}
+dialog.dialog.analyze-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+dialog.dialog.analyze-dialog .dialog-body {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+}
+dialog.dialog.analyze-dialog .analyze-panel {
+  flex: 1;
+  min-height: 0;
+}
+dialog.dialog.analyze-dialog .analyze-panel:has(.guide-detail) {
+  overflow-y: auto;
+}
+.analyze3 {
+  position: relative;
+  display: grid;
+  grid-template-columns: 232px minmax(420px, 1fr) 360px;
+  gap: 0 16px;
+  height: 100%;
+  min-height: 0;
+}
+.analyze3 > * {
+  min-height: 0;
+}
+.analyze-rail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 12px;
+}
+.analyze3 .analyze-list {
+  width: auto;
+  border-right: none;
+  padding-right: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+.analyze3 .analyze-options {
+  flex: 1;
+  max-height: none;
+  min-height: 0;
+}
+.rail-strip {
+  display: none;
+}
+.analyze-options-column {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 0 4px 16px 0;
+}
+.analyze-side {
+  overflow-y: auto;
+  min-height: 0;
+  border-left: 1px solid var(--border);
+  padding: 0 4px 16px 12px;
+  font-size: 12px;
+}
+.method-head .method-title {
+  margin: 0 0 2px;
+  font-size: 14px;
+}
+.method-head .method-description {
+  margin: 0 0 10px;
+}
+
+/* Editing (U28): the rail is folded to the method and Change method…. */
+.analyze3.editing {
+  grid-template-columns: 160px minmax(420px, 1fr) 360px;
+}
+.analyze3.editing .rail-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.rail-method {
+  font-weight: 600;
+}
+
+/* 860–1099 px: the rail folds to a strip opening the list over the options; side 300 px. By the
+   dialog's own width, measured (`.medium`; `.narrow` below 860 px adds to it): not a container
+   query, which would make the panel the containing block of the popovers inside it. */
+.analyze3.medium,
+.analyze3.medium.editing {
+  grid-template-columns: 48px minmax(0, 1fr) 300px;
+}
+.analyze3.medium .rail-strip {
+  display: flex;
+}
+.analyze3.medium .rail-strip button {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  padding: 8px 4px;
+}
+.analyze3.medium.editing .rail-strip > .rail-method {
+  display: none;
+}
+.analyze3.medium:not(.rail-open) .analyze-list {
+  display: none;
+}
+.analyze3.medium.rail-open .analyze-list {
+  position: absolute;
+  z-index: 5;
+  left: 48px;
+  top: 0;
+  bottom: 0;
+  width: 280px;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+/* Below 860 px: two rows — the sketch as a strip above the options (it can be hidden). */
+.analyze3.narrow,
+.analyze3.narrow.editing {
+  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.analyze3.narrow .analyze-rail {
+  grid-row: 1 / span 2;
+}
+.analyze3.narrow .analyze-side {
+  grid-row: 1;
+  grid-column: 2;
+  max-height: 200px;
+  border-left: none;
+  border-bottom: 1px solid var(--border);
+  padding: 0 0 8px;
+}
+.analyze3.narrow .analyze-options-column {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+/* The footer: the method line (text), the reason Analyze waits, Cancel and Analyze / Apply. */
+dialog.dialog.analyze-dialog footer {
+  align-items: center;
+}
+.method-line {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ok-reason {
+  max-width: 40%;
+  color: var(--warn-strong);
+  font-size: 12px;
+}
+
+/* Groups as chips (§4.3). */
+.group-chips {
+  margin: 0 0 12px;
+}
+.group-chips-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.group-chips-label {
+  font-weight: 600;
+}
+.chips,
+.role-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+}
+.chip.on {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.chip.control {
+  font-weight: 600;
+}
+.chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.chip-order {
+  font-size: 10px;
+  color: var(--muted);
+}
+.chip-badge {
+  font-size: 10px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: var(--panel-2);
+}
+.chip-control,
+.chip-remove,
+.chip-swap {
+  padding: 0 2px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.comparing {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Roles (§4.7). */
+.role-boxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.role-box {
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-height: 64px;
+}
+.role-box.missing {
+  border-color: var(--warn-border);
+}
+.role-box legend {
+  font-weight: 600;
+  font-size: 12px;
+}
+.role-box select {
+  margin-top: 6px;
+  max-width: 100%;
+}
+.role-empty {
+  font-size: 12px;
+}
+.role-left-out {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+/* Tiers (§4.2). */
+.tier {
+  margin: 0 0 8px;
+}
+.tier-heading {
+  margin: 8px 0 4px;
+  font-size: 12px;
+}
+.tier-toggle {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text);
+}
+.tier-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+}
+.tier-summary {
+  color: var(--muted);
+  font-weight: normal;
+}
+fieldset.plain {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.radio-option.unavailable label {
+  color: var(--muted);
+}
+.field.unavailable label {
+  color: var(--muted);
+}
+
+/* The side panel: the sketch, the checks, the cards. */
+.side-heading {
+  margin: 0 0 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.sketch {
+  margin: 0 0 10px;
+}
+.sketch.stale .sketch-panels {
+  opacity: 0.7;
+}
+.sketch-panels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sketch-panel {
+  margin: 0;
+  max-width: 100%;
+}
+.sketch-panel figcaption {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 0;
+}
+.sketch-panel img {
+  display: block;
+  border-radius: 4px;
+  max-width: 100%;
+  height: auto;
+}
+.sketch-description {
+  margin: 6px 0 2px;
+}
+.sketch-caption {
+  margin: 2px 0;
+  color: var(--muted);
+}
+.sketch-counts {
+  margin: 2px 0;
+  font-weight: 500;
+}
+.sketch-notes {
+  margin: 4px 0;
+  padding-left: 16px;
+  color: var(--muted);
+}
+.checks ul {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+}
+.checks li {
+  display: flex;
+  gap: 6px;
+  margin: 2px 0;
+}
+.check-icon {
+  flex: none;
+  width: 1em;
+}
+.check-block {
+  color: var(--error-text);
+}
+.check-note {
+  color: var(--warn-strong);
+}
+.side-card {
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sketch-panels {
+    transition: opacity 0.12s;
+  }
 }

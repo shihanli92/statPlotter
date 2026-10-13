@@ -35,6 +35,13 @@ export const ResultRef = z.discriminatedUnion('from', [
     row: z.string().max(400),
     column: z.string().max(400).optional(),
     end: z.enum(['lo', 'hi']).optional(),
+    /**
+     * Roadmap 51d (§8.2): the block's, row's and column's stable keys, tried before the labels
+     * (labels name the user's groups and so change with them; keys don't).
+     */
+    blockKey: z.string().max(200).optional(),
+    rowKey: z.string().max(200).optional(),
+    columnKey: z.string().max(200).optional(),
   }),
   /** A comparison (a bracket's): its P value (adjusted when it has one) or its estimate. */
   z.object({
@@ -219,7 +226,40 @@ const formatValueText = (
 /** Whether a block's title matches a reference's: the same, or starting with it. */
 const blockMatches = (b: ResultBlock, title: string | undefined): boolean =>
   title === undefined ||
-  (b.type !== 'note' && b.title !== undefined && (b.title === title || b.title.startsWith(title)))
+  ((b.type === 'keyValue' || b.type === 'table') &&
+    b.title !== undefined &&
+    (b.title === title || b.title.startsWith(title)))
+
+/**
+ * Roadmap 51d (§8.2): a cell by keys — the block's (any block when absent), the row's and, in
+ * tables, the column's (else the column titled `column`, else the first value column).
+ */
+function cellByKeys(
+  blocks: readonly ResultBlock[],
+  keys: { block?: string; row: string; column?: string; columnTitle?: string },
+): ResultValue | null {
+  for (const b of blocks) {
+    if (b.type !== 'keyValue' && b.type !== 'table') continue
+    if (keys.block !== undefined && b.key !== keys.block) continue
+    if (b.type === 'keyValue') {
+      if (keys.column !== undefined || keys.columnTitle !== undefined) continue
+      const r = b.rows.find((x) => x.key === keys.row)
+      if (r) return r.value
+      continue
+    }
+    const i = b.rowKeys?.indexOf(keys.row) ?? -1
+    if (i < 0) continue
+    const j =
+      keys.column !== undefined
+        ? (b.columnKeys?.indexOf(keys.column) ?? -1)
+        : keys.columnTitle !== undefined
+          ? b.columns.indexOf(keys.columnTitle)
+          : 1
+    const v = j < 0 ? undefined : b.rows[i]?.[j]
+    if (v) return v
+  }
+  return null
+}
 
 /** A cell of a block by row label and column title (key-value blocks: no column). */
 function cellOf(
@@ -265,10 +305,25 @@ export function resolveResultRef(
     case 'cell': {
       const sheet = result.sheets.find((s) => s.key === ref.sheet)
       if (!sheet) return null
+      const atEnd = (v: ResultValue): ResultValue =>
+        ref.end && v.kind === 'interval' ? { kind: 'number', v: v[ref.end] } : v
       const block = ref.block === undefined ? undefined : fill(ref.block, ds, '{dataSet}', 'title')
       const row = fill(ref.row, ds, '{dataSet}', 'title')
       const column =
         ref.column === undefined ? undefined : fill(ref.column, ds, '{dataSet}', 'title')
+      // Roadmap 51d (§8.2): keys first — they survive the labels' renaming to the user's names.
+      if (ref.rowKey !== undefined) {
+        const v = cellByKeys(sheet.blocks, {
+          ...(ref.blockKey === undefined ? {} : { block: ref.blockKey }),
+          row: fill(ref.rowKey, ds, '{key}', 'key'),
+          ...(ref.columnKey !== undefined
+            ? { column: fill(ref.columnKey, ds, '{key}', 'key') }
+            : column !== undefined
+              ? { columnTitle: column }
+              : {}),
+        })
+        if (v) return atEnd(v)
+      }
       // Roadmap 51c: a label renamed since the reference was made reads its new name.
       const blocks = [block, ...(block === undefined ? [] : renamedLabel(block, BLOCK_RENAMES))]
       const rows = [row, ...renamedLabel(row, ROW_RENAMES)]
@@ -277,10 +332,21 @@ export function resolveResultRef(
           for (const b of sheet.blocks) {
             if (!blockMatches(b, bt)) continue
             const v = cellOf(b, r, column, settings)
-            if (!v) continue
-            if (ref.end && v.kind === 'interval') return { kind: 'number', v: v[ref.end] }
-            return v
+            if (v) return atEnd(v)
           }
+      // Roadmap 51d (§8.2): a label of before 0.3.11 ("Mean of column A") reads the row now
+      // keyed for it ("Mean of Control", `meanA`), in the block it named.
+      for (const r of rows) {
+        const key = legacyRowKey(r)
+        if (!key) continue
+        for (const bt of blocks) {
+          const v = cellByKeys(
+            sheet.blocks.filter((b) => blockMatches(b, bt)),
+            column === undefined ? { row: key } : { row: key, columnTitle: column },
+          )
+          if (v) return atEnd(v)
+        }
+      }
       return null
     }
   }
@@ -309,6 +375,39 @@ const ROW_RENAMES: readonly [string, string][] = [
 const BLOCK_RENAMES: readonly [string, string][] = [
   ['Difference between medians', 'Shift between groups'],
 ]
+
+/**
+ * Roadmap 51d (§8.2, U19): labels that named positions ("column A") or the sign in letters
+ * ("B − A") before 0.3.11, now the user's names, and the keys of the rows they became. Only the
+ * two-group analyses had them. A level ("95% CI of log10(B/A)") is matched with any level.
+ */
+const LEGACY_ROW_KEY_LIST: readonly [string, string][] = [
+  ['Column A', 'dataSetA'],
+  ['Column B', 'dataSetB'],
+  ['Mean of column A', 'meanA'],
+  ['Mean of column B', 'meanB'],
+  ['Sample size, column A', 'nA'],
+  ['Sample size, column B', 'nB'],
+  ['Median of column A', 'medianA'],
+  ['Median of column B', 'medianB'],
+  ['Sum of ranks in column A', 'rankSumA'],
+  ['Sum of ranks in column B', 'rankSumB'],
+  ['Difference between means (B − A)', 'diff'],
+  ['Mean difference (B − A)', 'diff'],
+  ['Glass’s delta (SD of column A)', 'glassDelta'],
+  ['Shift (Hodges-Lehmann: median of all differences B − A)', 'shift'],
+  ['Difference between medians (B − A)', 'medianDiff'],
+  ['Median of differences (B − A)', 'medianDiff'],
+  ['Mean of log10(B/A)', 'logRatio'],
+  // Two-way ANOVA's factors, named by the table since 0.3.11.
+  ['Row factor', 'row'],
+  ['Column factor', 'column'],
+  ['Geometric mean of ratios (B/A)', 'ratio'],
+]
+const LEGACY_ROW_KEYS = new Map(LEGACY_ROW_KEY_LIST)
+const legacyRowKey = (label: string): string | undefined =>
+  LEGACY_ROW_KEYS.get(label) ??
+  (/^\d+(?:\.\d+)?% CI of log10\(B\/A\)$/.test(label) ? 'logRatioCi' : undefined)
 
 /** A label's current name(s), when it was renamed. */
 function renamedLabel(label: string, renames: readonly [string, string][]): string[] {

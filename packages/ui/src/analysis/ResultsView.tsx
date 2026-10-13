@@ -1,4 +1,4 @@
-import { guideEntry, registry } from '@ps/analyses'
+import { effectPlot, guideEntry, methodsParagraph, registry } from '@ps/analyses'
 import {
   blockRows,
   type ResultsExportOptions,
@@ -10,6 +10,7 @@ import {
 import {
   type AnalysisNode,
   type AnalysisResult,
+  APP_VERSION,
   countLimitFlags,
   DEFAULT_LIMIT_RULE,
   describeLimitRule,
@@ -17,9 +18,12 @@ import {
   type GraphNode,
   hasLimitFlags,
   type NodeId,
+  normalizeColumn,
   paramsOf,
   type ResultBlock,
   type ResultValue,
+  resultSummary,
+  summaryText,
 } from '@ps/model'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { type Command, GROUPS, useCommands } from '../commands/index.ts'
@@ -39,10 +43,46 @@ import { JobStatus } from './JobStatus.tsx'
 import { MethodCards } from './MethodCards.tsx'
 import { MethodHistory } from './MethodHistory.tsx'
 import { needsHint } from './needs.ts'
+import { SketchView } from './SketchView.tsx'
 
 /** Numbers line up in a monospace column; words (names, Yes/No) read as normal text. */
 const cellClass = (v: ResultValue) =>
   v.kind === 'text' || v.kind === 'bool' || v.kind === 'pSummary' ? 'txt' : 'num'
+
+const STAR_WORDS = ['', 'one star', 'two stars', 'three stars', 'four stars']
+
+/**
+ * Roadmap 51d (U29): what a screen reader says for a value — a star summary in words ("four
+ * stars, P < 0.0001"), else nothing beyond the text.
+ */
+function valueLabel(
+  v: ResultValue,
+  text: string,
+  settings: { pValueStyle: 'GP' | 'APA' | 'NEJM'; pValueDigits: number },
+): string | undefined {
+  if (v.kind !== 'pSummary' || !/^\*+$/.test(text)) return undefined
+  const p = formatResultValue({ kind: 'pvalue', v: v.v }, settings)
+  return `${STAR_WORDS[text.length] ?? `${text.length} stars`}, P ${p.startsWith('<') ? `< ${p.slice(1)}` : `= ${p}`}`
+}
+
+function Value({
+  v,
+  settings,
+}: {
+  v: ResultValue
+  settings: { pValueStyle: 'GP' | 'APA' | 'NEJM'; pValueDigits: number }
+}) {
+  return <>{formatResultValue(v, settings)}</>
+}
+
+/** The accessible name of a cell whose text reads poorly (a star summary), else none. */
+const cellLabel = (
+  v: ResultValue,
+  settings: { pValueStyle: 'GP' | 'APA' | 'NEJM'; pValueDigits: number },
+) => {
+  const label = valueLabel(v, formatResultValue(v, settings), settings)
+  return label ? { 'aria-label': label } : {}
+}
 
 function Block({
   block,
@@ -54,6 +94,9 @@ function Block({
   switch (block.type) {
     case 'note':
       return <p className="note">{block.text}</p>
+    // Roadmap 51d: shown above the tabs (`ResultSummary`).
+    case 'summary':
+      return null
     case 'keyValue':
       return (
         <table className="results kv">
@@ -68,8 +111,10 @@ function Block({
             {block.rows.map((r, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: labels can repeat ("95% CI of ratio")
               <tr key={i}>
-                <td>{r.label}</td>
-                <td className={cellClass(r.value)}>{formatResultValue(r.value, settings)}</td>
+                <th scope="row">{r.label}</th>
+                <td className={cellClass(r.value)} {...cellLabel(r.value, settings)}>
+                  <Value v={r.value} settings={settings} />
+                </td>
               </tr>
             ))}
           </tbody>
@@ -78,6 +123,8 @@ function Block({
     case 'table':
       return (
         <table className="results grid">
+          {/* Roadmap 51d (S23): what the comparisons' P values and CIs refer to. */}
+          {block.caption && <caption className="family-caption">{block.caption}</caption>}
           <thead>
             {block.title && (
               <tr>
@@ -87,7 +134,9 @@ function Block({
             <tr>
               {block.columns.map((c, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: positional columns
-                <th key={i}>{c}</th>
+                <th key={i} scope="col">
+                  {c}
+                </th>
               ))}
             </tr>
           </thead>
@@ -95,12 +144,19 @@ function Block({
             {block.rows.map((row, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: positional rows
               <tr key={i}>
-                {row.map((v, j) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: positional cells
-                  <td key={j} className={j === 0 ? '' : cellClass(v)}>
-                    {formatResultValue(v, settings)}
-                  </td>
-                ))}
+                {row.map((v, j) =>
+                  j === 0 ? (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: positional cells
+                    <th key={j} scope="row">
+                      <Value v={v} settings={settings} />
+                    </th>
+                  ) : (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: positional cells
+                    <td key={j} className={cellClass(v)} {...cellLabel(v, settings)}>
+                      <Value v={v} settings={settings} />
+                    </td>
+                  ),
+                )}
               </tr>
             ))}
           </tbody>
@@ -129,7 +185,7 @@ export function ResultsView({
   onAnalyze?: (id: NodeId) => void
   onNewGraph?: (id: NodeId) => void
 }) {
-  const { store } = useServices()
+  const { store, fonts } = useServices()
   const node = useDoc((d) => d.nodes[id]) as AnalysisNode
   const settings = useDoc((d) => d.settings)
   const project = useDoc((d) => d)
@@ -206,10 +262,12 @@ export function ResultsView({
   }
 
   const sheets = result?.sheets ?? []
-  const tabs = [
-    ...(table ? [{ key: TABLE_TAB, title: 'Data table' }] : []),
-    ...sheets.map((s) => ({ key: s.key, title: s.title })),
-  ]
+  // Roadmap 51d (§8.1, U21): the answer first — a derived data table (predictions, a survival
+  // table) comes after the sheets of an analysis that answers a question (it has a summary).
+  const summary = result ? resultSummary(result.sheets) : null
+  const tableTab = table ? [{ key: TABLE_TAB, title: 'Data table' }] : []
+  const sheetTabs = sheets.map((s) => ({ key: s.key, title: s.title }))
+  const tabs = summary ? [...sheetTabs, ...tableTab] : [...tableTab, ...sheetTabs]
   const current = tabs.find((t) => t.key === tab) ?? tabs[0]
   const sheet = sheets.find((s) => s.key === current?.key)
   const stale = state?.status === 'pending'
@@ -305,22 +363,44 @@ export function ResultsView({
   useCommands('view', commands)
 
   // Roadmap 43 (UX review F22): an error says, if it is about too few values, what the analysis
-  // needs, and links to the table analyzed.
+  // needs, and links to the table analyzed. Roadmap 51b (§4.6): the link is the right one —
+  // Change parameters… when the failure is about the options, Go to table when it's about the
+  // values (what `validate` says of the analysis' input, the same check `run` failed).
   const source = project.nodes[node.input.source]
+  const sourceTable = useSourceTable(node.input.source)
+  const errorWhere = useMemo(() => {
+    const def = registry.get(node.analysisId)
+    const p = def && paramsOf(def, node)
+    const plain = !node.input.atX && !node.input.pools && !node.input.byX
+    if (!def?.validate || !p?.ok || !sourceTable || !plain) return () => 'table' as const
+    const input = node.input.dataSets.flatMap((k) => normalizeColumn(sourceTable, k) ?? [])
+    const problem = def.validate(input, p.params, {
+      tableKind: sourceTable.tableKind,
+      xTitle: sourceTable.x?.title ?? null,
+    })
+    return (message: string) => (problem?.message === message ? problem.where : 'table')
+  }, [node, sourceTable])
   const errorHelp = (message: string) => {
     const hint = needsHint(registry.get(node.analysisId), message)
     return (
       <>
         {hint && <span className="error-hint">{hint}</span>}
-        {source && onOpen && (
-          <button
-            type="button"
-            className="link"
-            title={`Open “${source.name}”`}
-            onClick={() => onOpen(source.id)}
-          >
-            Go to table
+        {errorWhere(message) === 'params' ? (
+          <button type="button" className="link" onClick={onEdit}>
+            Change parameters…
           </button>
+        ) : (
+          source &&
+          onOpen && (
+            <button
+              type="button"
+              className="link"
+              title={`Open “${source.name}”`}
+              onClick={() => onOpen(source.id)}
+            >
+              Go to table
+            </button>
+          )
         )}
       </>
     )
@@ -355,6 +435,73 @@ export function ResultsView({
     [project, id],
   )
 
+  // Roadmap 51d (§8.1, §8.5): the analyzed data sets' names, the effect plot, the methods
+  // paragraph.
+  const titles = useMemo(() => {
+    const src = project.nodes[node.input.source]
+    return node.input.dataSets.map(
+      (k) => (src?.kind === 'table' ? src.dataSets.find((d) => d.id === k)?.title : undefined) ?? k,
+    )
+  }, [project, node.input.source, node.input.dataSets])
+  const effect = useMemo(() => (result ? effectPlot(result, titles) : null), [result, titles])
+  const methods = useMemo(() => {
+    const def = registry.get(node.analysisId)
+    if (!def) return null
+    const src = project.nodes[node.input.source]
+    const titleOf = (k: string) =>
+      src?.kind === 'table' ? src.dataSets.find((d) => d.id === k)?.title : undefined
+    return methodsParagraph({
+      node,
+      def,
+      names: {
+        dataSets: titles,
+        table: src?.name ?? '',
+        ...(src?.kind === 'table' && src.factorNames ? { factors: src.factorNames } : {}),
+      },
+      defOf: (k) => registry.get(k),
+      titleOf,
+      ...(result ? { result } : {}),
+      appVersion: APP_VERSION,
+      ...(guided ? { guideQuestion: guideEntry(guided.entry)?.question ?? guided.entry } : {}),
+    })
+  }, [node, project, titles, result, guided])
+  const copyMethods = () => {
+    if (!methods) return
+    navigator.clipboard
+      ?.writeText(methods)
+      .catch((e: unknown) =>
+        onError(`The clipboard could not be written here (${errorMessage(e)}).`),
+      )
+  }
+  const blocks = sheet?.blocks ?? []
+  const mainBlocks = blocks
+    .map((b, i) => [b, i] as const)
+    .filter(([b]) => !isDetail(b) && b.type !== 'summary')
+  const detailBlocks = blocks.map((b, i) => [b, i] as const).filter(([b]) => isDetail(b))
+  const blockView = ([b, i]: readonly [ResultBlock, number]) => (
+    // biome-ignore lint/a11y/noStaticElementInteractions: a context menu for the block
+    <div
+      key={i}
+      className="block"
+      onContextMenu={(e) => {
+        e.preventDefault()
+        setMenu({
+          x: e.clientX,
+          y: e.clientY,
+          label: 'Results',
+          entries: [
+            ...(b.type === 'note' || b.type === 'summary'
+              ? []
+              : [{ label: 'Copy table', onSelect: () => copy(blockClip(b)) }]),
+            { command: 'edit.copy', label: 'Copy sheet' },
+          ],
+        })
+      }}
+    >
+      <Block block={b} settings={settings} />
+    </div>
+  )
+
   return (
     <div className="results-view" ref={viewRef}>
       {menu && <CommandMenu menu={menu} onClose={() => setMenu(null)} />}
@@ -381,7 +528,9 @@ export function ResultsView({
           ))}
         <span className="hint">
           {state?.status === 'pending' && 'Updating…'}
-          {state?.status === 'ready' && 'Up to date'}
+          {/* Roadmap 51b (§4.6): a failed result says Error, not Up to date. */}
+          {state?.status === 'ready' && (result?.status === 'error' ? 'Error' : 'Up to date')}
+          {state?.status === 'error' && !state.cancelled && 'Error'}
         </span>
       </div>
       <SheetNotes node={node} />
@@ -411,8 +560,14 @@ export function ResultsView({
       )}
       <JobStatus id={id} state={state} />
       {state?.status === 'error' && !state.cancelled && (
-        <div className="banner error results-error">
-          <span>{state.message}</span>
+        <div className="banner error results-error" role="alert">
+          {/* Roadmap 51d (U29): an error says so in words, not by its colour only. */}
+          <span>
+            <span className="error-icon" aria-hidden="true">
+              ⚠
+            </span>{' '}
+            Error: {state.message}
+          </span>
           {errorHelp(state.message)}
         </div>
       )}
@@ -422,7 +577,12 @@ export function ResultsView({
             <li key={d.message} className={d.level}>
               {i === firstError ? (
                 <span className="results-error">
-                  <span>{d.message}</span>
+                  <span>
+                    <span className="error-icon" aria-hidden="true">
+                      ⚠
+                    </span>{' '}
+                    Error: {d.message}
+                  </span>
                   {errorHelp(d.message)}
                 </span>
               ) : (
@@ -434,6 +594,17 @@ export function ResultsView({
       )}
       {state?.status === 'pending' && state.message && (
         <div className="banner info">{state.message}</div>
+      )}
+      {/* Roadmap 51d (§8.1, U18, U25, U29): the answer first, in a sentence, with its picture. */}
+      {summary && result && (
+        <section className={`result-summary ${stale ? 'stale' : ''}`} aria-label="Summary">
+          <p className="summary-sentence">{summaryText(summary, settings)}</p>
+          {effect && (
+            <div className="effect-plot">
+              <SketchView spec={effect} fonts={fonts} heading="The effects" />
+            </div>
+          )}
+        </section>
       )}
       {tabs.length > 1 && (
         <div className="tabs" role="tablist">
@@ -457,33 +628,30 @@ export function ResultsView({
         </div>
       ) : (
         <div className={`sheet ${stale ? 'stale' : ''}`}>
-          {sheet?.blocks.map((b, i) => (
-            // biome-ignore lint/a11y/noStaticElementInteractions: a context menu for the block
-            <div
-              // biome-ignore lint/suspicious/noArrayIndexKey: blocks are positional
-              key={i}
-              className="block"
-              onContextMenu={(e) => {
-                e.preventDefault()
-                setMenu({
-                  x: e.clientX,
-                  y: e.clientY,
-                  label: 'Results',
-                  entries: [
-                    ...(b.type === 'note'
-                      ? []
-                      : [{ label: 'Copy table', onSelect: () => copy(blockClip(b)) }]),
-                    { command: 'edit.copy', label: 'Copy sheet' },
-                  ],
-                })
-              }}
-            >
-              <Block block={b} settings={settings} />
-            </div>
-          ))}
+          {mainBlocks.map(blockView)}
+          {/* Roadmap 51d (§8.1, U22): the details, collapsed. */}
+          {detailBlocks.length > 0 && (
+            <details className="result-details">
+              <summary>Details</summary>
+              {detailBlocks.map(blockView)}
+            </details>
+          )}
           {!result && state?.status !== 'error' && <p className="muted">Calculating…</p>}
         </div>
+      )}
+      {/* Roadmap 51d (§8.1, §7.2): the method — a paragraph to copy into a paper. */}
+      {methods && result && result.status !== 'error' && (
+        <details className="method-section">
+          <summary>Method</summary>
+          <p className="methods-paragraph">{methods}</p>
+          <button type="button" onClick={copyMethods}>
+            Copy methods text
+          </button>
+        </details>
       )}
     </div>
   )
 }
+
+/** Roadmap 51d: a block shown under Details (collapsed). */
+const isDetail = (b: ResultBlock) => b.type !== 'summary' && 'detail' in b && b.detail === true

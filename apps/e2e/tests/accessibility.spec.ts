@@ -420,7 +420,7 @@ test('keyboard only: import a CSV, make a graph, run an analysis, export', async
   await command(page, 'linear regression', /^Simple linear regression…/)
   const analyze = dialog(page, /^Analyze “/)
   await expect(analyze).toBeVisible()
-  await tabToAndPress(page, /^OK$/)
+  await tabToAndPress(page, /^Analyze$/)
   await expect(analyze).toBeHidden()
   await expectUpToDate(page)
 

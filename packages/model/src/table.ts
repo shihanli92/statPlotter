@@ -372,6 +372,14 @@ const DataTableObject = z.object({
    * rule they were imported with, or changed since in Table › Limits…). Absent: none flagged.
    */
   limits: LimitRule.optional(),
+  /**
+   * Roadmap 51d (U19): a grouped table's factor names — what its rows and its data sets (columns)
+   * stand for ("Genotype", "Treatment") — which results and graphs use instead of "Row factor"
+   * and "Column factor". Absent (or a name absent): unnamed.
+   */
+  factorNames: z
+    .object({ rows: z.string().max(80).optional(), columns: z.string().max(80).optional() })
+    .optional(),
 })
 type DataTableShape = z.infer<typeof DataTableObject>
 

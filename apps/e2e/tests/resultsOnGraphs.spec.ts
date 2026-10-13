@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect, openExample, test } from './fixtures.ts'
-import { analyze, newTable, runMenu, sheet, typeCells } from './helpers-data.ts'
+import { analyze, newTable, openTier, runMenu, sheet, typeCells } from './helpers-data.ts'
 import {
   dblclickOn,
   dialog,
@@ -37,6 +37,8 @@ test('r and P from the analysis dialog: edited, then following a data edit', asy
   const svg = await newGraph(page, null, 'Doses graph')
   await openSheet(page, 'Doses', 'Data Tables')
   await analyze(page, 'Correlation', async (d) => {
+    // Roadmap 51b (§4.2): Show on graph is part of Reporting.
+    await openTier(d, 'Reporting')
     await d.getByRole('checkbox', { name: 'Show r and P on the graph' }).check()
   })
   await openSheet(page, 'Doses graph', 'Graphs')
@@ -72,6 +74,7 @@ test('EC50 with drop lines from a dose-response fit', async ({ page }) => {
   const svg = await newGraph(page, null, 'Agonist graph')
   await openSheet(page, 'Agonist', 'Data Tables')
   await analyze(page, 'Nonlinear regression (curve fit)', async (d) => {
+    await openTier(d, 'Reporting')
     await d.getByRole('checkbox', { name: 'Show EC50 on the graph' }).check()
     await d.getByRole('checkbox', { name: 'Drop lines at EC50' }).check()
   })

@@ -152,6 +152,7 @@ interface DataTable {
   columnWidths?: Record<string, number>   // grid widths in CSS px (24–1200; roadmap 29), by columnWidthKey
   cellsTable?: boolean                    // multiple variables: a cells table or not (roadmap 34f, §6.1h); absent = by its rows
   limits?: LimitRule                      // how cells at a detection limit are substituted (roadmap 39, §3.3a)
+  factorNames?: { rows?: string; columns?: string }  // grouped: the factors' names (roadmap 51d); absent = "Row factor", "Column factor"
 }
 
 interface DataSetColumn {
@@ -514,6 +515,7 @@ interface AnalysisNode {
              bracket?: true }        // 51a: set up with Guide me; 51c: made by a graph bracket
   history?: MethodChange[]           // roadmap 51c: method changes, oldest first, at most 50
   historyEarlier?: number            // changes before those kept
+  autoName?: true                    // roadmap 51d: the name follows the method (methodName) until renamed
 }
 interface MethodChange {
   at: string                         // ISO date-time
@@ -536,6 +538,8 @@ interface MethodChange {
   `threeWayAnova`, `multipleOneWay`, `friedman`, `multipleT`, `pStack`, `normality`, `survival`,
   `survivalFromVariables`, `roc`, `monteCarlo`, `nonlinearFit`, `nonlinearFitMV` (what each
   pins: their `migrateParams`; the params 0.3.8 wrote: `analyses/test/fixtures/params-v1/`).
+  At 0.3.11 (roadmap 51d, decision 1318) `multipleT` is at version 3 and `blandAltman` at 2:
+  later − earlier for new analyses, `aMinusB` pinned for saved ones.
   Monte Carlo's inner analysis keeps the version its params were written for
   (`params.analysis.pluginVersion`; absent in version 1: the inner analysis' version 1).
 - **`history`** (roadmap 51c, design §7.1, decision 1296): the analysis' method changes, written
@@ -545,6 +549,10 @@ interface MethodChange {
   `MAX_METHOD_HISTORY` (50) are kept, older ones counted in `historyEarlier`. Duplicate family
   and Apply remap `from.dataSets` (and data set keys in `from.params`) as the input's. Shown
   under the results; optional, so no schema version.
+- **`autoName`** (roadmap 51d, design §8.6, decision 1319): the name was made by the definition's
+  `methodName(params, names)` ("Welch’s t test: Treated vs Control (Day 1)") and is remade when the
+  method or groups change in the Analyze dialog; `node.rename` deletes it. Absent (every analysis
+  before 0.3.11): the name is the user's.
 - **`origin.bracket`** (roadmap 51c, §7.3): a test made by a graph's bracket (two groups, or a
   group pooled against one). With two or more on one graph each name ends "(uncorrected)";
   "Label these brackets from one ANOVA" replaces them.
@@ -625,6 +633,38 @@ place (`forms/shared.ts`). The guided chooser's trees are data too (`model/src/g
 `TableFacts`, `GuideEntry`, `GuideQuestion`, `GuideLeaf`, `GuideElsewhere`; the trees in
 `analyses/src/guide/`, decision 1279): a tree reads only the table's shape (`tableFacts`), never a
 result, and each leaf's params are parsed by its analysis' schema.
+
+**The Analyze dialog's contract (roadmap 51b, design §4–§5, decisions 1302–1312).** Code, not
+document data: tiers, conditions, checks, roles and the sketch never enter a project file and
+change no result.
+
+```ts
+FormField.tier?: 'essentials' | 'reporting' | 'advanced'   // attached to every field (dialog/rules.ts)
+FormField.appliesTo?: Condition[]          // hidden unless every condition holds
+FormField.unavailable?: Unavailable[]      // greyed with the reason (its value kept)
+FormOption.unavailable?: Unavailable[]     // an option greyed with the reason; chosen anyway: Analyze waits
+type Condition = ShowIf | { fact: BoolFact; is } | { fact: CountFact; atLeast?; atMost? } | { anyOf: Condition[] }
+interface AnalysisFacts { raw; hasX; twoByTwo; missingInMatched; groups; dataSets; maxPerCell; rows; columns; factors }
+AnalysisDef.validate?(input, p, ctx): Problem | null   // { message, where: 'params' | 'table', diagnostics? }
+AnalysisDef.check?(input, p, ctx): Check[]             // notes beyond validate ({ level: ok | note | block, message, where? })
+AnalysisDef.shared?: Partial<Record<SharedKey, SharedPath>>  // confidence, tails, direction, control, comparisons, design
+AnalysisDef.roles?: AnalysisRole[]                    // outcome, predictors, factors, time, event, groupBy, x, y
+AnalysisDef.sketch?(input, p, ctx): SketchSpec | null // panels of transient tables in native presets
+interface SketchSpec { panels: SketchPanel[]; caption; description; counts; notes?; sampled? }
+interface SketchPanel { id; title?; table: DataTable; preset: string;
+  brackets?: { a; b; label }[]; lines?: { at; axis? }[]; axes?; highlight?; lineSets? }
+```
+
+`validate` is what `run` returns as its failure: the registry wraps every definition's `run` to
+call it first (`withValidate`), so the dialog's block and the result can't disagree; it finds
+counts and shapes only (values per group, pairs, raw values, a stated direction), never a test.
+The words, tiers and the invalid combinations of design §4.4 are attached when the registry is
+built (`analyses/src/dialog/rules.ts`, as the explanations are); the sketches are in
+`analyses/src/sketch/` (attached the same way) and drawn by `@ps/graph` (`sketchGraph`: a preset
+graph of the panel's table, its brackets as annotations, its lines as typed reference-line
+layers, `lineSets` as a line layer) without knowing which analysis asked. Roles write the params
+the analyses already read (`y`, `time`, `event`, `status`, `groups`, `groupBy`, `x`, `group`) and
+`input.dataSets` (the roles' members in role order), so stored nodes keep their shape.
 
 One plugin per *dialog*, not per test variant: the dialog structure lab users know.
 
@@ -980,9 +1020,15 @@ interface GraphableDataSet {
 interface ResultSheet { key: string; title: string; blocks: ResultBlock[] }
 
 type ResultBlock =
-  | { type: 'keyValue'; title?: string; rows: { label: string; value: ResultValue }[] }
-  | { type: 'table'; title?: string; columns: string[]; rows: ResultValue[][] }
-  | { type: 'note'; text: string }
+  | { type: 'keyValue'; title?: string; key?: string; detail?: true
+      rows: { label: string; value: ResultValue; key?: string }[] }
+  | { type: 'table'; title?: string; key?: string; detail?: true; columns: string[]
+      rows: ResultValue[][]; rowKeys?: string[]; columnKeys?: string[]
+      caption?: string }                          // roadmap 51d: a comparisons table's header (§8.4)
+  | { type: 'note'; text: string; detail?: true }
+  | { type: 'summary'; parts: SummaryPart[] }     // roadmap 51d: the answer in a sentence (§8.2)
+
+type SummaryPart = string | { value: ResultValue; role?: 'p' | 'q' | 'estimate' | 'ci'; unit?: string }
 
 type ResultValue =
   | { kind: 'number'; v: number; digits?: number }
@@ -996,6 +1042,17 @@ type ResultValue =
 
 Raw doubles are stored; formatting happens at display time. Changing the P value style in
 settings re-renders every result and bracket without recomputation.
+
+**Results that explain themselves (roadmap 51d, design §8, decisions 1313–1323).** After an
+analysis computes, its result is finished from its own values (`withSummaries`,
+`analyses/src/summary/`): a `summary` block (the answer in the data sets' names; `summaryText`
+writes it — P in the project's style after "P =" or "P <", `role: 'q'` as "q =", numbers to three
+significant digits with a unit prefix) kept after the first sheet's blocks and shown first
+(`summaryFirst`); the 'comparisons' sheet moved first; blocks marked `detail` (shown under
+Details) and comparisons tables given a `caption` (the family, the method, what P and the CIs
+refer to). Row and block `key`s, a table's `rowKeys` / `columnKeys`, are stable names for
+references (below) and for the summary. `RunContext.factorNames` carries a grouped table's
+`factorNames`. No number changes; `ANALYSES_VERSION` keys the cache.
 
 ---
 
@@ -1733,7 +1790,8 @@ interface ResultStat {
 }
 type ResultRef =
   | { from: 'value'; key: string }                   // AnalysisResult.values[key]
-  | { from: 'cell'; sheet: string; block?: string; row: string; column?: string; end?: 'lo' | 'hi' }
+  | { from: 'cell'; sheet: string; block?: string; row: string; column?: string; end?: 'lo' | 'hi'
+      blockKey?: string; rowKey?: string; columnKey?: string }   // roadmap 51d: tried first
   | { from: 'comparison'; key: string; what?: 'p' | 'estimate' }
 interface FieldFormat {                              // sparse
   digits?: number; decimals?: number                 // significant digits (absent 3); fixed decimals win
@@ -1783,6 +1841,10 @@ interface ResultTemplate {                           // an analysis' ready resul
   the row), its row's label (a table row's first cell as shown) and its column's title; drawn per
   data set, `{key}` (value and comparison keys) and `{dataSet}` (block, row, column) are the data
   set's key and title. A value gone reads "—" with a warning; while the analysis computes, "…".
+  Roadmap 51d (decision 1316): a cell's keys (`rowKey`, `blockKey`, `columnKey`; `{key}` per data
+  set) are tried before its labels, and a label of before 0.3.11 ("Mean of column A",
+  "Difference between means (B − A)", "Row factor") reads the row keyed for it now; new
+  references carry the keys.
 - **Templates** (`parseTemplate`, `fillTemplate`): a field takes the format of the template's
   text around its opening brace; its own formatting (a raised exponent) goes over it; "P = {P}"
   reads "P < 0.0001" when the value is below its threshold. An unknown field reads "—".

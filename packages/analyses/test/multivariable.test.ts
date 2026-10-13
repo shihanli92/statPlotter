@@ -155,7 +155,7 @@ describe('column-table method comparisons', () => {
   })
 
   it('Bland-Altman pairs rows and draws bias and limit lines', () => {
-    const r = runDef(blandAltmanDef, columnTable([controls, patients]))
+    const r = runDef(blandAltmanDef, columnTable([controls, patients]), { order: 'aMinusB' })
     const ref = blandAltman(controls, patients)
     expect(v(r.values.bias)).toBe(ref.bias)
     expect(r.outputs.upper!.y).toEqual([ref.upper, ref.upper])

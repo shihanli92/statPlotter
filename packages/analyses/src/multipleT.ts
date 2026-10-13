@@ -1,4 +1,13 @@
-import type { AnalysisDef, Comparison, GraphableDataSet, ResultBlock, ResultValue } from '@ps/model'
+import {
+  type AnalysisDef,
+  type Comparison,
+  type GraphableDataSet,
+  type NormalizedDataSet,
+  type Problem,
+  pinDefaults,
+  type ResultBlock,
+  type ResultValue,
+} from '@ps/model'
 import {
   correctFamily,
   type MultipleTRowInput,
@@ -15,6 +24,7 @@ import {
   int,
   kv,
   num,
+  problem,
   pval,
   result,
   table,
@@ -48,8 +58,11 @@ const Params = z.object({
   /** Unpaired nonparametric test. */
   rankTest: z.enum(['mannWhitney', 'kolmogorovSmirnov']).default('mannWhitney'),
   ...familyParams,
-  /** "Compute the difference as": first data set − second, or second − first. */
-  difference: z.enum(['aMinusB', 'bMinusA']).default('aMinusB'),
+  /**
+   * "Compute the difference as": second data set − first (roadmap 51d, S25: later − earlier, the
+   * default of new analyses, version 3), or first − second (saved analyses keep it).
+   */
+  difference: z.enum(['aMinusB', 'bMinusA']).default('bMinusA'),
   /** Add a −log10(P) column (the volcano plot's Y). */
   reportLogP: z.boolean().default(false),
 })
@@ -111,7 +124,7 @@ const SKIP_TEXT: Record<MultipleTSkip, string> = {
 
 export const multipleTDef: AnalysisDef<Params> = {
   id: 'multipleT',
-  version: 2,
+  version: 3,
   title: 'Multiple t tests (and nonparametric tests)',
   category: 'Grouped analyses',
   description:
@@ -119,8 +132,11 @@ export const multipleTDef: AnalysisDef<Params> = {
   accepts: ['grouped'],
   inputs: { min: 2, max: 2 },
   params: Params,
-  // S34: Q was 1% by default before 0.3.9.
-  migrateParams: (raw, from) => (from >= 2 ? raw : pinFamilyQ(raw)),
+  // S34: Q was 1% by default before 0.3.9; S25: the difference was first − second before 0.3.11.
+  migrateParams: (raw, from) => {
+    const q = from >= 2 ? raw : pinFamilyQ(raw)
+    return from >= 3 ? q : pinDefaults(q, [[['difference'], 'aMinusB']])
+  },
   form: [
     {
       path: ['design'],
@@ -177,8 +193,8 @@ export const multipleTDef: AnalysisDef<Params> = {
       label: 'Compute the difference as',
       kind: 'radio',
       options: [
-        { value: 'aMinusB', label: 'First data set − second' },
-        { value: 'bMinusA', label: 'Second data set − first' },
+        { value: 'bMinusA', label: '{B} − {A} (later − earlier)' },
+        { value: 'aMinusB', label: '{A} − {B}' },
       ],
     },
     { path: ['reportLogP'], label: 'Report −log10(P value)', kind: 'checkbox' },
@@ -208,6 +224,7 @@ export const multipleTDef: AnalysisDef<Params> = {
       { key: 'volcano:other', graph, mark: 'points' as const },
     ]
   },
+  validate: validateMultipleT,
   run(input, params) {
     const few = tooFewDataSets(input, 2, 'Multiple t tests compare two data sets.')
     if (few) return few
@@ -312,9 +329,8 @@ export const multipleTDef: AnalysisDef<Params> = {
     const level = familyLevel(params)
     const testWord = rank ? 'tests' : 't tests'
 
-    const summaryRows: [string, ResultValue][] = [
-      ['Column A', text(nameA)],
-      ['Column B', text(nameB)],
+    const summaryRows: ([string, ResultValue] | [string, ResultValue, string])[] = [
+      ['Difference', text(diffLabel), 'compared'],
       ['Test', text((lognormal && LOG_TEST_NAME[method]) || TEST_NAME[method])],
       ['Multiple comparisons', text(FAMILY_TITLE[familyMethod(params)])],
       fdr
@@ -421,4 +437,23 @@ export const multipleTDef: AnalysisDef<Params> = {
       outputs: { 'volcano:flagged': volcano(true), 'volcano:other': volcano(false) },
     })
   },
+}
+
+/** Roadmap 51b (§4.6): multiple t tests' problems before computing (`run`'s first failures). */
+function validateMultipleT(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  if (input.length < 2) return problem('Multiple t tests compare two data sets.')
+  const diagnostics = exclusionNotes(input)
+  const [A, B] = input as [NormalizedDataSet, NormalizedDataSet]
+  const method = testMethod(params)
+  const summary = A.data.shape === 'summary' || B.data.shape === 'summary'
+  if (summary && method !== 'welch' && method !== 'unpaired' && method !== 'pooled')
+    return problem(
+      `The ${TEST_NAME[method]} needs raw values, not mean/SD/N.`,
+      'table',
+      diagnostics,
+    )
+  if (summary && params.distribution === 'lognormal')
+    return problem('Lognormal t tests need raw values, not mean/SD/N.', 'table', diagnostics)
+  for (let r = 0; r < A.rowCount; r++) if (cellHasData(A, r) || cellHasData(B, r)) return null
+  return problem('There are no values to compare.', 'table', diagnostics)
 }

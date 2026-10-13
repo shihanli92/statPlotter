@@ -29,6 +29,7 @@ import {
   text,
   tooFewDataSets,
 } from './common.ts'
+import { validateFriedman, validateKS } from './validators.ts'
 
 /**
  * Roadmap 51c (S11): how Dunn's comparisons after a rank test are adjusted — Holm's step-down
@@ -101,6 +102,7 @@ export const friedmanDef: AnalysisDef<FriedmanParams> = {
       showIf: { path: ['comparisons'], in: ['allPairs', 'vsControl'] },
     },
   ],
+  validate: validateFriedman,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     const titles = input.map((d) => d.title)
@@ -219,6 +221,7 @@ export const kolmogorovSmirnovDef: AnalysisDef<KSParams> = {
   inputs: { min: 2, max: 2 },
   params: KSParams,
   form: [],
+  validate: validateKS,
   run(input) {
     const few = tooFewDataSets(input, 2, 'The Kolmogorov-Smirnov test compares two data sets.')
     if (few) return few
@@ -234,19 +237,16 @@ export const kolmogorovSmirnovDef: AnalysisDef<KSParams> = {
     return result({
       diagnostics,
       blocks: [
-        kv('Data sets', [
-          ['Column A', text(A.title)],
-          ['Column B', text(B.title)],
-        ]),
+        kv('Data sets', [['Compared', text(`${A.title} vs. ${B.title}`), 'compared']]),
         kv('Kolmogorov-Smirnov test', [
           ...pRows(r.p, 'two', r.exact),
           ['Kolmogorov-Smirnov D', num(r.d)],
         ]),
         kv('Data analyzed', [
-          ['Sample size, column A', int(a.length)],
-          ['Sample size, column B', int(b.length)],
-          ['Median of column A', num(median(a))],
-          ['Median of column B', num(median(b))],
+          [`Sample size, ${A.title}`, int(a.length), 'nA'],
+          [`Sample size, ${B.title}`, int(b.length), 'nB'],
+          [`Median of ${A.title}`, num(median(a)), 'medianA'],
+          [`Median of ${B.title}`, num(median(b)), 'medianB'],
         ]),
       ],
       values: { p: pval(r.p), d: num(r.d), ...testValue('Kolmogorov-Smirnov test') },

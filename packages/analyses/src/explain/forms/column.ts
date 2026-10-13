@@ -248,8 +248,9 @@ export const COLUMN_TEXT: Readonly<Record<string, FormText>> = {
     order: {
       line: 'Which method is subtracted from which (the sign of the bias).',
       options: {
-        aMinusB: 'The first method minus the second.',
-        bMinusA: 'The second method minus the first.',
+        bMinusA:
+          'The second method minus the first: later − earlier, as every analysis reports it.',
+        aMinusB: 'The first method minus the second (as before 0.3.11).',
       },
     },
   },

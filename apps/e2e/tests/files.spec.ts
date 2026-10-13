@@ -52,7 +52,7 @@ async function expectProject(page: Page, t = '6.182') {
   await expect(columnTitles(page)).toHaveText(['', 'Vehicle', 'Treated'])
   await expect(rowCells(page, 0)).toHaveText(['34.1', '45.2'])
   await expect(cell(page, 1, 0)).toHaveText('38.5*')
-  await sheet(page, 't test of Weights', 'Results').click()
+  await sheet(page, 'Student’s t test: Treated vs Vehicle (Weights)', 'Results').click()
   await expectUpToDate(page)
   await expect(resultValue(resultTable(page, 'Unpaired t test'), 't')).toHaveText(t)
   await expect(dirtyDot(page)).toHaveCount(0)

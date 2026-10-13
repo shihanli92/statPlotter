@@ -1,4 +1,4 @@
-import type { AnalysisDef, ResultBlock } from '@ps/model'
+import type { AnalysisDef, NormalizedDataSet, Problem, ResultBlock } from '@ps/model'
 import { likelihoodRatioTerms, poissonRegression } from '@ps/stats'
 import { z } from 'zod'
 import {
@@ -10,6 +10,7 @@ import {
   kv,
   num,
   pct,
+  problem,
   pSig,
   pval,
   result,
@@ -25,7 +26,16 @@ import {
   predictionParams,
   referenceNote,
 } from './mvVariables.ts'
-import { coefColumns, coefRows, hasTerms, lrTermBlock, model, roles, subset } from './regression.ts'
+import {
+  coefColumns,
+  coefRows,
+  hasTerms,
+  lrTermBlock,
+  model,
+  resultProblem,
+  roles,
+  subset,
+} from './regression.ts'
 
 // Poisson regression on a multiple-variables table (the multiple regression dialog with
 // "Poisson" chosen): Y is a count, log E[Y] = β0 + Σβⱼ Xⱼ, fit by maximum likelihood.
@@ -88,6 +98,7 @@ export const poissonRegressionDef: AnalysisDef<Params> = {
       mark: 'points',
     },
   ],
+  validate: validatePoisson,
   run(input, params) {
     const { outcome, predictors } = roles(input, [params.y])
     if (!predictors.length) return failure('Choose at least one predictor variable.')
@@ -206,4 +217,28 @@ export const poissonRegressionDef: AnalysisDef<Params> = {
       table: predicted?.table,
     })
   },
+}
+
+/** Roadmap 51b (§4.6): Poisson regression's problems before computing. */
+function validatePoisson(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  const { outcome, predictors } = roles(input, [params.y])
+  if (!predictors.length) return problem('Choose at least one predictor variable.', 'params')
+  const prep = model(input, outcome, predictors, params)
+  if ('fail' in prep) return resultProblem(prep.fail)
+  const { m, diagnostics } = prep
+  const y = m.outcomes[0]!
+  const yName = input[outcome[0]!]!.title
+  if (y.some((v) => !(Number.isInteger(v) && v >= 0)))
+    return problem(
+      `“${yName}” must hold counts (whole numbers, zero or more) for Poisson regression.`,
+      'table',
+      diagnostics,
+    )
+  if (!m.design.names.length)
+    return problem('No predictor is left in the model.', 'params', diagnostics)
+  const k = m.design.names.length + (params.intercept ? 1 : 0)
+  if (y.length <= k)
+    return problem(`Need more than ${k} complete rows (have ${y.length}).`, 'table', diagnostics)
+  if (y.every((v) => v === 0)) return problem(`Every “${yName}” is 0.`, 'table', diagnostics)
+  return null
 }

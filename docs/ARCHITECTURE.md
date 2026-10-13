@@ -59,9 +59,10 @@ packages/
   io/         CSV/XLSX/pzfx import, CSV/TSV/XLSX/HTML export, clipboard text, project file
   ui/         React: app shell and commands, navigator, grid, analysis dialogs, results, graph
               view and Format dialogs, canvas editing, layouts, examples, worker runner
-    analysis/   Analyze dialog (Guide me and All analyses), parameter forms with their
-                explanation lines, results view (How to read this), job status, the method
-                cards, Help › Choosing an analysis (roadmap 51a)
+    analysis/   Analyze dialog (Guide me and All analyses; roadmap 51b: three panels — the
+                list, the options in tiers with the groups as chips or role boxes, the live
+                sketch and checks), parameter forms with their explanation lines, results view
+                (How to read this), job status, the method cards, Help › Choosing an analysis
     commands/   The one command registry: menus, toolbar, ⌘K palette, shortcuts, native menus,
                 the keys each view handles itself (`viewKeys.ts`)
     components/ Shared widgets: dialogs, menus, menu bar, toolbar, colour picker, toasts, help
@@ -154,6 +155,10 @@ interface AnalysisDef<P> {
   outputs?(inputKeys, p): OutputDecl[] // graphable outputs and output graphs it declares
   graphResults?(p, { tableKind, dataSets }): ResultTemplate[]  // roadmap 35: ready labels, lines, bands
   cards?(p): string[]                 // roadmap 51a: the method cards the params choose, test first
+  validate?(input, p, ctx): Problem | null  // roadmap 51b: counts and shapes; run's failure and the dialog's block
+  check?(input, p, ctx): Check[]      // roadmap 51b: notes on the data before Analyze
+  shared?; roles?                     // roadmap 51b: choices kept across methods; role boxes
+  sketch?(input, p, ctx): SketchSpec | null  // roadmap 51b: the live sketch, as data
 }
 ```
 
@@ -165,6 +170,15 @@ attached to the definitions when the registry is built; the guided chooser's tre
 (`analyses/src/guide/`, types in `model/src/guide.ts`) read only the table's shape and end in an
 analysis with its params. One source for the dialog, the results' How to read this, the chooser
 and Help (design: [design/ANALYSIS_GUIDE.md](design/ANALYSIS_GUIDE.md)).
+
+Roadmap 51b: the Analyze dialog reads the analysis' contract only — each field's tier and
+conditions (`analyses/src/dialog/`: hidden when a field never applies to the table, greyed with
+the reason when another choice excludes it), `validate` (the same function `run` calls first) and
+`check` for the checks before Analyze, `shared` for the choices kept when the method changes,
+`roles` for the role boxes, and `sketch` for the live sketch: data (a transient table, a native
+preset, brackets and lines, `analyses/src/sketch/`) that `@ps/graph` draws (`sketchGraph`) like
+any graph, so drawing never branches on the method. The sketch holds data and structure only (no
+P, CI, r or fitted value; an import-boundary test keeps `sketch/` away from `run` and the tests).
 
 `AnalysisResult` carries status and diagnostics, result sheets, values, comparisons (for
 brackets), graphable outputs and an optional produced table in one serializable object, since it

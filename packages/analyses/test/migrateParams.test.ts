@@ -21,7 +21,9 @@ const CHANGED: Record<string, Record<string, [unknown, unknown]>> = {
     reportFTestVariances: [true, false],
   },
   friedman: { correction: ['dunn', 'holm'] },
-  multipleT: { q: [1, 5] },
+  // Roadmap 51d (S25): later − earlier (B − A) for new multiple t tests and Bland-Altman.
+  multipleT: { q: [1, 5], difference: ['aMinusB', 'bMinusA'] },
+  blandAltman: { order: ['aMinusB', 'bMinusA'] },
   pStack: { q: [1, 5] },
   normality: {
     dagostino: [true, false],
@@ -83,6 +85,22 @@ describe('params saved before 0.3.9', () => {
       )
       expect(changed, id).toEqual(CHANGED[id] ?? {})
     }
+  })
+
+  // Roadmap 51d (S25): the sign of multiple t tests (version 3) and Bland-Altman (version 2).
+  it('saved multiple t tests and Bland-Altman keep A − B; new ones are B − A', () => {
+    const read = (id: string, pluginVersion: number) => {
+      const r = paramsOf(def(id), { params: {}, pluginVersion })
+      return r.ok ? (r.params as Record<string, unknown>) : {}
+    }
+    expect(read('multipleT', 1)).toMatchObject({ difference: 'aMinusB', q: 1 })
+    expect(read('multipleT', 2)).toMatchObject({ difference: 'aMinusB', q: 5 })
+    expect(read('multipleT', 3)).toMatchObject({ difference: 'bMinusA', q: 5 })
+    expect(read('blandAltman', 1)).toMatchObject({ order: 'aMinusB' })
+    expect(read('blandAltman', 2)).toMatchObject({ order: 'bMinusA' })
+    // A stored choice is never overwritten.
+    const kept = paramsOf(def('multipleT'), { params: { difference: 'bMinusA' }, pluginVersion: 2 })
+    expect(kept.ok && (kept.params as { difference: string }).difference).toBe('bMinusA')
   })
 
   // Choices added since 0.3.8: what an analysis saved before gets (its behaviour then) and what a

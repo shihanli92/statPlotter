@@ -79,6 +79,10 @@ const ANALYSIS = [
   'examples',
   // Roadmap 51c: the method change notice and history, a one-tailed direction, duplicate tests.
   'methodHistory',
+  // Roadmap 51b: the three-panel Analyze dialog, its chips, roles, checks and live sketch.
+  'analyzeDialog',
+  // Roadmap 51d: results that explain themselves (summary, names, effect plot, methods text).
+  'analysisResults',
   'graphs',
   'groupOverlays',
   'resultsOnGraphs',
@@ -146,7 +150,13 @@ const RULES = [
   // Roadmap 49c: a dendrogram's cut (R's cutree) is stats too.
   ['packages/stats/', [...ANALYSIS, 'densityPlots', 'referenceLines', 'dendrogram']],
   ['packages/analyses/', ANALYSIS],
-  ['packages/ui/src/analysis/', [...ANALYSIS, 'accessibility']],
+  // Roadmap 51b: the Analyze dialog is also opened (and checked) by the toolbar's recent
+  // analyses, the palette and the getting-started checklist. Roadmap 51d: results are copied
+  // from the results view.
+  [
+    'packages/ui/src/analysis/',
+    [...ANALYSIS, 'accessibility', 'toolbar', 'shell', 'gettingStarted', 'dataExport'],
+  ],
   ['packages/ui/src/resultTables.ts', [...ANALYSIS, 'dataExport']],
   ['packages/ui/src/reuse/', ['reuse', 'analyses']],
   ['packages/ui/src/linkedSheets.ts', [...TABLE, ...ANALYSIS]],

@@ -71,6 +71,12 @@ export const AnalysisNode = z.object({
     .max(50)
     .optional(),
   historyEarlier: z.number().int().min(1).optional(),
+  /**
+   * Roadmap 51d (U23): the name was made from the method and groups (`AnalysisDef.methodName`)
+   * and follows them when they change; renaming by hand clears it. Absent: the name is the
+   * user's (every analysis made before 0.3.11).
+   */
+  autoName: z.literal(true).optional(),
 })
 export type AnalysisNode = z.infer<typeof AnalysisNode>
 
@@ -116,19 +122,57 @@ export const ResultValue = z.discriminatedUnion('kind', [
 ])
 export type ResultValue = z.infer<typeof ResultValue>
 
+/**
+ * Roadmap 51d (design §8.2): a piece of a summary sentence — text, or a value shown as results
+ * show it (a P value in the project's P style: `role: 'p'` reads "P = 0.0014" or "P < 0.0001",
+ * `role: 'q'` "q = 0.012";
+ * an interval with `role: 'ci'` reads "95% CI 4.3 to 18.7"), with the unit of the data after it.
+ */
+export const SummaryPart = z.union([
+  z.string(),
+  z.object({
+    value: ResultValue,
+    role: z.enum(['p', 'q', 'estimate', 'ci']).optional(),
+    unit: z.string().optional(),
+  }),
+])
+export type SummaryPart = z.infer<typeof SummaryPart>
+
+/**
+ * Roadmap 51d (§8.2): a block's stable key (`blockKey` in references) and whether it is a detail
+ * (shown collapsed under Details: the omnibus table, effect sizes, the data analyzed…).
+ */
+const blockMeta = {
+  key: z.string().optional(),
+  detail: z.literal(true).optional(),
+}
+
 export const ResultBlock = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('keyValue'),
     title: z.string().optional(),
-    rows: z.array(z.object({ label: z.string(), value: ResultValue })),
+    /** Roadmap 51d: `key` is the row's stable key (`rowKey` in references: 'meanA', 'diff'). */
+    rows: z.array(z.object({ label: z.string(), value: ResultValue, key: z.string().optional() })),
+    ...blockMeta,
   }),
   z.object({
     type: z.literal('table'),
     title: z.string().optional(),
     columns: z.array(z.string()),
     rows: z.array(z.array(ResultValue)),
+    /** Roadmap 51d: stable keys of the columns and rows ('' for one without), by position. */
+    columnKeys: z.array(z.string()).optional(),
+    rowKeys: z.array(z.string()).optional(),
+    /** Roadmap 51d (S23): what the table's P values and CIs refer to (the family, the method). */
+    caption: z.string().optional(),
+    ...blockMeta,
   }),
-  z.object({ type: z.literal('note'), text: z.string() }),
+  z.object({ type: z.literal('note'), text: z.string(), detail: z.literal(true).optional() }),
+  /**
+   * Roadmap 51d (§8.2): the answer in a sentence or two, generated from the result's own values
+   * in the user's names; first in the results.
+   */
+  z.object({ type: z.literal('summary'), parts: z.array(SummaryPart) }),
 ])
 export type ResultBlock = z.infer<typeof ResultBlock>
 
@@ -216,6 +260,159 @@ export interface ShowIf {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Roadmap 51b: the Analyze dialog's contract (docs/design/ANALYSIS_GUIDE.md §4, §5). Code, not
+// document data: tiers, conditions, checks, roles and the sketch never enter a project file.
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Roadmap 51b (§4.4): counts and shapes of the chosen data the dialog reads (`analysisFacts` in
+ * @ps/analyses), never a test of the data: whether every value is raw (not mean/SD/N), X values, a 2 × 2
+ * table, matched values with gaps; how many groups (number data sets), data sets, values in the
+ * fullest cell, rows with data, columns, and factors (multiple-variables ANOVA).
+ */
+export interface AnalysisFacts {
+  raw: boolean
+  /** The table has X values (XY and survival tables, results with X). */
+  hasX: boolean
+  twoByTwo: boolean
+  missingInMatched: boolean
+  groups: number
+  dataSets: number
+  maxPerCell: number
+  rows: number
+  columns: number
+  factors: number
+}
+export type BoolFact = 'raw' | 'hasX' | 'twoByTwo' | 'missingInMatched'
+export type CountFact = 'groups' | 'dataSets' | 'maxPerCell' | 'rows' | 'columns' | 'factors'
+
+/**
+ * Roadmap 51b (§4.4): a condition on the params (as `ShowIf`), on a fact about the chosen data,
+ * or any of several.
+ */
+export type Condition =
+  | ShowIf
+  | { fact: BoolFact; is: boolean }
+  | { fact: CountFact; atLeast?: number; atMost?: number }
+  | { anyOf: readonly Condition[] }
+
+/** Roadmap 51b: a choice greyed with the reason while all its conditions hold. */
+export interface Unavailable {
+  when: readonly Condition[]
+  reason: string
+}
+
+/**
+ * Roadmap 51b (§4.2): where a field sits in the dialog's options: Essentials (the design
+ * questions, open), Reporting (confidence level, extra output; collapsed with a summary) or
+ * Advanced (corrections, df and P methods, one-tailed P; collapsed with a count of changes).
+ */
+export type FieldTier = 'essentials' | 'reporting' | 'advanced'
+
+/**
+ * Roadmap 51b (§4.6): what the dialog says about the chosen data and options before Analyze:
+ * ✓ ok, ! a note, ✗ a block (Analyze disabled with it as the reason). `where`: what to change —
+ * the options, or the table's values. Never about a test's P.
+ */
+export interface Check {
+  level: 'ok' | 'note' | 'block'
+  message: string
+  where?: 'params' | 'table'
+}
+
+/**
+ * Roadmap 51b (§4.6): a problem `validate` finds before anything is computed (counts and shapes:
+ * values per group, unpaired rows, non-positive values for a ratio, a direction not stated…),
+ * returned by `run` as its failure (with `diagnostics`, the notes that come before it) and shown by
+ * the dialog as a block — one function, so the two can't disagree.
+ */
+export interface Problem {
+  message: string
+  where: 'params' | 'table'
+  /** Notes `run`'s failure carries before the error (excluded values…). */
+  diagnostics?: Diagnostic[]
+}
+
+/**
+ * Roadmap 51b (§4.5): the choices analyses share, carried across a change of method: the
+ * confidence level, tails, the predicted direction, the control, the comparisons, matching.
+ */
+export type SharedKey = 'confidence' | 'tails' | 'direction' | 'control' | 'comparisons' | 'design'
+
+/**
+ * Where an analysis keeps a shared choice: its path, and (when the analysis words it its own
+ * way) how its value reads as the shared one and back (matching: `true` / `false`).
+ */
+export interface SharedPath {
+  path: readonly string[]
+  read?: (value: unknown) => unknown
+  write?: (shared: unknown) => unknown
+}
+
+/**
+ * Roadmap 51b (§4.7): a role of a multiple-variables analysis (Outcome, Predictors, Factors, Group
+ * by…), shown as a box variables are added to. `param`: where a single variable's key is kept
+ * (absent: the role is the analyzed variables not in another role); `listParam`: a list of keys.
+ */
+export interface AnalysisRole {
+  id: 'outcome' | 'predictors' | 'factors' | 'variables' | 'groupBy' | 'time' | 'event' | 'x' | 'y'
+  label: string
+  accepts: 'number' | 'text' | 'binary' | 'any'
+  min: number
+  max: number
+  param?: readonly string[]
+  listParam?: readonly string[]
+  /** One line under the box. */
+  help?: string
+}
+
+/** Roadmap 51b (§5): what an analysis' sketch knows besides the normalized data sets. */
+export interface SketchContext {
+  tableKind: TableKind
+  xTitle: string | null
+  /** Rows drawn per group at most (larger tables are sampled by rows, every k-th). */
+  maxRows?: number
+}
+
+/**
+ * Roadmap 51b (§5.1): one small graph of the sketch: a transient table drawn in a native preset
+ * (`graph/src/presets.ts`), with brackets (typed labels) and reference lines. Data, never a
+ * statistic of a test: no P, CI or fitted parameter.
+ */
+export interface SketchPanel {
+  id: string
+  /** Above the panel ("Differences B − A"). */
+  title?: string
+  table: DataTable
+  preset: string
+  brackets?: readonly { a: string; b: string; label: string }[]
+  /** Reference lines across the plot: at a Y value (default) or an X value. */
+  lines?: readonly { at: number; axis?: 'x' | 'y'; label?: string }[]
+  axes?: { yLog?: boolean; xTitle?: string; yTitle?: string }
+  /** Data set keys drawn emphasized (the control). */
+  highlight?: readonly string[]
+  /**
+   * Data set keys drawn as a line through their points instead of symbols (an XY panel's model
+   * shape: its starting values, never a fit).
+   */
+  lineSets?: readonly string[]
+}
+
+/** Roadmap 51b (§5.1): the live sketch of an analysis being set up. */
+export interface SketchSpec {
+  panels: SketchPanel[]
+  /** One line under it ("Each line links a subject’s two values"). */
+  caption: string
+  /** The text alternative (§5.7). */
+  description: string
+  /** "3 groups · 8 values each · not matched · 2 comparisons". */
+  counts: string
+  /** Descriptive notes beside it (the SDs' ratio, values left out); never a test. */
+  notes?: readonly string[]
+  sampled?: { shown: number; total: number }
+}
+
+// ---------------------------------------------------------------------------------------------
 // Roadmap 51a: explanations (docs/design/ANALYSIS_GUIDE.md §2). Code, not document data: they
 // never enter a project file, and changing them changes no result.
 // ---------------------------------------------------------------------------------------------
@@ -278,6 +475,8 @@ export interface FormOption {
   value: string | number | boolean
   label: string
   explain?: OptionExplain
+  /** Roadmap 51b (§4.4): greyed with the reason while another choice or a fact excludes it. */
+  unavailable?: readonly Unavailable[]
 }
 
 /** Declarative parameter form, rendered by the UI's generic analysis dialog. */
@@ -297,6 +496,12 @@ export type FormField = {
    * lacks a value the others have), never a test of the data.
    */
   unavailableIf?: { fact: AnalysisFact; when?: readonly ShowIf[]; reason: string }
+  /** Roadmap 51b (§4.2): the dialog's tier (attached to every field by @ps/analyses). */
+  tier?: FieldTier
+  /** Roadmap 51b (§4.4): hidden unless every condition holds (it never applies otherwise). */
+  appliesTo?: readonly Condition[]
+  /** Roadmap 51b (§4.4): greyed with the reason while another choice excludes it. */
+  unavailable?: readonly Unavailable[]
 } & (
   | { kind: 'select'; options: readonly FormOption[] }
   | { kind: 'radio'; options: readonly FormOption[] }
@@ -356,6 +561,22 @@ export interface RunContext {
    * removed as outliers (ROUT, Q = 1%)"). Absent for data tables.
    */
   source?: { analysisId: string; name: string; note?: string }
+  /**
+   * Roadmap 51d (U19): a grouped table's factor names (`DataTable.factorNames`), which results
+   * use instead of "Row factor" and "Column factor". Absent: unnamed.
+   */
+  factorNames?: { rows?: string; columns?: string }
+}
+
+/**
+ * Roadmap 51d (U23): what an analysis' automatic name is made of — the analyzed data sets'
+ * titles in order, the table's name, the control's title, the factors' names.
+ */
+export interface MethodNames {
+  dataSets: readonly string[]
+  table: string
+  control?: string
+  factors?: { rows?: string; columns?: string }
 }
 
 /**
@@ -424,4 +645,33 @@ export interface AnalysisDef<P = unknown> {
    * shown by the dialog's About this method, the results' How to read this and Help.
    */
   cards?: (params: P) => readonly string[]
+  /**
+   * Roadmap 51b (§4.6): the problems found before computing (counts and shapes), the first one
+   * returned. `run` returns it as its failure; the dialog shows it as a block.
+   */
+  validate?: (
+    input: readonly NormalizedDataSet[],
+    params: P,
+    context?: RunContext,
+  ) => Problem | null
+  /** Roadmap 51b (§4.6): notes about the data beyond `validate` (unequal sizes, unpaired rows). */
+  check?: (input: readonly NormalizedDataSet[], params: P, context?: RunContext) => Check[]
+  /** Roadmap 51b (§4.5): where this analysis keeps the choices shared across methods. */
+  shared?: Partial<Record<SharedKey, SharedPath>>
+  /** Roadmap 51b (§4.7): roles of a multiple-variables analysis. */
+  roles?: readonly AnalysisRole[]
+  /**
+   * Roadmap 51b (§5): the live sketch — data and structure only, from the normalized input and
+   * params (never a result).
+   */
+  sketch?: (
+    input: readonly NormalizedDataSet[],
+    params: P,
+    context: SketchContext,
+  ) => SketchSpec | null
+  /**
+   * Roadmap 51d (U23): the analysis' automatic name from its method and groups ("Welch’s t test:
+   * Treated vs Control", "One-way ANOVA + Tukey: Dose response").
+   */
+  methodName?: (params: P, names: MethodNames) => string
 }

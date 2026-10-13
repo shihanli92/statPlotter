@@ -4,6 +4,7 @@ import {
   type Comparison,
   type Diagnostic,
   type NormalizedDataSet,
+  type Problem,
   pinDefaults,
   type ResultBlock,
 } from '@ps/model'
@@ -29,6 +30,7 @@ import {
   CONFIDENCE_FIELD,
   confidenceLevel,
   dfText,
+  directionIssue,
   directionProblem,
   exclusionNotes,
   failure,
@@ -39,11 +41,13 @@ import {
   num,
   oneTailedNotes,
   PREDICTED_FIELD,
+  type Predicted,
   pct,
   pinObservedDirection,
   pRows,
   predicted,
   predictedRows,
+  problem,
   pSig,
   pval,
   result,
@@ -193,6 +197,7 @@ export const nestedTDef: AnalysisDef<NestedTParams> = {
   params: NestedTParams,
   migrateParams: migrateNested,
   form: [TAILS_FIELD, PREDICTED_FIELD, DDF_FIELD, CONFIDENCE_FIELD],
+  validate: validateNested,
   run(input, params) {
     const groups = nestedGroups(input)
     if (!groups) return failure('Nested analyses need raw values.', exclusionNotes(input))
@@ -300,6 +305,7 @@ export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
     DDF_FIELD,
     CONFIDENCE_FIELD,
   ],
+  validate: validateNested,
   run(input, params) {
     const groups = nestedGroups(input)
     if (!groups) return failure('Nested analyses need raw values.', exclusionNotes(input))
@@ -376,4 +382,28 @@ export const nestedOneWayDef: AnalysisDef<NestedOneWayParams> = {
       comparisons,
     })
   },
+}
+
+/**
+ * Roadmap 51b (§4.6): nested analyses' problems before computing — raw values, a stated direction
+ * (t test), two groups, subjects with values in each, more subjects than groups.
+ */
+function validateNested(input: readonly NormalizedDataSet[], raw: object): Problem | null {
+  const params = raw as Partial<{ tails: 'two' | 'one'; predicted: Predicted }>
+  const groups = nestedGroups(input)
+  if (!groups) return problem('Nested analyses need raw values.', 'table', exclusionNotes(input))
+  if (params.tails && params.predicted) {
+    const unset = directionIssue(
+      { tails: params.tails, predicted: params.predicted },
+      exclusionNotes(input),
+    )
+    if (unset) return unset
+  }
+  const subjects = groups.map((g) => g.filter((c) => c.length > 0).length)
+  const notes = exclusionNotes(input)
+  if (groups.length < 2) return problem(ERRORS['too-few-groups'], 'table', notes)
+  if (subjects.some((c) => c === 0)) return problem(ERRORS['empty-group'], 'table', notes)
+  if (subjects.reduce((s, c) => s + c, 0) - groups.length < 1)
+    return problem(ERRORS['no-df'], 'table', notes)
+  return null
 }

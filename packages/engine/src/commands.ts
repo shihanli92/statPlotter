@@ -826,6 +826,8 @@ export function applyCommand(doc: Project, cmd: Command): void {
           )
       }
       node.name = cmd.name
+      // Roadmap 51d (U23): a name typed by the user no longer follows the method.
+      if (node.kind === 'analysis') delete node.autoName
       return
     }
 

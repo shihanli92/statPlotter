@@ -140,7 +140,9 @@ test('split buttons: Analyze ▾ and New graph ▾ offer the last choices, Expor
   await recentAnalyses.click()
   await menuItem(analyses, 'One-way ANOVA (and nonparametric)…').click()
   const d = dialog(page, 'Analyze “Weights”')
-  await expect(d.getByRole('group', { name: 'Assume equal SDs?' })).toBeVisible()
+  await expect(
+    d.getByRole('group', { name: 'Could a treatment change how much values vary?' }),
+  ).toBeVisible()
   await d.getByRole('button', { name: 'Cancel' }).click()
   await expect(d).toBeHidden()
 

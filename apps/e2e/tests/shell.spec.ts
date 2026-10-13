@@ -395,7 +395,9 @@ test('the command palette runs commands, opens analyses and goes to sheets', asy
   await palette.getByRole('option', { name: /^One-way ANOVA \(and nonparametric\)…/ }).click()
   await expect(palette).toBeHidden()
   const analyze = dialog(page, 'Analyze “Weights”')
-  await expect(analyze.getByRole('group', { name: 'Assume equal SDs?' })).toBeVisible()
+  await expect(
+    analyze.getByRole('group', { name: 'Could a treatment change how much values vary?' }),
+  ).toBeVisible()
   await analyze.getByRole('button', { name: 'Cancel' }).click()
 
   // "go to": the table's graph, by keyboard.

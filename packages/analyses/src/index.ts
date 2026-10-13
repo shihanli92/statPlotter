@@ -5,6 +5,7 @@ import { correlationDef } from './correlation.ts'
 import { aggregateDef, filterRowsDef, percentagesDef, survivalTimeDef } from './dataManipulation.ts'
 import { fractionOfTotalDef, rowStatsDef } from './dataProcessing.ts'
 import { descriptive } from './descriptive.ts'
+import { attachDialog, withValidate } from './dialog/index.ts'
 import { attachExplanations } from './explain/index.ts'
 import { aucDef, frequencyDef } from './frequency.ts'
 import { GRAPH_RESULTS } from './graphResults.ts'
@@ -15,6 +16,7 @@ import { multipleOneWayDef } from './multipleOneWay.ts'
 import { multipleTDef } from './multipleT.ts'
 import { blandAltmanDef, pcaDef, rocDef } from './multivariate.ts'
 import { survivalFromVariablesDef } from './mvSurvival.ts'
+import { attachNames } from './naming.ts'
 import { nestedOneWayDef, nestedTDef } from './nested.ts'
 import { nonlinearFitDef } from './nonlinear.ts'
 import { nonlinearFitMVDef } from './nonlinearMV.ts'
@@ -29,7 +31,9 @@ import { pStackDef } from './pStack.ts'
 import { mannWhitney, wilcoxon } from './rank.ts'
 import { coxRegressionDef, logisticRegressionDef, multipleRegressionDef } from './regression.ts'
 import { simulateColumnDef, simulateContingencyDef, simulateXYDef } from './simulate.ts'
+import { attachSketches } from './sketch/index.ts'
 import { smoothingDef } from './smoothing.ts'
+import { withSummaries } from './summary/index.ts'
 import { survivalDef } from './survival.ts'
 import { threeWayAnovaDef } from './threeWay.ts'
 import {
@@ -61,7 +65,12 @@ import { demingDef, simpleLogisticDef } from './xyModels.ts'
 // the other way); Kruskal-Wallis' exact P; Satterthwaite's df; RM main effects by per-contrast
 // errors; the mixed model for matched values with gaps; new comparisons later − earlier; pairwise
 // log-rank tests; result text (names, units, P < threshold, notes).
-export const ANALYSES_VERSION = '1.5.0'
+// 1.6.0 (roadmap 51d): results that explain themselves — a summary sentence in every statistical
+// result, the comparisons sheet first, details marked, comparisons tables' headers, the user's
+// names in labels (rows keyed for references), factor names, later − earlier for new multiple t
+// tests and Bland-Altman, "Not reached" medians, NNT as a positive number for one fewer or more.
+// Every number is unchanged.
+export const ANALYSES_VERSION = '1.6.0'
 
 export const ANALYSES: readonly AnalysisDef<unknown>[] = [
   descriptive,
@@ -129,6 +138,18 @@ for (const d of ANALYSES) {
 // Roadmap 51a: every analysis' explanations (its form's text, `cards`; `explain/`).
 attachExplanations(ANALYSES)
 
+// Roadmap 51b: the Analyze dialog's words, tiers and conditions (`dialog/rules.ts`), and `run`
+// returning `validate`'s problem as its failure (one function for the dialog's checks and run).
+attachDialog(ANALYSES)
+withValidate(ANALYSES)
+// Roadmap 51b: each analysis' live sketch (`sketch/`).
+attachSketches(ANALYSES)
+// Roadmap 51d: every result finished — its summary sentence first, the sheets by the question,
+// details marked, the comparisons' headers (`summary/`).
+withSummaries(ANALYSES)
+// Roadmap 51d (U23): names that follow the method (`naming.ts`).
+attachNames(ANALYSES)
+
 const byId: Map<string, AnalysisDef<unknown>> = new Map(ANALYSES.map((d) => [d.id, d]))
 
 export const registry = {
@@ -146,6 +167,7 @@ export {
   matchingRows,
   TIME_UNITS,
 } from './dataManipulation.ts'
+export * from './dialog/index.ts'
 export {
   CARD_FAMILIES,
   CARDS_OF,
@@ -158,12 +180,14 @@ export {
 } from './explain/index.ts'
 export * from './guide/index.ts'
 export { isMethodField, type MethodState, methodChanges } from './methodChanges.ts'
+export { type MethodsInput, methodsParagraph } from './methodsText.ts'
 export {
   labelOf,
   type MonteCarloParams,
   runSimulation,
   withInnerVersion,
 } from './monteCarlo.ts'
+export { methodNameOf } from './naming.ts'
 export {
   type Constraint,
   EQUATIONS,
@@ -174,6 +198,15 @@ export {
   USER_EQUATION,
 } from './nonlinear.ts'
 export { defaultParamValue, SIMULATIONS } from './simulate.ts'
+export { SKETCH_MAX_ROWS, SKETCHES, sampledRows } from './sketch/index.ts'
+export { effectPlot } from './summary/effectPlot.ts'
+export {
+  type ComparisonRow,
+  comparisonRows,
+  comparisonsTable,
+  familyCaption,
+  SUMMARIES,
+} from './summary/index.ts'
 export {
   aggregateDef,
   aucDef,

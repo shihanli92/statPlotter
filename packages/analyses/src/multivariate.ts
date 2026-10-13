@@ -3,6 +3,7 @@ import {
   type AnalysisResult,
   type NormalizedDataSet,
   type OutputDecl,
+  type Problem,
   pairedRows,
   pinDefaults,
   type ResultBlock,
@@ -32,6 +33,7 @@ import {
   num,
   pct,
   pick,
+  problem,
   pSig,
   pval,
   rawValues,
@@ -235,6 +237,7 @@ export const pcaDef: AnalysisDef<PcaParams> = {
         ]
       : []),
   ],
+  validate: validatePca,
   run(withGroup, params, _context, progress) {
     // The grouping variable (roadmap 34c) is analyzed with the variables but not in the PCA.
     const group = params.groupBy ? withGroup.find((d) => d.ref.key === params.groupBy) : undefined
@@ -562,6 +565,7 @@ export const rocDef: AnalysisDef<RocParams> = {
     },
     { key: 'identity', graph: { id: 'roc', name: 'ROC curve' } },
   ],
+  validate: validateRoc,
   run(input, params) {
     const few = tooFewDataSets(input, 2, 'A ROC curve needs two data sets: controls and patients.')
     if (few) return few
@@ -648,14 +652,15 @@ export const rocDef: AnalysisDef<RocParams> = {
 
 const BAParams = z.object({
   measure: z.enum(['difference', 'ratio', 'percent']).default('difference'),
-  order: z.enum(['aMinusB', 'bMinusA']).default('aMinusB'),
+  /** Roadmap 51d (S25): B − A for new analyses (version 2); saved ones keep A − B. */
+  order: z.enum(['aMinusB', 'bMinusA']).default('bMinusA'),
   confidenceLevel,
 })
 type BAParams = z.infer<typeof BAParams>
 
 export const blandAltmanDef: AnalysisDef<BAParams> = {
   id: 'blandAltman',
-  version: 1,
+  version: 2,
   title: 'Bland-Altman method comparison',
   category: 'Column analyses',
   description:
@@ -663,6 +668,7 @@ export const blandAltmanDef: AnalysisDef<BAParams> = {
   accepts: ['column'],
   inputs: { min: 2, max: 2 },
   params: BAParams,
+  migrateParams: (raw, from) => (from >= 2 ? raw : pinDefaults(raw, [[['order'], 'aMinusB']])),
   form: [
     {
       path: ['measure'],
@@ -679,8 +685,8 @@ export const blandAltmanDef: AnalysisDef<BAParams> = {
       label: 'Compute',
       kind: 'radio',
       options: [
-        { value: 'aMinusB', label: 'Method A − Method B (A / B)' },
-        { value: 'bMinusA', label: 'Method B − Method A (B / A)' },
+        { value: 'bMinusA', label: '{B} − {A} ({B} / {A})' },
+        { value: 'aMinusB', label: '{A} − {B} ({A} / {B})' },
       ],
     },
     CONFIDENCE_FIELD,
@@ -700,6 +706,7 @@ export const blandAltmanDef: AnalysisDef<BAParams> = {
       { key: 'lower', graph: g },
     ]
   },
+  validate: validateBlandAltman,
   run(input, params) {
     const few = tooFewDataSets(input, 2, 'Bland-Altman compares two data sets.')
     if (few) return few
@@ -738,10 +745,18 @@ export const blandAltmanDef: AnalysisDef<BAParams> = {
         ...ci('lower limit', res.lowerCI),
         ...ci('upper limit', res.upperCI),
       ]),
+      // Roadmap 51d (U19): the methods' names, the sign spelled out.
       kv('Data', [
-        ['Method A', text(A.title)],
-        ['Method B', text(B.title)],
-        ['Number of pairs', int(res.n)],
+        [
+          params.measure === 'ratio' ? 'Ratio' : 'Difference',
+          text(
+            params.order === 'bMinusA'
+              ? `${B.title} ${params.measure === 'ratio' ? '/' : '−'} ${A.title}`
+              : `${A.title} ${params.measure === 'ratio' ? '/' : '−'} ${B.title}`,
+          ),
+          'compared',
+        ],
+        ['Number of pairs', int(res.n), 'pairs'],
       ]),
     ]
     const [lo, hi] = valueRange(res.x)
@@ -771,4 +786,78 @@ export const blandAltmanDef: AnalysisDef<BAParams> = {
       },
     })
   },
+}
+
+// ---- Roadmap 51b (§4.6): problems before computing ---------------------------------------------
+
+/** ROC: two data sets of raw values, values in each, the stated direction. */
+function validateRoc(input: readonly NormalizedDataSet[], params: RocParams): Problem | null {
+  if (input.length < 2) return problem('A ROC curve needs two data sets: controls and patients.')
+  const diagnostics = exclusionNotes(input)
+  const controls = rawValues(input[0]!)
+  const patients = rawValues(input[1]!)
+  if (!controls || !patients)
+    return problem('A ROC curve needs raw values, not summary data.', 'table', diagnostics)
+  if (!controls.length || !patients.length)
+    return problem('Both columns need values.', 'table', diagnostics)
+  if (params.direction === 'unset') return problem(NO_ROC_DIRECTION, 'params', diagnostics)
+  return null
+}
+
+/** Bland-Altman: two data sets of raw values, two complete pairs, positive values for ratios. */
+function validateBlandAltman(
+  input: readonly NormalizedDataSet[],
+  params: BAParams,
+): Problem | null {
+  if (input.length < 2) return problem('Bland-Altman compares two data sets.')
+  const [A, B] = input as [NormalizedDataSet, NormalizedDataSet]
+  const diagnostics = exclusionNotes(input)
+  if (A.data.shape !== 'replicates' || B.data.shape !== 'replicates')
+    return problem('Bland-Altman needs raw values, not summary data.', 'table', diagnostics)
+  const pairs = pairedRows(A.data.reps[0]!, B.data.reps[0]!)
+  diagnostics.push(...unpairedRowsNote(A.data.reps[0]!, B.data.reps[0]!))
+  if (pairs.a.length < 2) return problem('Need at least two complete pairs.', 'table', diagnostics)
+  if (params.measure !== 'difference' && [...pairs.a, ...pairs.b].some((v) => v <= 0))
+    return problem('Ratios and % differences need positive values.', 'table', diagnostics)
+  return null
+}
+
+/** PCA: the grouping variable, PCR's variables, three complete rows, no constant variable. */
+function validatePca(withGroup: readonly NormalizedDataSet[], params: PcaParams): Problem | null {
+  const group = params.groupBy ? withGroup.find((d) => d.ref.key === params.groupBy) : undefined
+  if (params.groupBy && !group)
+    return problem('Choose the grouping variable among the data sets analyzed.', 'params')
+  if (group && !group.text)
+    return problem(`“${group.title}” is not a text variable; group by a text variable.`, 'params')
+  const others = group ? withGroup.filter((d) => d !== group && d.text) : []
+  const allInput = withGroup.filter((d) => d !== group && !others.includes(d))
+  const yIndex = params.pcr ? pick(allInput, params.pcrY) : -1
+  const input = allInput.filter((_, i) => i !== yIndex)
+  if (params.pcr && input.length < 2)
+    return problem('PCR needs an outcome and at least two predictor variables.', 'params')
+  const cc = completeCases(params.pcr ? [allInput[yIndex]!, ...input] : input)
+  if (params.pcr) cc.columns.shift()
+  const diagnostics = [...exclusionNotes(allInput), ...droppedNote(cc.dropped)]
+  if (others.length)
+    diagnostics.push({
+      level: 'info',
+      message: `Text variables left out of the PCA: ${others.map((d) => `“${d.title}”`).join(', ')}.`,
+    })
+  const names = input.map((d) => d.title)
+  if (group && names.length < 2)
+    return problem(
+      `Grouping by “${group.title}” needs at least two number variables in the PCA: with one, there is only PC1 and no PC2 to plot the groups against.`,
+      'params',
+      diagnostics,
+    )
+  if (cc.rows.length < 3)
+    return problem('PCA needs at least three complete rows.', 'table', diagnostics)
+  const constant = names.filter((_, v) => cc.columns[v]!.every((x) => x === cc.columns[v]![0]))
+  if (constant.length && (params.standardize || constant.length === names.length))
+    return problem(
+      `${constant.map((t) => `“${t}”`).join(', ')} ${constant.length > 1 ? 'have' : 'has'} the same value in every row; remove ${constant.length > 1 ? 'these variables' : 'this variable'} to run PCA.`,
+      'table',
+      diagnostics,
+    )
+  return null
 }

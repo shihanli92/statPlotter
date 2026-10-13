@@ -1,6 +1,9 @@
 import {
   type AnalysisDef,
   type AnalysisResult,
+  type Check,
+  type NormalizedDataSet,
+  type Problem,
   pairedRows,
   pinDefaults,
   type ResultBlock,
@@ -26,12 +29,15 @@ import {
   CONFIDENCE_FIELD,
   comparisonKey,
   confidenceLevel,
+  directionIssue,
   directionProblem,
   exclusionNotes,
   failure,
   int,
   interval,
+  keyed,
   kv,
+  minus,
   num,
   oneTailedNotes,
   PAIRED_NEEDS_RAW,
@@ -41,6 +47,7 @@ import {
   pRows,
   predicted,
   predictedRows,
+  problem,
   pSig,
   psum,
   pval,
@@ -85,6 +92,67 @@ export function migrateTTest(raw: unknown, from: number): unknown {
   ])
   if (welch) pinned.reportFTestVariances = false
   return pinObservedDirection(pinned)
+}
+
+/**
+ * Roadmap 51b (§4.6): the t test's problems before computing — two data sets, a stated direction,
+ * raw values and two complete pairs (paired), positive values (ratio), mean/SD/N and two values
+ * per group (unpaired) — `run`'s failures, shown by the dialog before Analyze.
+ */
+export function validateTTest(input: readonly NormalizedDataSet[], params: Params): Problem | null {
+  if (input.length < 2) return problem('A t test compares two data sets.', 'table')
+  const [A, B] = input as [NormalizedDataSet, NormalizedDataSet]
+  const notes = exclusionNotes(input)
+  const unset = directionIssue(params, notes)
+  if (unset) return unset
+  if (params.design === 'paired') {
+    const a = A.data.shape === 'replicates' ? A.data.reps[0]! : null
+    const b = B.data.shape === 'replicates' ? B.data.reps[0]! : null
+    if (!a || !b)
+      return problem(
+        `A paired t test needs raw values, not summary data.${PAIRED_NEEDS_RAW}`,
+        'table',
+        notes,
+      )
+    const pairs = pairedRows(a, b)
+    const withPairs = [...notes, ...unpairedRowsNote(a, b)]
+    if (pairs.a.length < 2)
+      return problem('A paired t test needs at least two complete pairs.', 'table', withPairs)
+    if (params.paired.measure === 'ratio' && [...pairs.a, ...pairs.b].some((v) => v <= 0))
+      return problem('A ratio paired t test needs all values to be positive.', 'table', withPairs)
+    return null
+  }
+  const rawA = rawValues(A)
+  const rawB = rawValues(B)
+  for (const ds of [A, B]) {
+    const s = rawValues(ds) ? null : summaryOf(ds)
+    const issue = s && summaryProblem(ds, 0, 2)
+    if (issue) return problem(issue, 'table', notes)
+    if (s && (!Number.isFinite(s.sd) || !Number.isFinite(s.n)))
+      return problem(`“${ds.title}” needs mean, SD (or SEM) and N for a t test.`, 'table', notes)
+  }
+  const nA = rawA ? rawA.length : summaryOf(A)!.n
+  const nB = rawB ? rawB.length : summaryOf(B)!.n
+  if (nA < 2 || nB < 2) return problem('Each group needs at least two values.', 'table', notes)
+  return null
+}
+
+/**
+ * Roadmap 51b (§4.4 row 20): the values a ratio paired t test can't take, named (a note beside
+ * the block, so the data can be edited).
+ */
+function ratioNotes(input: readonly NormalizedDataSet[], params: Params): Check[] {
+  if (params.design !== 'paired' || params.paired.measure !== 'ratio' || input.length < 2) return []
+  const out: string[] = []
+  for (const d of input.slice(0, 2)) {
+    if (d.data.shape !== 'replicates') continue
+    const v = d.data.reps[0]!
+    for (let r = 0; r < v.length && out.length < 4; r++)
+      if (v[r]! <= 0) out.push(`row ${r + 1} of “${d.title}” is ${v[r]}`)
+  }
+  return out.length
+    ? [{ level: 'note', message: `Not positive: ${out.join('; ')}.`, where: 'table' }]
+    : []
 }
 
 export const ttest: AnalysisDef<Params> = {
@@ -137,6 +205,8 @@ export const ttest: AnalysisDef<Params> = {
       showIf: [{ path: ['design'], in: ['unpaired'] }],
     },
   ],
+  validate: validateTTest,
+  check: ratioNotes,
   run(input, params) {
     const few = tooFewDataSets(input, 2, 'A t test compares two data sets.')
     if (few) return few
@@ -148,10 +218,9 @@ export const ttest: AnalysisDef<Params> = {
     // S1: the direction stated before the experiment, in the data sets' names (B − A).
     const words = [`${B.title} higher than ${A.title}`, `${B.title} lower than ${A.title}`] as const
     const tailRows = (p: number) => [...pRows(p, params.tails), ...predictedRows(params, words)]
-    const columnsBlock = kv('Data sets', [
-      ['Column A', text(A.title)],
-      ['Column B', text(B.title)],
-    ])
+    // Roadmap 51d (U19, U20): the groups in their names, the sign spelled out.
+    const [nameA, nameB] = [A.title, B.title]
+    const columnsBlock = kv('Data sets', [['Difference', text(minus(nameB, nameA)), 'compared']])
     const comparison = (p: number, value: number, lo: number, hi: number, label: string) => ({
       key: comparisonKey(A, B),
       a: A.ref,
@@ -190,17 +259,25 @@ export const ttest: AnalysisDef<Params> = {
             ...tailRows(r.p),
             ['t', num(r.t)],
             ['df', int(r.df)],
-            ['Number of pairs', int(r.n)],
+            ['Number of pairs', int(r.n), 'pairs'],
           ]),
-          kv('How big is the difference?', [
-            ['Mean of log10(B/A)', num(r.mean)],
-            [`${level} CI of log10(B/A)`, interval(two.ciLo, two.ciHi, params.confidenceLevel)],
-            ['Geometric mean of ratios (B/A)', num(r.ratio)],
-            [
-              `${level} CI of ratio`,
-              interval(two.ratioCiLo, two.ratioCiHi, params.confidenceLevel),
-            ],
-          ]),
+          keyed(
+            kv('How big is the difference?', [
+              [`Mean of log10(${nameB}/${nameA})`, num(r.mean), 'logRatio'],
+              [
+                `${level} CI of log10(${nameB}/${nameA})`,
+                interval(two.ciLo, two.ciHi, params.confidenceLevel),
+                'logRatioCi',
+              ],
+              [`Geometric mean of ratios (${nameB}/${nameA})`, num(r.ratio), 'ratio'],
+              [
+                `${level} CI of ratio`,
+                interval(two.ratioCiLo, two.ratioCiHi, params.confidenceLevel),
+                'ratioCi',
+              ],
+            ]),
+            'effect',
+          ),
         ]
         return result({
           blocks,
@@ -231,16 +308,23 @@ export const ttest: AnalysisDef<Params> = {
           ...tailRows(r.p),
           ['t', num(r.t)],
           ['df', int(r.df)],
-          ['Number of pairs', int(r.n)],
+          ['Number of pairs', int(r.n), 'pairs'],
         ]),
-        kv('How big is the difference?', [
-          ['Mean difference (B − A)', num(r.mean)],
-          ['SD of differences', num(r.sd)],
-          ['SEM of differences', num(r.se)],
-          [`${level} confidence interval`, interval(two.ciLo, two.ciHi, params.confidenceLevel)],
-          ['R squared (partial eta squared)', num(r.rSquared)],
-          ...effectRows(cohensDz(r.mean, r.sd, r.n), true),
-        ]),
+        keyed(
+          kv('How big is the difference?', [
+            [`Mean difference (${minus(nameB, nameA)})`, num(r.mean), 'diff'],
+            ['SD of differences', num(r.sd)],
+            ['SEM of differences', num(r.se)],
+            [
+              `${level} confidence interval`,
+              interval(two.ciLo, two.ciHi, params.confidenceLevel),
+              'ci',
+            ],
+            ['R squared (partial eta squared)', num(r.rSquared)],
+            ...effectRows(cohensDz(r.mean, r.sd, r.n), true, nameA),
+          ]),
+          'effect',
+        ),
       ]
       if (r.n >= 3) {
         blocks.push(
@@ -305,22 +389,30 @@ export const ttest: AnalysisDef<Params> = {
         [welch ? 'Welch-corrected t' : 't', num(r.t)],
         ['df', welch ? num(r.df) : int(r.df)],
       ]),
-      kv('How big is the difference?', [
-        ['Mean of column A', num(r.meanA)],
-        ['Mean of column B', num(r.meanB)],
-        ['Difference between means (B − A)', num(r.diff)],
-        ['SE of difference', num(r.seDiff)],
-        [`${level} confidence interval`, interval(two.ciLo, two.ciHi, params.confidenceLevel)],
-        ['R squared (eta squared)', num(r.rSquared)],
-        ...effectRows(
-          cohensD(
-            { mean: r.meanA, sd: r.sdA, n: r.nA },
-            { mean: r.meanB, sd: r.sdB, n: r.nB },
-            r.diff,
+      keyed(
+        kv('How big is the difference?', [
+          [`Mean of ${nameA}`, num(r.meanA), 'meanA'],
+          [`Mean of ${nameB}`, num(r.meanB), 'meanB'],
+          [`Difference between means (${minus(nameB, nameA)})`, num(r.diff), 'diff'],
+          ['SE of difference', num(r.seDiff)],
+          [
+            `${level} confidence interval`,
+            interval(two.ciLo, two.ciHi, params.confidenceLevel),
+            'ci',
+          ],
+          ['R squared (eta squared)', num(r.rSquared)],
+          ...effectRows(
+            cohensD(
+              { mean: r.meanA, sd: r.sdA, n: r.nA },
+              { mean: r.meanB, sd: r.sdB, n: r.nB },
+              r.diff,
+            ),
+            false,
+            nameA,
           ),
-          false,
-        ),
-      ]),
+        ]),
+        'effect',
+      ),
     ]
     // S2: the scatter of each group, described (not a test that picks one); the F test only
     // when asked for, and never a prompt to switch tests after the result.
@@ -350,8 +442,8 @@ export const ttest: AnalysisDef<Params> = {
     }
     blocks.push(
       kv('Data analyzed', [
-        ['Sample size, column A', int(nA)],
-        ['Sample size, column B', int(nB)],
+        [`Sample size, ${nameA}`, int(nA), 'nA'],
+        [`Sample size, ${nameB}`, int(nB), 'nB'],
       ]),
     )
     return result({
@@ -373,17 +465,21 @@ export const ttest: AnalysisDef<Params> = {
  * Standardized effect sizes (Cohen's d, Hedges' g and, unpaired, Glass's Δ):
  * paired designs use d_z (mean difference / SD of the differences).
  */
-function effectRows(e: StandardizedDifference, paired: boolean): [string, ResultValue][] {
+function effectRows(
+  e: StandardizedDifference,
+  paired: boolean,
+  nameA: string,
+): [string, ResultValue, string][] {
   return paired
     ? [
-        ['Cohen’s d (d_z: mean difference / SD of differences)', num(e.cohensD)],
-        ['Hedges’ g (g_z)', num(e.hedgesG)],
+        ['Cohen’s d (d_z: mean difference / SD of differences)', num(e.cohensD), 'cohensD'],
+        ['Hedges’ g (g_z)', num(e.hedgesG), 'hedgesG'],
       ]
     : [
         // S43: d standardizes by the pooled SD whichever test was run (decision 54).
-        ['Cohen’s d (pooled SD)', num(e.cohensD)],
-        ['Hedges’ g (pooled SD)', num(e.hedgesG)],
-        ['Glass’s delta (SD of column A)', num(e.glassDelta!)],
+        ['Cohen’s d (pooled SD)', num(e.cohensD), 'cohensD'],
+        ['Hedges’ g (pooled SD)', num(e.hedgesG), 'hedgesG'],
+        [`Glass’s delta (SD of ${nameA})`, num(e.glassDelta!), 'glassDelta'],
       ]
 }
 

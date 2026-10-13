@@ -452,7 +452,7 @@ function check(
   const fits = def.id === 'nonlinearFitMV'
   const sets: FieldDataSet[] = fits
     ? ((
-        result.sheets[0]?.blocks.find((b) => b.type === 'table') as
+        result.sheets.find((s) => s.key === 'results')?.blocks.find((b) => b.type === 'table') as
           | { columns: string[] }
           | undefined
       )?.columns
@@ -562,7 +562,9 @@ describe('ready results on graphs: particular cases', () => {
     const f = def.graphResults!(def.params.parse({ matched: true }), ctx).find((x) => x.id === 'F')!
     const at = (k: string) => resolveResultRef(rm, f.stat.fields[k]!.ref, SETTINGS)
     // Sphericity not assumed (the default): Geisser-Greenhouse corrected df, as the sheet shows.
-    const row = rm.sheets[0]!.blocks.flatMap((b) => (b.type === 'keyValue' ? b.rows : []))
+    const row = rm.sheets
+      .find((s) => s.key === 'results')!
+      .blocks.flatMap((b) => (b.type === 'keyValue' ? b.rows : []))
     const fRow = row.find((r) => r.label === 'F (DFn, DFd)')!.value
     const dfn = (at('dfn') as { v: number }).v
     const dfd = (at('dfd') as { v: number }).v
@@ -574,7 +576,9 @@ describe('ready results on graphs: particular cases', () => {
     const tpl = def.graphResults!(def.params.parse({ matched: true, gaussian: false }), ctx)
     expect(tpl.some((x) => x.title.startsWith('Kruskal-Wallis'))).toBe(false)
     const stat = tpl.find((x) => x.id === 'friedman')!.stat.fields.stat!
-    const sheetStat = fr.sheets[0]!.blocks.flatMap((b) => (b.type === 'keyValue' ? b.rows : []))
+    const sheetStat = fr.sheets
+      .find((s) => s.key === 'results')!
+      .blocks.flatMap((b) => (b.type === 'keyValue' ? b.rows : []))
     expect(resolveResultRef(fr, stat.ref, SETTINGS)).toEqual(
       sheetStat.find((r) => r.label === 'Friedman statistic')!.value,
     )

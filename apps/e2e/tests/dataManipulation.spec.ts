@@ -2,11 +2,13 @@ import type { Locator, Page } from '@playwright/test'
 import { expect, openExample, test } from './fixtures.ts'
 import {
   cell,
+  chip,
   columnTitles,
   dialog,
   expectUpToDate,
   grid,
   newTable,
+  okButton,
   pressShortcut,
   resultTable,
   resultValue,
@@ -150,7 +152,7 @@ test('Filter rows built in the condition editor follows its source', async ({ pa
   await expect(
     editor.getByText('Formula: Group = "Placebo" and [SBP before] > 0', { exact: true }),
   ).toBeVisible()
-  await d.getByRole('button', { name: 'OK', exact: true }).click()
+  await okButton(d).click()
   await expect(d).toBeHidden()
   await expectUpToDate(page)
   // The filtered table first, then what was done.
@@ -170,10 +172,11 @@ test('Aggregate by group, graphed, then frozen as a data table', async ({ page }
   await trial(page)
   await manipulate(page, 'Aggregate by group…')
   const d = dialog(page, /^Analyze “/)
-  // Grouped by Group only (Sex left out of the data sets analyzed).
-  await d.getByRole('checkbox', { name: 'Sex', exact: true }).uncheck()
+  // Grouped by Group only (Sex left out of the data sets analyzed: its chip, roadmap 51b).
+  await chip(d, 'Sex').click()
+  await expect(chip(d, 'Sex')).toHaveAttribute('aria-selected', 'false')
   await d.getByRole('checkbox', { name: 'Median', exact: true }).check()
-  await d.getByRole('button', { name: 'OK', exact: true }).click()
+  await okButton(d).click()
   await expect(d).toBeHidden()
   await expectUpToDate(page)
   await page.getByRole('tab', { name: 'Aggregate' }).click()

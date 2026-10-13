@@ -1,0 +1,87 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`summary sentences (design §8.2) > contingency: a 2 × 2 with its roles, a larger table with a trend 1`] = `
+{
+  "otherRow": "Adverse event: 21% in Placebo, 9% in Drug; relative risk 2.33 (95% CI 1.15 to 4.8); P = 0.0281, Fisher’s exact test.",
+  "trend": "The outcomes differ between the 3 rows (P = 0.0012, Fisher’s exact test). The outcome changes with the order of the rows (chi-square for trend, P = 0.0003).",
+  "twoByTwo": "Adverse event: 9% in Drug, 21% in Placebo; relative risk 0.429 (95% CI 0.208 to 0.869); P = 0.0281, Fisher’s exact test.",
+}
+`;
+
+exports[`summary sentences (design §8.2) > curve fits: EC50 with its unit from the X title 1`] = `"EC50 = 79.5 nM (log EC50 95% CI −7.17 to −7.03) for Agonist A; 678 nM (log EC50 95% CI −6.26 to −6.08) for Agonist B; Hill slope 0.982 and 0.929."`;
+
+exports[`summary sentences (design §8.2) > describe and check: normality, descriptive, ROC, Bland-Altman, outliers 1`] = `
+{
+  "blandAltman": "Point of care − Lab: bias 0.51 (95% CI −0.0696 to 1.09); 95% limits of agreement −1.08 to 2.1; 10 pairs.",
+  "descriptive": "Mean ± SD: Control 42.4 ± 2.4 (n = 10); Treated 55.2 ± 3.88 (n = 10).",
+  "normality": "No evidence against a normal distribution in Control and Treated (Shapiro-Wilk P = 0.9613 and 0.6876); see the QQ plot.",
+  "outliers": "No outliers were found.",
+  "roc": "The area under the ROC curve is 1 (95% CI 1 to 1); P = 0.0002 against 0.5 (no discrimination). 10 controls and 10 patients.",
+}
+`;
+
+exports[`summary sentences (design §8.2) > many rows: multiple t tests, multiple one-way ANOVAs 1`] = `
+{
+  "multipleOneWay": "2 of 3 rows differ between the groups (ordinary one-way ANOVA in each row; false discovery rate: original method of Benjamini and Hochberg across rows).",
+  "multipleT": "2 of 3 rows are discoveries at a false discovery rate of 5% (false discovery rate: two-stage step-up method of Benjamini, Krieger and Yekutieli), comparing KO − WT by unpaired t test with Welch’s correction in each row.",
+}
+`;
+
+exports[`summary sentences (design §8.2) > one-way ANOVA: Dunnett, Tukey, saved signs, none, Kruskal-Wallis, RM, Welch, long lists 1`] = `
+{
+  "dunnett": "Compared with Vehicle, 1 mg/kg is higher by 5.77 (95% CI 3.14 to 8.41, adjusted P < 0.0001); and 10 mg/kg is higher by 12 (95% CI 9.36 to 14.6, adjusted P < 0.0001); Dunnett’s test for 2 comparisons. Overall: the means differ across the 3 groups (ordinary one-way ANOVA, P < 0.0001).",
+  "dunnettSaved": "Compared with Vehicle, 1 mg/kg is higher by 5.77 (95% CI 3.14 to 8.41, adjusted P < 0.0001); and 10 mg/kg is higher by 12 (95% CI 9.36 to 14.6, adjusted P < 0.0001); Dunnett’s test for 2 comparisons. Overall: the means differ across the 3 groups (ordinary one-way ANOVA, P < 0.0001).",
+  "friedman": "1 of 3 comparisons differs (Dunn’s test (Siegel-Castellan form), Holm): 10 mg/kg is higher than Vehicle by 16 (adjusted P = 0.0002). Overall: within subjects, values tend to differ between the groups (Friedman test, exact P < 0.0001).",
+  "kruskalWallis": "3 of 3 comparisons differ (Dunn’s test, Holm): 10 mg/kg is higher than Vehicle by 15.8 (adjusted P < 0.0001); 10 mg/kg is higher than 1 mg/kg by 8.25 (adjusted P = 0.0392); 1 mg/kg is higher than Vehicle by 7.5 (adjusted P = 0.0392). Overall: values tend to differ between groups (Kruskal-Wallis test, approximate P < 0.0001).",
+  "longList": "21 of 21 comparisons differ (Tukey’s test): G is higher than A by 18 (95% CI 15.1 to 20.9, adjusted P < 0.0001); F is higher than A by 15 (95% CI 12.1 to 17.9, adjusted P < 0.0001); G is higher than B by 15 (95% CI 12.1 to 17.9, adjusted P < 0.0001); and 18 more in the table. Overall: the means differ across the 7 groups (ordinary one-way ANOVA, P < 0.0001).",
+  "none": "The means differ across the 3 groups (ordinary one-way ANOVA, P < 0.0001).",
+  "noneDiffer": "No evidence of a difference in the 3 comparisons after adjustment (Tukey’s test; smallest adjusted P = 0.8724). Overall: no evidence that the means differ across the 3 groups (ordinary one-way ANOVA, P = 0.8480).",
+  "repeated": "Within subjects, the mean changes across the 3 groups (repeated-measures ANOVA, P < 0.0001).",
+  "tukey": "3 of 3 comparisons differ (Tukey’s test): 10 mg/kg is higher than Vehicle by 12 (95% CI 9.19 to 14.8, adjusted P < 0.0001); 10 mg/kg is higher than 1 mg/kg by 6.21 (95% CI 3.41 to 9.01, adjusted P < 0.0001); 1 mg/kg is higher than Vehicle by 5.77 (95% CI 2.98 to 8.57, adjusted P = 0.0001). Overall: the means differ across the 3 groups (ordinary one-way ANOVA, P < 0.0001).",
+  "welch": "3 of 3 comparisons differ (Dunnett’s T3 test): 10 mg/kg is higher than Vehicle by 12 (95% CI 8.64 to 15.3, adjusted P < 0.0001); 10 mg/kg is higher than 1 mg/kg by 6.21 (95% CI 3.35 to 9.07, adjusted P = 0.0002); 1 mg/kg is higher than Vehicle by 5.77 (95% CI 2.92 to 8.63, adjusted P = 0.0004). Overall: the means differ across the 3 groups (Welch ANOVA, P < 0.0001).",
+}
+`;
+
+exports[`summary sentences (design §8.2) > rank tests: Mann-Whitney, Wilcoxon, Kolmogorov-Smirnov; one sample 1`] = `
+{
+  "ks": "The distributions of Control and Treated differ (P < 0.0001, Kolmogorov-Smirnov test). n = 10 each.",
+  "mannWhitney": "Values in Treated tend to be higher than in Control (shift Treated − Control 12.6, 95% CI 9.3 to 16.5); P < 0.0001, Mann-Whitney test. Medians 42.5 (Control) and 54.8 (Treated); n = 10 each.",
+  "mannWhitneyNs": "No evidence that values in Treated and Control tend to differ (shift Treated − Control 0.55, 95% CI −1.8 to 2.8; P = 0.6842, Mann-Whitney test). Medians 42.5 (Control) and 42.9 (Treated); n = 10 each.",
+  "oneSample": "The mean of Control, 42.4, is below 45 by 2.57 (95% CI 0.856 to 4.28); P = 0.0080; the mean of Treated, 55.2, is above 45 by 10.2 (95% CI 7.46 to 13); P < 0.0001 (one-sample t test).",
+  "oneSampleWilcoxon": "The median of Control, 42.5, is below 45 by 2.55 (95% CI 0.8 to 4.35); P = 0.0137; the median of Treated, 54.8, is above 45 by 10.1 (95% CI 7.3 to 13.3); P = 0.0020 (Wilcoxon signed-rank test).",
+  "wilcoxon": "Within pairs, After tends to be higher than Before (median difference After − Before 12.9, 95% CI 9.05 to 16.2); P = 0.0020, Wilcoxon matched-pairs test, 10 pairs.",
+}
+`;
+
+exports[`summary sentences (design §8.2) > relationships: correlation (one pair, several), regression (one line, two) 1`] = `
+{
+  "correlation": "Age and Pressure rise together: r = 0.999 (95% CI 0.997 to 1), 8 pairs; P < 0.0001, Pearson correlation.",
+  "correlationNs": "Age and Noise: r = −0.0865 (95% CI −0.746 to 0.658), 8 pairs; no evidence of a correlation, P = 0.8386, Pearson correlation.",
+  "correlationPairs": "3 of 6 pairs correlate (q < 0.05, corrected for the 6 pairs; Pearson correlation): Age vs. Pressure, r = 0.999; Age vs. Rate, r = −0.998; Pressure vs. Rate, r = −0.998.",
+  "regression": "Signal rises by 2 per unit of Dose (95% CI 1.93 to 2.07); R² = 0.999; the slope differs from zero (P < 0.0001). Background falls by 1.32 per unit of Dose (95% CI 1.25 to 1.4); R² = 0.997; the slope differs from zero (P < 0.0001). The slopes differ (P < 0.0001).",
+}
+`;
+
+exports[`summary sentences (design §8.2) > survival: medians, not reached, the test, the hazard ratio 1`] = `"Median survival 10.5 days on Placebo and not reached on Drug; the curves differ (log-rank P = 0.0042). Hazard ratio Drug vs. Placebo: 0.118 (95% CI 0.0275 to 0.51)."`;
+
+exports[`summary sentences (design §8.2) > t tests: Welch, Student, non-significant, paired, ratio, summary data, missing values 1`] = `
+{
+  "lower": "After is lower than Before by 12.8 (95% CI 9.73 to 15.9); P < 0.0001, Welch’s t test. n = 10 each.",
+  "missing": "Treated is higher than Control by 13.1 (95% CI 9.72 to 16.4); P < 0.0001, Welch’s t test. n = 10 and 9.",
+  "notSignificant": "Treated and Control differ by 0.51 (Treated − Control, 95% CI −1.59 to 2.61); no evidence of a difference (P = 0.6152, Welch’s t test). n = 10 each.",
+  "oneTailedAgainst": "Treated and Control differ by 12.8 (Treated − Control, 95% CI 9.73 to 15.9), the opposite way to the prediction (predicted: Treated lower than Control); one-tailed P > 0.9999, Welch’s t test. n = 10 each.",
+  "oneTailedAsPredicted": "Treated is higher than Control by 12.8 (95% CI 9.73 to 15.9); P < 0.0001, Welch’s t test, one-tailed (predicted: Treated higher than Control). n = 10 each.",
+  "paired": "After − Before averages 0.51 across 10 pairs (95% CI −0.0696 to 1.09); no evidence of a difference (P = 0.0777, paired t test).",
+  "ratio": "After is 1.3 times Before on average (geometric mean ratio, 95% CI 1.22 to 1.39) across 10 pairs; P < 0.0001, ratio paired t test.",
+  "student": "Treated is higher than Control by 12.8 (95% CI 9.78 to 15.8); P < 0.0001, Student’s t test. n = 10 each.",
+  "summaryData": "Treated is higher than Control by 12.8 (95% CI 10.1 to 15.5); P < 0.0001, Welch’s t test. n = 10 and 12.",
+  "welch": "Treated is higher than Control by 12.8 (95% CI 9.73 to 15.9); P < 0.0001, Welch’s t test. n = 10 each.",
+}
+`;
+
+exports[`summary sentences (design §8.2) > two-way ANOVA with and without an interaction, factor names 1`] = `
+{
+  "additive": "Column factor: P = 0.0011; row factor: P = 0.0156; no evidence that one changes the effect of the other (interaction P > 0.9999). 3 of 3 comparisons differ (Šidák’s test): Day 1: Drug is higher than Vehicle by 2 (95% CI 0.221 to 3.78, adjusted P = 0.0306); Day 3: Drug is higher than Vehicle by 2 (95% CI 0.221 to 3.78, adjusted P = 0.0306); Day 7: Drug is higher than Vehicle by 2 (95% CI 0.221 to 3.78, adjusted P = 0.0306).",
+  "interaction": "The effect of Treatment depends on Time (interaction P < 0.0001, two-way ANOVA); the comparisons within each level of Time describe it. 3 of 3 comparisons differ (Šidák’s test): Day 7: Drug is higher than Vehicle by 14 (95% CI 12.2 to 15.8, adjusted P < 0.0001); Day 3: Drug is higher than Vehicle by 8 (95% CI 6.22 to 9.78, adjusted P < 0.0001); Day 1: Drug is higher than Vehicle by 2 (95% CI 0.221 to 3.78, adjusted P = 0.0306).",
+}
+`;

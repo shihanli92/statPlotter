@@ -1,6 +1,6 @@
 import type { Download, Page } from '@playwright/test'
 import { expect, navigator, sheets, test } from './fixtures.ts'
-import { runMenu } from './helpers-data.ts'
+import { okButton, runMenu } from './helpers-data.ts'
 import { canvas, dialog, formatPanel, openGraph } from './helpers-graph.ts'
 
 // Roadmap 47 (UX findings N8, N9): getting started — the checklist card at the bottom of the
@@ -52,7 +52,7 @@ test('the checklist on a new project: Show me does each step, and each ticks its
   )
   await analyze.getByRole('tab', { name: 'All analyses' }).click()
   await analyze.getByRole('option', { name: 'Descriptive statistics', exact: true }).click()
-  await analyze.getByRole('button', { name: 'OK', exact: true }).click()
+  await okButton(analyze).click()
   await expect(analyze).toBeHidden()
   await expect(count(page)).toHaveText('3 of 5')
 

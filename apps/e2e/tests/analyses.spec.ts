@@ -5,8 +5,12 @@ import {
   analyze,
   cell,
   dialog,
+  editDialog,
   expectUpToDate,
   newTable,
+  okButton,
+  openDetails,
+  openTier,
   pasteText,
   pressShortcut,
   resultRow,
@@ -32,7 +36,7 @@ test.beforeEach(async ({ page }) => {
 /** The toolbar's Parameters… of the open results: the Analyze dialog in edit mode. */
 async function editParameters(page: Page) {
   await page.getByRole('main').getByRole('button', { name: 'Parameters…' }).click()
-  const d = dialog(page, 'Analysis parameters')
+  const d = editDialog(page)
   await expect(d).toBeVisible()
   return d
 }
@@ -40,7 +44,14 @@ async function editParameters(page: Page) {
 test('t test: results, parameters edited, recomputed after a data edit', async ({ page }) => {
   await newTable(page, { kind: 'Column', sample: true })
   await analyze(page, 't test')
-  await expect(sheet(page, 't test of Data 1', 'Results')).toHaveClass(/\bon\b/)
+  // Roadmap 51d (U23): named by its method and groups.
+  await expect(sheet(page, 'Welch’s t test: Treated vs Control (Data 1)', 'Results')).toHaveClass(
+    /\bon\b/,
+  )
+  // Roadmap 51d (U18): the answer first, in a sentence.
+  await expect(page.getByRole('region', { name: 'Summary' })).toContainText(
+    'Treated is higher than Control by 12.7 (95% CI 8.26 to 17.1); P < 0.0001, Welch’s t test. n = 8 each.',
+  )
   // Roadmap 51c (S2): Welch's t test by default (R: t.test(Treated, Control): t = 6.1686,
   // df = 13.948, p = 2.6e-05; equal group sizes, so t is Student's).
   const welch = resultTable(page, 'Unpaired t test with Welch’s correction')
@@ -49,14 +60,17 @@ test('t test: results, parameters edited, recomputed after a data edit', async (
   await expect(resultValue(welch, 'P value')).toHaveText('<0.0001')
   // No F test of variances unless asked; the SD ratio describes the scatter.
   await expect(resultTable(page, 'F test to compare variances')).toHaveCount(0)
+  await openDetails(page)
   await expect(resultTable(page, 'Scatter in each group')).toBeVisible()
   const diff = resultTable(page, 'How big is the difference?')
-  await expect(resultValue(diff, 'Difference between means (B − A)')).toHaveText('12.66')
+  await expect(resultValue(diff, 'Difference between means (Treated − Control)')).toHaveText(
+    '12.66',
+  )
 
   // Student's t test (R: t.test(var.equal = TRUE): df = 14; CI 8.260 to 17.07).
   const d = await editParameters(page)
   await d.getByRole('radio', { name: /Student’s t test$/ }).check()
-  await d.getByRole('button', { name: 'OK' }).click()
+  await okButton(d).click()
   await expectUpToDate(page)
   const test = resultTable(page, 'Unpaired t test')
   await expect(resultValue(test, 'df')).toHaveText('14')
@@ -73,7 +87,9 @@ test('t test: results, parameters edited, recomputed after a data edit', async (
   await runMenu(page, 'View', 'Go to results')
   await expectUpToDate(page)
   await expect(resultValue(resultTable(page, 'Unpaired t test'), 't')).toHaveText('4.863')
-  await expect(resultValue(diff, 'Difference between means (B − A)')).toHaveText('11.41')
+  await expect(resultValue(diff, 'Difference between means (Treated − Control)')).toHaveText(
+    '11.41',
+  )
 
   // So does excluding one (R, without Control's 38.5: t = 6.1819, df = 13).
   await runMenu(page, 'View', 'Go to data table')
@@ -83,7 +99,8 @@ test('t test: results, parameters edited, recomputed after a data edit', async (
   await runMenu(page, 'View', 'Go to results')
   await expectUpToDate(page)
   await expect(resultValue(resultTable(page, 'Unpaired t test'), 't')).toHaveText('6.182')
-  await expect(resultValue(resultTable(page, 'Data analyzed'), 'Sample size, column A')).toHaveText(
+  await openDetails(page)
+  await expect(resultValue(resultTable(page, 'Data analyzed'), 'Sample size, Control')).toHaveText(
     '7',
   )
 })
@@ -104,7 +121,8 @@ test('one-way ANOVA with Tukey comparisons, and brackets on the graph', async ({
   await expect(cell(page, 4, 2)).toHaveText('5.3')
   await analyze(page, 'One-way ANOVA (and nonparametric)')
 
-  // R: aov: F(2, 12) = 24.46, p = 5.85e-05.
+  // R: aov: F(2, 12) = 24.46, p = 5.85e-05. Roadmap 51d (U21): the comparisons open first.
+  await page.getByRole('tab', { name: 'Table of results' }).click()
   const anova = resultTable(page, 'Ordinary one-way ANOVA')
   await expect(resultValue(anova, 'F')).toHaveText('24.46')
   await expect(resultValue(anova, 'DFn, DFd')).toHaveText('2, 12')
@@ -146,6 +164,8 @@ test('two-way ANOVA on a grouped table, then main effects only', async ({ page }
   await newTable(page, { kind: 'Grouped', sample: true })
   await analyze(page, 'Two-way ANOVA')
   // R: anova(lm(y ~ row * column)): F = 26.197 (interaction), 60.167 (rows), 201.42 (columns).
+  await page.getByRole('tab', { name: 'Table of results' }).click()
+  await openDetails(page)
   const table = resultTable(page, 'ANOVA table')
   await expect(resultRow(table, 'Interaction').nth(4)).toHaveText('F (2, 18) = 26.20')
   await expect(resultRow(table, 'Row factor').nth(4)).toHaveText('F (2, 18) = 60.17')
@@ -154,9 +174,9 @@ test('two-way ANOVA on a grouped table, then main effects only', async ({ page }
 
   // Analyze › Edit parameters… (the same dialog as the view's Parameters… button).
   await runMenu(page, 'Analyze', 'Edit parameters…')
-  const d = dialog(page, 'Analysis parameters')
-  await d.getByRole('radio', { name: /^Main effects only/ }).check()
-  await d.getByRole('button', { name: 'OK' }).click()
+  const d = editDialog(page)
+  await d.getByRole('radio', { name: /^No: main effects only/ }).check()
+  await okButton(d).click()
   await expectUpToDate(page)
   await expect(resultRow(table, 'Interaction')).toHaveCount(0)
   await expect(resultRow(table, 'Row factor').nth(2)).toHaveText('2')
@@ -177,9 +197,11 @@ test('nonlinear regression of dose-response curves; confidence level edited', as
   await expect(resultTable(page, '95% CI (asymptotic)')).toBeVisible()
 
   const d = await editParameters(page)
-  // The last of the form's two "Confidence level" fields is the fit's.
+  // Roadmap 51b: the confidence level is under Reporting. The last of the form's two "Confidence
+  // level" fields is the fit's.
+  await openTier(d, 'Reporting')
   await d.getByRole('combobox', { name: 'Confidence level' }).last().selectOption({ label: '90%' })
-  await d.getByRole('button', { name: 'OK' }).click()
+  await okButton(d).click()
   await expectUpToDate(page)
   await expect(resultTable(page, '90% CI (asymptotic)')).toBeVisible()
   await expect(resultTable(page, '95% CI (asymptotic)')).toHaveCount(0)
@@ -220,7 +242,7 @@ test('contingency table: Fisher’s exact test, then chi-square', async ({ page 
   // R: chisq.test(correct = FALSE): X² = 6.4516, p = 0.01109.
   const d = await editParameters(page)
   await d.getByRole('radio', { name: 'Chi-square test' }).check()
-  await d.getByRole('button', { name: 'OK' }).click()
+  await okButton(d).click()
   await expectUpToDate(page)
   const chi = resultTable(page, 'Chi-square test')
   await expect(resultValue(chi, 'Chi-square')).toHaveText('6.452')
@@ -231,13 +253,18 @@ test('contingency table: Fisher’s exact test, then chi-square', async ({ page 
 
 test('multiple linear regression on a multiple-variables table', async ({ page }) => {
   await newTable(page, { kind: 'Multiple variables', sample: true })
+  // Roadmap 51b (§4.7): the outcome is a role, chosen into its box (it starts empty).
   await analyze(page, 'Multiple linear regression', async (d) => {
-    await d.getByRole('combobox', { name: 'Dependent (Y) variable' }).selectOption({ label: 'SBP' })
+    await expect(okButton(d)).toBeDisabled()
+    await d
+      .getByRole('combobox', { name: 'Add to Outcome (Y)' })
+      .selectOption({ label: 'SBP (number)' })
   })
   const params = resultTable(page, 'Multiple linear regression: SBP')
   await expect(params).toBeVisible()
   for (const v of ['Intercept', 'Age', 'BMI', 'Dose'])
     await expect(resultRow(params, v)).not.toHaveCount(0)
+  await openDetails(page)
   const fit = resultTable(page, 'Goodness of fit')
   await expect(resultValue(fit, 'R squared')).toHaveText(/^0\.\d{4}$/)
   await expect(
@@ -297,20 +324,28 @@ test('the Analyze dialog: the Common group first, a search picked with Enter', a
   await expect(d.getByText('No analysis matches “zzz”.')).toBeVisible()
   await expect(search).toHaveAttribute('aria-expanded', 'false')
   await search.fill('')
-  await d.getByRole('button', { name: 'OK', exact: true }).click()
+  await okButton(d).click()
   await expectUpToDate(page)
-  await expect(sheet(page, 'One-way ANOVA (and nonparametric) of Data 1', 'Results')).toHaveClass(
-    /\bon\b/,
-  )
+  await expect(sheet(page, 'One-way ANOVA + Tukey: Data 1', 'Results')).toHaveClass(/\bon\b/)
 })
 
 // Roadmap 43 (UX review F22): an analysis short of values says what it needs and links to its
-// table.
+// table. Roadmap 51b (§4.6): the dialog won't run it so (Analyze waits, saying why); values
+// deleted afterwards give the results' Error, with the link to what to change.
 test('a results error: what the analysis needs, and Go to table', async ({ page }) => {
   await newTable(page, { kind: 'Column', dataSets: 2 })
-  await typeCells(page, 0, 0, [['1', '2']])
+  await typeCells(page, 0, 0, [
+    ['1', '2'],
+    ['3', '5'],
+  ])
   await analyze(page, 't test')
-  const error = page.getByRole('main').locator('.results-error')
+  await runMenu(page, 'View', 'Go to data table')
+  await cell(page, 1, 0).click()
+  await page.keyboard.press('Delete')
+  await runMenu(page, 'View', 'Go to results')
+  const main = page.getByRole('main')
+  await expect(main.locator('.view-toolbar .hint')).toHaveText('Error')
+  const error = main.locator('.results-error')
   await expect(error).toContainText('Each group needs at least two values.')
   await expect(error).toContainText('A t test compares two data sets (columns)')
   await error.getByRole('button', { name: 'Go to table' }).click()
@@ -349,10 +384,10 @@ test('a simulation with no table open, then a Monte Carlo analysis of it', async
   // No table: the simulation gets one of its own, in the same undo step.
   await runMenu(page, 'Analyze', 'Simulate and generate', 'Simulate column data…')
   const sim = dialog(page, /^Analyze “/)
-  await expect(sim.getByRole('group', { name: 'Data sets to analyze' })).toHaveCount(0)
+  await expect(sim.getByRole('listbox', { name: /^(Groups|Data sets)$/ })).toHaveCount(0)
   await sim.getByRole('textbox', { name: 'Values in column 1' }).fill('6')
   await sim.getByRole('textbox', { name: 'Values in column 1' }).blur()
-  await sim.getByRole('button', { name: 'OK' }).click()
+  await okButton(sim).click()
   await expectUpToDate(page)
   await expect(sheet(page, 'Simulate column data', 'Results')).toHaveClass(/\bon\b/)
   await expect(sheet(page, 'Data 1', 'Data Tables')).toBeVisible()
@@ -369,8 +404,10 @@ test('a simulation with no table open, then a Monte Carlo analysis of it', async
   const mc = dialog(page, /^Analyze “/)
   await mc.getByRole('textbox', { name: 'Number of simulations' }).fill('50')
   await mc.getByRole('textbox', { name: 'Number of simulations' }).blur()
-  await mc.getByRole('button', { name: 'OK' }).click()
+  await okButton(mc).click()
   await expectUpToDate(page)
+  // Roadmap 51d (U21): the derived table after the results.
+  await page.getByRole('tab', { name: 'Data table' }).click()
   const runs = page.getByRole('main').getByRole('grid', { name: /^Monte Carlo analysis of / })
   await expect(runs.getByRole('columnheader', { name: 'Hit (1 = yes)' })).toBeVisible()
   await page.getByRole('tab', { name: 'Monte Carlo' }).click()
@@ -398,17 +435,19 @@ test('chained analyses: a transform, then a t test of its table', async ({ page 
   const d = dialog(page, 'Analyze “Transform of Data 1”')
   await allAnalyses(d)
   await d.getByRole('option', { name: 't test', exact: true }).click()
-  await d.getByRole('button', { name: 'OK' }).click()
+  await okButton(d).click()
   await expectUpToDate(page)
   // R: t.test(log10(Treated), log10(Control)): t = 6.0346 (Welch's, the default; equal sizes).
   const welch = resultTable(page, 'Unpaired t test with Welch’s correction')
   await expect(resultValue(welch, 'Welch-corrected t')).toHaveText('6.035')
-  await expect(sheet(page, 't test of Transform of Data 1', 'Results')).toHaveClass(/\bon\b/)
+  await expect(
+    sheet(page, 'Welch’s t test: Treated vs Control (Transform of Data 1)', 'Results'),
+  ).toHaveClass(/\bon\b/)
 
   // The chain follows the data: an edit of the table reaches the t test through the transform.
   await sheet(page, 'Data 1', 'Data Tables').click()
   await typeCells(page, 0, 0, [['44.1']])
-  await sheet(page, 't test of Transform of Data 1', 'Results').click()
+  await sheet(page, 'Welch’s t test: Treated vs Control (Transform of Data 1)', 'Results').click()
   await expectUpToDate(page)
   await expect(resultValue(welch, 'Welch-corrected t')).not.toHaveText('6.035')
   await sheet(page, 'Transform of Data 1', 'Results').click()
@@ -428,13 +467,17 @@ test('a long analysis: progress, Cancel and Run again; a change stops it', async
   await allAnalyses(d)
   await d.getByRole('option', { name: 'Principal component analysis', exact: true }).click()
   // Parallel analysis of 30,000 rows with 10,000 simulations: minutes of computing.
-  // The number variables are ticked, the text ones offered but not (phase 42: a text variable
-  // would leave every row out).
-  for (const text of ['sample', 'seurat_clusters', 'cell_type'])
-    await expect(d.getByRole('checkbox', { name: text, exact: true })).not.toBeChecked()
-  await expect(d.getByRole('checkbox', { name: 'UMAP_1', exact: true })).toBeChecked()
+  // The number variables are in the Variables box, the text ones left out and named (phase 42:
+  // a text variable would leave every row out; roadmap 51b: roles).
+  const variables = d.getByRole('list', { name: 'Variables' })
+  await expect(variables.getByText('UMAP_1', { exact: true })).toBeVisible()
+  for (const text of ['sample', 'seurat_clusters', 'cell_type']) {
+    await expect(variables.getByText(text, { exact: true })).toHaveCount(0)
+    await expect(d.locator('.role-left-out')).toContainText(text)
+  }
+  await openTier(d, 'Advanced')
   await d.getByLabel('Simulations', { exact: true }).fill('10000')
-  await d.getByRole('button', { name: 'OK', exact: true }).click()
+  await okButton(d).click()
   await expect(d).toBeHidden()
   const main = page.getByRole('main')
   const progress = main.getByRole('progressbar', { name: 'Computing' })
@@ -456,8 +499,9 @@ test('a long analysis: progress, Cancel and Run again; a change stops it', async
   await expect(main.getByText(/^\d+%, (about \d+ (s|min|h)|a few seconds) left$/)).toBeVisible()
   // Fewer simulations: the job running is no longer wanted and stops; the new one takes seconds.
   const p = await editParameters(page)
+  await openTier(p, 'Advanced')
   await p.getByLabel('Simulations', { exact: true }).fill('20')
-  await p.getByRole('button', { name: 'OK' }).click()
+  await okButton(p).click()
   await expectUpToDate(page)
   await expect(progress).toHaveCount(0)
 })

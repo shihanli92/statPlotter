@@ -27,7 +27,7 @@ describe('t test', () => {
     const ref = tTestUnpaired(A, B, { equalVariance: false })
     expect(r.status).toBe('ok')
     expect(v(r, 'P value')).toBe(ref.p)
-    expect(v(r, 'Difference between means (B − A)')).toBeGreaterThan(0)
+    expect(v(r, 'Difference between means (Group B − Group A)')).toBeGreaterThan(0)
     expect(r.comparisons).toHaveLength(1)
     expect(r.comparisons[0]!.p).toBe(ref.p)
     expect(kvOf(r, 'Significantly different (P < 0.05)?')).toEqual({ kind: 'bool', v: true })
@@ -68,7 +68,7 @@ describe('t test', () => {
 
   it('ignores excluded values and says so', () => {
     const r = run(columnTable([[...A, 999], B], { excluded: [[0, 6]] }))
-    expect(v(r, 'Sample size, column A')).toBe(6)
+    expect(v(r, 'Sample size, Group A')).toBe(6)
     expect(v(r, 'P value')).toBe(tTestUnpaired(A, B, { equalVariance: false }).p)
     expect(r.diagnostics.map((d) => d.message)).toContain('1 excluded value was not analyzed.')
   })
@@ -102,7 +102,7 @@ describe('t test', () => {
     const b = [12, 15, 10, 17, 20, 13]
     const r = run(columnTable([a, b]), { design: 'paired' })
     expect(v(r, 'Number of pairs')).toBe(5)
-    expect(v(r, 'Mean difference (B − A)')).toBeCloseTo((2 + 3 + 1 + 3 + 2) / 5, 12)
+    expect(v(r, 'Mean difference (Group B − Group A)')).toBeCloseTo((2 + 3 + 1 + 3 + 2) / 5, 12)
     expect(r.diagnostics.map((d) => d.message)).toContain(
       '1 row without a complete pair was ignored.',
     )

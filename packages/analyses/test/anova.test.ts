@@ -156,7 +156,7 @@ describe('two-way ANOVA plugin', () => {
   it('reports interaction, row, and column effects', () => {
     const r = run(groupedTable(cells))
     expect(r.status).not.toBe('error')
-    const sources = r.sheets[0]!.blocks[0]!
+    const sources = r.sheets.find((s) => s.key === 'results')!.blocks[0]!
     if (sources.type !== 'table') throw new Error('table expected')
     expect(sources.rows.map((row) => (row[0] as { v: string }).v)).toEqual(
       expect.arrayContaining(['Interaction', 'Row factor', 'Column factor']),
@@ -368,14 +368,14 @@ describe('repeated measures', () => {
     ])
     const r = runDef(twoWayAnovaDef, t, { repeated: 'rows', comparisons: 'withinRows' })
     expect(r.status).not.toBe('error')
-    const sources = r.sheets[0]!.blocks[0]!
+    const sources = r.sheets.find((s) => s.key === 'results')!.blocks[0]!
     if (sources.type !== 'table') throw new Error('table expected')
     expect(sources.rows.map((row) => (row[0] as { v: string }).v)).toContain('Subjects (matching)')
     expect(r.comparisons.map((c) => c.rowA)).toEqual([0, 1, 2])
     // Roadmap 51c (S10): main-effect comparisons of the repeated factor without sphericity use
     // each comparison's own error term (no refusal).
     const main = runDef(twoWayAnovaDef, t, { repeated: 'rows', comparisons: 'mainRows' })
-    expect(main.sheets.map((s) => s.key)).toEqual(['results', 'comparisons'])
+    expect(main.sheets.map((s) => s.key)).toEqual(['comparisons', 'results'])
     expect(main.diagnostics.map((d) => d.message).join(' ')).toMatch(/its own error term/)
   })
 })

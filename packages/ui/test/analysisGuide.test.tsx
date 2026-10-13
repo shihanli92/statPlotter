@@ -152,7 +152,7 @@ describe('the Analyze form’s explanations', () => {
       />,
     )
     const design = [...document.querySelectorAll('fieldset')].find((f) =>
-      f.querySelector('legend')?.textContent?.startsWith('Experimental design'),
+      f.querySelector('legend')?.textContent?.startsWith('Same subjects in both groups?'),
     )!
     const described = document.getElementById(design.getAttribute('aria-describedby')!)
     expect(described?.textContent).toMatch(/decided by how the experiment was done/)
@@ -177,7 +177,7 @@ describe('the Analyze form’s explanations', () => {
       />,
     )
     const info = document.querySelector<HTMLButtonElement>(
-      'button[aria-label="About “Experimental design”"]',
+      'button[aria-label="About “Same subjects in both groups?”"]',
     )!
     expect(info.getAttribute('aria-expanded')).toBe('false')
     act(() => info.click())

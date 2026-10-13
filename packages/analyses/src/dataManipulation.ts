@@ -4,13 +4,25 @@ import {
   evaluateFormula,
   type FormulaColumn,
   type NormalizedDataSet,
+  type Problem,
   type ResultValue,
   type TableKind,
   type YFormat,
 } from '@ps/model'
 import { max, mean, meanAcross, median, min, sd, sem, sum } from '@ps/stats'
 import { z } from 'zod'
-import { exclusionNotes, failure, int, kv, num, rowCountOf, table, text, yCols } from './common.ts'
+import {
+  exclusionNotes,
+  failure,
+  int,
+  kv,
+  num,
+  problem,
+  rowCountOf,
+  table,
+  text,
+  yCols,
+} from './common.ts'
 import {
   applySummaryFormat,
   type OutDataSet,
@@ -168,6 +180,7 @@ export const filterRowsDef: AnalysisDef<FilterParams> = {
       component: 'filter.condition',
     },
   ],
+  validate: validateFilter,
   run(input, params, context) {
     const diagnostics = exclusionNotes(input)
     if (!params.condition.trim())
@@ -365,6 +378,7 @@ export const aggregateDef: AnalysisDef<AggregateParams> = {
       kind: 'number',
     },
   ],
+  validate: validateAggregate,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     const groups = input.filter((d) => d.text)
@@ -610,4 +624,25 @@ export const survivalTimeDef: AnalysisDef<TimeParams> = {
       },
     )
   },
+}
+
+// ---- Roadmap 51b (§4.6): problems before computing ---------------------------------------------
+
+/** Filter rows: a condition to keep rows by. */
+function validateFilter(input: readonly NormalizedDataSet[], params: FilterParams): Problem | null {
+  return params.condition.trim()
+    ? null
+    : problem('Choose a condition for the rows to keep.', 'params', exclusionNotes(input))
+}
+
+/** Aggregate: text variables to group by, and statistics. */
+function validateAggregate(
+  input: readonly NormalizedDataSet[],
+  params: AggregateParams,
+): Problem | null {
+  const diagnostics = exclusionNotes(input)
+  if (!input.some((d) => d.text))
+    return problem('Choose one or more text variables to group the rows by.', 'params', diagnostics)
+  if (!params.stats.length) return problem('Choose one or more statistics.', 'params', diagnostics)
+  return null
 }

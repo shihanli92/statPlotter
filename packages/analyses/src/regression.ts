@@ -3,6 +3,7 @@ import type {
   AnalysisResult,
   Diagnostic,
   NormalizedDataSet,
+  Problem,
   ResultBlock,
   ResultSheet,
   ResultValue,
@@ -37,6 +38,7 @@ import {
   num,
   pct,
   pick,
+  problem,
   pSig,
   psum,
   pval,
@@ -193,6 +195,7 @@ export const multipleRegressionDef: AnalysisDef<MLRParams> = {
       mark: 'points',
     },
   ],
+  validate: validateMultipleRegression,
   run(input, params) {
     const { outcome, predictors } = roles(input, [params.y])
     const prep = model(input, outcome, predictors, params)
@@ -406,6 +409,7 @@ export const logisticRegressionDef: AnalysisDef<LogisticParams> = {
           { key: 'curve', graph: { id: 'logistic', name: 'Logistic curve' } },
         ]
       : [],
+  validate: validateLogistic,
   run(input, params) {
     const { outcome, predictors } = roles(input, [params.y])
     const prep = model(input, outcome, predictors, params)
@@ -664,6 +668,7 @@ export const coxRegressionDef: AnalysisDef<CoxParams> = {
     ...params.survivalCurves.map((_, i) => ({ key: `survival:${i}`, graph: COX_GRAPH })),
     ...(params.baseline ? [{ key: 'survival:baseline', graph: COX_GRAPH }] : []),
   ],
+  validate: validateCox,
   run(input, params) {
     const ti = pick(input, params.time)
     const ei = pick(input, params.event, 1)
@@ -832,4 +837,91 @@ export const coxRegressionDef: AnalysisDef<CoxParams> = {
     }
     return result({ diagnostics, sheets, values: { p: pval(res.lrTest.p) }, outputs })
   },
+}
+
+// ---- Roadmap 51b (§4.6): problems before computing ---------------------------------------------
+
+/** A failure result as a problem: its error and the notes before it. */
+export function resultProblem(r: AnalysisResult): Problem {
+  const i = r.diagnostics.findIndex((d) => d.level === 'error')
+  return problem(
+    r.diagnostics[i]?.message ?? 'The model can’t be set up.',
+    'table',
+    r.diagnostics.slice(0, Math.max(0, i)),
+  )
+}
+
+/** Multiple linear regression: the model's variables, a predictor, more rows than parameters. */
+function validateMultipleRegression(
+  input: readonly NormalizedDataSet[],
+  params: MLRParams,
+): Problem | null {
+  const { outcome, predictors } = roles(input, [params.y])
+  const prep = model(input, outcome, predictors, params)
+  if ('fail' in prep) return resultProblem(prep.fail)
+  const { m, diagnostics } = prep
+  const n = m.outcomes[0]!.length
+  const p = m.design.names.length + (params.intercept ? 1 : 0)
+  if (!m.design.names.length)
+    return problem('No predictor is left in the model.', 'params', diagnostics)
+  if (n <= p) return problem(`Need more than ${p} complete rows (have ${n}).`, 'table', diagnostics)
+  return null
+}
+
+/** Logistic regression: as multiple regression, with an outcome coded 0 or 1 holding both. */
+function validateLogistic(
+  input: readonly NormalizedDataSet[],
+  params: LogisticParams,
+): Problem | null {
+  const { outcome, predictors } = roles(input, [params.y])
+  const prep = model(input, outcome, predictors, params)
+  if ('fail' in prep) return resultProblem(prep.fail)
+  const { m, diagnostics } = prep
+  const y = m.outcomes[0]!
+  const yName = input[outcome[0]!]!.title
+  if (y.some((v) => v !== 0 && v !== 1))
+    return problem(`The outcome “${yName}” must be coded 0 or 1.`, 'table', diagnostics)
+  if (!m.design.names.length)
+    return problem('No predictor is left in the model.', 'params', diagnostics)
+  const k = m.design.names.length + (params.intercept ? 1 : 0)
+  if (y.length <= k)
+    return problem(`Need more than ${k} complete rows (have ${y.length}).`, 'table', diagnostics)
+  if (y.every((v) => v === y[0]))
+    return problem(
+      `The outcome has only one value: every “${yName}” is ${y[0]}. Logistic regression needs both 0s and 1s.`,
+      'table',
+      diagnostics,
+    )
+  return null
+}
+
+/** Cox regression: time and event apart, predictors, coded events, more rows than terms. */
+function validateCox(input: readonly NormalizedDataSet[], params: CoxParams): Problem | null {
+  const ti = pick(input, params.time)
+  const ei = pick(input, params.event, 1)
+  if (ti === ei) return problem('Choose different variables for time and event.', 'params')
+  const { predictors } = roles(input, [input[ti]!.ref.key, input[ei]!.ref.key])
+  if (!predictors.length) return problem('Choose at least one predictor variable.', 'params')
+  const prep = model(input, [ti, ei], predictors, params)
+  if ('fail' in prep) return resultProblem(prep.fail)
+  const { m, diagnostics } = prep
+  const [time, event] = m.outcomes as [number[], number[]]
+  if (event.some((v) => v !== 0 && v !== 1))
+    return problem(
+      `The event variable “${input[ei]!.title}” must be coded 1 (event) or 0.`,
+      'table',
+      diagnostics,
+    )
+  if (time.some((v) => v < 0)) return problem('Times must not be negative.', 'table', diagnostics)
+  const names = m.design.names
+  if (!names.length) return problem('No predictor is left in the model.', 'params', diagnostics)
+  if (time.length <= names.length)
+    return problem(
+      `Need more than ${names.length} complete rows (have ${time.length}).`,
+      'table',
+      diagnostics,
+    )
+  if (!event.includes(1))
+    return problem('No events: every subject is censored (event = 0).', 'table', diagnostics)
+  return null
 }

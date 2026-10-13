@@ -5,6 +5,8 @@ import {
   type ResultBlock,
   type ResultSheet,
   type ResultValue,
+  summaryFirst,
+  summaryText,
 } from '@ps/model'
 import { type Cell, header, type Row, stackSections, title } from './cells.ts'
 import { escapeHtml, toHtmlTable } from './html.ts'
@@ -65,10 +67,16 @@ export function resultCells(value: ResultValue, opts: ResultsExportOptions): Cel
  * precision a table column holding intervals becomes two ("95% CI (lower)", "95% CI (upper)").
  */
 export function blockRows(block: ResultBlock, opts: ResultsExportOptions): Row[] {
-  const head: Row[] = block.type !== 'note' && block.title ? [[title(block.title)]] : []
+  const head: Row[] =
+    (block.type === 'keyValue' || block.type === 'table') && block.title
+      ? [[title(block.title)]]
+      : []
   switch (block.type) {
     case 'note':
       return [[block.text]]
+    // Roadmap 51d: the summary sentence as one line; a comparisons table's header under its title.
+    case 'summary':
+      return [[summaryText(block, opts.settings)]]
     case 'keyValue':
       return [...head, ...block.rows.map((r) => [r.label, ...resultCells(r.value, opts)])]
     case 'table': {
@@ -84,14 +92,14 @@ export function blockRows(block: ResultBlock, opts: ResultsExportOptions): Row[]
           return split[j] && cells.length === 1 ? [cells[0]!, null] : cells
         }),
       )
-      return [...head, columns, ...rows]
+      return [...head, ...(block.caption ? [[block.caption]] : []), columns, ...rows]
     }
   }
 }
 
 /** A results sheet's blocks, one under another with a blank row between. */
 export const resultSheetRows = (sheet: ResultSheet, opts: ResultsExportOptions): Row[] =>
-  stackSections(sheet.blocks.map((b) => ({ rows: blockRows(b, opts) })))
+  stackSections(summaryFirst(sheet.blocks).map((b) => ({ rows: blockRows(b, opts) })))
 
 /**
  * A results sheet for a file: a heading (the analysis and sheet), the analysis' messages (e.g.
@@ -117,11 +125,13 @@ export function resultSheetHtml(
   html: { guard?: boolean } = {},
 ): string {
   const displayed = { ...opts, mode: 'displayed' as const }
-  return blocks
+  return summaryFirst(blocks)
     .map((b) =>
       b.type === 'note'
         ? `<p>${escapeHtml(b.text)}</p>`
-        : toHtmlTable(blockRows(b, displayed), html),
+        : b.type === 'summary'
+          ? `<p>${escapeHtml(summaryText(b, opts.settings))}</p>`
+          : toHtmlTable(blockRows(b, displayed), html),
     )
     .join('<br>')
 }

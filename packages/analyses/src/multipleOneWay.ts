@@ -1,6 +1,8 @@
 import {
   type AnalysisDef,
   type Comparison,
+  type NormalizedDataSet,
+  type Problem,
   pinDefaults,
   type ResultSheet,
   type ResultValue,
@@ -49,6 +51,7 @@ import {
   int,
   kv,
   num,
+  problem,
   psum,
   pval,
   RANK_NEEDS_RAW,
@@ -216,6 +219,7 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
     ...ROW_FAMILY_FIELDS,
     CONFIDENCE_FIELD,
   ],
+  validate: validateMultipleOneWay,
   run(input, params) {
     const diagnostics = exclusionNotes(input)
     const level = params.confidenceLevel
@@ -463,4 +467,25 @@ export const multipleOneWayDef: AnalysisDef<Params> = {
       comparisons,
     })
   },
+}
+
+/** Roadmap 51b (§4.6): multiple one-way ANOVAs' problems before computing. */
+function validateMultipleOneWay(
+  input: readonly NormalizedDataSet[],
+  params: Params,
+): Problem | null {
+  const diagnostics = exclusionNotes(input)
+  const rowCount = input[0]?.rowCount ?? 0
+  if (!params.gaussian && input.some((d) => d.data.shape !== 'replicates'))
+    return problem(
+      `The Kruskal-Wallis test needs raw values, not summary data.${RANK_NEEDS_RAW}`,
+      'table',
+      diagnostics,
+    )
+  for (const ds of input)
+    for (let r = 0; r < rowCount; r++) {
+      const issue = summaryProblem(ds, r, 1, rowTitleOf(input, r))
+      if (issue) return problem(issue, 'table', diagnostics)
+    }
+  return null
 }

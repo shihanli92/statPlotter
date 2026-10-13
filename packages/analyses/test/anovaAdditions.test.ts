@@ -90,7 +90,9 @@ describe('two-way ANOVA effect sizes', () => {
       ],
     ]
     const r = runDef(twoWayAnovaDef, groupedTable(cells))
-    const b = r.sheets[0]!.blocks.find((x) => x.type === 'table' && x.title === 'Effect sizes')!
+    const b = r.sheets
+      .find((s) => s.key === 'results')!
+      .blocks.find((x) => x.type === 'table' && x.title === 'Effect sizes')!
     if (b.type !== 'table') throw new Error()
     const tw = twoWayAnova(
       cells.flatMap((row, ri) => row.map((values, ci) => ({ row: ri, col: ci, values }))),
@@ -120,7 +122,7 @@ describe('t test effect sizes', () => {
     // Roadmap 51c (S43): labelled with their standardizer, the pooled SD, under Welch too.
     expect(v(kvOf(r, 'Cohen’s d (pooled SD)'))).toBeCloseTo(e.cohensD, 12)
     expect(v(kvOf(r, 'Hedges’ g (pooled SD)'))).toBeCloseTo(e.hedgesG, 12)
-    expect(v(kvOf(r, 'Glass’s delta (SD of column A)'))).toBeCloseTo(e.glassDelta!, 12)
+    expect(v(kvOf(r, 'Glass’s delta (SD of Group A)'))).toBeCloseTo(e.glassDelta!, 12)
     const p = runDef(ttest, t, { design: 'paired' })
     const d = B.map((y, i) => y - A[i]!)
     const sdD = s(d)

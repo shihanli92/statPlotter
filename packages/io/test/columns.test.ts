@@ -496,6 +496,7 @@ describe('a large table with every optional field set (audit 2, M13)', () => {
     notes: 'Notes ✓',
     columnWidths: { x: 80, rowTitle: 120 },
     cellsTable: false,
+    factorNames: { rows: 'Genotype ✓', columns: 'Treatment' },
     limits: {
       below: { method: 'fixed' as const, value: 0.25 },
       above: { method: 'fixed' as const, value: 99 },

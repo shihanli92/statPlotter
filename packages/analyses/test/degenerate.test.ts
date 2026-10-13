@@ -179,10 +179,18 @@ function undefinedShown(r: AnalysisResult): string[] {
   for (const sheet of r.sheets)
     for (const b of sheet.blocks) {
       const values: V[] =
-        b.type === 'keyValue' ? b.rows.map((x) => x.value) : b.type === 'table' ? b.rows.flat() : []
+        b.type === 'keyValue'
+          ? b.rows.map((x) => x.value)
+          : b.type === 'table'
+            ? b.rows.flat()
+            : b.type === 'summary'
+              ? b.parts.flatMap((x) => (typeof x === 'string' ? [] : [x.value]))
+              : []
       for (const v of values)
         if (v.kind === 'text' && /NaN|Infinity/.test(v.v))
-          out.push(`“${v.v}” in ${b.type === 'note' ? sheet.title : (b.title ?? sheet.title)}`)
+          out.push(
+            `“${v.v}” in ${b.type === 'keyValue' || b.type === 'table' ? (b.title ?? sheet.title) : sheet.title}`,
+          )
       if (b.type === 'keyValue') {
         let undefinedP = false
         for (const row of b.rows) {
