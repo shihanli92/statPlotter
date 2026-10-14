@@ -2,6 +2,7 @@ import { type Command, GROUPS, TOOLBAR_GROUPS } from '../commands/index.ts'
 import type { Platform } from '../services.ts'
 import type { FigureItem } from '../worker/figureCore.ts'
 import { type FigureExporter, type FigureSource, figureExports } from '../worker/figureExport.ts'
+import { COPY_SVG_CODE_SHORTCUT } from './copyGraph.ts'
 import { stepZoom } from './zoom.ts'
 
 export { fileBaseOf } from './exportSettings.ts'
@@ -175,7 +176,7 @@ export function copyCommands(opts: {
       ...(opts.page ? {} : { ...sheet, ...toolbar }),
       enabled: opts.graph.enabled,
       keywords: COPY_KEYWORDS,
-      hint: 'Copy the graph as vector graphics and an image, to paste into Illustrator, Word, PowerPoint… or onto a layout page',
+      hint: 'Copy the graph as vector graphics and an image, to paste into Illustrator, Word, PowerPoint… or onto a layout page (for Affinity Designer, Figma or Inkscape: Copy as SVG code)',
       run: opts.graph.run,
     },
   ]
@@ -188,13 +189,14 @@ export function copyCommands(opts: {
       ...sheet,
       ...toolbar,
       keywords: COPY_KEYWORDS,
-      hint: 'Copy the whole page as vector graphics and an image, to paste into Illustrator, Word, PowerPoint…',
+      hint: 'Copy the whole page as vector graphics and an image, to paste into Illustrator, Word, PowerPoint… (for Affinity Designer, Figma or Inkscape: Copy as SVG code)',
       run: page,
     })
   cmds.push({
     id: 'edit.copySvgCode',
     label: 'Copy as SVG code',
     menu: clip(26),
+    shortcut: COPY_SVG_CODE_SHORTCUT,
     keywords: COPY_KEYWORDS,
     hint: `Copy ${page ? 'the graph selected alone, else the selected items, else the page,' : 'the graph'} as SVG code only: Affinity Designer, Figma and Inkscape paste it as editable vector graphics`,
     run: opts.svgCode,

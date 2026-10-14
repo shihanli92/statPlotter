@@ -1252,7 +1252,14 @@ export function LayoutView({
         'arrange.group',
         'arrange.ungroup',
       )
-    else entries.push('edit.copyGraph', '-', 'arrange.bringToFront', 'arrange.sendToBack')
+    else
+      entries.push(
+        'edit.copyGraph',
+        'edit.copySvgCode',
+        '-',
+        'arrange.bringToFront',
+        'arrange.sendToBack',
+      )
     // Roadmap 45: Select ▸ all items of this type; the selection's registry commands, counted.
     entries.push(
       '-',
@@ -1331,6 +1338,7 @@ export function LayoutView({
       'arrange.unlockAll',
       '-',
       'edit.copyPage',
+      'edit.copySvgCode',
       'file.export',
       'file.export.sourceData',
     ]

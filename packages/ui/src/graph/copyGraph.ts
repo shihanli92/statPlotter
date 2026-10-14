@@ -1,4 +1,5 @@
 import type { ImageAsset, LayoutItem, NodeId } from '@ps/model'
+import { formatShortcut, isMacPlatform } from '../commands/shortcut.ts'
 import type { Platform } from '../services.ts'
 import { errorMessage } from '../util.ts'
 import type { FigureSvg, FigureTarget } from '../worker/figureCore.ts'
@@ -16,6 +17,13 @@ import { imageSize } from './figureFiles.ts'
 
 /** What went on the clipboard: vector PDF, vector SVG, a PNG image, the SVG code as text. */
 export type ClipboardFormat = 'pdf' | 'svg' | 'png' | 'text'
+
+/**
+ * Copy as SVG code's shortcut. Affinity Designer, Figma and Inkscape take a PNG on the clipboard
+ * over the SVG beside it (and turn the SVG image format into a picture), so a browser's Copy graph
+ * pastes there as an image; the SVG code alone pastes as vectors.
+ */
+export const COPY_SVG_CODE_SHORTCUT = 'Mod+Alt+Shift+C'
 
 /** The PNG's resolution beside the vector formats. */
 export const COPY_PNG_DPI = 300
@@ -202,8 +210,16 @@ function copyFigureToClipboard(
   ).then(async (formats) => ({ formats, stamp: null, svg: await svg }))
 }
 
-/** The message after a copy: "Copied “Graph 1” as vector (PDF, SVG) and image (PNG)." */
-export function describeCopied(what: string, formats: readonly ClipboardFormat[]): string {
+/**
+ * The message after a copy: "Copied “Graph 1” as vector (PDF, SVG) and image (PNG)." With a PNG
+ * and no PDF (a browser), it adds where to go for the apps that would paste the PNG
+ * (`svgCodeKey`: Copy as SVG code's shortcut as shown on this platform).
+ */
+export function describeCopied(
+  what: string,
+  formats: readonly ClipboardFormat[],
+  svgCodeKey?: string,
+): string {
   const has = (f: ClipboardFormat) => formats.includes(f)
   const vector = [has('pdf') && 'PDF', has('svg') && 'SVG'].filter(Boolean).join(', ')
   const parts = [
@@ -213,7 +229,11 @@ export function describeCopied(what: string, formats: readonly ClipboardFormat[]
   ].filter(Boolean)
   const list =
     parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : (parts[0] ?? '')
-  return `Copied ${what} as ${list}.`
+  const affinity =
+    has('png') && !has('pdf')
+      ? ` For Affinity Designer, Figma or Inkscape, use Copy as SVG code${svgCodeKey ? ` (${svgCodeKey})` : ''}.`
+      : ''
+  return `Copied ${what} as ${list}.${affinity}`
 }
 
 // ---- The app's own record of the copy -----------------------------------------------------------
@@ -336,7 +356,11 @@ export function copyToClipboard(
           stamp,
           ...(await extra()),
         })
-        return describeCopied(opts.what, formats)
+        return describeCopied(
+          opts.what,
+          formats,
+          formatShortcut(COPY_SVG_CODE_SHORTCUT, isMacPlatform()),
+        )
       },
       async (e: unknown) => {
         const keep = opts.graph || opts.items

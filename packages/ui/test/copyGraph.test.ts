@@ -194,11 +194,12 @@ describe('describeCopied', () => {
     expect(describeCopied('“Graph 1”', ['pdf', 'png', 'svg'])).toBe(
       'Copied “Graph 1” as vector (PDF, SVG) and image (PNG).',
     )
-    expect(describeCopied('“Graph 1”', ['svg', 'png', 'text'])).toBe(
-      'Copied “Graph 1” as vector (SVG) and image (PNG).',
+    // A browser's copy carries a PNG, which Affinity, Figma and Inkscape paste over the SVG.
+    expect(describeCopied('“Graph 1”', ['svg', 'png', 'text'], '⌥⇧⌘C')).toBe(
+      'Copied “Graph 1” as vector (SVG) and image (PNG). For Affinity Designer, Figma or Inkscape, use Copy as SVG code (⌥⇧⌘C).',
     )
     expect(describeCopied('the page', ['png', 'text'])).toBe(
-      'Copied the page as image (PNG) and SVG code (text: Illustrator pastes it as vector).',
+      'Copied the page as image (PNG) and SVG code (text: Illustrator pastes it as vector). For Affinity Designer, Figma or Inkscape, use Copy as SVG code.',
     )
     expect(describeCopied('x', ['text'])).toBe(
       'Copied x as SVG code (text: Illustrator pastes it as vector).',

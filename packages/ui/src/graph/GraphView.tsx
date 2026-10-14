@@ -1257,6 +1257,7 @@ export function GraphView({
         { label: 'Split into one graph per…', onSelect: () => setSplitting(true) },
         { label: 'Add result', submenu: resultMenuItems() },
         'edit.copyGraph',
+        'edit.copySvgCode',
         'file.export',
       )
     setMenu({ x: e.clientX, y: e.clientY, entries: items, label: 'Graph element' })
