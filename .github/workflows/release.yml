@@ -38,11 +38,11 @@ jobs:
       release_id: ${{ steps.release.outputs.result }}
     steps:
       # The whole history and every branch, to check the tag is on main.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
       # Only commits on main are released: a tag pushed on another branch (or none) fails here,
@@ -76,7 +76,7 @@ jobs:
             echo 'NOTES_END'
           } >> "$GITHUB_OUTPUT"
       - id: release
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           BODY: ${{ steps.notes.outputs.body }}
         with:
@@ -123,15 +123,15 @@ jobs:
       HAS_UPDATER_KEY: ${{ github.event_name == 'push' && secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
       HAS_WINDOWS_CERT: ${{ github.event_name == 'push' && secrets.WINDOWS_CERTIFICATE != '' }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # master
+      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # master
         with:
           toolchain: stable
           # A universal macOS app is both architectures, joined.
@@ -174,7 +174,7 @@ jobs:
       # signs with the Developer ID certificate (APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD,
       # APPLE_SIGNING_IDENTITY) and notarizes with APPLE_ID, APPLE_PASSWORD (an app-specific
       # password) and APPLE_TEAM_ID. The update bundles are signed with the updater's key.
-      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0.6.2
+      - uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_CERTIFICATE: ${{ env.SIGN == 'true' && matrix.platform == 'macos-latest' && secrets.APPLE_CERTIFICATE || '' }}
@@ -195,7 +195,7 @@ jobs:
           updaterJsonPreferNsis: true
       # The dry run keeps the installers as the run's artifacts.
       - if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: installers-${{ matrix.platform }}
           path: ${{ matrix.bundles }}
@@ -209,7 +209,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           RELEASE_ID: ${{ needs.create-release.outputs.release_id }}
         with:
