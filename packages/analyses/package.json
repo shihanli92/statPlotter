@@ -17,6 +17,6 @@
   "dependencies": {
     "@ps/model": "workspace:*",
     "@ps/stats": "workspace:*",
-    "zod": "^4.6.5"
+    "zod": "^4.6.6"
   }
 }
